@@ -7,13 +7,14 @@
     "preinstall": "git submodule update -i -r -f",
     "start": "node ./tests/app/server/server.js;",
     "up": "node ./tests/app/server/server.js;",
-    "submodules-update": "rm -rfv node_modules/broccoli-html-editor; npm install; gulp;",
+    "submodules-update": "rm -rfv node_modules/broccoli-html-editor; rm -rfv node_modules/utils79; npm install; gulp;",
     "test": "gulp; mocha --ui tdd ./tests/"
   },
   "author": "Tomoya Koyanagi",
   "license": "MIT",
   "dependencies": {
     "broccoli-html-editor": "file:submodules/broccoli-html-editor",
+    "utils79": "file:submodules/node-utils79",
     "es6-promise": "^3.1.2",
     "fs-extra": "^0.26.6",
     "jquery": "^2.2.1",

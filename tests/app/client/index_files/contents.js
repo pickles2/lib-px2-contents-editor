@@ -6,6 +6,7 @@ $(window).load(function(){
 	pickles2ContentsEditor.init(
 		{
 			'page_path': params.page_path ,
+			'elmCanvas': document.getElementById('canvas'),
 			'gpiBridge': function(api, options, callback){
 				// GPI(General Purpose Interface) Bridge
 				// broccoliは、バックグラウンドで様々なデータ通信を行います。
@@ -27,7 +28,7 @@ $(window).load(function(){
 			}
 		},
 		function(){
-			alert('standby!!');
+			console.info('standby!!');
 		}
 	);
 

@@ -4,6 +4,7 @@
 module.exports = function(){
 	var px2agent = require('px2agent');
 	var fsx = require('fs-extra');
+	var utils79 = require('utils79');
 	var Promise = require('es6-promise').Promise;
 	var _this = this;
 
@@ -12,7 +13,7 @@ module.exports = function(){
 
 	this.init = function(options, callback){
 		callback = callback||function(){};
-		console.log(options);
+		// console.log(options);
 
 		this.px2proj = require('px2agent').createProject(options.entryScript);
 		this.page_path = options.page_path;
@@ -68,6 +69,31 @@ module.exports = function(){
 				});
 			});
 		});
+	}
+
+	/**
+	 * ページの編集方法を取得する
+	 */
+	this.checkEditorType = function(callback){
+		this.getProjectInfo(function(pjInfo){
+			console.log(pjInfo);
+			var rtn = '.not_exists';
+			if( pjInfo.pageInfo === null ){
+				callback('.page_not_exists');
+				return;
+			}
+			if( utils79.is_file( pjInfo.documentRoot + pjInfo.pageInfo.content ) ){
+				rtn = 'html';
+				if( utils79.is_file( pjInfo.realpathDataDir + '/data.json' ) ){
+					rtn = 'html.gui';
+				}
+
+			}else if( utils79.is_file( pjInfo.documentRoot + pjInfo.pageInfo.content + '.md' ) ){
+				rtn = 'md';
+			}
+			callback(rtn);
+		});
+		return;
 	}
 
 	/**

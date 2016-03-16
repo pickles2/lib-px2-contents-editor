@@ -7,14 +7,11 @@ module.exports = function(px2ce, api, options, callback){
 	var _this = this;
 	callback = callback || function(){};
 
-	var path = require('path');
-	var fs = require('fs');
-
 	switch(api){
-		case "getProjectConf":
-			// Pickles2の設定情報を取得する
-			px2ce.getProjectConf(function(conf){
-				callback(conf);
+		case "checkEditorType":
+			// ページの編集方法を取得する
+			px2ce.checkEditorType(function(editoryType){
+				callback(editoryType);
 			});
 			break;
 
