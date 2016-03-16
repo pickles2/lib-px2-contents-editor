@@ -1,6 +1,7 @@
 var path = require('path');
 var gulp = require('gulp');
 var sass = require('gulp-sass');//CSSコンパイラ
+var minifyCss = require('gulp-minify-css');//CSSファイルの圧縮ツール
 var autoprefixer = require("gulp-autoprefixer");//CSSにベンダープレフィックスを付与してくれる
 var uglify = require("gulp-uglify");//JavaScriptファイルの圧縮ツール
 var concat = require('gulp-concat');//ファイルの結合ツール
@@ -13,8 +14,8 @@ var _tasks = [
 	'.html',
 	'.html.twig',
 	'.css',
-	'.css.scss',
-	'.js',
+	'pickles2-contents-editor.css',
+	'pickles2-contents-editor.js',
 	'broccoli-client'
 ];
 
@@ -22,23 +23,28 @@ var _tasks = [
 // broccoli-client (frontend) を処理
 gulp.task("broccoli-client", function() {
 	gulp.src(["node_modules/broccoli-html-editor/client/dist/**/*"])
-		.pipe(gulp.dest( './dist/common/broccoli-html-editor/client/dist/' ))
+		.pipe(gulp.dest( './dist/libs/broccoli-html-editor/client/dist/' ))
 	;
 	// gulp.src(["node_modules/broccoli-field-table/dist/**/*"])
-	// 	.pipe(gulp.dest( './dist/common/broccoli-field-table/dist/' ))
+	// 	.pipe(gulp.dest( './dist/libs/broccoli-field-table/dist/' ))
 	// ;
 	// gulp.src(["node_modules/broccoli-field-psd/dist/*"])
-	// 	.pipe(gulp.dest( './app/common/broccoli-field-psd/dist/' ))
+	// 	.pipe(gulp.dest( './app/libs/broccoli-field-psd/dist/' ))
 	// ;
 });
 
 // src 中の *.css.scss を処理
-gulp.task('.css.scss', function(){
-	gulp.src("src/**/*.css.scss")
+gulp.task('pickles2-contents-editor.css', function(){
+	gulp.src("src/pickles2-contents-editor.css.scss")
 		.pipe(plumber())
 		.pipe(sass())
 		.pipe(autoprefixer())
-		.pipe(rename({extname: ''}))
+		.pipe(concat('pickles2-contents-editor.css'))
+		.pipe(gulp.dest( './dist/' ))
+		.pipe(concat('pickles2-contents-editor.min.css'))
+		.pipe(minifyCss({compatibility: 'ie8'}))
+		// .pipe(sourcemaps.write())
+		// .pipe(uglify())
 		.pipe(gulp.dest( './dist/' ))
 	;
 });
@@ -52,12 +58,18 @@ gulp.task('.css', function(){
 });
 
 // *.js を処理
-gulp.task(".js", function() {
-	gulp.src(["src/**/*.js"])
+gulp.task("pickles2-contents-editor.js", function() {
+	gulp.src(["src/pickles2-contents-editor.js"])
 		.pipe(plumber())
 		.pipe(browserify({
 		}))
-		// .pipe(uglify())
+
+		.pipe(concat('pickles2-contents-editor.js'))
+		.pipe(gulp.dest( './dist/' ))
+
+		.pipe(concat('pickles2-contents-editor.min.js'))
+		.pipe(uglify())
+		// .pipe(sourcemaps.write())
 		.pipe(gulp.dest( './dist/' ))
 	;
 });
