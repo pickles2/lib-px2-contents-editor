@@ -15,8 +15,8 @@ module.exports = function(){
 		callback = callback||function(){};
 		// console.log(options);
 
+		this.entryScript = options.entryScript;
 		this.px2proj = require('px2agent').createProject(options.entryScript);
-		this.page_path = options.page_path;
 
 		callback();
 	}
@@ -76,7 +76,7 @@ module.exports = function(){
 	 */
 	this.checkEditorType = function(callback){
 		this.getProjectInfo(function(pjInfo){
-			console.log(pjInfo);
+			// console.log(pjInfo);
 			var rtn = '.not_exists';
 			if( pjInfo.pageInfo === null ){
 				callback('.page_not_exists');
@@ -99,12 +99,13 @@ module.exports = function(){
 	/**
 	 * 汎用API
 	 */
-	this.gpi = function(api, options, callback){
+	this.gpi = function(data, callback){
+		this.page_path = data.page_path;
+		// console.log(this.page_path);
 		var gpi = require( __dirname+'/gpi.js' );
 		gpi(
 			this,
-			api,
-			options,
+			data,
 			function(rtn){
 				callback(rtn);
 			}

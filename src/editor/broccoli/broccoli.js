@@ -1,31 +1,44 @@
 /**
- * broccoli
+ * broccoli/broccoli.js
  */
-modules.export = function(){
+module.exports = function(px2ce, callback){
+	callback = callback || function(){};
 	var $ = require('jquery');
+	var $canvas = $(px2ce.getElmCanvas());
+	var page_path = px2ce.page_path;
 
-	$.get(
-		'/apis/getProjectConf',
-		{},
+	$canvas.html((function(){
+		var fin = '';
+			fin += '<div class="pickles2-contents-editor--broccoli">';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
+			fin += '</div>';
+		return fin;
+	})());
+
+	px2ce.gpiBridge(
+		{
+			'api': 'getProjectConf'
+		},
 		function(px2conf){
 			// console.log(px2conf);
 
-			var $elmTitleBar = $('.cont_title_bar');
-			var $elmButtons = $('.cont_buttons');
-			var $elmCanvas = $('.cont_canvas');
-			var $elmModulePalette = $('.cont_palette');
-			var $elmInstanceTreeView = $('.cont_instanceTreeView');
-			var $elmInstancePathView = $('.cont_instancePathView');
+			var $elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
+			var $elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
+			var $elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
+			var $elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
 
-			$('.cont_canvas .cont_canvas--main').attr({
-				"data-broccoli-preview": 'http://127.0.0.1:8081'+params.page_path
+			$elmCanvas.attr({
+				"data-broccoli-preview": 'http://127.0.0.1:8081'+page_path
 			});
 
 
 			var broccoli = new Broccoli();
 			broccoli.init(
 				{
-					'elmCanvas': $elmCanvas.find('.cont_canvas--main').get(0),
+					'elmCanvas': $elmCanvas.get(0),
 					'elmModulePalette': $elmModulePalette.get(0),
 					'elmInstanceTreeView': $elmInstanceTreeView.get(0),
 					'elmInstancePathView': $elmInstancePathView.get(0),
@@ -43,19 +56,19 @@ modules.export = function(){
 						// GPI(General Purpose Interface) Bridge
 						// broccoliは、バックグラウンドで様々なデータ通信を行います。
 						// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-						$.ajax({
-							"url": "/apis/broccoliApi",
-							"type": 'post',
-							'data': {
-								'page_path': params.page_path,
-								'api': JSON.stringify(api) ,
-								'options': JSON.stringify(options)
+						px2ce.gpiBridge(
+							{
+								'api': 'broccoliBridge',
+								'page_path': page_path,
+								'forBroccoli':{
+									'api': api,
+									'options': options
+								}
 							},
-							"success": function(data){
-								// console.log(data);
+							function(data){
 								callback(data);
 							}
-						})
+						);
 						return;
 					},
 					'onClickContentsLink': function( uri, data ){
@@ -81,6 +94,6 @@ modules.export = function(){
 				}
 			);
 		}
-	)
+	);
 
 }

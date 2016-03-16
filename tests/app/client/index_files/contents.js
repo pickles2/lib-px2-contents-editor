@@ -7,18 +7,14 @@ $(window).load(function(){
 		{
 			'page_path': params.page_path ,
 			'elmCanvas': document.getElementById('canvas'),
-			'gpiBridge': function(api, options, callback){
+			'gpiBridge': function(input, callback){
 				// GPI(General Purpose Interface) Bridge
 				// broccoliは、バックグラウンドで様々なデータ通信を行います。
 				// GPIは、これらのデータ通信を行うための汎用的なAPIです。
 				$.ajax({
 					"url": "/apis/px2ce",
 					"type": 'post',
-					'data': {
-						'page_path': params.page_path,
-						'api': JSON.stringify(api) ,
-						'options': JSON.stringify(options)
-					},
+					'data': {'data':input},
 					"success": function(data){
 						// console.log(data);
 						callback(data);
@@ -34,8 +30,8 @@ $(window).load(function(){
 
 });
 /**
-* GETパラメータをパースする
-*/
+ * GETパラメータをパースする
+ */
 parseUriParam = function(url){
 	var paramsArray = [];
 	parameters = url.split("?");
