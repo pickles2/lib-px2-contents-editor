@@ -6,9 +6,9 @@ window.Pickles2ContentsEditor = function(){
 	this.page_path;
 
 	this.init = function(options, callback){
+		callback = callback || function(){};
 		// console.log(options);
 		this.gpiBridge = options.gpiBridge || function(){ alert('gpiBridge required.'); };
-		callback = callback || function(){};
 		this.page_path = options.page_path;
 
 		$canvas = $(options.elmCanvas);
@@ -61,4 +61,14 @@ window.Pickles2ContentsEditor = function(){
 	this.getElmCanvas = function(){
 		return $canvas;
 	}
+
+	/**
+	 * 再描画
+	 */
+	this.redraw = function( callback ){
+		callback = callback || function(){};
+		callback();
+		return;
+	}
+
 }

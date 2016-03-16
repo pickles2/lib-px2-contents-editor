@@ -219,9 +219,9 @@ return call_user_func( function(){
 	// config for Pickles2 Desktop Tool.
 	$conf->plugins->px2dt = new stdClass;
 	$conf->plugins->px2dt->paths_module_template = [
-		"PlainHTMLElements" => "./vendor/pickles2/broccoli-module-plain-html-elements/modules/",
+		"PlainHTMLElements" => "../../vendor/pickles2/broccoli-module-plain-html-elements/modules/",
 		"local" => "./px-files/modules/",
-		"FESS" => "./vendor/pickles2/broccoli-module-fess/modules/"
+		"FESS" => "../../vendor/pickles2/broccoli-module-fess/modules/"
 	];
 	$conf->plugins->px2dt->contents_area_selector = '[data-contents-area]'; // <- コンテンツエリアを識別するセレクタ(複数の要素がマッチしてもよい)
 	$conf->plugins->px2dt->contents_bowl_name_by = 'data-contents-area'; // <- コンテンツエリアのbowl名を指定する属性名

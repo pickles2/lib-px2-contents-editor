@@ -9852,83 +9852,134 @@ module.exports = function(px2ce, callback){
 		return fin;
 	})());
 
-	px2ce.gpiBridge(
-		{
-			'api': 'getProjectConf'
-		},
-		function(px2conf){
-			// console.log(px2conf);
+	var $elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
+	var $elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
+	var $elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
+	var $elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
 
-			var $elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
-			var $elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
-			var $elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
-			var $elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
+	/**
+	 * window.resize イベントハンドラ
+	 */
+	function windowResized( callback ){
+		callback = callback || function(){};
 
-			$elmCanvas.attr({
-				"data-broccoli-preview": 'http://127.0.0.1:8081'+page_path
-			});
+		$canvas.css({
+			'position': 'relative'
+		});
+		$elmInstancePathView.css({
+			'position': 'absolute',
+			'bottom': 0,
+			'left': 0,
+			'right': 0,
+			'width': '100%'
+		});
+		var pathViewHeight = $elmInstancePathView.outerHeight();
+		$elmInstanceTreeView.css({
+			'position': 'absolute',
+			'top': 0,
+			'left': 0,
+			'width': '20%',
+			'height': $canvas.height() - pathViewHeight
+		});
+		$elmCanvas.css({
+			'position': 'absolute',
+			'top': 0,
+			'left': '20%',
+			'width': '60%',
+			'height': $canvas.height() - pathViewHeight
+		});
+		$elmModulePalette.css({
+			'position': 'absolute',
+			'top': 0,
+			'right': 0,
+			'width': '20%',
+			'height': $canvas.height() - pathViewHeight
+		});
+
+		callback();
+		return;
+	}
+
+	windowResized(function(){
+		px2ce.gpiBridge(
+			{
+				'api': 'getProjectConf'
+			},
+			function(px2conf){
+				// console.log(px2conf);
+
+				$elmCanvas.attr({
+					"data-broccoli-preview": 'http://127.0.0.1:8081'+page_path
+				});
 
 
-			var broccoli = new Broccoli();
-			broccoli.init(
-				{
-					'elmCanvas': $elmCanvas.get(0),
-					'elmModulePalette': $elmModulePalette.get(0),
-					'elmInstanceTreeView': $elmInstanceTreeView.get(0),
-					'elmInstancePathView': $elmInstancePathView.get(0),
-					'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
-					// ↑編集可能領域を探すためのクエリを設定します。
-					//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
-					'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-					// ↑bowlの名称を、data-contents属性値から取得します。
-					'customFields': {
-						// 'href': require('./../common/broccoli/broccoli-field-href/server.js'),
-						// // 'psd': require('broccoli-field-psd'),
-						// 'table': require('broccoli-field-table')
-					},
-					'gpiBridge': function(api, options, callback){
-						// GPI(General Purpose Interface) Bridge
-						// broccoliは、バックグラウンドで様々なデータ通信を行います。
-						// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-						px2ce.gpiBridge(
-							{
-								'api': 'broccoliBridge',
-								'page_path': page_path,
-								'forBroccoli':{
-									'api': api,
-									'options': options
+				var broccoli = new Broccoli();
+				broccoli.init(
+					{
+						'elmCanvas': $elmCanvas.get(0),
+						'elmModulePalette': $elmModulePalette.get(0),
+						'elmInstanceTreeView': $elmInstanceTreeView.get(0),
+						'elmInstancePathView': $elmInstancePathView.get(0),
+						'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
+						// ↑編集可能領域を探すためのクエリを設定します。
+						//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
+						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+						// ↑bowlの名称を、data-contents属性値から取得します。
+						'customFields': {
+							// 'href': require('./../common/broccoli/broccoli-field-href/server.js'),
+							// // 'psd': require('broccoli-field-psd'),
+							// 'table': require('broccoli-field-table')
+						},
+						'gpiBridge': function(api, options, callback){
+							// GPI(General Purpose Interface) Bridge
+							// broccoliは、バックグラウンドで様々なデータ通信を行います。
+							// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+							px2ce.gpiBridge(
+								{
+									'api': 'broccoliBridge',
+									'page_path': page_path,
+									'forBroccoli':{
+										'api': api,
+										'options': options
+									}
+								},
+								function(data){
+									callback(data);
 								}
-							},
-							function(data){
-								callback(data);
-							}
-						);
-						return;
-					},
-					'onClickContentsLink': function( uri, data ){
-						alert(uri + ' へ移動');
-						console.log(data);
-						return false;
-					},
-					'onMessage': function( message ){
-						// ユーザーへ知らせるメッセージを表示する
-						console.info('message: '+message);
+							);
+							return;
+						},
+						'onClickContentsLink': function( uri, data ){
+							alert(uri + ' へ移動');
+							console.log(data);
+							return false;
+						},
+						'onMessage': function( message ){
+							// ユーザーへ知らせるメッセージを表示する
+							console.info('message: '+message);
+						}
+					} ,
+					function(){
+						// 初期化が完了すると呼びだされるコールバック関数です。
+
+						px2ce.redraw = function(callback){
+							callback = callback || function(){};
+							windowResized(function(){
+								broccoli.redraw();
+							});
+							return;
+						}
+						windowResized(function(){
+							broccoli.redraw();
+						});
+
+						callback();
 					}
-				} ,
-				function(){
-					// 初期化が完了すると呼びだされるコールバック関数です。
+				);
+			}
+		);
 
-					$(window).resize(function(){
-						// このメソッドは、canvasの再描画を行います。
-						// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
-						broccoli.redraw();
-					});
-
-					// callback();
-				}
-			);
-		}
-	);
+	});
 
 }
 
@@ -9941,9 +9992,9 @@ window.Pickles2ContentsEditor = function(){
 	this.page_path;
 
 	this.init = function(options, callback){
+		callback = callback || function(){};
 		// console.log(options);
 		this.gpiBridge = options.gpiBridge || function(){ alert('gpiBridge required.'); };
-		callback = callback || function(){};
 		this.page_path = options.page_path;
 
 		$canvas = $(options.elmCanvas);
@@ -9996,6 +10047,16 @@ window.Pickles2ContentsEditor = function(){
 	this.getElmCanvas = function(){
 		return $canvas;
 	}
+
+	/**
+	 * 再描画
+	 */
+	this.redraw = function( callback ){
+		callback = callback || function(){};
+		callback();
+		return;
+	}
+
 }
 
 },{"./editor/broccoli/broccoli.js":2,"jquery":1}]},{},[3])
