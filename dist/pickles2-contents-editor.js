@@ -9984,12 +9984,23 @@ module.exports = function(px2ce, callback){
 }
 
 },{"jquery":1}],3:[function(require,module,exports){
+/**
+ * Pickles2ContentsEditor
+ */
+(function(){
+	// broccoli-html-editor をロード
+	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
+	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.css" />');
+	document.write('<script src="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.js"></script>');
+})();
 window.Pickles2ContentsEditor = function(){
 	var $ = require('jquery');
 	var $canvas;
 	var _this = this;
+	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
 	this.gpiBridge;
 	this.page_path;
+
 
 	this.init = function(options, callback){
 		callback = callback || function(){};

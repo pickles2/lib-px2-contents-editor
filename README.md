@@ -78,10 +78,6 @@ appPx2.listen(8081);
 ```html
 <div id="canvas"></div>
 
-<!-- broccoli -->
-<link rel="stylesheet" href="/path/to/libs/broccoli-html-editor/client/dist/broccoli.css" />
-<script src="/path/to/libs/broccoli-html-editor/client/dist/broccoli.js"></script>
-
 <!-- Pickles 2 Contents Editor -->
 <link rel="stylesheet" href="/path/to/pickles2-contents-editor.css" />
 <script src="/path/to/pickles2-contents-editor.js"></script>
