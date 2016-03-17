@@ -10,6 +10,7 @@ window.Pickles2ContentsEditor = function(){
 		// console.log(options);
 		this.gpiBridge = options.gpiBridge || function(){ alert('gpiBridge required.'); };
 		this.page_path = options.page_path;
+		this.preview = options.preview || {};
 
 		$canvas = $(options.elmCanvas);
 		$canvas.addClass('pickles2-contents-editor');

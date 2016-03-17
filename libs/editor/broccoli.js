@@ -16,7 +16,7 @@ module.exports = function(px2ce, data, callback){
 	px2proj.get_config(function(_px2conf){
 		px2conf = _px2conf;
 		// console.log(px2conf);
-		px2proj.get_page_info('/', function(_pageInfo){
+		px2proj.get_page_info(page_path, function(_pageInfo){
 			pageInfo = _pageInfo;
 			// console.log(pageInfo);
 
@@ -57,12 +57,20 @@ module.exports = function(px2ce, data, callback){
 			px2conf.plugins.px2dt.paths_module_template[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
 		}
 		// console.log(px2conf.plugins.px2dt.paths_module_template);
+		// console.log({
+		// 	'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
+		// 	'documentRoot': documentRoot,// realpath
+		// 	'pathHtml': pageInfo.content,
+		// 	'pathResourceDir': pathResourceDir,
+		// 	'realpathDataDir':  realpathDataDir,
+		// 	'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+		// });
 
 		broccoli.init(
 			{
 				'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
 				'documentRoot': documentRoot,// realpath
-				'pathHtml': page_path,
+				'pathHtml': pageInfo.content,
 				'pathResourceDir': pathResourceDir,
 				'realpathDataDir':  realpathDataDir,
 				'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,

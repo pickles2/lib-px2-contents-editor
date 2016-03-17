@@ -75,7 +75,7 @@ module.exports = function(px2ce, callback){
 				// console.log(px2conf);
 
 				$elmCanvas.attr({
-					"data-broccoli-preview": 'http://127.0.0.1:8081'+page_path
+					"data-broccoli-preview": px2ce.preview.origin + page_path
 				});
 
 

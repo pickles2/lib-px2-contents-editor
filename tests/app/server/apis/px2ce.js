@@ -14,7 +14,7 @@ module.exports = function(){
 				'entryScript': require('path').resolve(__dirname,'../../../htdocs/.px_execute.php')
 			},
 			function(){
-				px2ce.gpi(req.body.data, function(value){
+				px2ce.gpi(JSON.parse(req.body.data), function(value){
 					res
 						.status(200)
 						.set('Content-Type', 'text/json')

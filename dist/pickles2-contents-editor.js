@@ -9909,7 +9909,7 @@ module.exports = function(px2ce, callback){
 				// console.log(px2conf);
 
 				$elmCanvas.attr({
-					"data-broccoli-preview": 'http://127.0.0.1:8081'+page_path
+					"data-broccoli-preview": px2ce.preview.origin + page_path
 				});
 
 
@@ -9996,6 +9996,7 @@ window.Pickles2ContentsEditor = function(){
 		// console.log(options);
 		this.gpiBridge = options.gpiBridge || function(){ alert('gpiBridge required.'); };
 		this.page_path = options.page_path;
+		this.preview = options.preview || {};
 
 		$canvas = $(options.elmCanvas);
 		$canvas.addClass('pickles2-contents-editor');
