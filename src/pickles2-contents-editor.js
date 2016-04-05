@@ -43,7 +43,10 @@ window.Pickles2ContentsEditor = function(){
 					case '.not_exists':
 						// コンテンツが存在しない
 						$canvas.html('<p>コンテンツが存在しません。</p>');
-						callback();
+						var notExists = require('./not_exists.js');
+						notExists(_this, function(){
+							callback();
+						});
 						break;
 
 					case 'html.gui':

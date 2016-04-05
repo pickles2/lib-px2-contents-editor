@@ -1,16 +1,26 @@
+@charset "utf-8";
 .pickles2-contents-editor{
-    overflow: auto;
+	// border: 1px solid #000;
+	@import "../node_modules/bootstrap/dist/css/bootstrap";
+
+	overflow: auto;
 }
 .pickles2-contents-editor--broccoli{
-    &-canvas{
-        overflow: auto;
-    }
-    &-palette{
-        overflow: auto;
-    }
-    &-instance-tree-view{
-        overflow: auto;
-    }
-    &-instance-path-view{
-    }
+	&-canvas{
+		overflow: auto;
+	}
+	&-palette{
+		overflow: auto;
+	}
+	&-instance-tree-view{
+		overflow: auto;
+	}
+	&-instance-path-view{
+	}
+}
+
+.pickles2-contents-editor--notExists{
+	border: 1px solid #eee;
+	background-color: #fff;
+	padding: 20px;
 }
