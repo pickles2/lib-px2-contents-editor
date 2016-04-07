@@ -8,6 +8,14 @@ module.exports = function(px2ce, data, callback){
 	callback = callback || function(){};
 
 	switch(data.api){
+		case "initContentFiles":
+			// コンテンツファイルを初期化する
+			console.log(data);
+			px2ce.initContentFiles(data.page_path, data.editor_type, function(result){
+				callback(result);
+			});
+			break;
+
 		case "getProjectConf":
 			// プロジェクトの設定を取得する
 			px2ce.getProjectConf(function(conf){

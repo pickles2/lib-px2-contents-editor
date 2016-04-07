@@ -3,6 +3,7 @@
  */
 module.exports = function(){
 	var px2agent = require('px2agent');
+	var fs = require('fs');
 	var fsx = require('fs-extra');
 	var utils79 = require('utils79');
 	var Promise = require('es6-promise').Promise;
@@ -69,6 +70,152 @@ module.exports = function(){
 				});
 			});
 		});
+	}
+
+	/**
+	 * コンテンツファイルを初期化する
+	 */
+	this.initContentFiles = function(page_path, editorType, callback){
+		// console.log(page_path);
+		// console.log(editorType);
+		var result = {
+			'result': true,
+			'message': 'OK'
+		};
+
+		callback = callback||function(){};
+		editorType = editorType||'html';
+
+		var pageInfo,
+			prop = {}
+		;
+
+		/**
+		 * パス文字列を解析する
+		 */
+		function parsePath( path ){
+			var rtn = {};
+			rtn.path = path;
+			rtn.basename = utils79.basename( rtn.path );
+			rtn.dirname = utils79.dirname( rtn.path );
+			rtn.ext = rtn.basename.replace( new RegExp('^.*\\.'), '' );
+			rtn.basenameExtless = rtn.basename.replace( new RegExp('\\.'+utils79.regexp_quote(rtn.ext)+'$'), '' );
+			return rtn;
+		}
+
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.get_page_info(_this.page_path, function(_pageInfo){
+					pageInfo = _pageInfo;
+					// console.log(pageInfo);
+					if( pageInfo == null ){
+						rjt('Page not Exists.');
+						return;
+					}
+					rlv();
+				});
+
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.get_path_content(_this.page_path, function(contPath){
+					// console.log(contPath);
+
+					_this.px2proj.get_path_docroot(function(contRoot){
+						if( fs.existsSync( contRoot + contPath ) ){
+							rjt('Content Already Exists.');
+							return;
+						}
+						switch( editorType ){
+							case 'html.gui':
+							case 'html':
+							case 'md':
+								// OK
+								break;
+							default:
+								rjt('Unknown editor-type "'+editorType+'".');
+								return;
+								break;
+						}
+
+						var pathInfo = parsePath( contRoot + contPath );
+						prop.realpath_cont = pathInfo.path;
+
+						_this.px2proj.realpath_files(_this.page_path, '', function(realpath_resource_dir){
+							prop.realpath_resource_dir = realpath_resource_dir;
+							prop.editor_type = editorType;
+							if( prop.editor_type == 'md' ){
+								prop.realpath_cont += '.'+prop.editor_type;
+							}
+
+							rlv();
+
+						});
+
+					});
+				});
+
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// 格納ディレクトリを作る
+				if( utils79.is_dir( utils79.dirname( prop.realpath_cont ) ) ){
+					rlv();
+					return;
+				}
+				// 再帰的に作る fsx.mkdirpSync()
+				var dirpath = utils79.dirname( prop.realpath_cont );
+				if( !fsx.mkdirpSync( dirpath ) ){
+					rjt('FAILED to mkdirp - '+dirpath);
+					return;
+				}
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// コンテンツ自体を作る
+				fs.writeFile( prop.realpath_cont, '', function(err){
+					if( err ){
+						rjt(err);
+						return;
+					}
+					rlv();
+				} );
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// リソースディレクトリを作る
+				if( !utils79.is_dir( prop.realpath_resource_dir ) ){
+					fsx.mkdirpSync( prop.realpath_resource_dir );
+				}
+				if( prop.editor_type == 'html.gui' ){
+					try {
+						fs.mkdirSync( prop.realpath_resource_dir + '/guieditor.ignore/' );
+					} catch (e) {
+						rlv();
+					} finally {
+						fs.writeFile( prop.realpath_resource_dir + '/guieditor.ignore/data.json', '{}', function(err){
+							if( err ){
+								rjt(err);
+								return;
+							}
+							rlv();
+						} );
+					}
+
+				}else{
+					rlv();
+				}
+			}); })
+			.then(function(){
+				callback(result);
+			})
+			.catch(function (err) {
+				result = {
+					'result': false,
+					'message': (typeof(err) == typeof('') ? err : err.message)
+				};
+				callback(result);
+			})
+		;
+
+		return;
 	}
 
 	/**

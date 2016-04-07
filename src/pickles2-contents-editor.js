@@ -18,6 +18,7 @@ window.Pickles2ContentsEditor = function(){
 
 	this.init = function(options, callback){
 		callback = callback || function(){};
+		var _this = this;
 		// console.log(options);
 		this.gpiBridge = options.gpiBridge || function(){ alert('gpiBridge required.'); };
 		this.page_path = options.page_path;
@@ -45,7 +46,7 @@ window.Pickles2ContentsEditor = function(){
 						$canvas.html('<p>コンテンツが存在しません。</p>');
 						var notExists = require('./not_exists.js');
 						notExists(_this, function(){
-							callback();
+							_this.init(options, callback);
 						});
 						break;
 
