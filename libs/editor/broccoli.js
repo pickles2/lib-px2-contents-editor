@@ -80,6 +80,7 @@ module.exports = function(px2ce, data, callback){
 					// 	// この関数は、fieldBase.js を基底クラスとして継承します。
 					// 	// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
 					// }
+					'table': require('broccoli-field-table')
 				} ,
 				'bindTemplate': function(htmls, callback){
 					var fin = '';

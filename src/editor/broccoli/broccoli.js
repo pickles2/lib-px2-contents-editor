@@ -78,7 +78,6 @@ module.exports = function(px2ce, callback){
 					"data-broccoli-preview": px2ce.preview.origin + page_path
 				});
 
-
 				var broccoli = new Broccoli();
 				broccoli.init(
 					{
@@ -94,7 +93,7 @@ module.exports = function(px2ce, callback){
 						'customFields': {
 							// 'href': require('./../common/broccoli/broccoli-field-href/server.js'),
 							// // 'psd': require('broccoli-field-psd'),
-							// 'table': require('broccoli-field-table')
+							'table': window.BroccoliFieldTable
 						},
 						'gpiBridge': function(api, options, callback){
 							// GPI(General Purpose Interface) Bridge

@@ -25,9 +25,9 @@ gulp.task("broccoli-client", function() {
 	gulp.src(["node_modules/broccoli-html-editor/client/dist/**/*"])
 		.pipe(gulp.dest( './dist/libs/broccoli-html-editor/client/dist/' ))
 	;
-	// gulp.src(["node_modules/broccoli-field-table/dist/**/*"])
-	// 	.pipe(gulp.dest( './dist/libs/broccoli-field-table/dist/' ))
-	// ;
+	gulp.src(["node_modules/broccoli-field-table/dist/**/*"])
+		.pipe(gulp.dest( './dist/libs/broccoli-field-table/dist/' ))
+	;
 	// gulp.src(["node_modules/broccoli-field-psd/dist/*"])
 	// 	.pipe(gulp.dest( './app/libs/broccoli-field-psd/dist/' ))
 	// ;

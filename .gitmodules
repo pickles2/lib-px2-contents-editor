@@ -4,3 +4,6 @@
 [submodule "submodules/node-utils79"]
 	path = submodules/node-utils79
 	url = https://github.com/tomk79/node-utils79.git
+[submodule "submodules/broccoli-field-table"]
+	path = submodules/broccoli-field-table
+	url = https://github.com/pickles2/broccoli-field-table.git
