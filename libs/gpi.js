@@ -10,8 +10,8 @@ module.exports = function(px2ce, data, callback){
 	switch(data.api){
 		case "initContentFiles":
 			// コンテンツファイルを初期化する
-			console.log(data);
-			px2ce.initContentFiles(data.page_path, data.editor_type, function(result){
+			// console.log(data);
+			px2ce.initContentFiles(data.editor_type, function(result){
 				callback(result);
 			});
 			break;
@@ -27,6 +27,22 @@ module.exports = function(px2ce, data, callback){
 			// ページの編集方法を取得する
 			px2ce.checkEditorType(function(editoryType){
 				callback(editoryType);
+			});
+			break;
+
+		case "getContentsSrc":
+			// コンテンツのソースを取得する
+			var defaultEditor = new (require('./editor/default.js'))(px2ce);
+			defaultEditor.getContentsSrc(function(contentsCodes){
+				callback(contentsCodes);
+			});
+			break;
+
+		case "saveContentsSrc":
+			// コンテンツのソースを保存する
+			var defaultEditor = new (require('./editor/default.js'))(px2ce);
+			defaultEditor.saveContentsSrc(data.codes, function(result){
+				callback(result);
 			});
 			break;
 

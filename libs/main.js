@@ -9,6 +9,7 @@ module.exports = function(){
 	var Promise = require('es6-promise').Promise;
 	var _this = this;
 
+	this.entryScript;
 	this.px2proj;
 	this.page_path;
 
@@ -75,8 +76,8 @@ module.exports = function(){
 	/**
 	 * コンテンツファイルを初期化する
 	 */
-	this.initContentFiles = function(page_path, editorType, callback){
-		// console.log(page_path);
+	this.initContentFiles = function(editorType, callback){
+		// console.log(_this.page_path);
 		// console.log(editorType);
 		var result = {
 			'result': true,
@@ -222,6 +223,7 @@ module.exports = function(){
 	 * ページの編集方法を取得する
 	 */
 	this.checkEditorType = function(callback){
+		callback = callback||function(){};
 		this.getProjectInfo(function(pjInfo){
 			// console.log(pjInfo);
 			var rtn = '.not_exists';
@@ -247,6 +249,7 @@ module.exports = function(){
 	 * 汎用API
 	 */
 	this.gpi = function(data, callback){
+		callback = callback||function(){};
 		this.page_path = data.page_path;
 		// console.log(this.page_path);
 		var gpi = require( __dirname+'/gpi.js' );

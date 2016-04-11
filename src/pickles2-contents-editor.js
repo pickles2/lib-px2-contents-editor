@@ -65,7 +65,10 @@ window.Pickles2ContentsEditor = function(){
 					default:
 						// defaultテキストエディタ
 						$canvas.html('<p>テキストエディタを起動します。</p>');
-						callback();
+						var editorDefault = require('./editor/default/default.js');
+						editorDefault(_this, function(){
+							callback();
+						});
 						break;
 				}
 			}
