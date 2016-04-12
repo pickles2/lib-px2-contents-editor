@@ -14,38 +14,25 @@ var _tasks = [
 	'.html',
 	'.html.twig',
 	'.css',
-	'pickles2-contents-editor.css',
+	'.css.scss',
 	'pickles2-contents-editor.js',
-	'broccoli-client'
+	'client-libs'
 ];
 
 
-// broccoli-client (frontend) を処理
-gulp.task("broccoli-client", function() {
+// client-libs (frontend) を処理
+gulp.task("client-libs", function() {
 	gulp.src(["node_modules/broccoli-html-editor/client/dist/**/*"])
 		.pipe(gulp.dest( './dist/libs/broccoli-html-editor/client/dist/' ))
 	;
 	gulp.src(["node_modules/broccoli-field-table/dist/**/*"])
 		.pipe(gulp.dest( './dist/libs/broccoli-field-table/dist/' ))
 	;
-	// gulp.src(["node_modules/broccoli-field-psd/dist/*"])
-	// 	.pipe(gulp.dest( './app/libs/broccoli-field-psd/dist/' ))
-	// ;
-});
-
-// src 中の *.css.scss を処理
-gulp.task('pickles2-contents-editor.css', function(){
-	gulp.src("src/pickles2-contents-editor.css.scss")
-		.pipe(plumber())
-		.pipe(sass())
-		.pipe(autoprefixer())
-		.pipe(concat('pickles2-contents-editor.css'))
-		.pipe(gulp.dest( './dist/' ))
-		.pipe(concat('pickles2-contents-editor.min.css'))
-		.pipe(minifyCss({compatibility: 'ie8'}))
-		// .pipe(sourcemaps.write())
-		// .pipe(uglify())
-		.pipe(gulp.dest( './dist/' ))
+	gulp.src(["node_modules/bootstrap/dist/fonts/**/*"])
+		.pipe(gulp.dest( './dist/libs/bootstrap/dist/fonts/' ))
+	;
+	gulp.src(["node_modules/bootstrap/dist/js/**/*"])
+		.pipe(gulp.dest( './dist/libs/bootstrap/dist/js/' ))
 	;
 });
 
@@ -53,6 +40,29 @@ gulp.task('pickles2-contents-editor.css', function(){
 gulp.task('.css', function(){
 	gulp.src("src/**/*.css")
 		.pipe(plumber())
+		.pipe(gulp.dest( './dist/' ))
+	;
+});
+
+// src 中の *.css.scss を処理
+gulp.task('.css.scss', function(){
+	gulp.src("src/**/*.css.scss")
+		.pipe(plumber())
+		.pipe(sass({
+			"sourceComments": false
+		}))
+		.pipe(rename({
+			extname: ''
+		}))
+		.pipe(rename({
+			extname: '.css'
+		}))
+		.pipe(gulp.dest( './dist/' ))
+
+		.pipe(minifyCss({compatibility: 'ie8'}))
+		.pipe(rename({
+			extname: '.min.css'
+		}))
 		.pipe(gulp.dest( './dist/' ))
 	;
 });

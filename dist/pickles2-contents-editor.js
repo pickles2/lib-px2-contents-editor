@@ -14841,27 +14841,21 @@ module.exports = function(px2ce, callback){
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	$canvas.html((function(){
-		var fin = '';
-			fin += '<div class="pickles2-contents-editor--broccoli">';
-			fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
-			fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
-			fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
-			fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
-			fin += '</div>';
-		return fin;
-	})());
+	var toolbar = new (require('../../toolbar.js'))(px2ce);
 
-	var $elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
-	var $elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
-	var $elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
-	var $elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
+	var $elmCanvas,
+		$elmModulePalette,
+		$elmInstanceTreeView,
+		$elmInstancePathView;
 
 	/**
 	 * window.resize イベントハンドラ
 	 */
 	function windowResized( callback ){
 		callback = callback || function(){};
+
+		var $toolbar = toolbar.getElm();
+		var tbHeight = $toolbar.outerHeight();
 
 		$canvas.css({
 			'position': 'relative'
@@ -14876,113 +14870,132 @@ module.exports = function(px2ce, callback){
 		var pathViewHeight = $elmInstancePathView.outerHeight();
 		$elmInstanceTreeView.css({
 			'position': 'absolute',
-			'top': 0,
+			'top': tbHeight,
 			'left': 0,
 			'width': '20%',
-			'height': $canvas.height() - pathViewHeight
+			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
 		$elmCanvas.css({
 			'position': 'absolute',
-			'top': 0,
+			'top': tbHeight,
 			'left': '20%',
 			'width': '60%',
-			'height': $canvas.height() - pathViewHeight
+			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
 		$elmModulePalette.css({
 			'position': 'absolute',
-			'top': 0,
+			'top': tbHeight,
 			'right': 0,
 			'width': '20%',
-			'height': $canvas.height() - pathViewHeight
+			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
 
 		callback();
 		return;
 	}
 
-	windowResized(function(){
-		px2ce.gpiBridge(
-			{
-				'api': 'getProjectConf'
-			},
-			function(px2conf){
-				// console.log(px2conf);
+	toolbar.init(function(){
+		$canvas.append((function(){
+			var fin = '';
+			fin += '<div class="pickles2-contents-editor--broccoli">';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
+			fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
+			fin += '</div>';
+			return fin;
+		})());
 
-				$elmCanvas.attr({
-					"data-broccoli-preview": px2ce.preview.origin + page_path
-				});
+		$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
+		$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
+		$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
+		$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
 
-				var broccoli = new Broccoli();
-				broccoli.init(
-					{
-						'elmCanvas': $elmCanvas.get(0),
-						'elmModulePalette': $elmModulePalette.get(0),
-						'elmInstanceTreeView': $elmInstanceTreeView.get(0),
-						'elmInstancePathView': $elmInstancePathView.get(0),
-						'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
-						// ↑編集可能領域を探すためのクエリを設定します。
-						//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
-						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-						// ↑bowlの名称を、data-contents属性値から取得します。
-						'customFields': {
-							// 'href': require('./../common/broccoli/broccoli-field-href/server.js'),
-							// // 'psd': require('broccoli-field-psd'),
-							'table': window.BroccoliFieldTable
-						},
-						'gpiBridge': function(api, options, callback){
-							// GPI(General Purpose Interface) Bridge
-							// broccoliは、バックグラウンドで様々なデータ通信を行います。
-							// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-							px2ce.gpiBridge(
-								{
-									'api': 'broccoliBridge',
-									'page_path': page_path,
-									'forBroccoli':{
-										'api': api,
-										'options': options
+		windowResized(function(){
+			px2ce.gpiBridge(
+				{
+					'api': 'getProjectConf'
+				},
+				function(px2conf){
+					// console.log(px2conf);
+
+					$elmCanvas.attr({
+						"data-broccoli-preview": px2ce.preview.origin + page_path
+					});
+
+					var broccoli = new Broccoli();
+					broccoli.init(
+						{
+							'elmCanvas': $elmCanvas.get(0),
+							'elmModulePalette': $elmModulePalette.get(0),
+							'elmInstanceTreeView': $elmInstanceTreeView.get(0),
+							'elmInstancePathView': $elmInstancePathView.get(0),
+							'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
+							// ↑編集可能領域を探すためのクエリを設定します。
+							//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
+							'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+							// ↑bowlの名称を、data-contents属性値から取得します。
+							'customFields': {
+								// 'href': require('./../common/broccoli/broccoli-field-href/server.js'),
+								// // 'psd': require('broccoli-field-psd'),
+								'table': window.BroccoliFieldTable
+							},
+							'gpiBridge': function(api, options, callback){
+								// GPI(General Purpose Interface) Bridge
+								// broccoliは、バックグラウンドで様々なデータ通信を行います。
+								// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+								px2ce.gpiBridge(
+									{
+										'api': 'broccoliBridge',
+										'page_path': page_path,
+										'forBroccoli':{
+											'api': api,
+											'options': options
+										}
+									},
+									function(data){
+										callback(data);
 									}
-								},
-								function(data){
-									callback(data);
-								}
-							);
-							return;
-						},
-						'onClickContentsLink': function( uri, data ){
-							alert(uri + ' へ移動');
-							console.log(data);
-							return false;
-						},
-						'onMessage': function( message ){
-							// ユーザーへ知らせるメッセージを表示する
-							console.info('message: '+message);
-						}
-					} ,
-					function(){
-						// 初期化が完了すると呼びだされるコールバック関数です。
+								);
+								return;
+							},
+							'onClickContentsLink': function( uri, data ){
+								alert(uri + ' へ移動');
+								console.log(data);
+								return false;
+							},
+							'onMessage': function( message ){
+								// ユーザーへ知らせるメッセージを表示する
+								console.info('message: '+message);
+							}
+						} ,
+						function(){
+							// 初期化が完了すると呼びだされるコールバック関数です。
 
-						px2ce.redraw = function(callback){
-							callback = callback || function(){};
+							px2ce.redraw = function(callback){
+								callback = callback || function(){};
+								windowResized(function(){
+									broccoli.redraw();
+								});
+								return;
+							}
 							windowResized(function(){
 								broccoli.redraw();
 							});
-							return;
-						}
-						windowResized(function(){
-							broccoli.redraw();
-						});
 
-						callback();
-					}
-				);
-			}
-		);
+							callback();
+						}
+					);
+				}
+			);
+
+		});
 
 	});
 
 }
 
-},{"jquery":8}],76:[function(require,module,exports){
+},{"../../toolbar.js":79,"jquery":8}],76:[function(require,module,exports){
 /**
  * default/default.js
  */
@@ -15208,11 +15221,81 @@ module.exports = function(px2ce, callback){
 
 },{"jquery":8}],77:[function(require,module,exports){
 /**
+ * not_exists.js
+ */
+module.exports = function(px2ce, callback){
+	callback = callback || function(){};
+	var $ = require('jquery');
+	var utils79 = require('utils79');
+	var $canvas = $(px2ce.getElmCanvas());
+	var page_path = px2ce.page_path;
+
+	var ejs = require('ejs');
+
+	$canvas.html((function(){
+
+		var fin = ''
+			+ '<div class="container">'
+				+ '<div class="pickles2-contents-editor--notExists">'
+					+ '<form action="javascript:;" method="get">'
+						+ '<p>コンテンツファイルが存在しません。</p>'
+						+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
+						+ '<ul>'
+							+ '<li><label><input type="radio" name="editor-type" value="html.gui" checked="checked" /> HTML + GUI Editor (<%= basename %> + data files)</label></li>'
+							+ '<li><label><input type="radio" name="editor-type" value="html" /> HTML (<%= basename %>)</label></li>'
+							+ '<li><label><input type="radio" name="editor-type" value="md" /> Markdown (<%= basename %>.md)</label></li>'
+						+ '</ul>'
+						+ '<div class="row">'
+							+ '<div class="col-sm-8 col-sm-offset-2"><button class="btn btn-primary btn-block">コンテンツファイルを作成する</button></div>'
+						+ '</div>'
+					+ '</form>'
+				+ '</div>'
+			+ '</div>'
+		;
+
+		// Just one template
+		fin = ejs.render(fin, {'basename': utils79.basename(page_path)}, {delimiter: '%'});
+
+		return fin;
+	})());
+
+	$canvas.find('form').submit(function(){
+		var editor_type = $(this).find('input[name=editor-type]:checked').val();
+		// console.log( editor_type );
+		if( !editor_type ){
+			alert('ERROR: editor-type is not selected.');
+			return false;
+		}
+
+		px2ce.gpiBridge(
+			{
+				'api': 'initContentFiles',
+				'page_path': page_path,
+				'editor_type': editor_type
+			},
+			function(result){
+				console.log(result);
+				callback(result);
+			}
+		);
+
+		return false;
+	});
+
+}
+
+},{"ejs":4,"jquery":8,"utils79":11}],78:[function(require,module,exports){
+/**
  * Pickles2ContentsEditor
  */
 (function(){
-	// broccoli-html-editor をロード
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
+
+	// bootstrap をロード
+	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/bootstrap/dist/css/bootstrap.css" />');
+	document.write('<script src="'+__dirname+'/libs/bootstrap/dist/js/bootstrap.js"></script>');
+
+	// broccoli-html-editor をロード
 	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.css" />');
 	document.write('<script src="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.js"></script>');
 	document.write('<script src="'+__dirname+'/libs/broccoli-field-table/dist/broccoli-field-table.js"></script>');
@@ -15254,7 +15337,7 @@ window.Pickles2ContentsEditor = function(){
 					case '.not_exists':
 						// コンテンツが存在しない
 						$canvas.html('<p>コンテンツが存在しません。</p>');
-						var notExists = require('./not_exists.js');
+						var notExists = require('./editor/not_exists/not_exists.js');
 						notExists(_this, function(){
 							_this.init(options, callback);
 						});
@@ -15302,12 +15385,11 @@ window.Pickles2ContentsEditor = function(){
 
 }
 
-},{"./editor/broccoli/broccoli.js":75,"./editor/default/default.js":76,"./not_exists.js":78,"jquery":8}],78:[function(require,module,exports){
+},{"./editor/broccoli/broccoli.js":75,"./editor/default/default.js":76,"./editor/not_exists/not_exists.js":77,"jquery":8}],79:[function(require,module,exports){
 /**
- * not_exists.js
+ * toolbar.js
  */
-module.exports = function(px2ce, callback){
-	callback = callback || function(){};
+module.exports = function(px2ce){
 	var $ = require('jquery');
 	var utils79 = require('utils79');
 	var $canvas = $(px2ce.getElmCanvas());
@@ -15315,55 +15397,38 @@ module.exports = function(px2ce, callback){
 
 	var ejs = require('ejs');
 
-	$canvas.html((function(){
+	var $toolbar;
 
-		var fin = ''
-				+ '<div class="container">'
-				+ '<div class="pickles2-contents-editor--notExists">'
-				+ 	'<form action="javascript:;" method="get">'
-				+ 	'<p>コンテンツファイルが存在しません。</p>'
-				+ 	'<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
-				+ 	'<ul>'
-				+ 	'<li><label><input type="radio" name="editor-type" value="html.gui" checked="checked" /> HTML + GUI Editor (<%= basename %> + data files)</label></li>'
-				+ 	'<li><label><input type="radio" name="editor-type" value="html" /> HTML (<%= basename %>)</label></li>'
-				+ 	'<li><label><input type="radio" name="editor-type" value="md" /> Markdown (<%= basename %>.md)</label></li>'
-				+ 	'</ul>'
-				+ 	'<div class="row">'
-				+ 	'<div class="col-sm-8 col-sm-offset-2"><button class="btn btn-primary btn-block">コンテンツファイルを作成する</button></div>'
-				+ 	'</div>'
-				+ 	'</form>'
-				+ '</div>'
-				+ '</div>';
+	this.init = function(callback){
+		callback = callback||function(){};
 
-		// Just one template
-		fin = ejs.render(fin, {'basename': utils79.basename(page_path)}, {delimiter: '%'});
+		var code = ''
+			+'<div class="pickles2-contents-editor--toolbar">'
+				+'<div class="pickles2-contents-editor--toolbar-btns">'
+					+'<div class="btn-group btn-group-justified" role="group">'
+						+'<div class="btn-group" role="group">'
+							+'<button class="btn btn-default pickles2-contents-editor--toolbar-btn-save-and-preview-in-browser">ブラウザでプレビュー</button>'
+						+'</div>'
+						+'<div class="btn-group" role="group">'
+							+'<button class="btn btn-primary pickles2-contents-editor--toolbar-btn-save"><span class="glyphicon glyphicon-floppy-save"></span> 保存する</button>'
+						+'</div>'
+						+'<div class="btn-group" role="group">'
+							+'<button class="btn btn-default pickles2-contents-editor--toolbar-btn-close">閉じる</button>'
+						+'</div>'
+					+'</div>'
+				+'</div>'
+			+'</div>'
+		;
+		$toolbar = $(code);
+		$canvas.append($toolbar);
 
-		return fin;
-	})());
+		callback();
+	}
 
-	$canvas.find('form').submit(function(){
-		var editor_type = $(this).find('input[name=editor-type]:checked').val();
-		// console.log( editor_type );
-		if( !editor_type ){
-			alert('ERROR: editor-type is not selected.');
-			return false;
-		}
-
-		px2ce.gpiBridge(
-			{
-				'api': 'initContentFiles',
-				'page_path': page_path,
-				'editor_type': editor_type
-			},
-			function(result){
-				console.log(result);
-				callback(result);
-			}
-		);
-
-		return false;
-	});
+	this.getElm = function(){
+		return $toolbar;
+	}
 
 }
 
-},{"ejs":4,"jquery":8,"utils79":11}]},{},[77])
+},{"ejs":4,"jquery":8,"utils79":11}]},{},[78])

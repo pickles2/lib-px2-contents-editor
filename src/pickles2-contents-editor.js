@@ -2,8 +2,13 @@
  * Pickles2ContentsEditor
  */
 (function(){
-	// broccoli-html-editor をロード
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
+
+	// bootstrap をロード
+	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/bootstrap/dist/css/bootstrap.css" />');
+	document.write('<script src="'+__dirname+'/libs/bootstrap/dist/js/bootstrap.js"></script>');
+
+	// broccoli-html-editor をロード
 	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.css" />');
 	document.write('<script src="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.js"></script>');
 	document.write('<script src="'+__dirname+'/libs/broccoli-field-table/dist/broccoli-field-table.js"></script>');
@@ -45,7 +50,7 @@ window.Pickles2ContentsEditor = function(){
 					case '.not_exists':
 						// コンテンツが存在しない
 						$canvas.html('<p>コンテンツが存在しません。</p>');
-						var notExists = require('./not_exists.js');
+						var notExists = require('./editor/not_exists/not_exists.js');
 						notExists(_this, function(){
 							_this.init(options, callback);
 						});

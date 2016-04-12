@@ -1,10 +1,18 @@
 @charset "utf-8";
 .pickles2-contents-editor{
 	// border: 1px solid #000;
-	@import "../node_modules/bootstrap/dist/css/bootstrap";
-
 	overflow: auto;
 }
+
+.pickles2-contents-editor--toolbar{
+	background-color: #eee;
+	padding: 5px;
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%;
+	z-index: 10000;
+}
+
 .pickles2-contents-editor--broccoli{
 	&-canvas{
 		overflow: auto;
@@ -23,6 +31,7 @@
 	border: 1px solid #eee;
 	background-color: #fff;
 	padding: 20px;
+	margin-top: 3em;
 }
 
 .pickles2-contents-editor--default{
