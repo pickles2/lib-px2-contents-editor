@@ -14992,18 +14992,22 @@ module.exports = function(px2ce, callback){
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	var $textareas = {};
-
 	$canvas.html((function(){
 		var fin = ''
 			+'<div class="pickles2-contents-editor--default">'
 				+'<div class="pickles2-contents-editor--default-editor">'
-					+'<div class="switch_tab">'
-						+'<ul>'
-							+'<li><button data-pickles2-contents-editor-switch="html">HTML</button></li>'
-							+'<li><button data-pickles2-contents-editor-switch="css">CSS (SCSS)</button></li>'
-							+'<li><button data-pickles2-contents-editor-switch="js">JavaScript</button></li>'
-						+'</ul>'
+					+'<div class="pickles2-contents-editor--default-switch-tab">'
+						+'<div class="btn-group btn-group-justified" role="group">'
+							+'<div class="btn-group" role="group">'
+								+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="html">HTML</button>'
+							+'</div>'
+							+'<div class="btn-group" role="group">'
+								+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="css">CSS (SCSS)</button>'
+							+'</div>'
+							+'<div class="btn-group" role="group">'
+								+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="js">JavaScript</button>'
+							+'</div>'
+						+'</div>'
 					+'</div>'
 					+'<div class="pickles2-contents-editor--default-editor-body">'
 						+'<div class="pickles2-contents-editor--default-editor-body-html"><textarea></textarea></div>'
@@ -15014,20 +15018,54 @@ module.exports = function(px2ce, callback){
 				+'<div class="pickles2-contents-editor--default-canvas" data-pickles2-contents-editor-preview-url="">'
 				+'</div>'
 				+'<div class="pickles2-contents-editor--default-btns">'
-					+'<ul>'
-						+'<li><button class="btn btn-default pickles2-contents-editor--default-btn-save-and-preview-in-browser">ブラウザでプレビュー</button></li>'
-						+'<li><button class="btn btn-default pickles2-contents-editor--default-btn-resources">リソース</button></li>'
-						+'<li><button class="btn btn-primary pickles2-contents-editor--default-btn-save">保存する<small>(Cmd-S)</small></button></li>'
-						+'<li><button class="btn btn-default pickles2-contents-editor--default-btn-close">閉じる</button></li>'
-					+'</ul>'
+
+					+'<div class="btn-group btn-group-justified" role="group">'
+						+'<div class="btn-group" role="group">'
+							+'<button class="btn btn-default pickles2-contents-editor--default-btn-save-and-preview-in-browser">ブラウザでプレビュー</button>'
+						+'</div>'
+						+'<div class="btn-group" role="group">'
+							+'<button class="btn btn-default pickles2-contents-editor--default-btn-resources">リソース</button>'
+						+'</div>'
+						+'<div class="btn-group" role="group">'
+							+'<button class="btn btn-primary pickles2-contents-editor--default-btn-save">保存する</button>'
+						+'</div>'
+						+'<div class="btn-group" role="group">'
+							+'<button class="btn btn-default pickles2-contents-editor--default-btn-close">閉じる</button>'
+						+'</div>'
+					+'</div>'
+
 				+'</div>'
 			+'</div>'
 		;
 		return fin;
 	})());
 
+	$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
+	$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
+
 	var $elmCanvas = $canvas.find('.pickles2-contents-editor--default-canvas');
 	var $elmEditor = $canvas.find('.pickles2-contents-editor--default-editor');
+	var $elmBtns = $canvas.find('.pickles2-contents-editor--default-btns');
+	var $elmTextareas = {};
+	$elmTextareas['html'] = $canvas.find('.pickles2-contents-editor--default-editor-body-html textarea');
+	$elmTextareas['css'] = $canvas.find('.pickles2-contents-editor--default-editor-body-css textarea');
+	$elmTextareas['js'] = $canvas.find('.pickles2-contents-editor--default-editor-body-js textarea');
+
+	var $elmTabs = $canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch]');
+	$elmTabs
+		.click(function(){
+			var $this = $(this);
+			$elmTabs.removeAttr('disabled');
+			$this.attr({'disabled': 'disabled'});
+			var tabFor = $this.attr('data-pickles2-contents-editor-switch');
+			// console.log(tabFor);
+			$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
+			$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
+			$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
+			$canvas.find('.pickles2-contents-editor--default-editor-body-'+tabFor).show();
+		})
+	;
+
 
 	/**
 	 * window.resize イベントハンドラ
@@ -15040,17 +15078,28 @@ module.exports = function(px2ce, callback){
 		});
 		$elmCanvas.css({
 			'position': 'absolute',
+			'overflow': 'hidden',
 			'top': 0,
-			'left': '20%',
+			'left': 0,
 			'width': '60%',
-			'height': $canvas.height()
+			'height': $canvas.innerHeight()
+		});
+		$elmBtns.css({
+			'position': 'absolute',
+			'bottom': 0,
+			'right': 0,
+			'width': '40%',
 		});
 		$elmEditor.css({
 			'position': 'absolute',
 			'top': 0,
 			'right': 0,
-			'width': '20%',
-			'height': $canvas.height()
+			'width': '40%',
+			'height': $canvas.innerHeight() - $elmBtns.outerHeight()
+		});
+
+		$canvas.find('.pickles2-contents-editor--default-editor-body').css({
+			'height': $elmEditor.outerHeight() - $canvas.find('.pickles2-contents-editor--default-switch-tab').outerHeight()
 		});
 
 		callback();
@@ -15067,9 +15116,6 @@ module.exports = function(px2ce, callback){
 		$iframe
 			.attr({
 				'src': previewUrl
-			})
-			.css({
-				'border': 'none'
 			})
 		;
 	}
@@ -15093,10 +15139,6 @@ module.exports = function(px2ce, callback){
 
 	windowResized(function(){
 
-		$textareas['html'] = $canvas.find('.pickles2-contents-editor--default-editor-body-html textarea');
-		$textareas['css'] = $canvas.find('.pickles2-contents-editor--default-editor-body-css textarea');
-		$textareas['js'] = $canvas.find('.pickles2-contents-editor--default-editor-body-js textarea');
-
 		px2ce.gpiBridge(
 			{
 				'api': 'getProjectConf'
@@ -15115,9 +15157,9 @@ module.exports = function(px2ce, callback){
 					},
 					function(codes){
 						// console.log(codes);
-						$textareas['html'].val(codes['html']);
-						$textareas['css'] .val(codes['css']);
-						$textareas['js']  .val(codes['js']);
+						$elmTextareas['html'].val(codes['html']);
+						$elmTextareas['css'] .val(codes['css']);
+						$elmTextareas['js']  .val(codes['js']);
 
 						px2ce.redraw = function(callback){
 							callback = callback || function(){};
@@ -15136,9 +15178,9 @@ module.exports = function(px2ce, callback){
 							.click(function(){
 								saveContentsSrc(
 									{
-										'html': $textareas['html'].val(),
-										'css':  $textareas['css'].val(),
-										'js':   $textareas['js'].val()
+										'html': $elmTextareas['html'].val(),
+										'css':  $elmTextareas['css'].val(),
+										'js':   $elmTextareas['js'].val()
 									},
 									function(result){
 										console.log(result);

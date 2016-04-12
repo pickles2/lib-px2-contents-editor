@@ -24,3 +24,28 @@
 	background-color: #fff;
 	padding: 20px;
 }
+
+.pickles2-contents-editor--default{
+	&-btns{
+		width: 300px;
+	}
+	&-canvas{
+		iframe{
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+	}
+	&-editor-body{
+		div{
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+		textarea{
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+	}
+}
