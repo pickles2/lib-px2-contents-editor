@@ -73,6 +73,23 @@ module.exports = function(px2ce, callback){
 	}
 
 	/**
+	 * プレビューを更新
+	 */
+	function updatePreview(){
+		var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
+		var $iframe = $('<iframe>');
+		$elmCanvas.html('').append($iframe);
+		$iframe
+			.attr({
+				'src': previewUrl
+			})
+			.css({
+				'border': 'none'
+			})
+		;
+	}
+
+	/**
 	 * 編集したコンテンツを保存する
 	 */
 	function saveContentsSrc(codes, callback){
@@ -143,12 +160,14 @@ module.exports = function(px2ce, callback){
 										if(!result.result){
 											alert(result.message);
 										}
+										updatePreview();
 									}
 								);
 							})
 						;
 						$('.pickles2-contents-editor--default-btn-close');
 
+						updatePreview();
 
 						callback();
 					}
