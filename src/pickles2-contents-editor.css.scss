@@ -10,7 +10,24 @@
 	position: absolute;
 	top: 0; left: 0;
 	width: 100%;
+	border-bottom: 1px solid #bbb;
 	z-index: 10000;
+	float: none;
+	clear: both;
+
+	&-btns{
+		float:right;
+	}
+
+	&:after{
+		content: " ";
+		display: block;
+		visibility: hidden;
+		height: 0.1px;
+		font-size: 0.1em;
+		line-height: 0;
+		clear: both;
+	}
 }
 
 .pickles2-contents-editor--broccoli{
@@ -35,9 +52,6 @@
 }
 
 .pickles2-contents-editor--default{
-	&-btns{
-		width: 300px;
-	}
 	&-canvas{
 		iframe{
 			width: 100%;

@@ -12,6 +12,7 @@
 	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.css" />');
 	document.write('<script src="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.js"></script>');
 	document.write('<script src="'+__dirname+'/libs/broccoli-field-table/dist/broccoli-field-table.js"></script>');
+
 })();
 window.Pickles2ContentsEditor = function(){
 	var $ = require('jquery');
@@ -59,8 +60,8 @@ window.Pickles2ContentsEditor = function(){
 					case 'html.gui':
 						// broccoli
 						$canvas.html('<p>GUIエディタを起動します。</p>');
-						var editorBroccoli = require('./editor/broccoli/broccoli.js');
-						editorBroccoli(_this, function(){
+						var editorBroccoli = new (require('./editor/broccoli/broccoli.js'))(_this);
+						editorBroccoli.init(function(){
 							callback();
 						});
 						break;
@@ -70,8 +71,8 @@ window.Pickles2ContentsEditor = function(){
 					default:
 						// defaultテキストエディタ
 						$canvas.html('<p>テキストエディタを起動します。</p>');
-						var editorDefault = require('./editor/default/default.js');
-						editorDefault(_this, function(){
+						var editorDefault = new (require('./editor/default/default.js'))(_this);
+						editorDefault.init(function(){
 							callback();
 						});
 						break;

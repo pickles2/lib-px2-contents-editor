@@ -8,7 +8,20 @@
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 10000; }
+  border-bottom: 1px solid #bbb;
+  z-index: 10000;
+  float: none;
+  clear: both; }
+  .pickles2-contents-editor--toolbar-btns {
+    float: right; }
+  .pickles2-contents-editor--toolbar:after {
+    content: " ";
+    display: block;
+    visibility: hidden;
+    height: 0.1px;
+    font-size: 0.1em;
+    line-height: 0;
+    clear: both; }
 
 .pickles2-contents-editor--broccoli-canvas {
   overflow: auto; }
@@ -24,9 +37,6 @@
   background-color: #fff;
   padding: 20px;
   margin-top: 3em; }
-
-.pickles2-contents-editor--default-btns {
-  width: 300px; }
 
 .pickles2-contents-editor--default-canvas iframe {
   width: 100%;

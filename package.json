@@ -7,6 +7,7 @@
     "preinstall": "git submodule update -i -r -f",
     "start": "node ./tests/app/server/server.js;",
     "up": "node ./tests/app/server/server.js;",
+    "preview": "gulp preview;",
     "submodules-update": "rm -rfv node_modules/broccoli-html-editor; rm -rfv node_modules/broccoli-field-table; rm -rfv node_modules/utils79; npm install; gulp;",
     "test": "gulp; mocha --ui tdd ./tests/"
   },

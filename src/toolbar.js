@@ -10,22 +10,21 @@ module.exports = function(px2ce){
 	var ejs = require('ejs');
 
 	var $toolbar;
+	var options;
 
-	this.init = function(callback){
+	this.init = function(_options, callback){
 		callback = callback||function(){};
+		options = _options;
+		options.onSave = options.onSave || function(){}
+		options.onPreview = options.onPreview || function(){}
+		options.onClose = options.onClose || function(){}
 
 		var code = ''
 			+'<div class="pickles2-contents-editor--toolbar">'
 				+'<div class="pickles2-contents-editor--toolbar-btns">'
-					+'<div class="btn-group btn-group-justified" role="group">'
+					+'<div class="btn-group" role="group">'
 						+'<div class="btn-group" role="group">'
-							+'<button class="btn btn-default pickles2-contents-editor--toolbar-btn-save-and-preview-in-browser">ブラウザでプレビュー</button>'
-						+'</div>'
-						+'<div class="btn-group" role="group">'
-							+'<button class="btn btn-primary pickles2-contents-editor--toolbar-btn-save"><span class="glyphicon glyphicon-floppy-save"></span> 保存する</button>'
-						+'</div>'
-						+'<div class="btn-group" role="group">'
-							+'<button class="btn btn-default pickles2-contents-editor--toolbar-btn-close">閉じる</button>'
+							+'<button class="btn btn-primary pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> 完了</button>'
 						+'</div>'
 					+'</div>'
 				+'</div>'
@@ -33,6 +32,11 @@ module.exports = function(px2ce){
 		;
 		$toolbar = $(code);
 		$canvas.append($toolbar);
+
+		// 完了イベント発火
+		$canvas.find('.pickles2-contents-editor--toolbar-btn-finish').click(function(){
+			options.onFinish();
+		});
 
 		callback();
 	}

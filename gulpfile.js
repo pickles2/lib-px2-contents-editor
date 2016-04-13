@@ -112,5 +112,10 @@ gulp.task("watch", function() {
 	gulp.watch(["src/**/*"], _tasks);
 });
 
+// ブラウザを立ち上げてプレビューする
+gulp.task("preview", function() {
+	require('child_process').spawn('open',['http://127.0.0.1:8080/']);
+});
+
 // src 中のすべての拡張子を処理(default)
 gulp.task("default", _tasks);
