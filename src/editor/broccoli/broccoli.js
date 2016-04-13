@@ -20,6 +20,20 @@ module.exports = function(px2ce){
 		callback = callback || function(){};
 
 		toolbar.init({
+			"btns":[
+				{
+					"label": "toggle instanceTreeView",
+					"click": function(){
+						alert('開発中です1');
+					}
+				} ,
+				{
+					"label": "toggle instanceTreeView",
+					"click": function(){
+						alert('開発中です2');
+					}
+				}
+			],
 			"onFinish": function(){
 				// 完了イベント
 				alert('保存しました。');

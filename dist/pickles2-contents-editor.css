@@ -13,6 +13,8 @@
   float: none;
   clear: both; }
   .pickles2-contents-editor--toolbar-btns {
+    float: left; }
+  .pickles2-contents-editor--toolbar-finish {
     float: right; }
   .pickles2-contents-editor--toolbar:after {
     content: " ";

@@ -14829,6 +14829,20 @@ module.exports = function(px2ce){
 		callback = callback || function(){};
 
 		toolbar.init({
+			"btns":[
+				{
+					"label": "toggle instanceTreeView",
+					"click": function(){
+						alert('開発中です1');
+					}
+				} ,
+				{
+					"label": "toggle instanceTreeView",
+					"click": function(){
+						alert('開発中です2');
+					}
+				}
+			],
 			"onFinish": function(){
 				// 完了イベント
 				alert('保存しました。');
@@ -15410,23 +15424,33 @@ module.exports = function(px2ce){
 	this.init = function(_options, callback){
 		callback = callback||function(){};
 		options = _options;
-		options.onSave = options.onSave || function(){}
-		options.onPreview = options.onPreview || function(){}
-		options.onClose = options.onClose || function(){}
+		options.onFinish = options.onFinish || function(){};
+		options.btns = options.btns || [];
 
 		var code = ''
 			+'<div class="pickles2-contents-editor--toolbar">'
 				+'<div class="pickles2-contents-editor--toolbar-btns">'
 					+'<div class="btn-group" role="group">'
-						+'<div class="btn-group" role="group">'
-							+'<button class="btn btn-primary pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> 完了</button>'
-						+'</div>'
+					+'</div>'
+				+'</div>'
+				+'<div class="pickles2-contents-editor--toolbar-finish">'
+					+'<div class="btn-group" role="group">'
+						+'<button class="btn btn-primary btn-xs pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> 完了</button>'
 					+'</div>'
 				+'</div>'
 			+'</div>'
 		;
 		$toolbar = $(code);
 		$canvas.append($toolbar);
+
+		$btns = $('.pickles2-contents-editor--toolbar-btns .btn-group');
+		for( var idx in options.btns ){
+			var btn = options.btns[idx];
+			$btns.append( $('<button class="btn btn-default btn-xs">')
+				.text( btn.label )
+				.click( btn.click )
+			);
+		}
 
 		// 完了イベント発火
 		$canvas.find('.pickles2-contents-editor--toolbar-btn-finish').click(function(){
