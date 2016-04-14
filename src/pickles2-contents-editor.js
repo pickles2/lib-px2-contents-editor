@@ -22,6 +22,7 @@ window.Pickles2ContentsEditor = function(){
 	this.gpiBridge;
 	this.page_path;
 
+	var editor;
 
 	this.init = function(options, callback){
 		callback = callback || function(){};
@@ -60,8 +61,8 @@ window.Pickles2ContentsEditor = function(){
 					case 'html.gui':
 						// broccoli
 						$canvas.html('<p>GUIエディタを起動します。</p>');
-						var editorBroccoli = new (require('./editor/broccoli/broccoli.js'))(_this);
-						editorBroccoli.init(function(){
+						editor = new (require('./editor/broccoli/broccoli.js'))(_this);
+						editor.init(function(){
 							callback();
 						});
 						break;
@@ -71,8 +72,8 @@ window.Pickles2ContentsEditor = function(){
 					default:
 						// defaultテキストエディタ
 						$canvas.html('<p>テキストエディタを起動します。</p>');
-						var editorDefault = new (require('./editor/default/default.js'))(_this);
-						editorDefault.init(function(){
+						editor = new (require('./editor/default/default.js'))(_this);
+						editor.init(function(){
 							callback();
 						});
 						break;
@@ -93,7 +94,14 @@ window.Pickles2ContentsEditor = function(){
 	 */
 	this.redraw = function( callback ){
 		callback = callback || function(){};
-		callback();
+		if(editor){
+			editor.redraw(function(){
+				callback();
+			});
+			return;
+		}else{
+			callback();
+		}
 		return;
 	}
 

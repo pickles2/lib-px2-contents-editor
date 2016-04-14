@@ -14811,16 +14811,20 @@ module.exports = exports['default'];
  * broccoli/broccoli.js
  */
 module.exports = function(px2ce){
+	var _this = this;
 	var $ = require('jquery');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
 	var toolbar = new (require('../../toolbar.js'))(px2ce);
 
+	var broccoli;
 	var $elmCanvas,
 		$elmModulePalette,
 		$elmInstanceTreeView,
 		$elmInstancePathView;
+
+	var show_instanceTreeView = true;
 
 	/**
 	 * 初期化
@@ -14833,13 +14837,10 @@ module.exports = function(px2ce){
 				{
 					"label": "toggle instanceTreeView",
 					"click": function(){
-						alert('開発中です1');
-					}
-				} ,
-				{
-					"label": "toggle instanceTreeView",
-					"click": function(){
-						alert('開発中です2');
+						show_instanceTreeView = (show_instanceTreeView ? false : true);
+						_this.redraw(function(){
+							// alert('完了');
+						});
 					}
 				}
 			],
@@ -14864,7 +14865,7 @@ module.exports = function(px2ce){
 			$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
 			$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
 
-			windowResized(function(){
+			_this.redraw(function(){
 				px2ce.gpiBridge(
 					{
 						'api': 'getProjectConf'
@@ -14876,7 +14877,7 @@ module.exports = function(px2ce){
 							"data-broccoli-preview": px2ce.preview.origin + page_path
 						});
 
-						var broccoli = new Broccoli();
+						broccoli = new Broccoli();
 						broccoli.init(
 							{
 								'elmCanvas': $elmCanvas.get(0),
@@ -14927,13 +14928,13 @@ module.exports = function(px2ce){
 
 								px2ce.redraw = function(callback){
 									callback = callback || function(){};
-									windowResized(function(){
-										broccoli.redraw();
+									_this.redraw(function(){
+										// broccoli.redraw();
 									});
 									return;
 								}
-								windowResized(function(){
-									broccoli.redraw();
+								_this.redraw(function(){
+									// broccoli.redraw();
 								});
 
 								callback();
@@ -14951,7 +14952,7 @@ module.exports = function(px2ce){
 	/**
 	 * window.resize イベントハンドラ
 	 */
-	function windowResized( callback ){
+	_this.redraw = function( callback ){
 		callback = callback || function(){};
 
 		var $toolbar = toolbar.getElm();
@@ -14968,20 +14969,32 @@ module.exports = function(px2ce){
 			'width': '100%'
 		});
 		var pathViewHeight = $elmInstancePathView.outerHeight();
-		$elmInstanceTreeView.css({
-			'position': 'absolute',
-			'top': tbHeight,
-			'left': 0,
-			'width': '20%',
-			'height': $canvas.height() - pathViewHeight - tbHeight
-		});
-		$elmCanvas.css({
-			'position': 'absolute',
-			'top': tbHeight,
-			'left': '20%',
-			'width': '60%',
-			'height': $canvas.height() - pathViewHeight - tbHeight
-		});
+		if(!show_instanceTreeView){
+			$elmCanvas.css({
+				'position': 'absolute',
+				'top': tbHeight,
+				'left': 0,
+				'width': '80%',
+				'height': $canvas.height() - pathViewHeight - tbHeight
+			});
+			$elmInstanceTreeView.hide();
+		}else{
+			$elmInstanceTreeView.show();
+			$elmInstanceTreeView.css({
+				'position': 'absolute',
+				'top': tbHeight,
+				'left': 0,
+				'width': '20%',
+				'height': $canvas.height() - pathViewHeight - tbHeight
+			});
+			$elmCanvas.css({
+				'position': 'absolute',
+				'top': tbHeight,
+				'left': '20%',
+				'width': '60%',
+				'height': $canvas.height() - pathViewHeight - tbHeight
+			});
+		}
 		$elmModulePalette.css({
 			'position': 'absolute',
 			'top': tbHeight,
@@ -14990,7 +15003,13 @@ module.exports = function(px2ce){
 			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
 
-		callback();
+		if(broccoli){
+			broccoli.redraw(function(){
+				callback();
+			});
+		}else{
+			callback();
+		}
 		return;
 	}
 
@@ -15329,6 +15348,7 @@ window.Pickles2ContentsEditor = function(){
 	this.gpiBridge;
 	this.page_path;
 
+	var editor;
 
 	this.init = function(options, callback){
 		callback = callback || function(){};
@@ -15367,8 +15387,8 @@ window.Pickles2ContentsEditor = function(){
 					case 'html.gui':
 						// broccoli
 						$canvas.html('<p>GUIエディタを起動します。</p>');
-						var editorBroccoli = new (require('./editor/broccoli/broccoli.js'))(_this);
-						editorBroccoli.init(function(){
+						editor = new (require('./editor/broccoli/broccoli.js'))(_this);
+						editor.init(function(){
 							callback();
 						});
 						break;
@@ -15378,8 +15398,8 @@ window.Pickles2ContentsEditor = function(){
 					default:
 						// defaultテキストエディタ
 						$canvas.html('<p>テキストエディタを起動します。</p>');
-						var editorDefault = new (require('./editor/default/default.js'))(_this);
-						editorDefault.init(function(){
+						editor = new (require('./editor/default/default.js'))(_this);
+						editor.init(function(){
 							callback();
 						});
 						break;
@@ -15400,7 +15420,14 @@ window.Pickles2ContentsEditor = function(){
 	 */
 	this.redraw = function( callback ){
 		callback = callback || function(){};
-		callback();
+		if(editor){
+			editor.redraw(function(){
+				callback();
+			});
+			return;
+		}else{
+			callback();
+		}
 		return;
 	}
 
