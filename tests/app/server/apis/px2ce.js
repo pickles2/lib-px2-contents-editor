@@ -11,6 +11,7 @@ module.exports = function(){
 		var px2ce = new Px2CE();
 		px2ce.init(
 			{
+				'appMode': 'web', // 'web' or 'desktop'. default to 'web'
 				'entryScript': require('path').resolve(__dirname,'../../../htdocs/.px_execute.php')
 			},
 			function(){

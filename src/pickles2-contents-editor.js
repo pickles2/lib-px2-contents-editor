@@ -22,8 +22,12 @@ window.Pickles2ContentsEditor = function(){
 	this.gpiBridge;
 	this.page_path;
 
+	var serverConfig;
 	var editor;
 
+	/**
+	 * initialize
+	 */
 	this.init = function(options, callback){
 		callback = callback || function(){};
 		var _this = this;
@@ -35,52 +39,63 @@ window.Pickles2ContentsEditor = function(){
 		$canvas = $(options.elmCanvas);
 		$canvas.addClass('pickles2-contents-editor');
 
-		this.gpiBridge(
+		_this.gpiBridge(
 			{
-				'page_path':_this.page_path,
-				'api':'checkEditorType'
-			},
-			function(editorType){
-				// console.log(editorType);
-				switch(editorType){
-					case '.page_not_exists':
-						// ページ自体が存在しない。
-						$canvas.html('<p>ページが存在しません。</p>');
-						callback();
-						break;
+				'api':'getConfig'
+			} ,
+			function(config){
+				// console.log(config);
+				serverConfig = config;
 
-					case '.not_exists':
-						// コンテンツが存在しない
-						$canvas.html('<p>コンテンツが存在しません。</p>');
-						var notExists = require('./editor/not_exists/not_exists.js');
-						notExists(_this, function(){
-							_this.init(options, callback);
-						});
-						break;
+				_this.gpiBridge(
+					{
+						'page_path':_this.page_path,
+						'api':'checkEditorType'
+					},
+					function(editorType){
+						// console.log(editorType);
+						switch(editorType){
+							case '.page_not_exists':
+								// ページ自体が存在しない。
+								$canvas.html('<p>ページが存在しません。</p>');
+								callback();
+								break;
 
-					case 'html.gui':
-						// broccoli
-						$canvas.html('<p>GUIエディタを起動します。</p>');
-						editor = new (require('./editor/broccoli/broccoli.js'))(_this);
-						editor.init(function(){
-							callback();
-						});
-						break;
+							case '.not_exists':
+								// コンテンツが存在しない
+								$canvas.html('<p>コンテンツが存在しません。</p>');
+								var notExists = require('./editor/not_exists/not_exists.js');
+								notExists(_this, function(){
+									_this.init(options, callback);
+								});
+								break;
 
-					case 'html':
-					case 'md':
-					default:
-						// defaultテキストエディタ
-						$canvas.html('<p>テキストエディタを起動します。</p>');
-						editor = new (require('./editor/default/default.js'))(_this);
-						editor.init(function(){
-							callback();
-						});
-						break;
-				}
+							case 'html.gui':
+								// broccoli
+								$canvas.html('<p>GUIエディタを起動します。</p>');
+								editor = new (require('./editor/broccoli/broccoli.js'))(_this);
+								editor.init(function(){
+									callback();
+								});
+								break;
+
+							case 'html':
+							case 'md':
+							default:
+								// defaultテキストエディタ
+								$canvas.html('<p>テキストエディタを起動します。</p>');
+								editor = new (require('./editor/default/default.js'))(_this);
+								editor.init(function(){
+									callback();
+								});
+								break;
+						}
+					}
+				);
 			}
 		);
-	}
+
+	} // init()
 
 	/**
 	 * canvas要素を取得する
@@ -88,6 +103,27 @@ window.Pickles2ContentsEditor = function(){
 	this.getElmCanvas = function(){
 		return $canvas;
 	}
+
+	/**
+	 * ブラウザでURLを開く
+	 */
+	this.openUrlInBrowser = function( url ){
+		if( serverConfig.appMode == 'web' ){
+			window.open(url);
+			return;
+		}
+		this.gpiBridge(
+			{
+				'url':url,
+				'api':'openUrlInBrowser'
+			},
+			function(res){
+				console.log('open URL: ' + url);
+			}
+		);
+		return;
+	}
+
 
 	/**
 	 * 再描画

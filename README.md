@@ -18,6 +18,7 @@ app.use( '/your/api/path', function(req, res, next){
 	var px2ce = new Px2CE();
 	px2ce.init(
 		{
+			'appMode': 'web', // 'web' or 'desktop'. default to 'web'
 			'entryScript': require('path').resolve('/path/to/.px_execute.php')
 		},
 		function(){

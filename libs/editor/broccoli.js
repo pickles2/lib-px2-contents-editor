@@ -68,6 +68,7 @@ module.exports = function(px2ce, data, callback){
 
 		broccoli.init(
 			{
+				'appMode': px2ce.getAppMode() ,
 				'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
 				'documentRoot': documentRoot,// realpath
 				'pathHtml': pageInfo.content,

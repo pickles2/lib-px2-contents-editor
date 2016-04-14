@@ -33,6 +33,12 @@ module.exports = function(px2ce){
 							// alert('完了');
 						});
 					}
+				},
+				{
+					"label": "preview",
+					"click": function(){
+						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
+					}
 				}
 			],
 			"onFinish": function(){

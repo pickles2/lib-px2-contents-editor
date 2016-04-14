@@ -8,6 +8,13 @@ module.exports = function(px2ce, data, callback){
 	callback = callback || function(){};
 
 	switch(data.api){
+		case "getConfig":
+			// pickles2-contents-editor の設定を取得する
+			var conf = {};
+			conf.appMode = px2ce.getAppMode();
+			callback(conf);
+			break;
+
 		case "initContentFiles":
 			// コンテンツファイルを初期化する
 			// console.log(data);
@@ -51,6 +58,14 @@ module.exports = function(px2ce, data, callback){
 			broccoliBridge(px2ce, data, function(data){
 				callback(data);
 			});
+			break;
+
+		case "openUrlInBrowser":
+			if( px2ce.getAppMode() == 'desktop' ){
+				callback(true);
+			}else{
+				callback(false);
+			}
 			break;
 
 		default:

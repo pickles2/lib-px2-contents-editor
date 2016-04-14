@@ -21,6 +21,14 @@ module.exports = function(px2ce){
 		callback = callback || function(){};
 
 		toolbar.init({
+			"btns":[
+				{
+					"label": "preview",
+					"click": function(){
+						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
+					}
+				}
+			],
 			"onFinish": function(){
 				// 完了イベント
 				saveContentsSrc(

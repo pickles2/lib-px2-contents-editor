@@ -12,13 +12,17 @@ module.exports = function(){
 	this.entryScript;
 	this.px2proj;
 	this.page_path;
+	this.options;
 
 	this.init = function(options, callback){
 		callback = callback||function(){};
 		// console.log(options);
+		options = options || {};
+		options.appMode = options.appMode || 'web'; // web | desktop
 
 		this.entryScript = options.entryScript;
 		this.px2proj = require('px2agent').createProject(options.entryScript);
+		this.options = options;
 
 		callback();
 	}
@@ -31,6 +35,31 @@ module.exports = function(){
 		this.px2proj.get_config(function(val){
 			callback(val);
 		});
+		return;
+	}
+
+	/**
+	 * アプリケーションの実行モード設定を取得する (同期)
+	 * @return string 'web'|'desktop'
+	 */
+	this.getAppMode = function(){
+		var rtn = this.options.appMode;
+		switch(rtn){
+			case 'web':
+			case 'desktop':
+				break;
+			default:
+				rtn = 'web';
+				break;
+		}
+		return rtn;
+	}
+
+	/**
+	 * ブラウザでURLを開く
+	 */
+	this.openUrlInBrowser = function( url ){
+		console.log('open URL: ' + url);
 		return;
 	}
 
