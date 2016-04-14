@@ -14852,7 +14852,7 @@ module.exports = function(px2ce){
 			],
 			"onFinish": function(){
 				// 完了イベント
-				alert('保存しました。');
+				px2ce.finish();
 			}
 		},function(){
 			$canvas.append((function(){
@@ -15051,22 +15051,37 @@ module.exports = function(px2ce){
 					"click": function(){
 						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
 					}
+				},
+				{
+					"label": "resource",
+					"click": function(){
+						px2ce.openResourceDir( px2ce.preview.origin + page_path );
+					}
+				},
+				{
+					"label": "save",
+					"click": function(){
+						saveContentsSrc(
+							function(result){
+								console.log(result);
+								if(!result.result){
+									alert(result.message);
+								}
+								updatePreview();
+							}
+						);
+					}
 				}
 			],
 			"onFinish": function(){
 				// 完了イベント
 				saveContentsSrc(
-					{
-						'html': $elmTextareas['html'].val(),
-						'css':  $elmTextareas['css'].val(),
-						'js':   $elmTextareas['js'].val()
-					},
 					function(result){
 						console.log(result);
 						if(!result.result){
 							alert(result.message);
 						}
-						updatePreview();
+						px2ce.finish();
 					}
 				);
 			}
@@ -15162,28 +15177,6 @@ module.exports = function(px2ce){
 									// broccoli.redraw();
 								});
 
-								// $('.pickles2-contents-editor--default-btn-save-and-preview-in-browser');
-								// $('.pickles2-contents-editor--default-btn-resources');
-								// $('.pickles2-contents-editor--default-btn-save')
-								// 	.click(function(){
-								// 		saveContentsSrc(
-								// 			{
-								// 				'html': $elmTextareas['html'].val(),
-								// 				'css':  $elmTextareas['css'].val(),
-								// 				'js':   $elmTextareas['js'].val()
-								// 			},
-								// 			function(result){
-								// 				console.log(result);
-								// 				if(!result.result){
-								// 					alert(result.message);
-								// 				}
-								// 				updatePreview();
-								// 			}
-								// 		);
-								// 	})
-								// ;
-								// $('.pickles2-contents-editor--default-btn-close');
-
 								updatePreview();
 
 								callback();
@@ -15255,7 +15248,12 @@ module.exports = function(px2ce){
 	/**
 	 * 編集したコンテンツを保存する
 	 */
-	function saveContentsSrc(codes, callback){
+	function saveContentsSrc(callback){
+		var codes = {
+			'html': $elmTextareas['html'].val(),
+			'css':  $elmTextareas['css'].val(),
+			'js':   $elmTextareas['js'].val()
+		};
 		px2ce.gpiBridge(
 			{
 				'api': 'saveContentsSrc',
@@ -15464,6 +15462,26 @@ window.Pickles2ContentsEditor = function(){
 		return;
 	}
 
+	/**
+	 * リソースフォルダを開く
+	 */
+	this.openResourceDir = function(){
+		if( serverConfig.appMode == 'web' ){
+			alert('ウェブモードではフォルダを開けません。');
+			return;
+		}
+		this.gpiBridge(
+			{
+				'page_path':_this.page_path,
+				'api':'openResourceDir'
+			},
+			function(res){
+				console.log('open resource directory of: ' + _this.page_path);
+				console.log(res);
+			}
+		);
+		return;
+	}
 
 	/**
 	 * 再描画
@@ -15481,6 +15499,12 @@ window.Pickles2ContentsEditor = function(){
 		return;
 	}
 
+	/**
+	 * 編集操作を完了する
+	 */
+	this.finish = function(){
+		alert('finished');
+	}
 }
 
 },{"./editor/broccoli/broccoli.js":75,"./editor/default/default.js":76,"./editor/not_exists/not_exists.js":77,"jquery":10}],79:[function(require,module,exports){

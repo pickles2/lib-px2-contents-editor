@@ -124,6 +124,26 @@ window.Pickles2ContentsEditor = function(){
 		return;
 	}
 
+	/**
+	 * リソースフォルダを開く
+	 */
+	this.openResourceDir = function(){
+		if( serverConfig.appMode == 'web' ){
+			alert('ウェブモードではフォルダを開けません。');
+			return;
+		}
+		this.gpiBridge(
+			{
+				'page_path':_this.page_path,
+				'api':'openResourceDir'
+			},
+			function(res){
+				console.log('open resource directory of: ' + _this.page_path);
+				console.log(res);
+			}
+		);
+		return;
+	}
 
 	/**
 	 * 再描画
@@ -141,4 +161,10 @@ window.Pickles2ContentsEditor = function(){
 		return;
 	}
 
+	/**
+	 * 編集操作を完了する
+	 */
+	this.finish = function(){
+		alert('finished');
+	}
 }

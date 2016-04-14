@@ -58,8 +58,35 @@ module.exports = function(){
 	/**
 	 * ブラウザでURLを開く
 	 */
-	this.openUrlInBrowser = function( url ){
+	this.openUrlInBrowser = function( url, callback ){
 		console.log('open URL: ' + url);
+		// console.log(px2ce.getAppMode());
+		if( this.getAppMode() != 'desktop' ){
+			callback(false);
+			return;
+		}
+		var desktopUtils = require('desktop-utils');
+		desktopUtils.open( data.url );
+		callback(true);
+		return;
+	}
+
+	/**
+	 * リソースフォルダを開く
+	 */
+	this.openResourceDir = function( path, callback ){
+		console.log('open resource dir: ' + path + ' of ' + _this.page_path);
+		// console.log(px2ce.getAppMode());
+		if( _this.getAppMode() != 'desktop' ){
+			callback(false);
+			return;
+		}
+		var desktopUtils = require('desktop-utils');
+		_this.px2proj.realpath_files(_this.page_path, path, function(pathDir){
+			// console.log(pathDir);
+			desktopUtils.open( pathDir );
+			callback(true);
+		});
 		return;
 	}
 

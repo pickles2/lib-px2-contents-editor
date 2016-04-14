@@ -43,7 +43,7 @@ module.exports = function(px2ce){
 			],
 			"onFinish": function(){
 				// 完了イベント
-				alert('保存しました。');
+				px2ce.finish();
 			}
 		},function(){
 			$canvas.append((function(){

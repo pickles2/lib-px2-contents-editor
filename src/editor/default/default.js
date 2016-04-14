@@ -27,22 +27,37 @@ module.exports = function(px2ce){
 					"click": function(){
 						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
 					}
+				},
+				{
+					"label": "resource",
+					"click": function(){
+						px2ce.openResourceDir( px2ce.preview.origin + page_path );
+					}
+				},
+				{
+					"label": "save",
+					"click": function(){
+						saveContentsSrc(
+							function(result){
+								console.log(result);
+								if(!result.result){
+									alert(result.message);
+								}
+								updatePreview();
+							}
+						);
+					}
 				}
 			],
 			"onFinish": function(){
 				// 完了イベント
 				saveContentsSrc(
-					{
-						'html': $elmTextareas['html'].val(),
-						'css':  $elmTextareas['css'].val(),
-						'js':   $elmTextareas['js'].val()
-					},
 					function(result){
 						console.log(result);
 						if(!result.result){
 							alert(result.message);
 						}
-						updatePreview();
+						px2ce.finish();
 					}
 				);
 			}
@@ -138,28 +153,6 @@ module.exports = function(px2ce){
 									// broccoli.redraw();
 								});
 
-								// $('.pickles2-contents-editor--default-btn-save-and-preview-in-browser');
-								// $('.pickles2-contents-editor--default-btn-resources');
-								// $('.pickles2-contents-editor--default-btn-save')
-								// 	.click(function(){
-								// 		saveContentsSrc(
-								// 			{
-								// 				'html': $elmTextareas['html'].val(),
-								// 				'css':  $elmTextareas['css'].val(),
-								// 				'js':   $elmTextareas['js'].val()
-								// 			},
-								// 			function(result){
-								// 				console.log(result);
-								// 				if(!result.result){
-								// 					alert(result.message);
-								// 				}
-								// 				updatePreview();
-								// 			}
-								// 		);
-								// 	})
-								// ;
-								// $('.pickles2-contents-editor--default-btn-close');
-
 								updatePreview();
 
 								callback();
@@ -231,7 +224,12 @@ module.exports = function(px2ce){
 	/**
 	 * 編集したコンテンツを保存する
 	 */
-	function saveContentsSrc(codes, callback){
+	function saveContentsSrc(callback){
+		var codes = {
+			'html': $elmTextareas['html'].val(),
+			'css':  $elmTextareas['css'].val(),
+			'js':   $elmTextareas['js'].val()
+		};
 		px2ce.gpiBridge(
 			{
 				'api': 'saveContentsSrc',
