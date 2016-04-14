@@ -105,6 +105,9 @@ pickles2ContentsEditor.init(
 				}
 			});
 			return;
+		},
+		'complete': function(){
+			alert('完了しました。');
 		}
 	},
 	function(){

@@ -15357,7 +15357,8 @@ window.Pickles2ContentsEditor = function(){
 	var $canvas;
 	var _this = this;
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
-	this.gpiBridge;
+	this.gpiBridge = function(){};
+	this.complete = function(){};
 	this.page_path;
 
 	var serverConfig;
@@ -15371,6 +15372,7 @@ window.Pickles2ContentsEditor = function(){
 		var _this = this;
 		// console.log(options);
 		this.gpiBridge = options.gpiBridge || function(){ alert('gpiBridge required.'); };
+		this.complete = options.complete || function(){ alert('finished.'); };
 		this.page_path = options.page_path;
 		this.preview = options.preview || {};
 
@@ -15503,7 +15505,7 @@ window.Pickles2ContentsEditor = function(){
 	 * 編集操作を完了する
 	 */
 	this.finish = function(){
-		alert('finished');
+		this.complete();
 	}
 }
 

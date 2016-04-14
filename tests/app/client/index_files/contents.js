@@ -36,6 +36,9 @@ $(window).load(function(){
 						}
 					});
 					return;
+				},
+				'complete': function(){
+					alert('完了しました。');
 				}
 			},
 			function(){
