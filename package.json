@@ -16,6 +16,7 @@
   "dependencies": {
     "broccoli-field-table": "file:submodules/broccoli-field-table",
     "broccoli-html-editor": "file:submodules/broccoli-html-editor",
+    "desktop-utils": "^0.1.0",
     "ejs": "^2.4.1",
     "es6-promise": "^3.1.2",
     "fs-extra": "^0.26.6",

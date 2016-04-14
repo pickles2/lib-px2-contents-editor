@@ -7,7 +7,7 @@ var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
 console.log('port number is '+8080);
-console.log('Pickles2 preview server port number is '+8081);
+console.log('Pickles 2 preview server port number is '+8081);
 
 
 app.use( require('body-parser')() );

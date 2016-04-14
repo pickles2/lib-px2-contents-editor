@@ -61,11 +61,15 @@ module.exports = function(px2ce, data, callback){
 			break;
 
 		case "openUrlInBrowser":
-			if( px2ce.getAppMode() == 'desktop' ){
-				callback(true);
-			}else{
+			// console.log(px2ce.getAppMode());
+			if( px2ce.getAppMode() != 'desktop' ){
 				callback(false);
+				break;
 			}
+			// console.log(data.url);
+			var desktopUtils = require('desktop-utils');
+			desktopUtils.open( data.url );
+			callback(true);
 			break;
 
 		default:
