@@ -108,6 +108,9 @@ pickles2ContentsEditor.init(
 		},
 		'complete': function(){
 			alert('完了しました。');
+		},
+		'onClickContentsLink': function( uri, data ){
+			alert('編集: ' + uri);
 		}
 	},
 	function(){

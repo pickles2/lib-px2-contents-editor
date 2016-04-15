@@ -37,7 +37,7 @@ module.exports = function(px2ce){
 				{
 					"label": "preview",
 					"click": function(){
-						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
+						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}
 				}
 			],
@@ -71,7 +71,7 @@ module.exports = function(px2ce){
 						// console.log(px2conf);
 
 						$elmCanvas.attr({
-							"data-broccoli-preview": px2ce.preview.origin + page_path
+							"data-broccoli-preview": px2ce.options.preview.origin + page_path
 						});
 
 						broccoli = new Broccoli();
@@ -111,9 +111,7 @@ module.exports = function(px2ce){
 									return;
 								},
 								'onClickContentsLink': function( uri, data ){
-									alert(uri + ' へ移動');
-									console.log(data);
-									return false;
+									px2ce.onClickContentsLink( uri, data );
 								},
 								'onMessage': function( message ){
 									// ユーザーへ知らせるメッセージを表示する

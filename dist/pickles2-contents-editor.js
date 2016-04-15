@@ -14846,7 +14846,7 @@ module.exports = function(px2ce){
 				{
 					"label": "preview",
 					"click": function(){
-						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
+						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}
 				}
 			],
@@ -14880,7 +14880,7 @@ module.exports = function(px2ce){
 						// console.log(px2conf);
 
 						$elmCanvas.attr({
-							"data-broccoli-preview": px2ce.preview.origin + page_path
+							"data-broccoli-preview": px2ce.options.preview.origin + page_path
 						});
 
 						broccoli = new Broccoli();
@@ -14920,9 +14920,7 @@ module.exports = function(px2ce){
 									return;
 								},
 								'onClickContentsLink': function( uri, data ){
-									alert(uri + ' へ移動');
-									console.log(data);
-									return false;
+									px2ce.onClickContentsLink( uri, data );
 								},
 								'onMessage': function( message ){
 									// ユーザーへ知らせるメッセージを表示する
@@ -15049,13 +15047,13 @@ module.exports = function(px2ce){
 				{
 					"label": "preview",
 					"click": function(){
-						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
+						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
 					"label": "resource",
 					"click": function(){
-						px2ce.openResourceDir( px2ce.preview.origin + page_path );
+						px2ce.openResourceDir( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
@@ -15152,7 +15150,7 @@ module.exports = function(px2ce){
 						// console.log(px2conf);
 
 						$elmCanvas.attr({
-							"data-pickles2-contents-editor-preview-url": px2ce.preview.origin + page_path
+							"data-pickles2-contents-editor-preview-url": px2ce.options.preview.origin + page_path
 						});
 
 						px2ce.gpiBridge(
@@ -15357,8 +15355,7 @@ window.Pickles2ContentsEditor = function(){
 	var $canvas;
 	var _this = this;
 	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
-	this.gpiBridge = function(){};
-	this.complete = function(){};
+	this.options = {};
 	this.page_path;
 
 	var serverConfig;
@@ -15371,10 +15368,12 @@ window.Pickles2ContentsEditor = function(){
 		callback = callback || function(){};
 		var _this = this;
 		// console.log(options);
-		this.gpiBridge = options.gpiBridge || function(){ alert('gpiBridge required.'); };
-		this.complete = options.complete || function(){ alert('finished.'); };
-		this.page_path = options.page_path;
-		this.preview = options.preview || {};
+		this.options = options;
+		this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
+		this.options.complete = this.options.complete || function(){ alert('finished.'); };
+		this.options.onClickContentsLink = this.options.onClickContentsLink || function(page_path){ alert('onClickContentsLink: '+page_path); };
+		this.options.preview = this.options.preview || {};
+		this.page_path = this.options.page_path;
 
 		$canvas = $(options.elmCanvas);
 		$canvas.addClass('pickles2-contents-editor');
@@ -15486,6 +15485,21 @@ window.Pickles2ContentsEditor = function(){
 	}
 
 	/**
+	 * プレビュー上のリンククリックイベント
+	 */
+	this.onClickContentsLink = function( uri, data ){
+		this.options.onClickContentsLink( uri, data );
+		return;
+	}
+
+	/**
+	 * gpiBridgeを呼び出す
+	 */
+	this.gpiBridge = function(data, callback){
+		return this.options.gpiBridge(data, callback);
+	}
+
+	/**
 	 * 再描画
 	 */
 	this.redraw = function( callback ){
@@ -15505,7 +15519,7 @@ window.Pickles2ContentsEditor = function(){
 	 * 編集操作を完了する
 	 */
 	this.finish = function(){
-		this.complete();
+		this.options.complete();
 	}
 }
 

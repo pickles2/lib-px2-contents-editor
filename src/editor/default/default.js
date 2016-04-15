@@ -25,13 +25,13 @@ module.exports = function(px2ce){
 				{
 					"label": "preview",
 					"click": function(){
-						px2ce.openUrlInBrowser( px2ce.preview.origin + page_path );
+						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
 					"label": "resource",
 					"click": function(){
-						px2ce.openResourceDir( px2ce.preview.origin + page_path );
+						px2ce.openResourceDir( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
@@ -128,7 +128,7 @@ module.exports = function(px2ce){
 						// console.log(px2conf);
 
 						$elmCanvas.attr({
-							"data-pickles2-contents-editor-preview-url": px2ce.preview.origin + page_path
+							"data-pickles2-contents-editor-preview-url": px2ce.options.preview.origin + page_path
 						});
 
 						px2ce.gpiBridge(

@@ -39,6 +39,9 @@ $(window).load(function(){
 				},
 				'complete': function(){
 					alert('完了しました。');
+				},
+				'onClickContentsLink': function( uri, data ){
+					alert('編集: ' +  uri);
 				}
 			},
 			function(){
