@@ -42,6 +42,9 @@ $(window).load(function(){
 				},
 				'onClickContentsLink': function( uri, data ){
 					alert('編集: ' +  uri);
+				},
+				'onMessage': function( message ){
+					console.info('message: '+message);
 				}
 			},
 			function(){

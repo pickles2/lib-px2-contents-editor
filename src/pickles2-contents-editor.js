@@ -35,7 +35,8 @@ window.Pickles2ContentsEditor = function(){
 		this.options = options;
 		this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
 		this.options.complete = this.options.complete || function(){ alert('finished.'); };
-		this.options.onClickContentsLink = this.options.onClickContentsLink || function(page_path){ alert('onClickContentsLink: '+page_path); };
+		this.options.onClickContentsLink = this.options.onClickContentsLink || function(uri, data){ alert('onClickContentsLink: '+uri); };
+		this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
 		this.options.preview = this.options.preview || {};
 		this.page_path = this.options.page_path;
 
@@ -154,6 +155,17 @@ window.Pickles2ContentsEditor = function(){
 	this.onClickContentsLink = function( uri, data ){
 		this.options.onClickContentsLink( uri, data );
 		return;
+	}
+
+	/**
+	 * ユーザーへのメッセージを表示する
+	 */
+	this.message = function(message, callback){
+		callback  = callback||function(){};
+		console.info(message);
+		this.options.onMessage(message);
+		callback();
+		return this;
 	}
 
 	/**

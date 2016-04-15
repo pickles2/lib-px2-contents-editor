@@ -115,7 +115,7 @@ module.exports = function(px2ce){
 								},
 								'onMessage': function( message ){
 									// ユーザーへ知らせるメッセージを表示する
-									console.info('message: '+message);
+									px2ce.message(message);
 								}
 							} ,
 							function(){

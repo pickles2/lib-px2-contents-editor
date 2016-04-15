@@ -19,7 +19,9 @@ module.exports = function(){
 		// console.log(options);
 		options = options || {};
 		options.appMode = options.appMode || 'web'; // web | desktop
-
+		options.log = options.log || function(msg){
+			console.error(msg);
+		};
 		this.entryScript = options.entryScript;
 		this.px2proj = require('px2agent').createProject(options.entryScript);
 		this.options = options;
@@ -319,4 +321,11 @@ module.exports = function(){
 		return this;
 	}
 
+	/**
+	 * ログファイルにメッセージを出力する
+	 */
+	this.log = function(msg){
+		this.options.log(msg);
+		return;
+	}
 }

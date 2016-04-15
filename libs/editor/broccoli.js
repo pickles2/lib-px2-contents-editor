@@ -102,9 +102,7 @@ module.exports = function(px2ce, data, callback){
 				},
 				'log': function(msg){
 					// エラー発生時にコールされます。
-					// msg を受け取り、適切なファイルへ出力するように実装してください。
-					console.log(msg);
-					// fs.writeFileSync('/path/to/error.log', {}, msg);
+					px2ce.log(msg);
 				}
 			},
 			function(){

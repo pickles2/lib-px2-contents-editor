@@ -19,7 +19,12 @@ app.use( '/your/api/path', function(req, res, next){
 	px2ce.init(
 		{
 			'appMode': 'web', // 'web' or 'desktop'. default to 'web'
-			'entryScript': require('path').resolve('/path/to/.px_execute.php')
+			'entryScript': require('path').resolve('/path/to/.px_execute.php'),
+			'log': function(msg){
+				// エラー発生時にコールされます。
+				// msg を受け取り、適切なファイルへ出力するように実装してください。
+				fs.writeFileSync('/path/to/error.log', {}, msg);
+			}
 		},
 		function(){
 			px2ce.gpi(JSON.parse(req.body.data), function(value){
@@ -111,6 +116,10 @@ pickles2ContentsEditor.init(
 		},
 		'onClickContentsLink': function( uri, data ){
 			alert('編集: ' + uri);
+		},
+		'onMessage': function( message ){
+			// ユーザーへ知らせるメッセージを表示する
+			console.info('message: '+message);
 		}
 	},
 	function(){
