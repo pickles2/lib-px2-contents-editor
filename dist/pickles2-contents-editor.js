@@ -2591,6 +2591,82 @@ process.chdir = function (dir) {
 };
 
 },{}],10:[function(require,module,exports){
+/**
+ * node-iterate79
+ */
+(function(exports){
+
+	/**
+	 * 配列の直列処理
+	 */
+	exports.ary = function(ary, fnc, fncComplete){
+		return new (function( ary, fnc, fncComplete ){
+			this.idx = -1;
+			this.idxs = [];
+			for( var i in ary ){
+				this.idxs.push(i);
+			}
+			this.ary = ary||[];
+			this.fnc = fnc||function(){};
+			this.fncComplete = fncComplete||function(){};
+
+			this.next = function(){
+				if( this.idx+1 >= this.idxs.length ){
+					this.fncComplete();
+					return this;
+				}
+				this.idx ++;
+				this.fnc( this, this.ary[this.idxs[this.idx]], this.idxs[this.idx] );
+				return this;
+			}
+			this.next();
+		})(ary, fnc, fncComplete);
+	}
+
+	/**
+	 * 関数の直列処理
+	 */
+	exports.fnc = function(aryFuncs){
+		var mode = 'explicit';
+		var defaultArg = undefined;
+		if( arguments.length >= 2 ){
+			mode = 'implicit';
+			defaultArg = arguments[0];
+			aryFuncs = arguments[arguments.length-1];
+		}
+
+
+		function iterator( aryFuncs ){
+			aryFuncs = aryFuncs||[];
+
+			var idx = 0;
+			var funcs = aryFuncs;
+			var isStarted = false;//2重起動防止
+
+			this.start = function(arg){
+				if(isStarted){return this;}
+				isStarted = true;
+				return this.next(arg);
+			}
+
+			this.next = function(arg){
+				arg = arg||{};
+				if(funcs.length <= idx){return this;}
+				(funcs[idx++])(this, arg);
+				return this;
+			};
+		}
+		var rtn = new iterator(aryFuncs);
+		if( mode == 'implicit' ){
+			return rtn.start(defaultArg);
+		}
+		return rtn;
+	}
+
+
+})(exports);
+
+},{}],11:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
@@ -12434,7 +12510,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function (Buffer){
 /**
  * node-iterate79
@@ -12577,7 +12653,7 @@ return jQuery;
 })(exports);
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":5,"fs":4,"validator":12}],12:[function(require,module,exports){
+},{"buffer":5,"fs":4,"validator":13}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12859,7 +12935,7 @@ var validator = {
 
 exports.default = validator;
 module.exports = exports['default'];
-},{"./lib/blacklist":14,"./lib/contains":15,"./lib/equals":16,"./lib/escape":17,"./lib/isAfter":18,"./lib/isAlpha":19,"./lib/isAlphanumeric":20,"./lib/isAscii":21,"./lib/isBase64":22,"./lib/isBefore":23,"./lib/isBoolean":24,"./lib/isByteLength":25,"./lib/isCreditCard":26,"./lib/isCurrency":27,"./lib/isDataURI":28,"./lib/isDate":29,"./lib/isDecimal":30,"./lib/isDivisibleBy":31,"./lib/isEmail":32,"./lib/isFQDN":33,"./lib/isFloat":34,"./lib/isFullWidth":35,"./lib/isHalfWidth":36,"./lib/isHexColor":37,"./lib/isHexadecimal":38,"./lib/isIP":39,"./lib/isISBN":40,"./lib/isISIN":41,"./lib/isISO8601":42,"./lib/isIn":43,"./lib/isInt":44,"./lib/isJSON":45,"./lib/isLength":46,"./lib/isLowercase":47,"./lib/isMACAddress":48,"./lib/isMobilePhone":49,"./lib/isMongoId":50,"./lib/isMultibyte":51,"./lib/isNull":52,"./lib/isNumeric":53,"./lib/isSurrogatePair":54,"./lib/isURL":55,"./lib/isUUID":56,"./lib/isUppercase":57,"./lib/isVariableWidth":58,"./lib/isWhitelisted":59,"./lib/ltrim":60,"./lib/matches":61,"./lib/normalizeEmail":62,"./lib/rtrim":63,"./lib/stripLow":64,"./lib/toBoolean":65,"./lib/toDate":66,"./lib/toFloat":67,"./lib/toInt":68,"./lib/trim":69,"./lib/unescape":70,"./lib/util/toString":73,"./lib/whitelist":74}],13:[function(require,module,exports){
+},{"./lib/blacklist":15,"./lib/contains":16,"./lib/equals":17,"./lib/escape":18,"./lib/isAfter":19,"./lib/isAlpha":20,"./lib/isAlphanumeric":21,"./lib/isAscii":22,"./lib/isBase64":23,"./lib/isBefore":24,"./lib/isBoolean":25,"./lib/isByteLength":26,"./lib/isCreditCard":27,"./lib/isCurrency":28,"./lib/isDataURI":29,"./lib/isDate":30,"./lib/isDecimal":31,"./lib/isDivisibleBy":32,"./lib/isEmail":33,"./lib/isFQDN":34,"./lib/isFloat":35,"./lib/isFullWidth":36,"./lib/isHalfWidth":37,"./lib/isHexColor":38,"./lib/isHexadecimal":39,"./lib/isIP":40,"./lib/isISBN":41,"./lib/isISIN":42,"./lib/isISO8601":43,"./lib/isIn":44,"./lib/isInt":45,"./lib/isJSON":46,"./lib/isLength":47,"./lib/isLowercase":48,"./lib/isMACAddress":49,"./lib/isMobilePhone":50,"./lib/isMongoId":51,"./lib/isMultibyte":52,"./lib/isNull":53,"./lib/isNumeric":54,"./lib/isSurrogatePair":55,"./lib/isURL":56,"./lib/isUUID":57,"./lib/isUppercase":58,"./lib/isVariableWidth":59,"./lib/isWhitelisted":60,"./lib/ltrim":61,"./lib/matches":62,"./lib/normalizeEmail":63,"./lib/rtrim":64,"./lib/stripLow":65,"./lib/toBoolean":66,"./lib/toDate":67,"./lib/toFloat":68,"./lib/toInt":69,"./lib/trim":70,"./lib/unescape":71,"./lib/util/toString":74,"./lib/whitelist":75}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12909,7 +12985,7 @@ for (var _locale, _i = 0; _i < arabicLocales.length; _i++) {
   alpha[_locale] = alpha.ar;
   alphanumeric[_locale] = alphanumeric.ar;
 }
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12928,7 +13004,7 @@ function blacklist(str, chars) {
   return str.replace(new RegExp('[' + chars + ']+', 'g'), '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],15:[function(require,module,exports){
+},{"./util/assertString":72}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12951,7 +13027,7 @@ function contains(str, elem) {
   return str.indexOf((0, _toString2.default)(elem)) >= 0;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71,"./util/toString":73}],16:[function(require,module,exports){
+},{"./util/assertString":72,"./util/toString":74}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12970,7 +13046,7 @@ function equals(str, comparison) {
   return str === comparison;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],17:[function(require,module,exports){
+},{"./util/assertString":72}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12989,7 +13065,7 @@ function escape(str) {
       return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\//g, '&#x2F;').replace(/\`/g, '&#96;');
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],18:[function(require,module,exports){
+},{"./util/assertString":72}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13016,7 +13092,7 @@ function isAfter(str) {
   return !!(original && comparison && original > comparison);
 }
 module.exports = exports['default'];
-},{"./toDate":66,"./util/assertString":71}],19:[function(require,module,exports){
+},{"./toDate":67,"./util/assertString":72}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13042,7 +13118,7 @@ function isAlpha(str) {
   throw new Error('Invalid locale \'' + locale + '\'');
 }
 module.exports = exports['default'];
-},{"./alpha":13,"./util/assertString":71}],20:[function(require,module,exports){
+},{"./alpha":14,"./util/assertString":72}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13068,7 +13144,7 @@ function isAlphanumeric(str) {
   throw new Error('Invalid locale \'' + locale + '\'');
 }
 module.exports = exports['default'];
-},{"./alpha":13,"./util/assertString":71}],21:[function(require,module,exports){
+},{"./alpha":14,"./util/assertString":72}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13089,7 +13165,7 @@ function isAscii(str) {
   return ascii.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],22:[function(require,module,exports){
+},{"./util/assertString":72}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13115,7 +13191,7 @@ function isBase64(str) {
   return firstPaddingChar === -1 || firstPaddingChar === len - 1 || firstPaddingChar === len - 2 && str[len - 1] === '=';
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],23:[function(require,module,exports){
+},{"./util/assertString":72}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13142,7 +13218,7 @@ function isBefore(str) {
   return !!(original && comparison && original < comparison);
 }
 module.exports = exports['default'];
-},{"./toDate":66,"./util/assertString":71}],24:[function(require,module,exports){
+},{"./toDate":67,"./util/assertString":72}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13161,7 +13237,7 @@ function isBoolean(str) {
   return ['true', 'false', '1', '0'].indexOf(str) >= 0;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],25:[function(require,module,exports){
+},{"./util/assertString":72}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13195,7 +13271,7 @@ function isByteLength(str, options) {
   return len >= min && (typeof max === 'undefined' || len <= max);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],26:[function(require,module,exports){
+},{"./util/assertString":72}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13241,7 +13317,7 @@ function isCreditCard(str) {
   return !!(sum % 10 === 0 ? sanitized : false);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],27:[function(require,module,exports){
+},{"./util/assertString":72}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13330,7 +13406,7 @@ function isCurrency(str, options) {
   return currencyRegex(options).test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71,"./util/merge":72}],28:[function(require,module,exports){
+},{"./util/assertString":72,"./util/merge":73}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13351,7 +13427,7 @@ function isDataURI(str) {
   return dataURI.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],29:[function(require,module,exports){
+},{"./util/assertString":72}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13452,7 +13528,7 @@ function isDate(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./isISO8601":42,"./util/assertString":71}],30:[function(require,module,exports){
+},{"./isISO8601":43,"./util/assertString":72}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13473,7 +13549,7 @@ function isDecimal(str) {
   return str !== '' && decimal.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],31:[function(require,module,exports){
+},{"./util/assertString":72}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13496,7 +13572,7 @@ function isDivisibleBy(str, num) {
   return (0, _toFloat2.default)(str) % parseInt(num, 10) === 0;
 }
 module.exports = exports['default'];
-},{"./toFloat":67,"./util/assertString":71}],32:[function(require,module,exports){
+},{"./toFloat":68,"./util/assertString":72}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13581,7 +13657,7 @@ function isEmail(str, options) {
   return true;
 }
 module.exports = exports['default'];
-},{"./isByteLength":25,"./isFQDN":33,"./util/assertString":71,"./util/merge":72}],33:[function(require,module,exports){
+},{"./isByteLength":26,"./isFQDN":34,"./util/assertString":72,"./util/merge":73}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13639,7 +13715,7 @@ function isFDQN(str, options) {
   return true;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71,"./util/merge":72}],34:[function(require,module,exports){
+},{"./util/assertString":72,"./util/merge":73}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13664,7 +13740,7 @@ function isFloat(str, options) {
   return float.test(str) && (!options.hasOwnProperty('min') || str >= options.min) && (!options.hasOwnProperty('max') || str <= options.max);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],35:[function(require,module,exports){
+},{"./util/assertString":72}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13685,7 +13761,7 @@ function isFullWidth(str) {
   (0, _assertString2.default)(str);
   return fullWidth.test(str);
 }
-},{"./util/assertString":71}],36:[function(require,module,exports){
+},{"./util/assertString":72}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13706,7 +13782,7 @@ function isHalfWidth(str) {
   (0, _assertString2.default)(str);
   return halfWidth.test(str);
 }
-},{"./util/assertString":71}],37:[function(require,module,exports){
+},{"./util/assertString":72}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13727,7 +13803,7 @@ function isHexColor(str) {
   return hexcolor.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],38:[function(require,module,exports){
+},{"./util/assertString":72}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13748,7 +13824,7 @@ function isHexadecimal(str) {
   return hexadecimal.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],39:[function(require,module,exports){
+},{"./util/assertString":72}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13830,7 +13906,7 @@ function isIP(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],40:[function(require,module,exports){
+},{"./util/assertString":72}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13888,7 +13964,7 @@ function isISBN(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],41:[function(require,module,exports){
+},{"./util/assertString":72}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13937,7 +14013,7 @@ function isISIN(str) {
   return parseInt(str.substr(str.length - 1), 10) === (10000 - sum) % 10;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],42:[function(require,module,exports){
+},{"./util/assertString":72}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13960,7 +14036,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // from http://goo.gl/0ejHHW
 var iso8601 = exports.iso8601 = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
 /* eslint-enable max-len */
-},{"./util/assertString":71}],43:[function(require,module,exports){
+},{"./util/assertString":72}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14000,7 +14076,7 @@ function isIn(str, options) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71,"./util/toString":73}],44:[function(require,module,exports){
+},{"./util/assertString":72,"./util/toString":74}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14022,7 +14098,7 @@ function isInt(str, options) {
   return int.test(str) && (!options.hasOwnProperty('min') || str >= options.min) && (!options.hasOwnProperty('max') || str <= options.max);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],45:[function(require,module,exports){
+},{"./util/assertString":72}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14048,7 +14124,7 @@ function isJSON(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],46:[function(require,module,exports){
+},{"./util/assertString":72}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14083,7 +14159,7 @@ function isLength(str, options) {
   return len >= min && (typeof max === 'undefined' || len <= max);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],47:[function(require,module,exports){
+},{"./util/assertString":72}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14102,7 +14178,7 @@ function isLowercase(str) {
   return str === str.toLowerCase();
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],48:[function(require,module,exports){
+},{"./util/assertString":72}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14123,7 +14199,7 @@ function isMACAddress(str) {
   return macAddress.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],49:[function(require,module,exports){
+},{"./util/assertString":72}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14175,7 +14251,7 @@ function isMobilePhone(str, locale) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],50:[function(require,module,exports){
+},{"./util/assertString":72}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14198,7 +14274,7 @@ function isMongoId(str) {
   return (0, _isHexadecimal2.default)(str) && str.length === 24;
 }
 module.exports = exports['default'];
-},{"./isHexadecimal":38,"./util/assertString":71}],51:[function(require,module,exports){
+},{"./isHexadecimal":39,"./util/assertString":72}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14219,7 +14295,7 @@ function isMultibyte(str) {
   return multibyte.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],52:[function(require,module,exports){
+},{"./util/assertString":72}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14238,7 +14314,7 @@ function isNull(str) {
   return str.length === 0;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],53:[function(require,module,exports){
+},{"./util/assertString":72}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14259,7 +14335,7 @@ function isNumeric(str) {
   return numeric.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],54:[function(require,module,exports){
+},{"./util/assertString":72}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14280,7 +14356,7 @@ function isSurrogatePair(str) {
   return surrogatePair.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],55:[function(require,module,exports){
+},{"./util/assertString":72}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14383,7 +14459,7 @@ function isURL(url, options) {
   return true;
 }
 module.exports = exports['default'];
-},{"./isFQDN":33,"./isIP":39,"./util/assertString":71,"./util/merge":72}],56:[function(require,module,exports){
+},{"./isFQDN":34,"./isIP":40,"./util/assertString":72,"./util/merge":73}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14412,7 +14488,7 @@ function isUUID(str) {
   return pattern && pattern.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],57:[function(require,module,exports){
+},{"./util/assertString":72}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14431,7 +14507,7 @@ function isUppercase(str) {
   return str === str.toUpperCase();
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],58:[function(require,module,exports){
+},{"./util/assertString":72}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14454,7 +14530,7 @@ function isVariableWidth(str) {
   return _isFullWidth.fullWidth.test(str) && _isHalfWidth.halfWidth.test(str);
 }
 module.exports = exports['default'];
-},{"./isFullWidth":35,"./isHalfWidth":36,"./util/assertString":71}],59:[function(require,module,exports){
+},{"./isFullWidth":36,"./isHalfWidth":37,"./util/assertString":72}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14478,7 +14554,7 @@ function isWhitelisted(str, chars) {
   return true;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],60:[function(require,module,exports){
+},{"./util/assertString":72}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14498,7 +14574,7 @@ function ltrim(str, chars) {
   return str.replace(pattern, '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],61:[function(require,module,exports){
+},{"./util/assertString":72}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14520,7 +14596,7 @@ function matches(str, pattern, modifiers) {
   return pattern.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],62:[function(require,module,exports){
+},{"./util/assertString":72}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14569,7 +14645,7 @@ function normalizeEmail(email, options) {
   return parts.join('@');
 }
 module.exports = exports['default'];
-},{"./isEmail":32,"./util/merge":72}],63:[function(require,module,exports){
+},{"./isEmail":33,"./util/merge":73}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14589,7 +14665,7 @@ function rtrim(str, chars) {
   return str.replace(pattern, '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],64:[function(require,module,exports){
+},{"./util/assertString":72}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14613,7 +14689,7 @@ function stripLow(str, keep_new_lines) {
   return (0, _blacklist2.default)(str, chars);
 }
 module.exports = exports['default'];
-},{"./blacklist":14,"./util/assertString":71}],65:[function(require,module,exports){
+},{"./blacklist":15,"./util/assertString":72}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14635,7 +14711,7 @@ function toBoolean(str, strict) {
   return str !== '0' && str !== 'false' && str !== '';
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],66:[function(require,module,exports){
+},{"./util/assertString":72}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14655,7 +14731,7 @@ function toDate(date) {
   return !isNaN(date) ? new Date(date) : null;
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],67:[function(require,module,exports){
+},{"./util/assertString":72}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14674,7 +14750,7 @@ function toFloat(str) {
   return parseFloat(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],68:[function(require,module,exports){
+},{"./util/assertString":72}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14693,7 +14769,7 @@ function toInt(str, radix) {
   return parseInt(str, radix || 10);
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],69:[function(require,module,exports){
+},{"./util/assertString":72}],70:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14713,7 +14789,7 @@ function trim(str, chars) {
   return str.replace(pattern, '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],70:[function(require,module,exports){
+},{"./util/assertString":72}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14732,7 +14808,7 @@ function unescape(str) {
       return str.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#x2F;/g, '\/').replace(/&#96;/g, '\`');
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],71:[function(require,module,exports){
+},{"./util/assertString":72}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14745,7 +14821,7 @@ function assertString(input) {
   }
 }
 module.exports = exports['default'];
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14764,7 +14840,7 @@ function merge() {
   return obj;
 }
 module.exports = exports['default'];
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14787,7 +14863,7 @@ function toString(input) {
   return String(input);
 }
 module.exports = exports['default'];
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14806,7 +14882,177 @@ function whitelist(str, chars) {
   return str.replace(new RegExp('[^' + chars + ']+', 'g'), '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":71}],75:[function(require,module,exports){
+},{"./util/assertString":72}],76:[function(require,module,exports){
+(function (Buffer){
+/**
+ * postMessenger.js
+ * iframeに展開されるプレビューHTMLとの通信を仲介します。
+ */
+
+module.exports = function(px2ce, iframe){
+	var $ = require('jquery');
+
+	var __dirname = px2ce.__dirname;
+	// console.log(__dirname);
+	var callbackMemory = {};
+
+	function createUUID(){
+		return "uuid-"+((new Date).getTime().toString(16)+Math.floor(1E7*Math.random()).toString(16));
+	}
+	function getTargetOrigin(iframe){
+		if(window.location.origin=='file://'){
+			return '*';
+		}
+
+		var url = $(iframe).attr('src');
+		// console.log(url);
+		var parser = document.createElement('a');
+		parser.href=url;
+		// console.log(parser);
+		return parser.protocol+'//'+parser.host
+	}
+
+	/**
+	 * 初期化
+	 */
+	this.init = function(callback){
+		console.info('postMessenger.init() called');
+
+		var targetWindowOrigin = getTargetOrigin(iframe);
+		// console.log(targetWindowOrigin);
+
+		var win = $(iframe).get(0).contentWindow;
+		$.ajax({
+			"url": __dirname+'/pickles2-preview-contents.js',
+			// "dataType": "text/plain",
+			"complete": function(XMLHttpRequest, textStatus){
+				// console.log(XMLHttpRequest, textStatus);
+				// console.log(XMLHttpRequest.responseText);
+				var base64 = new Buffer(XMLHttpRequest.responseText).toString('base64');
+				// console.log(base64);
+				// console.log(__dirname+'/broccoli-preview-contents.js');
+				win.postMessage({'scriptUrl':'data:text/javascript;base64,'+base64}, targetWindowOrigin);
+				callback();
+			}
+		});
+		return this;
+	}
+
+	/**
+	 * メッセージを送る
+	 */
+	this.send = function(api, options, callback){
+		callback = callback||function(){};
+
+		var callbackId = createUUID();
+		// console.log(callbackId);
+
+		callbackMemory[callbackId] = callback;
+
+		var message = {
+			'api': api,
+			'callback': callbackId,
+			'options': options
+		};
+		// console.log(callbackMemory);
+
+		var win = $(iframe).get(0).contentWindow;
+		var targetWindowOrigin = getTargetOrigin(iframe);
+		win.postMessage(message, targetWindowOrigin);
+
+		// callback();//TODO: 仮実装。本当は、iframe側からコールバックされる。
+		return this;
+	}
+
+	/**
+	 * メッセージを受信する
+	 */
+	window.addEventListener('message',function(event){
+		var data=event.data;
+		// console.log(event);
+		// console.log(callbackMemory);
+
+		if(data.api == 'onClickContentsLink'){
+			// console.log(event.data.options);
+			var data = event.data.options;
+			px2ce.onClickContentsLink(data.url, data);
+			return;
+
+		}else{
+			if(!callbackMemory[data.api]){return;}
+			callbackMemory[data.api](data.options);
+			callbackMemory[data.api] = undefined;
+			delete callbackMemory[data.api];
+		}
+		return;
+
+	});
+
+	return;
+}
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":5,"jquery":11}],77:[function(require,module,exports){
+/**
+ * toolbar.js
+ */
+module.exports = function(px2ce){
+	var $ = require('jquery');
+	var utils79 = require('utils79');
+	var $canvas = $(px2ce.getElmCanvas());
+	var page_path = px2ce.page_path;
+
+	var ejs = require('ejs');
+
+	var $toolbar;
+	var options;
+
+	this.init = function(_options, callback){
+		callback = callback||function(){};
+		options = _options;
+		options.onFinish = options.onFinish || function(){};
+		options.btns = options.btns || [];
+
+		var code = ''
+			+'<div class="pickles2-contents-editor--toolbar">'
+				+'<div class="pickles2-contents-editor--toolbar-btns">'
+					+'<div class="btn-group" role="group">'
+					+'</div>'
+				+'</div>'
+				+'<div class="pickles2-contents-editor--toolbar-finish">'
+					+'<div class="btn-group" role="group">'
+						+'<button class="btn btn-primary btn-xs pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> 完了</button>'
+					+'</div>'
+				+'</div>'
+			+'</div>'
+		;
+		$toolbar = $(code);
+		$canvas.append($toolbar);
+
+		$btns = $('.pickles2-contents-editor--toolbar-btns .btn-group');
+		for( var idx in options.btns ){
+			var btn = options.btns[idx];
+			$btns.append( $('<button class="btn btn-default btn-xs">')
+				.text( btn.label )
+				.click( btn.click )
+			);
+		}
+
+		// 完了イベント発火
+		$canvas.find('.pickles2-contents-editor--toolbar-btn-finish').click(function(){
+			options.onFinish();
+		});
+
+		callback();
+	}
+
+	this.getElm = function(){
+		return $toolbar;
+	}
+
+}
+
+},{"ejs":1,"jquery":11,"utils79":12}],78:[function(require,module,exports){
 /**
  * broccoli/broccoli.js
  */
@@ -14816,7 +15062,7 @@ module.exports = function(px2ce){
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	var toolbar = new (require('../../toolbar.js'))(px2ce);
+	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
 	var broccoli;
 	var $elmCanvas,
@@ -14844,7 +15090,7 @@ module.exports = function(px2ce){
 					}
 				},
 				{
-					"label": "preview",
+					"label": "ブラウザでプレビュー",
 					"click": function(){
 						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}
@@ -15019,18 +15265,21 @@ module.exports = function(px2ce){
 
 }
 
-},{"../../toolbar.js":79,"jquery":10}],76:[function(require,module,exports){
+},{"../../apis/toolbar.js":77,"jquery":11}],79:[function(require,module,exports){
 /**
  * default/default.js
  */
 module.exports = function(px2ce){
+	var _this = this;
 	var $ = require('jquery');
+	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	var toolbar = new (require('../../toolbar.js'))(px2ce);
+	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
-	var $elmCanvas,
+	var $iframe,
+		$elmCanvas,
 		$elmEditor,
 		// $elmBtns,
 		$elmTextareas,
@@ -15045,19 +15294,19 @@ module.exports = function(px2ce){
 		toolbar.init({
 			"btns":[
 				{
-					"label": "preview",
+					"label": "ブラウザでプレビュー",
 					"click": function(){
 						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
-					"label": "resource",
+					"label": "リソース",
 					"click": function(){
 						px2ce.openResourceDir( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
-					"label": "save",
+					"label": "保存する",
 					"click": function(){
 						saveContentsSrc(
 							function(result){
@@ -15140,6 +15389,17 @@ module.exports = function(px2ce){
 				})
 			;
 
+
+			$iframe = $('<iframe>');
+			$elmCanvas.html('').append($iframe);
+			_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
+			$iframe
+				.bind('load', function(){
+					console.log('pickles2-contents-editor: preview loaded');
+					onPreviewLoad( callback );
+				})
+			;
+
 			windowResized(function(){
 
 				px2ce.gpiBridge(
@@ -15177,7 +15437,7 @@ module.exports = function(px2ce){
 
 								updatePreview();
 
-								callback();
+								// callback();
 							}
 						);
 					}
@@ -15234,13 +15494,36 @@ module.exports = function(px2ce){
 	 */
 	function updatePreview(){
 		var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
-		var $iframe = $('<iframe>');
-		$elmCanvas.html('').append($iframe);
 		$iframe
 			.attr({
 				'src': previewUrl
 			})
 		;
+	}
+
+	/**
+	 * プレビューがロードされたら実行
+	 */
+	function onPreviewLoad( callback ){
+		callback = callback || function(){};
+		if(_this.postMessenger===undefined){return;}
+
+		it79.fnc(
+			{},
+			[
+				function( it1, data ){
+					// postMessageの送受信を行う準備
+					_this.postMessenger.init(function(){
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					callback();
+					it1.next();
+				}
+			]
+		);
+		return this;
 	}
 
 	/**
@@ -15268,7 +15551,7 @@ module.exports = function(px2ce){
 
 }
 
-},{"../../toolbar.js":79,"jquery":10}],77:[function(require,module,exports){
+},{"../../apis/postMessenger.js":76,"../../apis/toolbar.js":77,"iterate79":10,"jquery":11}],80:[function(require,module,exports){
 /**
  * not_exists.js
  */
@@ -15333,12 +15616,22 @@ module.exports = function(px2ce, callback){
 
 }
 
-},{"ejs":1,"jquery":10,"utils79":11}],78:[function(require,module,exports){
+},{"ejs":1,"jquery":11,"utils79":12}],81:[function(require,module,exports){
 /**
  * Pickles2ContentsEditor
  */
 (function(){
-	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
+	var __dirname = (function() {
+		if (document.currentScript) {
+			return document.currentScript.src;
+		} else {
+			var scripts = document.getElementsByTagName('script'),
+			script = scripts[scripts.length-1];
+			if (script.src) {
+				return script.src;
+			}
+		}
+	})().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
 
 	// bootstrap をロード
 	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/bootstrap/dist/css/bootstrap.css" />');
@@ -15349,250 +15642,190 @@ module.exports = function(px2ce, callback){
 	document.write('<script src="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.js"></script>');
 	document.write('<script src="'+__dirname+'/libs/broccoli-field-table/dist/broccoli-field-table.js"></script>');
 
-})();
-window.Pickles2ContentsEditor = function(){
-	var $ = require('jquery');
-	var $canvas;
-	var _this = this;
-	var __dirname = (function(){ var rtn = (function() { if (document.currentScript) {return document.currentScript.src;} else { var scripts = document.getElementsByTagName('script'), script = scripts[scripts.length-1]; if (script.src) {return script.src;} } })(); rtn = rtn.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, ''); return rtn; })();
-	this.options = {};
-	this.page_path;
-
-	var serverConfig;
-	var editor;
-
-	/**
-	 * initialize
-	 */
-	this.init = function(options, callback){
-		callback = callback || function(){};
+	window.Pickles2ContentsEditor = function(){
+		var $ = require('jquery');
+		var $canvas;
 		var _this = this;
-		// console.log(options);
-		this.options = options;
-		this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
-		this.options.complete = this.options.complete || function(){ alert('finished.'); };
-		this.options.onClickContentsLink = this.options.onClickContentsLink || function(uri, data){ alert('onClickContentsLink: '+uri); };
-		this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
-		this.options.preview = this.options.preview || {};
-		this.page_path = this.options.page_path;
+		this.__dirname = __dirname;
+		this.options = {};
+		this.page_path;
 
-		$canvas = $(options.elmCanvas);
-		$canvas.addClass('pickles2-contents-editor');
+		var serverConfig;
+		var editor;
 
-		_this.gpiBridge(
-			{
-				'api':'getConfig'
-			} ,
-			function(config){
-				// console.log(config);
-				serverConfig = config;
+		/**
+		* initialize
+		*/
+		this.init = function(options, callback){
+			callback = callback || function(){};
+			var _this = this;
+			// console.log(options);
+			this.options = options;
+			this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
+			this.options.complete = this.options.complete || function(){ alert('finished.'); };
+			this.options.onClickContentsLink = this.options.onClickContentsLink || function(uri, data){ alert('onClickContentsLink: '+uri); };
+			this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
+			this.options.preview = this.options.preview || {};
+			this.page_path = this.options.page_path;
 
-				_this.gpiBridge(
-					{
-						'page_path':_this.page_path,
-						'api':'checkEditorType'
-					},
-					function(editorType){
-						// console.log(editorType);
-						switch(editorType){
-							case '.page_not_exists':
-								// ページ自体が存在しない。
-								$canvas.html('<p>ページが存在しません。</p>');
-								callback();
-								break;
+			$canvas = $(options.elmCanvas);
+			$canvas.addClass('pickles2-contents-editor');
 
-							case '.not_exists':
-								// コンテンツが存在しない
-								$canvas.html('<p>コンテンツが存在しません。</p>');
-								var notExists = require('./editor/not_exists/not_exists.js');
-								notExists(_this, function(){
-									_this.init(options, callback);
-								});
-								break;
+			_this.gpiBridge(
+				{
+					'api':'getConfig'
+				} ,
+				function(config){
+					// console.log(config);
+					serverConfig = config;
 
-							case 'html.gui':
-								// broccoli
-								$canvas.html('<p>GUIエディタを起動します。</p>');
-								editor = new (require('./editor/broccoli/broccoli.js'))(_this);
-								editor.init(function(){
+					_this.gpiBridge(
+						{
+							'page_path':_this.page_path,
+							'api':'checkEditorType'
+						},
+						function(editorType){
+							// console.log(editorType);
+							switch(editorType){
+								case '.page_not_exists':
+									// ページ自体が存在しない。
+									$canvas.html('<p>ページが存在しません。</p>');
 									callback();
-								});
-								break;
+									break;
 
-							case 'html':
-							case 'md':
-							default:
-								// defaultテキストエディタ
-								$canvas.html('<p>テキストエディタを起動します。</p>');
-								editor = new (require('./editor/default/default.js'))(_this);
-								editor.init(function(){
-									callback();
-								});
-								break;
+								case '.not_exists':
+									// コンテンツが存在しない
+									$canvas.html('<p>コンテンツが存在しません。</p>');
+									var notExists = require('./editor/not_exists/not_exists.js');
+									notExists(_this, function(){
+										_this.init(options, callback);
+									});
+									break;
+
+								case 'html.gui':
+									// broccoli
+									$canvas.html('<p>GUIエディタを起動します。</p>');
+									editor = new (require('./editor/broccoli/broccoli.js'))(_this);
+									editor.init(function(){
+										callback();
+									});
+									break;
+
+								case 'html':
+								case 'md':
+								default:
+									// defaultテキストエディタ
+									$canvas.html('<p>テキストエディタを起動します。</p>');
+									editor = new (require('./editor/default/default.js'))(_this);
+									editor.init(function(){
+										callback();
+									});
+									break;
+							}
 						}
-					}
-				);
-			}
-		);
-
-	} // init()
-
-	/**
-	 * canvas要素を取得する
-	 */
-	this.getElmCanvas = function(){
-		return $canvas;
-	}
-
-	/**
-	 * ブラウザでURLを開く
-	 */
-	this.openUrlInBrowser = function( url ){
-		if( serverConfig.appMode == 'web' ){
-			window.open(url);
-			return;
-		}
-		this.gpiBridge(
-			{
-				'url':url,
-				'api':'openUrlInBrowser'
-			},
-			function(res){
-				console.log('open URL: ' + url);
-			}
-		);
-		return;
-	}
-
-	/**
-	 * リソースフォルダを開く
-	 */
-	this.openResourceDir = function(){
-		if( serverConfig.appMode == 'web' ){
-			alert('ウェブモードではフォルダを開けません。');
-			return;
-		}
-		this.gpiBridge(
-			{
-				'page_path':_this.page_path,
-				'api':'openResourceDir'
-			},
-			function(res){
-				console.log('open resource directory of: ' + _this.page_path);
-				console.log(res);
-			}
-		);
-		return;
-	}
-
-	/**
-	 * プレビュー上のリンククリックイベント
-	 */
-	this.onClickContentsLink = function( uri, data ){
-		this.options.onClickContentsLink( uri, data );
-		return;
-	}
-
-	/**
-	 * ユーザーへのメッセージを表示する
-	 */
-	this.message = function(message, callback){
-		callback  = callback||function(){};
-		console.info(message);
-		this.options.onMessage(message);
-		callback();
-		return this;
-	}
-
-	/**
-	 * gpiBridgeを呼び出す
-	 */
-	this.gpiBridge = function(data, callback){
-		return this.options.gpiBridge(data, callback);
-	}
-
-	/**
-	 * 再描画
-	 */
-	this.redraw = function( callback ){
-		callback = callback || function(){};
-		if(editor){
-			editor.redraw(function(){
-				callback();
-			});
-			return;
-		}else{
-			callback();
-		}
-		return;
-	}
-
-	/**
-	 * 編集操作を完了する
-	 */
-	this.finish = function(){
-		this.options.complete();
-	}
-}
-
-},{"./editor/broccoli/broccoli.js":75,"./editor/default/default.js":76,"./editor/not_exists/not_exists.js":77,"jquery":10}],79:[function(require,module,exports){
-/**
- * toolbar.js
- */
-module.exports = function(px2ce){
-	var $ = require('jquery');
-	var utils79 = require('utils79');
-	var $canvas = $(px2ce.getElmCanvas());
-	var page_path = px2ce.page_path;
-
-	var ejs = require('ejs');
-
-	var $toolbar;
-	var options;
-
-	this.init = function(_options, callback){
-		callback = callback||function(){};
-		options = _options;
-		options.onFinish = options.onFinish || function(){};
-		options.btns = options.btns || [];
-
-		var code = ''
-			+'<div class="pickles2-contents-editor--toolbar">'
-				+'<div class="pickles2-contents-editor--toolbar-btns">'
-					+'<div class="btn-group" role="group">'
-					+'</div>'
-				+'</div>'
-				+'<div class="pickles2-contents-editor--toolbar-finish">'
-					+'<div class="btn-group" role="group">'
-						+'<button class="btn btn-primary btn-xs pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> 完了</button>'
-					+'</div>'
-				+'</div>'
-			+'</div>'
-		;
-		$toolbar = $(code);
-		$canvas.append($toolbar);
-
-		$btns = $('.pickles2-contents-editor--toolbar-btns .btn-group');
-		for( var idx in options.btns ){
-			var btn = options.btns[idx];
-			$btns.append( $('<button class="btn btn-default btn-xs">')
-				.text( btn.label )
-				.click( btn.click )
+					);
+				}
 			);
+
+		} // init()
+
+		/**
+		* canvas要素を取得する
+		*/
+		this.getElmCanvas = function(){
+			return $canvas;
 		}
 
-		// 完了イベント発火
-		$canvas.find('.pickles2-contents-editor--toolbar-btn-finish').click(function(){
-			options.onFinish();
-		});
+		/**
+		* ブラウザでURLを開く
+		*/
+		this.openUrlInBrowser = function( url ){
+			if( serverConfig.appMode == 'web' ){
+				window.open(url);
+				return;
+			}
+			this.gpiBridge(
+				{
+					'url':url,
+					'api':'openUrlInBrowser'
+				},
+				function(res){
+					console.log('open URL: ' + url);
+				}
+			);
+			return;
+		}
 
-		callback();
+		/**
+		* リソースフォルダを開く
+		*/
+		this.openResourceDir = function(){
+			if( serverConfig.appMode == 'web' ){
+				alert('ウェブモードではフォルダを開けません。');
+				return;
+			}
+			this.gpiBridge(
+				{
+					'page_path':_this.page_path,
+					'api':'openResourceDir'
+				},
+				function(res){
+					console.log('open resource directory of: ' + _this.page_path);
+					console.log(res);
+				}
+			);
+			return;
+		}
+
+		/**
+		* プレビュー上のリンククリックイベント
+		*/
+		this.onClickContentsLink = function( uri, data ){
+			this.options.onClickContentsLink( uri, data );
+			return;
+		}
+
+		/**
+		* ユーザーへのメッセージを表示する
+		*/
+		this.message = function(message, callback){
+			callback  = callback||function(){};
+			// console.info(message);
+			this.options.onMessage(message);
+			callback();
+			return this;
+		}
+
+		/**
+		* gpiBridgeを呼び出す
+		*/
+		this.gpiBridge = function(data, callback){
+			return this.options.gpiBridge(data, callback);
+		}
+
+		/**
+		* 再描画
+		*/
+		this.redraw = function( callback ){
+			callback = callback || function(){};
+			if(editor){
+				editor.redraw(function(){
+					callback();
+				});
+				return;
+			}else{
+				callback();
+			}
+			return;
+		}
+
+		/**
+		* 編集操作を完了する
+		*/
+		this.finish = function(){
+			this.options.complete();
+		}
 	}
+})();
 
-	this.getElm = function(){
-		return $toolbar;
-	}
-
-}
-
-},{"ejs":1,"jquery":10,"utils79":11}]},{},[78])
+},{"./editor/broccoli/broccoli.js":78,"./editor/default/default.js":79,"./editor/not_exists/not_exists.js":80,"jquery":11}]},{},[81])

@@ -7,7 +7,7 @@ module.exports = function(px2ce){
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	var toolbar = new (require('../../toolbar.js'))(px2ce);
+	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
 	var broccoli;
 	var $elmCanvas,
@@ -35,7 +35,7 @@ module.exports = function(px2ce){
 					}
 				},
 				{
-					"label": "preview",
+					"label": "ブラウザでプレビュー",
 					"click": function(){
 						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}

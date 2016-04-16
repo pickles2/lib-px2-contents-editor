@@ -16,6 +16,7 @@ var _tasks = [
 	'.css',
 	'.css.scss',
 	'pickles2-contents-editor.js',
+	'pickles2-preview-contents.js',
 	'client-libs'
 ];
 
@@ -80,6 +81,20 @@ gulp.task("pickles2-contents-editor.js", function() {
 		.pipe(concat('pickles2-contents-editor.min.js'))
 		.pipe(uglify())
 		// .pipe(sourcemaps.write())
+		.pipe(gulp.dest( './dist/' ))
+	;
+});
+
+gulp.task("pickles2-preview-contents.js", function() {
+	gulp.src(["src/pickles2-preview-contents.js"])
+		.pipe(plumber())
+		.pipe(browserify({}))
+
+		.pipe(concat('pickles2-preview-contents.js'))
+		.pipe(gulp.dest( './dist/' ))
+
+		.pipe(concat('pickles2-preview-contents.min.js'))
+		.pipe(uglify())
 		.pipe(gulp.dest( './dist/' ))
 	;
 });

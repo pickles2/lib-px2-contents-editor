@@ -2,13 +2,16 @@
  * default/default.js
  */
 module.exports = function(px2ce){
+	var _this = this;
 	var $ = require('jquery');
+	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	var toolbar = new (require('../../toolbar.js'))(px2ce);
+	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
-	var $elmCanvas,
+	var $iframe,
+		$elmCanvas,
 		$elmEditor,
 		// $elmBtns,
 		$elmTextareas,
@@ -23,19 +26,19 @@ module.exports = function(px2ce){
 		toolbar.init({
 			"btns":[
 				{
-					"label": "preview",
+					"label": "ブラウザでプレビュー",
 					"click": function(){
 						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
-					"label": "resource",
+					"label": "リソース",
 					"click": function(){
 						px2ce.openResourceDir( px2ce.options.preview.origin + page_path );
 					}
 				},
 				{
-					"label": "save",
+					"label": "保存する",
 					"click": function(){
 						saveContentsSrc(
 							function(result){
@@ -118,6 +121,17 @@ module.exports = function(px2ce){
 				})
 			;
 
+
+			$iframe = $('<iframe>');
+			$elmCanvas.html('').append($iframe);
+			_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
+			$iframe
+				.bind('load', function(){
+					console.log('pickles2-contents-editor: preview loaded');
+					onPreviewLoad( callback );
+				})
+			;
+
 			windowResized(function(){
 
 				px2ce.gpiBridge(
@@ -155,7 +169,7 @@ module.exports = function(px2ce){
 
 								updatePreview();
 
-								callback();
+								// callback();
 							}
 						);
 					}
@@ -212,13 +226,36 @@ module.exports = function(px2ce){
 	 */
 	function updatePreview(){
 		var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
-		var $iframe = $('<iframe>');
-		$elmCanvas.html('').append($iframe);
 		$iframe
 			.attr({
 				'src': previewUrl
 			})
 		;
+	}
+
+	/**
+	 * プレビューがロードされたら実行
+	 */
+	function onPreviewLoad( callback ){
+		callback = callback || function(){};
+		if(_this.postMessenger===undefined){return;}
+
+		it79.fnc(
+			{},
+			[
+				function( it1, data ){
+					// postMessageの送受信を行う準備
+					_this.postMessenger.init(function(){
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
+					callback();
+					it1.next();
+				}
+			]
+		);
+		return this;
 	}
 
 	/**
