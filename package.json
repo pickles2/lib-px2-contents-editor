@@ -8,12 +8,13 @@
     "start": "node ./tests/app/server/server.js;",
     "up": "node ./tests/app/server/server.js;",
     "preview": "gulp preview;",
-    "submodules-update": "rm -rfv node_modules/broccoli-html-editor; rm -rfv node_modules/broccoli-field-table; rm -rfv node_modules/utils79; npm install; gulp;",
+    "submodules-update": "rm -rfv node_modules/broccoli-html-editor; rm -rfv node_modules/broccoli-field-table; rm -rfv node_modules/utils79; rm -rfv node_modules/ace-builds; npm install; gulp;",
     "test": "gulp; mocha --ui tdd ./tests/"
   },
   "author": "Tomoya Koyanagi",
   "license": "MIT",
   "dependencies": {
+    "ace-builds": "file:submodules/ace-builds",
     "broccoli-field-table": "file:submodules/broccoli-field-table",
     "broccoli-html-editor": "file:submodules/broccoli-html-editor",
     "desktop-utils": "^0.1.0",

@@ -35,6 +35,9 @@ gulp.task("client-libs", function() {
 	gulp.src(["node_modules/bootstrap/dist/js/**/*"])
 		.pipe(gulp.dest( './dist/libs/bootstrap/dist/js/' ))
 	;
+	gulp.src(["node_modules/ace-builds/src-noconflict/**/*"])
+		.pipe(gulp.dest( './tests/app/client/libs/ace-builds/src-noconflict/' ))
+	;
 });
 
 // src 中の *.css を処理

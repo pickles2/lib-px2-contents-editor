@@ -7,3 +7,6 @@
 [submodule "submodules/broccoli-field-table"]
 	path = submodules/broccoli-field-table
 	url = https://github.com/pickles2/broccoli-field-table.git
+[submodule "submodules/ace-builds"]
+	path = submodules/ace-builds
+	url = https://github.com/ajaxorg/ace-builds.git
