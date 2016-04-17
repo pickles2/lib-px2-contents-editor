@@ -137,6 +137,16 @@ MIT License
 ## for developer
 
 ```
+$ npm install
+```
+開発環境をセットアップします。
+
+```
+$ npm run submodule-update
+```
+サブモジュールを更新します。
+
+```
 $ npm start
 ```
 アプリケーションをスタートします。
@@ -145,6 +155,21 @@ $ npm start
 $ npm run up
 ```
 サーバーを起動します。(`npm start` と同じ)
+
+```
+$ npm run preview
+```
+ブラウザで開きます。(Macのみ)
+
+```
+$ gulp
+```
+ビルドします。
+
+```
+$ gulp watch
+```
+更新を監視して自動的にビルドします。
 
 ```
 $ npm run test
