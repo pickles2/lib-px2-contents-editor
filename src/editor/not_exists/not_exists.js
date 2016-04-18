@@ -55,7 +55,7 @@ module.exports = function(px2ce){
 				},
 				function(result){
 					console.log(result);
-					alert('コンテンツを生成しました。リロードしてください。');
+					window.location.reload();
 				}
 			);
 
