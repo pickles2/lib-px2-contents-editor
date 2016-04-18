@@ -38,6 +38,7 @@ module.exports = function(px2ce, iframe){
 		var win = $(iframe).get(0).contentWindow;
 		$.ajax({
 			"url": __dirname+'/pickles2-preview-contents.js',
+			// "url": __dirname+'/libs/broccoli-html-editor/client/dist/broccoli-preview-contents.js',
 			// "dataType": "text/plain",
 			"complete": function(XMLHttpRequest, textStatus){
 				// console.log(XMLHttpRequest, textStatus);
@@ -45,7 +46,7 @@ module.exports = function(px2ce, iframe){
 				var base64 = new Buffer(XMLHttpRequest.responseText).toString('base64');
 				// console.log(base64);
 				// console.log(__dirname+'/broccoli-preview-contents.js');
-				win.postMessage({'scriptUrl':'data:text/javascript;base64,'+base64}, targetWindowOrigin);
+				win.postMessage({'scriptUrl':'data:text/javascript;charset=utf8;base64,'+base64}, targetWindowOrigin);
 				callback();
 			}
 		});

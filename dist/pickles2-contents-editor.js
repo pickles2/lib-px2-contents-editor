@@ -14924,6 +14924,7 @@ module.exports = function(px2ce, iframe){
 		var win = $(iframe).get(0).contentWindow;
 		$.ajax({
 			"url": __dirname+'/pickles2-preview-contents.js',
+			// "url": __dirname+'/libs/broccoli-html-editor/client/dist/broccoli-preview-contents.js',
 			// "dataType": "text/plain",
 			"complete": function(XMLHttpRequest, textStatus){
 				// console.log(XMLHttpRequest, textStatus);
@@ -14931,7 +14932,7 @@ module.exports = function(px2ce, iframe){
 				var base64 = new Buffer(XMLHttpRequest.responseText).toString('base64');
 				// console.log(base64);
 				// console.log(__dirname+'/broccoli-preview-contents.js');
-				win.postMessage({'scriptUrl':'data:text/javascript;base64,'+base64}, targetWindowOrigin);
+				win.postMessage({'scriptUrl':'data:text/javascript;charset=utf8;base64,'+base64}, targetWindowOrigin);
 				callback();
 			}
 		});
@@ -15176,13 +15177,6 @@ module.exports = function(px2ce){
 							function(){
 								// 初期化が完了すると呼びだされるコールバック関数です。
 
-								px2ce.redraw = function(callback){
-									callback = callback || function(){};
-									_this.redraw(function(){
-										// broccoli.redraw();
-									});
-									return;
-								}
 								_this.redraw(function(){
 									// broccoli.redraw();
 								});
@@ -15392,13 +15386,15 @@ module.exports = function(px2ce){
 
 			$iframe = $('<iframe>');
 			$elmCanvas.html('').append($iframe);
-			_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
 			$iframe
 				.bind('load', function(){
 					console.log('pickles2-contents-editor: preview loaded');
+					// alert('pickles2-contents-editor: preview loaded');
 					onPreviewLoad( callback );
 				})
 			;
+			// $iframe.attr({"src":"about:blank"});
+			_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
 
 			windowResized(function(){
 
@@ -15462,14 +15458,6 @@ module.exports = function(px2ce){
 								}
 
 
-
-								px2ce.redraw = function(callback){
-									callback = callback || function(){};
-									windowResized(function(){
-										// broccoli.redraw();
-									});
-									return;
-								}
 								windowResized(function(){
 									// broccoli.redraw();
 								});
@@ -15490,6 +15478,16 @@ module.exports = function(px2ce){
 	};
 
 
+	/**
+	 * 画面を再描画する
+	 */
+	this.redraw = function( callback ){
+		callback = callback || function(){};
+		windowResized(function(){
+			callback();
+		});
+		return;
+	}
 
 
 	/**
@@ -15603,8 +15601,7 @@ module.exports = function(px2ce){
 /**
  * not_exists.js
  */
-module.exports = function(px2ce, callback){
-	callback = callback || function(){};
+module.exports = function(px2ce){
 	var $ = require('jquery');
 	var utils79 = require('utils79');
 	var $canvas = $(px2ce.getElmCanvas());
@@ -15612,55 +15609,70 @@ module.exports = function(px2ce, callback){
 
 	var ejs = require('ejs');
 
-	$canvas.html((function(){
+	this.init = function( callback ){
+		callback = callback || function(){};
 
-		var fin = ''
-			+ '<div class="container">'
-				+ '<div class="pickles2-contents-editor--notExists">'
-					+ '<form action="javascript:;" method="get">'
-						+ '<p>コンテンツファイルが存在しません。</p>'
-						+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
-						+ '<ul>'
-							+ '<li><label><input type="radio" name="editor-type" value="html.gui" checked="checked" /> HTML + GUI Editor (<%= basename %> + data files)</label></li>'
-							+ '<li><label><input type="radio" name="editor-type" value="html" /> HTML (<%= basename %>)</label></li>'
-							+ '<li><label><input type="radio" name="editor-type" value="md" /> Markdown (<%= basename %>.md)</label></li>'
-						+ '</ul>'
-						+ '<div class="row">'
-							+ '<div class="col-sm-8 col-sm-offset-2"><button class="btn btn-primary btn-block">コンテンツファイルを作成する</button></div>'
-						+ '</div>'
-					+ '</form>'
+		$canvas.html((function(){
+
+			var fin = ''
+				+ '<div class="container">'
+					+ '<div class="pickles2-contents-editor--notExists">'
+						+ '<form action="javascript:;" method="get">'
+							+ '<p>コンテンツファイルが存在しません。</p>'
+							+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
+							+ '<ul>'
+								+ '<li><label><input type="radio" name="editor-type" value="html.gui" checked="checked" /> HTML + GUI Editor (<%= basename %> + data files)</label></li>'
+								+ '<li><label><input type="radio" name="editor-type" value="html" /> HTML (<%= basename %>)</label></li>'
+								+ '<li><label><input type="radio" name="editor-type" value="md" /> Markdown (<%= basename %>.md)</label></li>'
+							+ '</ul>'
+							+ '<div class="row">'
+								+ '<div class="col-sm-8 col-sm-offset-2"><button class="btn btn-primary btn-block">コンテンツファイルを作成する</button></div>'
+							+ '</div>'
+						+ '</form>'
+					+ '</div>'
 				+ '</div>'
-			+ '</div>'
-		;
+			;
 
-		// Just one template
-		fin = ejs.render(fin, {'basename': utils79.basename(page_path)}, {delimiter: '%'});
+			// Just one template
+			fin = ejs.render(fin, {'basename': utils79.basename(page_path)}, {delimiter: '%'});
 
-		return fin;
-	})());
+			return fin;
+		})());
 
-	$canvas.find('form').submit(function(){
-		var editor_type = $(this).find('input[name=editor-type]:checked').val();
-		// console.log( editor_type );
-		if( !editor_type ){
-			alert('ERROR: editor-type is not selected.');
-			return false;
-		}
-
-		px2ce.gpiBridge(
-			{
-				'api': 'initContentFiles',
-				'page_path': page_path,
-				'editor_type': editor_type
-			},
-			function(result){
-				console.log(result);
-				callback(result);
+		$canvas.find('form').submit(function(){
+			var editor_type = $(this).find('input[name=editor-type]:checked').val();
+			// console.log( editor_type );
+			if( !editor_type ){
+				alert('ERROR: editor-type is not selected.');
+				return false;
 			}
-		);
 
-		return false;
-	});
+			px2ce.gpiBridge(
+				{
+					'api': 'initContentFiles',
+					'page_path': page_path,
+					'editor_type': editor_type
+				},
+				function(result){
+					console.log(result);
+					alert('コンテンツを生成しました。リロードしてください。');
+				}
+			);
+
+			return false;
+		});
+
+		callback();
+	}
+
+	/**
+	 * 画面を再描画する
+	 */
+	this.redraw = function( callback ){
+		callback = callback || function(){};
+		callback();
+		return;
+	}
 
 }
 
@@ -15744,9 +15756,9 @@ module.exports = function(px2ce, callback){
 								case '.not_exists':
 									// コンテンツが存在しない
 									$canvas.html('<p>コンテンツが存在しません。</p>');
-									var notExists = require('./editor/not_exists/not_exists.js');
-									notExists(_this, function(){
-										_this.init(options, callback);
+									editor = new (require('./editor/not_exists/not_exists.js'))(_this);
+									editor.init(function(){
+										callback();
 									});
 									break;
 

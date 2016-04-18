@@ -77,9 +77,9 @@
 								case '.not_exists':
 									// コンテンツが存在しない
 									$canvas.html('<p>コンテンツが存在しません。</p>');
-									var notExists = require('./editor/not_exists/not_exists.js');
-									notExists(_this, function(){
-										_this.init(options, callback);
+									editor = new (require('./editor/not_exists/not_exists.js'))(_this);
+									editor.init(function(){
+										callback();
 									});
 									break;
 

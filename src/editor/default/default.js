@@ -124,13 +124,15 @@ module.exports = function(px2ce){
 
 			$iframe = $('<iframe>');
 			$elmCanvas.html('').append($iframe);
-			_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
 			$iframe
 				.bind('load', function(){
 					console.log('pickles2-contents-editor: preview loaded');
+					// alert('pickles2-contents-editor: preview loaded');
 					onPreviewLoad( callback );
 				})
 			;
+			// $iframe.attr({"src":"about:blank"});
+			_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
 
 			windowResized(function(){
 
@@ -194,14 +196,6 @@ module.exports = function(px2ce){
 								}
 
 
-
-								px2ce.redraw = function(callback){
-									callback = callback || function(){};
-									windowResized(function(){
-										// broccoli.redraw();
-									});
-									return;
-								}
 								windowResized(function(){
 									// broccoli.redraw();
 								});
@@ -222,6 +216,16 @@ module.exports = function(px2ce){
 	};
 
 
+	/**
+	 * 画面を再描画する
+	 */
+	this.redraw = function( callback ){
+		callback = callback || function(){};
+		windowResized(function(){
+			callback();
+		});
+		return;
+	}
 
 
 	/**

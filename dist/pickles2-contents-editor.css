@@ -1,5 +1,6 @@
 .pickles2-contents-editor {
-  overflow: auto; }
+  overflow: auto;
+  position: relative; }
 
 .pickles2-contents-editor--toolbar {
   background-color: #eee;

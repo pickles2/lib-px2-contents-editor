@@ -121,13 +121,6 @@ module.exports = function(px2ce){
 							function(){
 								// 初期化が完了すると呼びだされるコールバック関数です。
 
-								px2ce.redraw = function(callback){
-									callback = callback || function(){};
-									_this.redraw(function(){
-										// broccoli.redraw();
-									});
-									return;
-								}
 								_this.redraw(function(){
 									// broccoli.redraw();
 								});
