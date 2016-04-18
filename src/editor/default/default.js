@@ -154,22 +154,28 @@ module.exports = function(px2ce){
 								// console.log(codes);
 
 								if( editorLib == 'ace' ){
-									$canvas.find('.pickles2-contents-editor--default-editor-body-html').append('<div id="pickles2-contents-editor--default-editor-body-html">');
-									$canvas.find('.pickles2-contents-editor--default-editor-body-css').append('<div id="pickles2-contents-editor--default-editor-body-css">');
-									$canvas.find('.pickles2-contents-editor--default-editor-body-js').append('<div id="pickles2-contents-editor--default-editor-body-js">');
+									$canvas.find('.pickles2-contents-editor--default-editor-body-html').append('<div>');
+									$canvas.find('.pickles2-contents-editor--default-editor-body-css').append('<div>');
+									$canvas.find('.pickles2-contents-editor--default-editor-body-js').append('<div>');
 
 									var aceCss = {
 										'position': 'relative',
 										'width': '100%',
 										'height': '100%'
 									};
-									$canvas.find('#pickles2-contents-editor--default-editor-body-html').text(codes['html']).css(aceCss);
-									$canvas.find('#pickles2-contents-editor--default-editor-body-css').text(codes['css']).css(aceCss);
-									$canvas.find('#pickles2-contents-editor--default-editor-body-js').text(codes['js']).css(aceCss);
 									$elmTextareas = {};
-									$elmTextareas['html'] = ace.edit("pickles2-contents-editor--default-editor-body-html");
-									$elmTextareas['css'] = ace.edit("pickles2-contents-editor--default-editor-body-css");
-									$elmTextareas['js'] = ace.edit("pickles2-contents-editor--default-editor-body-js");
+									$elmTextareas['html'] = ace.edit(
+										$canvas.find('.pickles2-contents-editor--default-editor-body-html div').text(codes['html']).css(aceCss).get(0)
+									);
+									$elmTextareas['css'] = ace.edit(
+										$canvas.find('.pickles2-contents-editor--default-editor-body-css div').text(codes['css']).css(aceCss).get(0)
+									);
+									$elmTextareas['js'] = ace.edit(
+										$canvas.find('.pickles2-contents-editor--default-editor-body-js div').text(codes['js']).css(aceCss).get(0)
+									);
+									for(var i in $elmTextareas){
+										$elmTextareas[i].$blockScrolling = Infinity;
+									}
 
 								}else{
 									$canvas.find('.pickles2-contents-editor--default-editor-body-html').append('<textarea>');
