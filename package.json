@@ -30,6 +30,7 @@
   "devDependencies": {
     "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
+    "config": "^1.20.1",
     "express": "^4.13.3",
     "express-pickles2": "^2.0.0-alpha.4",
     "express-session": "^1.13.0",
@@ -43,6 +44,7 @@
     "gulp-sass": "^2.0.1",
     "gulp-twig": "^0.3.0",
     "gulp-uglify": "^1.2.0",
-    "mocha": "^2.3.0"
+    "mocha": "^2.3.0",
+    "url-parse": "^1.1.1"
   }
 }

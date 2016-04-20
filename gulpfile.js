@@ -1,3 +1,5 @@
+var conf = require('config');
+// console.log(conf);
 var path = require('path');
 var gulp = require('gulp');
 var sass = require('gulp-sass');//CSSコンパイラ
@@ -15,6 +17,7 @@ var _tasks = [
 	'.html.twig',
 	'.css',
 	'.css.scss',
+	'test/contents.js',
 	'pickles2-contents-editor.js',
 	'pickles2-preview-contents.js',
 	'client-libs'
@@ -124,6 +127,17 @@ gulp.task(".html.twig", function() {
 	;
 });
 
+// *.js を処理
+gulp.task("test/contents.js", function() {
+	gulp.src(["tests/app/client/index_files/contents.src.js"])
+		.pipe(plumber())
+		.pipe(browserify({
+		}))
+		// .pipe(uglify())
+		.pipe(concat('contents.js'))
+		.pipe(gulp.dest( 'tests/app/client/index_files/' ))
+	;
+});
 
 // src 中のすべての拡張子を監視して処理
 gulp.task("watch", function() {
@@ -132,7 +146,7 @@ gulp.task("watch", function() {
 
 // ブラウザを立ち上げてプレビューする
 gulp.task("preview", function() {
-	require('child_process').spawn('open',['http://127.0.0.1:8080/']);
+	require('child_process').spawn('open',[conf.origin+'/']);
 });
 
 // src 中のすべての拡張子を処理(default)

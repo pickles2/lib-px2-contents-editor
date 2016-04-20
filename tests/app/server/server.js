@@ -1,13 +1,27 @@
 /**
  * server.js
  */
+var conf = require('config');
+var urlParse = require('url-parse');
+conf.originParsed = new urlParse(conf.origin);
+conf.originParsed.protocol = conf.originParsed.protocol.replace(':','');
+if(!conf.originParsed.port){
+	conf.originParsed.port = (conf.originParsed.protocol=='https' ? 443 : 80);
+}
+conf.px2server.originParsed = new urlParse(conf.px2server.origin);
+conf.px2server.originParsed.protocol = conf.px2server.originParsed.protocol.replace(':','');
+if(!conf.px2server.originParsed.port){
+	conf.px2server.originParsed.port = (conf.originParsed.protocol=='https' ? 443 : 80);
+}
+console.log(conf);
+
 var fs = require('fs');
 var path = require('path');
 var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
-console.log('port number is '+8080);
-console.log('Pickles 2 preview server port number is '+8081);
+console.log('port number is '+conf.originParsed.port);
+console.log('Pickles 2 preview server port number is '+conf.px2server.originParsed.port);
 
 
 app.use( require('body-parser')() );
@@ -17,7 +31,7 @@ app.use( '/apis/px2ce', require('./apis/px2ce.js')() );
 app.use( express.static( __dirname+'/../client/' ) );
 
 // {conf.port}番ポートでLISTEN状態にする
-server.listen( 8080, function(){
+server.listen( conf.originParsed.port, function(){
 	console.log('server-standby');
 } );
 
@@ -49,7 +63,7 @@ appPx2.use( '/*', expressPickles2(
 						fin += 'return function f(event) {'+"\n";
 						// fin += 'console.log(event.origin);'+"\n";
 						// fin += 'console.log(event.data);'+"\n";
-						fin += 'if(window.location.hostname!=\'127.0.0.1\'){alert(\'Unauthorized access.\');return;}'+"\n";
+						fin += 'if(window.location.origin!=\''+conf.px2server.origin+'\'){alert(\'Unauthorized access.\');return;}'+"\n";
 						fin += 'if(!event.data.scriptUrl){return;}'+"\n";
 						fin += 'var s=document.createElement(\'script\');'+"\n";
 						fin += 'document.querySelector(\'body\').appendChild(s);s.src=event.data.scriptUrl;'+"\n";
@@ -65,4 +79,4 @@ appPx2.use( '/*', expressPickles2(
 		}
 	}
 ) );
-appPx2.listen(8081);
+appPx2.listen(conf.px2server.originParsed.port);
