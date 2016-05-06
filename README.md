@@ -20,6 +20,12 @@ app.use( '/your/api/path', function(req, res, next){
 		{
 			'appMode': 'web', // 'web' or 'desktop'. default to 'web'
 			'entryScript': require('path').resolve('/path/to/.px_execute.php'),
+			'customFields': {
+				// この設定項目は、 broccoli-html-editor に渡されます
+				'custom1': function(){
+					// ここにカスタムフィールドを実装
+				}
+			} ,
 			'log': function(msg){
 				// エラー発生時にコールされます。
 				// msg を受け取り、適切なファイルへ出力するように実装してください。

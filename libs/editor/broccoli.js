@@ -56,15 +56,12 @@ module.exports = function(px2ce, data, callback){
 		for( var idx in px2conf.plugins.px2dt.paths_module_template ){
 			px2conf.plugins.px2dt.paths_module_template[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
 		}
-		// console.log(px2conf.plugins.px2dt.paths_module_template);
-		// console.log({
-		// 	'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
-		// 	'documentRoot': documentRoot,// realpath
-		// 	'pathHtml': pageInfo.content,
-		// 	'pathResourceDir': pathResourceDir,
-		// 	'realpathDataDir':  realpathDataDir,
-		// 	'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-		// });
+		var customFields = {};
+		customFields.table = require('broccoli-field-table');
+		for( var idx in px2ce.options.customFields ){
+			customFields[idx] = px2ce.options.customFields[idx];
+		}
+		console.log(customFields);
 
 		broccoli.init(
 			{
@@ -75,14 +72,7 @@ module.exports = function(px2ce, data, callback){
 				'pathResourceDir': pathResourceDir,
 				'realpathDataDir':  realpathDataDir,
 				'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-				'customFields': {
-					// 'custom1': function(broccoli){
-					// 	// カスタムフィールドを実装します。
-					// 	// この関数は、fieldBase.js を基底クラスとして継承します。
-					// 	// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
-					// }
-					'table': require('broccoli-field-table')
-				} ,
+				'customFields': customFields ,
 				'bindTemplate': function(htmls, callback){
 					var fin = '';
 					for( var bowlId in htmls ){

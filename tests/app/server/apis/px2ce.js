@@ -12,7 +12,12 @@ module.exports = function(){
 		px2ce.init(
 			{
 				'appMode': 'web', // 'web' or 'desktop'. default to 'web'
-				'entryScript': require('path').resolve(__dirname,'../../../htdocs/.px_execute.php')
+				'entryScript': require('path').resolve(__dirname,'../../../htdocs/.px_execute.php'),
+				'customFields': {
+					"custom1": function(){
+						// カスタムフィールド1
+					}
+				}
 			},
 			function(){
 				px2ce.gpi(JSON.parse(req.body.data), function(value){
