@@ -68,7 +68,7 @@ module.exports = function(){
 			return;
 		}
 		var desktopUtils = require('desktop-utils');
-		desktopUtils.open( data.url );
+		desktopUtils.open( url );
 		callback(true);
 		return;
 	}
