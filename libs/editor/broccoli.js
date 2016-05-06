@@ -61,7 +61,7 @@ module.exports = function(px2ce, data, callback){
 		for( var idx in px2ce.options.customFields ){
 			customFields[idx] = px2ce.options.customFields[idx];
 		}
-		console.log(customFields);
+		// console.log(customFields);
 
 		broccoli.init(
 			{

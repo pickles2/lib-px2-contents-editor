@@ -24,6 +24,11 @@ $(window).load(function(){
 				'preview':{
 					'origin': conf.px2server.origin
 				},
+				'customFields':{
+					'custom1': function(broccoli){
+						// カスタムフィールドを実装
+					}
+				},
 				'gpiBridge': function(input, callback){
 					// GPI(General Purpose Interface) Bridge
 					// broccoliは、バックグラウンドで様々なデータ通信を行います。

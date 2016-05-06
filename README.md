@@ -22,8 +22,10 @@ app.use( '/your/api/path', function(req, res, next){
 			'entryScript': require('path').resolve('/path/to/.px_execute.php'),
 			'customFields': {
 				// この設定項目は、 broccoli-html-editor に渡されます
-				'custom1': function(){
-					// ここにカスタムフィールドを実装
+				'custom1': function(broccoli){
+					// カスタムフィールドを実装します。
+					// この関数は、fieldBase.js を基底クラスとして継承します。
+					// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
 				}
 			} ,
 			'log': function(msg){
@@ -102,6 +104,14 @@ pickles2ContentsEditor.init(
 		'elmCanvas': document.getElementById('canvas'), // <- 編集画面を描画するための器となる要素
 		'preview':{ // プレビュー用サーバーの情報を設定します。
 			'origin': 'http://127.0.0.1:8081'
+		},
+		'customFields': {
+			// この設定項目は、 broccoli-html-editor に渡されます
+			'custom1': function(broccoli){
+				// カスタムフィールドを実装します。
+				// この関数は、fieldBase.js を基底クラスとして継承します。
+				// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
+			}
 		},
 		'gpiBridge': function(input, callback){
 			// GPI(General Purpose Interface) Bridge
