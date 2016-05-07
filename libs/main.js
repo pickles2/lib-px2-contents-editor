@@ -28,7 +28,15 @@ module.exports = function(){
 		this.px2proj = require('px2agent').createProject(options.entryScript);
 		this.options = options;
 
-		callback();
+		this.getProjectInfo(function(pjInfo){
+			// console.log(pjInfo);
+			_this.px2conf = pjInfo.conf;
+			_this.pageInfo = pjInfo.pageInfo;
+			_this.documentRoot = pjInfo.documentRoot;
+			_this.realpathDataDir = pjInfo.realpathDataDir;
+			_this.pathResourceDir = pjInfo.pathResourceDir;
+			callback();
+		});
 	}
 
 	/**

@@ -6,47 +6,15 @@ module.exports = function(px2ce, data, callback){
 
 	var px2proj = px2ce.px2proj,
 		page_path = px2ce.page_path,
-		px2conf,
-		pageInfo,
-		documentRoot,
-		realpathDataDir,
-		pathResourceDir;
+		px2conf = px2ce.px2conf,
+		pageInfo = px2ce.pageInfo,
+		documentRoot = px2ce.documentRoot,
+		realpathDataDir = px2ce.realpathDataDir,
+		pathResourceDir = px2ce.pathResourceDir
+	;
 
-
-	px2proj.get_config(function(_px2conf){
-		px2conf = _px2conf;
-		// console.log(px2conf);
-		px2proj.get_page_info(page_path, function(_pageInfo){
-			pageInfo = _pageInfo;
-			// console.log(pageInfo);
-
-			px2proj.get_path_docroot(function(_documentRoot){
-				documentRoot = _documentRoot;
-
-				px2proj.realpath_files(page_path, '', function(_realpathDataDir){
-					realpathDataDir = require('path').resolve(_realpathDataDir, 'guieditor.ignore')+'/';
-
-					px2proj.path_files(page_path, '', function(_pathResourceDir){
-						pathResourceDir = require('path').resolve(_pathResourceDir, 'resources')+'/';
-						pathResourceDir = pathResourceDir.replace(new RegExp('\\\\','g'), '/').replace(new RegExp('^[a-zA-Z]\\:\\/'), '/');
-							// Windows でボリュームラベル "C:" などが含まれるようなパスを渡すと、
-							// broccoli-html-editor内 resourceMgr で
-							// 「Uncaught RangeError: Maximum call stack size exceeded」が起きて落ちる。
-							// ここで渡すのはウェブ側からみえる外部のパスでありサーバー内部パスではないので、
-							// ボリュームラベルが付加された値を渡すのは間違い。
-
-						broccoliStandby(data.forBroccoli.api, data.forBroccoli.options, function(bin){
-							callback(bin);
-						});
-
-					});
-
-				});
-
-
-			});
-
-		});
+	broccoliStandby(data.forBroccoli.api, data.forBroccoli.options, function(bin){
+		callback(bin);
 	});
 
 	function broccoliStandby(api, options, callback){
