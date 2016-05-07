@@ -160,16 +160,29 @@
 		}
 
 		/**
-		* プレビュー上のリンククリックイベント
-		*/
+		 * プレビュー上のリンククリックイベント
+		 */
 		this.onClickContentsLink = function( uri, data ){
 			this.options.onClickContentsLink( uri, data );
 			return;
 		}
 
 		/**
-		* ユーザーへのメッセージを表示する
-		*/
+		 * コマンドキー名を得る
+		 */
+		this.getCmdKeyName = function(){
+			var ua = window.navigator.userAgent;
+			// console.log(ua);
+			var idxOf = ua.indexOf( 'Mac OS X' );
+			if( idxOf >= 0 ){
+				return 'cmd';
+			}
+			return 'ctrl';
+		}
+
+		/**
+		 * ユーザーへのメッセージを表示する
+		 */
 		this.message = function(message, callback){
 			callback  = callback||function(){};
 			// console.info(message);

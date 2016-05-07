@@ -195,14 +195,16 @@ module.exports = function(px2ce){
 
 								}
 
+								setKeyboardEvent(function(){
+									windowResized(function(){
+										// broccoli.redraw();
+									});
 
-								windowResized(function(){
-									// broccoli.redraw();
+									updatePreview();
+
+									// callback();
 								});
 
-								updatePreview();
-
-								// callback();
 							}
 						);
 					}
@@ -227,6 +229,31 @@ module.exports = function(px2ce){
 		return;
 	}
 
+	/**
+	 * キーボードイベントハンドラ
+	 */
+	function setKeyboardEvent(callback){
+		callback = callback || function(){};
+		if( !window.keypress ){ callback(true); return; }
+
+		// キーボードイベントセット
+		_Keypress = new window.keypress.Listener();
+		_this.Keypress = _Keypress;
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" s", function(e) {
+			saveContentsSrc(
+				function(result){
+					console.log(result);
+					if(!result.result){
+						alert(result.message);
+					}
+					updatePreview();
+				}
+			);
+		});
+
+		callback(true);
+		return;
+	}
 
 	/**
 	 * window.resize イベントハンドラ

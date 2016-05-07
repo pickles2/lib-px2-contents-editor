@@ -123,12 +123,14 @@ module.exports = function(px2ce){
 							} ,
 							function(){
 								// 初期化が完了すると呼びだされるコールバック関数です。
+								setKeyboardEvent(function(){
+									_this.redraw(function(){
+										// broccoli.redraw();
+									});
 
-								_this.redraw(function(){
-									// broccoli.redraw();
+									callback();
 								});
 
-								callback();
 							}
 						);
 					}
@@ -139,6 +141,93 @@ module.exports = function(px2ce){
 		});
 
 	};
+
+	/**
+	 * キーボードイベントハンドラ
+	 */
+	function setKeyboardEvent(callback){
+		callback = callback || function(){};
+		if( !window.keypress ){ callback(true); return; }
+		if( !broccoli ){ callback(true); return; }
+
+		// キーボードイベントセット
+		_Keypress = new window.keypress.Listener();
+		_this.Keypress = _Keypress;
+		_Keypress.simple_combo("backspace", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.remove(function(){
+				console.log('remove instance done.');
+			});
+		});
+		_Keypress.simple_combo("delete", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.remove(function(){
+				console.log('remove instance done.');
+			});
+		});
+		_Keypress.simple_combo("escape", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.unselectInstance();
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" c", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.copy(function(){
+				console.log('copy instance done.');
+			});
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" v", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.paste(function(){
+				console.log('paste instance done.');
+			});
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" z", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.historyBack(function(){
+				console.log('historyBack done.');
+			});
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" y", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.historyGo(function(){
+				console.log('historyGo done.');
+			});
+		});
+		// _Keypress.simple_combo(px2ce.getCmdKeyName()+" x", function(e) {
+		// 	px.message('cmd x');
+		// 	e.preventDefault();
+		// });
+		callback(true);
+		return;
+	}
 
 	/**
 	 * window.resize イベントハンドラ
