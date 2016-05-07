@@ -6,11 +6,12 @@ module.exports = function(){
 	var Px2CE = require('../../../../libs/main.js');
 
 	return function(req, res, next){
-		// console.log(req.body);
+		console.log(req.body);
 
 		var px2ce = new Px2CE();
 		px2ce.init(
 			{
+				'page_path': req.body.page_path,
 				'appMode': 'web', // 'web' or 'desktop'. default to 'web'
 				'entryScript': require('path').resolve(__dirname,'../../../htdocs/.px_execute.php'),
 				'customFields': {

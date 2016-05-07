@@ -18,6 +18,7 @@ app.use( '/your/api/path', function(req, res, next){
 	var px2ce = new Px2CE();
 	px2ce.init(
 		{
+			'page_path': '/path/to/page.html', // <- 編集対象ページのパス
 			'appMode': 'web', // 'web' or 'desktop'. default to 'web'
 			'entryScript': require('path').resolve('/path/to/.px_execute.php'),
 			'customFields': {
@@ -29,9 +30,9 @@ app.use( '/your/api/path', function(req, res, next){
 				}
 			} ,
 			'log': function(msg){
-				// エラー発生時にコールされます。
+				// ログ情報出力時にコールされます。
 				// msg を受け取り、適切なファイルへ出力するように実装してください。
-				fs.writeFileSync('/path/to/error.log', {}, msg);
+				fs.writeFileSync('/path/to/px2ce.log', {}, msg);
 			}
 		},
 		function(){
