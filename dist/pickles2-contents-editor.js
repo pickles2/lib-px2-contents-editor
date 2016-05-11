@@ -15155,6 +15155,13 @@ module.exports = function(px2ce){
 							"data-broccoli-preview": px2ce.options.preview.origin + page_path
 						});
 
+						var customFields = {};
+						customFields.table = window.BroccoliFieldTable;
+						for( var idx in px2ce.options.customFields ){
+							customFields[idx] = px2ce.options.customFields[idx];
+						}
+						// console.log(customFields);
+
 						broccoli = new Broccoli();
 						broccoli.init(
 							{
@@ -15167,11 +15174,7 @@ module.exports = function(px2ce){
 								//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
 								'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
 								// ↑bowlの名称を、data-contents属性値から取得します。
-								'customFields': {
-									// 'href': require('./../common/broccoli/broccoli-field-href/server.js'),
-									// // 'psd': require('broccoli-field-psd'),
-									'table': window.BroccoliFieldTable
-								},
+								'customFields': customFields,
 								'gpiBridge': function(api, options, callback){
 									// GPI(General Purpose Interface) Bridge
 									// broccoliは、バックグラウンドで様々なデータ通信を行います。
@@ -15201,12 +15204,14 @@ module.exports = function(px2ce){
 							} ,
 							function(){
 								// 初期化が完了すると呼びだされるコールバック関数です。
+								setKeyboardEvent(function(){
+									_this.redraw(function(){
+										// broccoli.redraw();
+									});
 
-								_this.redraw(function(){
-									// broccoli.redraw();
+									callback();
 								});
 
-								callback();
 							}
 						);
 					}
@@ -15217,6 +15222,93 @@ module.exports = function(px2ce){
 		});
 
 	};
+
+	/**
+	 * キーボードイベントハンドラ
+	 */
+	function setKeyboardEvent(callback){
+		callback = callback || function(){};
+		if( !window.keypress ){ callback(true); return; }
+		if( !broccoli ){ callback(true); return; }
+
+		// キーボードイベントセット
+		_Keypress = new window.keypress.Listener();
+		_this.Keypress = _Keypress;
+		_Keypress.simple_combo("backspace", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.remove(function(){
+				console.log('remove instance done.');
+			});
+		});
+		_Keypress.simple_combo("delete", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.remove(function(){
+				console.log('remove instance done.');
+			});
+		});
+		_Keypress.simple_combo("escape", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.unselectInstance();
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" c", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.copy(function(){
+				console.log('copy instance done.');
+			});
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" v", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.paste(function(){
+				console.log('paste instance done.');
+			});
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" z", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.historyBack(function(){
+				console.log('historyBack done.');
+			});
+		});
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" y", function(e) {
+			switch(e.target.tagName.toLowerCase()){
+				case 'input': case 'textarea':
+				return true; break;
+			}
+			e.preventDefault();
+			broccoli.historyGo(function(){
+				console.log('historyGo done.');
+			});
+		});
+		// _Keypress.simple_combo(px2ce.getCmdKeyName()+" x", function(e) {
+		// 	px.message('cmd x');
+		// 	e.preventDefault();
+		// });
+		callback(true);
+		return;
+	}
 
 	/**
 	 * window.resize イベントハンドラ
@@ -15482,14 +15574,16 @@ module.exports = function(px2ce){
 
 								}
 
+								setKeyboardEvent(function(){
+									windowResized(function(){
+										// broccoli.redraw();
+									});
 
-								windowResized(function(){
-									// broccoli.redraw();
+									updatePreview();
+
+									// callback();
 								});
 
-								updatePreview();
-
-								// callback();
 							}
 						);
 					}
@@ -15514,6 +15608,31 @@ module.exports = function(px2ce){
 		return;
 	}
 
+	/**
+	 * キーボードイベントハンドラ
+	 */
+	function setKeyboardEvent(callback){
+		callback = callback || function(){};
+		if( !window.keypress ){ callback(true); return; }
+
+		// キーボードイベントセット
+		_Keypress = new window.keypress.Listener();
+		_this.Keypress = _Keypress;
+		_Keypress.simple_combo(px2ce.getCmdKeyName()+" s", function(e) {
+			saveContentsSrc(
+				function(result){
+					console.log(result);
+					if(!result.result){
+						alert(result.message);
+					}
+					updatePreview();
+				}
+			);
+		});
+
+		callback(true);
+		return;
+	}
 
 	/**
 	 * window.resize イベントハンドラ
@@ -15746,6 +15865,7 @@ module.exports = function(px2ce){
 			var _this = this;
 			// console.log(options);
 			this.options = options;
+			this.options.customFields = this.options.customFields || {}; // custom fields
 			this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
 			this.options.complete = this.options.complete || function(){ alert('finished.'); };
 			this.options.onClickContentsLink = this.options.onClickContentsLink || function(uri, data){ alert('onClickContentsLink: '+uri); };
@@ -15863,16 +15983,29 @@ module.exports = function(px2ce){
 		}
 
 		/**
-		* プレビュー上のリンククリックイベント
-		*/
+		 * プレビュー上のリンククリックイベント
+		 */
 		this.onClickContentsLink = function( uri, data ){
 			this.options.onClickContentsLink( uri, data );
 			return;
 		}
 
 		/**
-		* ユーザーへのメッセージを表示する
-		*/
+		 * コマンドキー名を得る
+		 */
+		this.getCmdKeyName = function(){
+			var ua = window.navigator.userAgent;
+			// console.log(ua);
+			var idxOf = ua.indexOf( 'Mac OS X' );
+			if( idxOf >= 0 ){
+				return 'cmd';
+			}
+			return 'ctrl';
+		}
+
+		/**
+		 * ユーザーへのメッセージを表示する
+		 */
 		this.message = function(message, callback){
 			callback  = callback||function(){};
 			// console.info(message);

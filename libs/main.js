@@ -19,14 +19,24 @@ module.exports = function(){
 		// console.log(options);
 		options = options || {};
 		options.appMode = options.appMode || 'web'; // web | desktop
+		options.customFields = options.customFields || {}; // custom fields
 		options.log = options.log || function(msg){
 			console.error(msg);
 		};
 		this.entryScript = options.entryScript;
+		this.page_path = options.page_path;
 		this.px2proj = require('px2agent').createProject(options.entryScript);
 		this.options = options;
 
-		callback();
+		this.getProjectInfo(function(pjInfo){
+			// console.log(pjInfo);
+			_this.px2conf = pjInfo.conf;
+			_this.pageInfo = pjInfo.pageInfo;
+			_this.documentRoot = pjInfo.documentRoot;
+			_this.realpathDataDir = pjInfo.realpathDataDir;
+			_this.pathResourceDir = pjInfo.pathResourceDir;
+			callback();
+		});
 	}
 
 	/**
@@ -68,7 +78,7 @@ module.exports = function(){
 			return;
 		}
 		var desktopUtils = require('desktop-utils');
-		desktopUtils.open( data.url );
+		desktopUtils.open( url );
 		callback(true);
 		return;
 	}
@@ -308,7 +318,7 @@ module.exports = function(){
 	 */
 	this.gpi = function(data, callback){
 		callback = callback||function(){};
-		this.page_path = data.page_path;
+		// this.page_path = data.page_path;
 		// console.log(this.page_path);
 		var gpi = require( __dirname+'/gpi.js' );
 		gpi(

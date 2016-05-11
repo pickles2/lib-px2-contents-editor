@@ -42,6 +42,7 @@
 			var _this = this;
 			// console.log(options);
 			this.options = options;
+			this.options.customFields = this.options.customFields || {}; // custom fields
 			this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
 			this.options.complete = this.options.complete || function(){ alert('finished.'); };
 			this.options.onClickContentsLink = this.options.onClickContentsLink || function(uri, data){ alert('onClickContentsLink: '+uri); };
@@ -159,16 +160,29 @@
 		}
 
 		/**
-		* プレビュー上のリンククリックイベント
-		*/
+		 * プレビュー上のリンククリックイベント
+		 */
 		this.onClickContentsLink = function( uri, data ){
 			this.options.onClickContentsLink( uri, data );
 			return;
 		}
 
 		/**
-		* ユーザーへのメッセージを表示する
-		*/
+		 * コマンドキー名を得る
+		 */
+		this.getCmdKeyName = function(){
+			var ua = window.navigator.userAgent;
+			// console.log(ua);
+			var idxOf = ua.indexOf( 'Mac OS X' );
+			if( idxOf >= 0 ){
+				return 'cmd';
+			}
+			return 'ctrl';
+		}
+
+		/**
+		 * ユーザーへのメッセージを表示する
+		 */
 		this.message = function(message, callback){
 			callback  = callback||function(){};
 			// console.info(message);
