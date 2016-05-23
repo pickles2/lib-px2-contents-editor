@@ -147,10 +147,6 @@ pickles2ContentsEditor.init(
 </script>
 ```
 
-## License
-
-MIT License
-
 ## for developer
 
 ```
@@ -192,3 +188,24 @@ $ gulp watch
 $ npm run test
 ```
 テストスクリプトを実行します。
+
+
+## 更新履歴 - Change log
+
+### pickles2-contents-editor@2.0.0-beta.2
+
+- Ace Editor を自然改行されるように設定した。
+- Ace Editor で、書式に応じてテーマが変わるようにした。
+- Ace Editor の文字サイズを最適化。
+
+
+## License
+
+MIT License
+
+
+## Author
+
+- Tomoya Koyanagi <tomk79@gmail.com>
+- website: <http://www.pxt.jp/>
+- Twitter: @tomk79 <http://twitter.com/tomk79/>
