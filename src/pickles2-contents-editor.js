@@ -68,6 +68,10 @@
 						},
 						function(editorType){
 							// console.log(editorType);
+							var editorOption = {
+								'editorType': editorType,
+								'serverConfig': serverConfig
+							};
 							switch(editorType){
 								case '.page_not_exists':
 									// ページ自体が存在しない。
@@ -79,7 +83,7 @@
 									// コンテンツが存在しない
 									$canvas.html('<p>コンテンツが存在しません。</p>');
 									editor = new (require('./editor/not_exists/not_exists.js'))(_this);
-									editor.init(function(){
+									editor.init(editorOption, function(){
 										callback();
 									});
 									break;
@@ -88,7 +92,7 @@
 									// broccoli
 									$canvas.html('<p>GUIエディタを起動します。</p>');
 									editor = new (require('./editor/broccoli/broccoli.js'))(_this);
-									editor.init(function(){
+									editor.init(editorOption, function(){
 										callback();
 									});
 									break;
@@ -99,7 +103,7 @@
 									// defaultテキストエディタ
 									$canvas.html('<p>テキストエディタを起動します。</p>');
 									editor = new (require('./editor/default/default.js'))(_this);
-									editor.init(function(){
+									editor.init(editorOption, function(){
 										callback();
 									});
 									break;

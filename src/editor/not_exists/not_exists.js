@@ -9,7 +9,7 @@ module.exports = function(px2ce){
 
 	var ejs = require('ejs');
 
-	this.init = function( callback ){
+	this.init = function( editorOption, callback ){
 		callback = callback || function(){};
 
 		$canvas.html((function(){

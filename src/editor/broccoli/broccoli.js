@@ -20,7 +20,7 @@ module.exports = function(px2ce){
 	/**
 	 * 初期化
 	 */
-	this.init = function(callback){
+	this.init = function(editorOption, callback){
 		callback = callback || function(){};
 
 		toolbar.init({
