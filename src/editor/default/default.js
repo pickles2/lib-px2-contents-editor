@@ -24,7 +24,7 @@ module.exports = function(px2ce){
 	/**
 	 * 初期化
 	 */
-	this.init = function(callback){
+	this.init = function(editorOption, callback){
 		callback = callback || function(){};
 
 		toolbar.init({
@@ -176,7 +176,35 @@ module.exports = function(px2ce){
 										$canvas.find('.pickles2-contents-editor--default-editor-body-js div').text(codes['js']).css(aceCss).get(0)
 									);
 									for(var i in $elmTextareas){
+										$elmTextareas[i].setFontSize(16);
+										$elmTextareas[i].getSession().setUseWrapMode(true);// Ace 自然改行
+										$elmTextareas[i].setShowInvisibles(true);// Ace 不可視文字の可視化
 										$elmTextareas[i].$blockScrolling = Infinity;
+										$elmTextareas[i].setTheme("ace/theme/github");
+										$elmTextareas[i].getSession().setMode("ace/mode/html");
+									}
+									$elmTextareas['html'].setTheme("ace/theme/monokai");
+									$elmTextareas['html'].getSession().setMode("ace/mode/php");
+									$elmTextareas['css'].setTheme("ace/theme/tomorrow");
+									$elmTextareas['css'].getSession().setMode("ace/mode/scss");
+									$elmTextareas['js'].setTheme("ace/theme/xcode");
+									$elmTextareas['js'].getSession().setMode("ace/mode/javascript");
+									switch(editorOption.editorType){
+										case 'md':
+											$elmTextareas['html'].setTheme("ace/theme/github");
+											$elmTextareas['html'].getSession().setMode("ace/mode/markdown");
+											$canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch=html]').text('Markdown');
+											break;
+										case 'txt':
+											$elmTextareas['html'].setTheme("ace/theme/katzenmilch");
+											$elmTextareas['html'].getSession().setMode("ace/mode/plain_text");
+											$canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch=html]').text('Text');
+											break;
+										case 'html':
+										default:
+											$elmTextareas['html'].setTheme("ace/theme/monokai");
+											$elmTextareas['html'].getSession().setMode("ace/mode/php");
+											break;
 									}
 
 								}else{
