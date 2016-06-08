@@ -192,11 +192,19 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor@2.0.0-beta.2
+### pickles2-contents-editor@2.0.0-beta.2 (2016年6月8日)
 
+- broccoli-html-editor@0.1.0-beta.9 に更新。
+- 設定項目 customFields を追加。
+- window.keypress が存在する場合に、自動的にキーバインドを設定するようになった。
 - Ace Editor を自然改行されるように設定した。
 - Ace Editor で、書式に応じてテーマが変わるようにした。
 - Ace Editor の文字サイズを最適化。
+- broccoli-html-editorのモジュールの詳細ダイアログで、READMEの内容をコピーできるようにした。
+- サーバーサイドのinit項目にも page_path を追加。
+- ソース編集で、CSS と JS が空白なときにも、外部ファイルが作られてしまう問題を修正。
+- desktopモードで ブラウザで開く が動作しない不具合を修正。
+- その他パフォーマンス向上、細かい不具合の修正など。
 
 
 ## License
