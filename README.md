@@ -192,6 +192,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor@2.0.0-beta.3 (2016年??月??日)
+
+- ????????????
+
 ### pickles2-contents-editor@2.0.0-beta.2 (2016年6月8日)
 
 - broccoli-html-editor@0.1.0-beta.9 に更新。
