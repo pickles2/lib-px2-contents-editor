@@ -26,7 +26,7 @@ module.exports = function(px2ce){
 				+'</div>'
 				+'<div class="pickles2-contents-editor--toolbar-finish">'
 					+'<div class="btn-group" role="group">'
-						+'<button class="btn btn-primary btn-xs pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> 完了</button>'
+						+'<button class="px2-btn px2-btn--primary px2-btn--sm pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> 完了</button>'
 					+'</div>'
 				+'</div>'
 			+'</div>'
@@ -37,7 +37,7 @@ module.exports = function(px2ce){
 		$btns = $('.pickles2-contents-editor--toolbar-btns .btn-group');
 		for( var idx in options.btns ){
 			var btn = options.btns[idx];
-			$btns.append( $('<button class="btn btn-default btn-xs">')
+			$btns.append( $('<button class="px2-btn px2-btn--sm">')
 				.text( btn.label )
 				.click( btn.click )
 			);

@@ -8,7 +8,7 @@
     "start": "node ./tests/app/server/server.js;",
     "up": "node ./tests/app/server/server.js;",
     "preview": "gulp preview;",
-    "submodules-update": "rm -rfv node_modules/broccoli-html-editor; rm -rfv node_modules/broccoli-field-table; rm -rfv node_modules/utils79; rm -rfv node_modules/ace-builds; npm install; gulp;",
+    "submodules-update": "rm -rfv node_modules/broccoli-html-editor; rm -rfv node_modules/broccoli-field-table; rm -rfv node_modules/px2style; rm -rfv node_modules/utils79; rm -rfv node_modules/ace-builds; npm install; gulp;",
     "test": "gulp; mocha --ui tdd ./tests/"
   },
   "author": "Tomoya Koyanagi",
@@ -45,6 +45,7 @@
     "gulp-twig": "^0.3.0",
     "gulp-uglify": "^1.2.0",
     "mocha": "^2.3.0",
+    "px2style": "file:submodules/px2style",
     "url-parse": "^1.1.1"
   }
 }

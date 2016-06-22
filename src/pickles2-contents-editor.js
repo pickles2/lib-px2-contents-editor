@@ -18,6 +18,10 @@
 	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/bootstrap/dist/css/bootstrap.css" />');
 	document.write('<script src="'+__dirname+'/libs/bootstrap/dist/js/bootstrap.js"></script>');
 
+	// px2style をロード
+	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/px2style/dist/styles.css" />');
+	document.write('<script src="'+__dirname+'/libs/px2style/dist/scripts.js"></script>');
+
 	// broccoli-html-editor をロード
 	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.css" />');
 	document.write('<script src="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.js"></script>');

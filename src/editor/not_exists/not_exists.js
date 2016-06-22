@@ -26,7 +26,7 @@ module.exports = function(px2ce){
 								+ '<li><label><input type="radio" name="editor-type" value="md" /> Markdown (<%= basename %>.md)</label></li>'
 							+ '</ul>'
 							+ '<div class="row">'
-								+ '<div class="col-sm-8 col-sm-offset-2"><button class="btn btn-primary btn-block">コンテンツファイルを作成する</button></div>'
+								+ '<div class="col-sm-8 col-sm-offset-2"><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg">コンテンツファイルを作成する</button></div>'
 							+ '</div>'
 						+ '</form>'
 					+ '</div>'
