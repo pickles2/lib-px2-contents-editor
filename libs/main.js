@@ -33,6 +33,7 @@ module.exports = function(){
 			_this.px2conf = pjInfo.conf;
 			_this.pageInfo = pjInfo.pageInfo;
 			_this.documentRoot = pjInfo.documentRoot;
+			_this.contRoot = pjInfo.contRoot;
 			_this.realpathDataDir = pjInfo.realpathDataDir;
 			_this.pathResourceDir = pjInfo.pathResourceDir;
 			callback();
@@ -114,26 +115,30 @@ module.exports = function(){
 			_this.px2proj.get_page_info(_this.page_path, function(pageInfo){
 				pjInfo.pageInfo = pageInfo;
 
-				_this.px2proj.get_path_docroot(function(documentRoot){
-					pjInfo.documentRoot = documentRoot;
+				_this.px2proj.get_path_controot(function(contRoot){
+					pjInfo.contRoot = contRoot;
 
-					_this.px2proj.realpath_files(_this.page_path, '', function(realpathDataDir){
-						realpathDataDir = require('path').resolve(realpathDataDir, 'guieditor.ignore')+'/';
-						pjInfo.realpathDataDir = realpathDataDir;
+					_this.px2proj.get_path_docroot(function(documentRoot){
+						pjInfo.documentRoot = documentRoot;
 
-						_this.px2proj.path_files(_this.page_path, '', function(pathResourceDir){
-							pathResourceDir = require('path').resolve(pathResourceDir, 'resources')+'/';
-							pathResourceDir = pathResourceDir.replace(new RegExp('\\\\','g'), '/').replace(new RegExp('^[a-zA-Z]\\:\\/'), '/');
-								// Windows でボリュームラベル "C:" などが含まれるようなパスを渡すと、
-								// broccoli-html-editor内 resourceMgr で
-								// 「Uncaught RangeError: Maximum call stack size exceeded」が起きて落ちる。
-								// ここで渡すのはウェブ側からみえる外部のパスでありサーバー内部パスではないので、
-								// ボリュームラベルが付加された値を渡すのは間違い。
+						_this.px2proj.realpath_files(_this.page_path, '', function(realpathDataDir){
+							realpathDataDir = require('path').resolve(realpathDataDir, 'guieditor.ignore')+'/';
+							pjInfo.realpathDataDir = realpathDataDir;
 
-							pjInfo.pathResourceDir = pathResourceDir;
+							_this.px2proj.path_files(_this.page_path, '', function(pathResourceDir){
+								pathResourceDir = require('path').resolve(pathResourceDir, 'resources')+'/';
+								pathResourceDir = pathResourceDir.replace(new RegExp('\\\\','g'), '/').replace(new RegExp('^[a-zA-Z]\\:\\/'), '/');
+									// Windows でボリュームラベル "C:" などが含まれるようなパスを渡すと、
+									// broccoli-html-editor内 resourceMgr で
+									// 「Uncaught RangeError: Maximum call stack size exceeded」が起きて落ちる。
+									// ここで渡すのはウェブ側からみえる外部のパスでありサーバー内部パスではないので、
+									// ボリュームラベルが付加された値を渡すのは間違い。
 
-							callback(pjInfo);
+								pjInfo.pathResourceDir = pathResourceDir;
 
+								callback(pjInfo);
+
+							});
 						});
 					});
 				});
@@ -189,37 +194,39 @@ module.exports = function(){
 				_this.px2proj.get_path_content(_this.page_path, function(contPath){
 					// console.log(contPath);
 
-					_this.px2proj.get_path_docroot(function(contRoot){
-						if( fs.existsSync( contRoot + contPath ) ){
-							rjt('Content Already Exists.');
-							return;
-						}
-						switch( editorType ){
-							case 'html.gui':
-							case 'html':
-							case 'md':
-								// OK
-								break;
-							default:
-								rjt('Unknown editor-type "'+editorType+'".');
+					_this.px2proj.get_path_controot(function(contRoot){
+						_this.px2proj.get_path_docroot(function(docRoot){
+							if( fs.existsSync( docRoot + contRoot + contPath ) ){
+								rjt('Content Already Exists.');
 								return;
-								break;
-						}
-
-						var pathInfo = parsePath( contRoot + contPath );
-						prop.realpath_cont = pathInfo.path;
-
-						_this.px2proj.realpath_files(_this.page_path, '', function(realpath_resource_dir){
-							prop.realpath_resource_dir = realpath_resource_dir;
-							prop.editor_type = editorType;
-							if( prop.editor_type == 'md' ){
-								prop.realpath_cont += '.'+prop.editor_type;
+							}
+							switch( editorType ){
+								case 'html.gui':
+								case 'html':
+								case 'md':
+									// OK
+									break;
+								default:
+									rjt('Unknown editor-type "'+editorType+'".');
+									return;
+									break;
 							}
 
-							rlv();
+							var pathInfo = parsePath( docRoot + contRoot + contPath );
+							prop.realpath_cont = pathInfo.path;
+
+							_this.px2proj.realpath_files(_this.page_path, '', function(realpath_resource_dir){
+								prop.realpath_resource_dir = realpath_resource_dir;
+								prop.editor_type = editorType;
+								if( prop.editor_type == 'md' ){
+									prop.realpath_cont += '.'+prop.editor_type;
+								}
+
+								rlv();
+
+							});
 
 						});
-
 					});
 				});
 
@@ -299,13 +306,13 @@ module.exports = function(){
 				callback('.page_not_exists');
 				return;
 			}
-			if( utils79.is_file( pjInfo.documentRoot + pjInfo.pageInfo.content ) ){
+			if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content ) ){
 				rtn = 'html';
 				if( utils79.is_file( pjInfo.realpathDataDir + '/data.json' ) ){
 					rtn = 'html.gui';
 				}
 
-			}else if( utils79.is_file( pjInfo.documentRoot + pjInfo.pageInfo.content + '.md' ) ){
+			}else if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content + '.md' ) ){
 				rtn = 'md';
 			}
 			callback(rtn);

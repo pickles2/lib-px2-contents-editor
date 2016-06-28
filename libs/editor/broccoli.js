@@ -8,6 +8,7 @@ module.exports = function(px2ce, data, callback){
 		page_path = px2ce.page_path,
 		px2conf = px2ce.px2conf,
 		pageInfo = px2ce.pageInfo,
+		contRoot = px2ce.contRoot,
 		documentRoot = px2ce.documentRoot,
 		realpathDataDir = px2ce.realpathDataDir,
 		pathResourceDir = px2ce.pathResourceDir
