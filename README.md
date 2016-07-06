@@ -194,7 +194,8 @@ $ npm run test
 
 ### pickles2-contents-editor@2.0.0-beta.3 (2016年??月??日)
 
-- ????????????
+- コンフィグ `path_controot` が `/` 以外の場合に、起きる不具合を修正。
+- ローカルリソースの読み込みの記述を、 $px->path_files() 依存に変更。
 
 ### pickles2-contents-editor@2.0.0-beta.2 (2016年6月8日)
 

@@ -46,8 +46,8 @@ module.exports = function(px2ce){
 							px2ce.px2proj.realpath_files(px2ce.page_path, '', function(realpath_resource_dir){
 								realpath_resource_dir = require('path').resolve(realpath_resource_dir);
 								var _contentsPath = require('path').resolve(docRoot + contRoot + contPath);
-								var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="./' + utils79.basename( realpath_resource_dir ) + '/style.css" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
-								var strLoaderJS = '<?php ob_start(); ?><script src="./' + utils79.basename( realpath_resource_dir ) + '/script.js"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
+								var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
+								var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
 
 								// console.log(_contentsPath);
 								// console.log(realpath_resource_dir);
@@ -132,8 +132,8 @@ module.exports = function(px2ce){
 							px2ce.px2proj.realpath_files(px2ce.page_path, '', function(realpath_resource_dir){
 								realpath_resource_dir = require('path').resolve(realpath_resource_dir);
 								var _contentsPath = require('path').resolve(docRoot + contRoot + contPath);
-								var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="./' + utils79.basename( realpath_resource_dir ) + '/style.css" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
-								var strLoaderJS = '<?php ob_start(); ?><script src="./' + utils79.basename( realpath_resource_dir ) + '/script.js"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
+								var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
+								var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
 
 								// console.log(_contentsPath);
 								// console.log(realpath_resource_dir);
