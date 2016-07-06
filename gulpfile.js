@@ -28,11 +28,9 @@ var _tasks = [
 gulp.task("client-libs", function() {
 	gulp.src(["node_modules/px2style/dist/scripts.js"])
 		.pipe(gulp.dest( './client/dist/libs/px2style/dist/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/libs/libs/px2style/dist/' ))
 	;
 	gulp.src(["node_modules/px2style/dist/images/**/*"])
 		.pipe(gulp.dest( './client/dist/libs/px2style/dist/images/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/libs/libs/px2style/dist/images/' ))
 	;
 
 	gulp.src(["node_modules/broccoli-html-editor/client/dist/**/*"])

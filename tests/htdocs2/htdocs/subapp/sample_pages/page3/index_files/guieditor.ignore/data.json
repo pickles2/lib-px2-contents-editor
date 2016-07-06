@@ -1,0 +1,52 @@
+{
+ "bowl": {
+  "main": {
+   "modId": "_sys/root",
+   "fields": {
+    "main": [
+     {
+      "modId": "PlainHTMLElements:PlainHTML/MultiText",
+      "fields": {
+       "main": {
+        "src": "Pickles2 DesktopTool でGUI編集したHTMLです。",
+        "editor": "markdown"
+       }
+      },
+      "anchor": "",
+      "dec": ""
+     },
+     {
+      "modId": "PlainHTMLElements:PlainHTML/image",
+      "fields": {
+       "href": "",
+       "image_src": {
+        "resKey": "56d1f65651835fd6494a8af29ec49a03",
+        "path": "./index_files/resources/IMG_0961_200x150.png"
+       },
+       "alt_text": "テストイメージ"
+      },
+      "anchor": "",
+      "dec": ""
+     },
+     {
+      "modId": "FESS:parts/table_def",
+      "fields": {
+       "table": {
+        "resKey": "19b39f297be02fcf5c7164e127845a7a",
+        "output": "<thead>\n<tr>\n<th>カラムA</th>\n<th>カラムB</th>\n<th>カラムC</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<th>A2</th>\n<td>B2</td>\n<td>C2</td>\n</tr>\n<tr>\n<th>A3</th>\n<td>B3</td>\n<td>C3</td>\n</tr>\n<tr>\n<th>A4</th>\n<td>B4</td>\n<td>C4</td>\n</tr>\n<tr>\n<th>A5</th>\n<td>B5</td>\n<td>C5</td>\n</tr>\n</tbody>\n",
+        "header_row": "1",
+        "header_col": "1",
+        "cell_renderer": "text",
+        "renderer": "simplify"
+       }
+      },
+      "anchor": "",
+      "dec": ""
+     }
+    ]
+   },
+   "anchor": "",
+   "dec": ""
+  }
+ }
+}
