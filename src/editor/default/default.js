@@ -7,6 +7,7 @@ module.exports = function(px2ce){
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
+	var px2conf = {};
 	var editorLib = null;
 	if(window.ace){
 		editorLib = 'ace';
@@ -21,130 +22,135 @@ module.exports = function(px2ce){
 		$elmTextareas,
 		$elmTabs;
 
+	function getPreviewUrl(){
+		var pathname = px2conf.path_controot + page_path;
+		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+		return px2ce.options.preview.origin + pathname;
+	}
+
 	/**
 	 * 初期化
 	 */
 	this.init = function(editorOption, callback){
 		callback = callback || function(){};
 
-		toolbar.init({
-			"btns":[
-				{
-					"label": "ブラウザでプレビュー",
-					"click": function(){
-						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
-					}
-				},
-				{
-					"label": "リソース",
-					"click": function(){
-						px2ce.openResourceDir( px2ce.options.preview.origin + page_path );
-					}
-				},
-				{
-					"label": "保存する",
-					"click": function(){
+		px2ce.gpiBridge(
+			{
+				'api': 'getProjectConf'
+			},
+			function(_px2conf){
+				px2conf = _px2conf;
+				toolbar.init({
+					"btns":[
+						{
+							"label": "ブラウザでプレビュー",
+							"click": function(){
+								px2ce.openUrlInBrowser( getPreviewUrl() );
+							}
+						},
+						{
+							"label": "リソース",
+							"click": function(){
+								px2ce.openResourceDir();
+							}
+						},
+						{
+							"label": "保存する",
+							"click": function(){
+								saveContentsSrc(
+									function(result){
+										console.log(result);
+										if(!result.result){
+											alert(result.message);
+										}
+										updatePreview();
+									}
+								);
+							}
+						}
+					],
+					"onFinish": function(){
+						// 完了イベント
 						saveContentsSrc(
 							function(result){
 								console.log(result);
 								if(!result.result){
 									alert(result.message);
 								}
-								updatePreview();
+								px2ce.finish();
 							}
 						);
 					}
-				}
-			],
-			"onFinish": function(){
-				// 完了イベント
-				saveContentsSrc(
-					function(result){
-						console.log(result);
-						if(!result.result){
-							alert(result.message);
-						}
-						px2ce.finish();
-					}
-				);
-			}
-		},function(){
-			$canvas.append((function(){
-				var fin = ''
-						+'<div class="pickles2-contents-editor--default">'
-							+'<div class="pickles2-contents-editor--default-editor">'
-								+'<div class="pickles2-contents-editor--default-switch-tab">'
-									+'<div class="btn-group btn-group-justified" role="group">'
-										+'<div class="btn-group" role="group">'
-											+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="html" disabled>HTML</button>'
+				},function(){
+					$canvas.append((function(){
+						var fin = ''
+								+'<div class="pickles2-contents-editor--default">'
+									+'<div class="pickles2-contents-editor--default-editor">'
+										+'<div class="pickles2-contents-editor--default-switch-tab">'
+											+'<div class="btn-group btn-group-justified" role="group">'
+												+'<div class="btn-group" role="group">'
+													+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="html" disabled>HTML</button>'
+												+'</div>'
+												+'<div class="btn-group" role="group">'
+													+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="css">CSS (SCSS)</button>'
+												+'</div>'
+												+'<div class="btn-group" role="group">'
+													+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="js">JavaScript</button>'
+												+'</div>'
+											+'</div>'
 										+'</div>'
-										+'<div class="btn-group" role="group">'
-											+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="css">CSS (SCSS)</button>'
-										+'</div>'
-										+'<div class="btn-group" role="group">'
-											+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="js">JavaScript</button>'
+										+'<div class="pickles2-contents-editor--default-editor-body">'
+											+'<div class="pickles2-contents-editor--default-editor-body-html"></div>'
+											+'<div class="pickles2-contents-editor--default-editor-body-css"></div>'
+											+'<div class="pickles2-contents-editor--default-editor-body-js"></div>'
 										+'</div>'
 									+'</div>'
+									+'<div class="pickles2-contents-editor--default-canvas" data-pickles2-contents-editor-preview-url="">'
+									+'</div>'
 								+'</div>'
-								+'<div class="pickles2-contents-editor--default-editor-body">'
-									+'<div class="pickles2-contents-editor--default-editor-body-html"></div>'
-									+'<div class="pickles2-contents-editor--default-editor-body-css"></div>'
-									+'<div class="pickles2-contents-editor--default-editor-body-js"></div>'
-								+'</div>'
-							+'</div>'
-							+'<div class="pickles2-contents-editor--default-canvas" data-pickles2-contents-editor-preview-url="">'
-							+'</div>'
-						+'</div>'
-				;
-				return fin;
-			})());
+						;
+						return fin;
+					})());
 
-			$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
-			$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
-
-			$elmCanvas = $canvas.find('.pickles2-contents-editor--default-canvas');
-			$elmEditor = $canvas.find('.pickles2-contents-editor--default-editor');
-			$elmBtns = $canvas.find('.pickles2-contents-editor--default-btns');
-
-			$elmTabs = $canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch]');
-			$elmTabs
-				.click(function(){
-					var $this = $(this);
-					$elmTabs.removeAttr('disabled');
-					$this.attr({'disabled': 'disabled'});
-					var tabFor = $this.attr('data-pickles2-contents-editor-switch');
-					// console.log(tabFor);
-					$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
 					$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
 					$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
-					$canvas.find('.pickles2-contents-editor--default-editor-body-'+tabFor).show();
-				})
-			;
+
+					$elmCanvas = $canvas.find('.pickles2-contents-editor--default-canvas');
+					$elmEditor = $canvas.find('.pickles2-contents-editor--default-editor');
+					$elmBtns = $canvas.find('.pickles2-contents-editor--default-btns');
+
+					$elmTabs = $canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch]');
+					$elmTabs
+						.click(function(){
+							var $this = $(this);
+							$elmTabs.removeAttr('disabled');
+							$this.attr({'disabled': 'disabled'});
+							var tabFor = $this.attr('data-pickles2-contents-editor-switch');
+							// console.log(tabFor);
+							$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
+							$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
+							$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
+							$canvas.find('.pickles2-contents-editor--default-editor-body-'+tabFor).show();
+						})
+					;
 
 
-			$iframe = $('<iframe>');
-			$elmCanvas.html('').append($iframe);
-			$iframe
-				.bind('load', function(){
-					console.log('pickles2-contents-editor: preview loaded');
-					// alert('pickles2-contents-editor: preview loaded');
-					onPreviewLoad( callback );
-				})
-			;
-			// $iframe.attr({"src":"about:blank"});
-			_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
+					$iframe = $('<iframe>');
+					$elmCanvas.html('').append($iframe);
+					$iframe
+						.bind('load', function(){
+							console.log('pickles2-contents-editor: preview loaded');
+							// alert('pickles2-contents-editor: preview loaded');
+							onPreviewLoad( callback );
+						})
+					;
+					// $iframe.attr({"src":"about:blank"});
+					_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
 
-			windowResized(function(){
-
-				px2ce.gpiBridge(
-					{
-						'api': 'getProjectConf'
-					},
-					function(px2conf){
-						// console.log(px2conf);
+					windowResized(function(){
 
 						$elmCanvas.attr({
-							"data-pickles2-contents-editor-preview-url": px2ce.options.preview.origin + page_path
+							"data-pickles2-contents-editor-preview-url": getPreviewUrl()
 						});
 
 						px2ce.gpiBridge(
@@ -235,13 +241,13 @@ module.exports = function(px2ce){
 
 							}
 						);
-					}
-				);
 
-			});
+					});
 
-		});
+				});
 
+			}
+		);
 
 	};
 

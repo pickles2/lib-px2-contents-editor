@@ -13,7 +13,8 @@ module.exports = function(){
 			{
 				'page_path': req.body.page_path,
 				'appMode': 'web', // 'web' or 'desktop'. default to 'web'
-				'entryScript': require('path').resolve(__dirname,'../../../htdocs/.px_execute.php'),
+				'entryScript': require('path').resolve(__dirname,'../../../htdocs2/htdocs/subapp/.px_execute.php'),
+				// 'entryScript': require('path').resolve(__dirname,'../../../htdocs/.px_execute.php'),
 				'customFields': {
 					"custom1": function(){
 						// カスタムフィールド1

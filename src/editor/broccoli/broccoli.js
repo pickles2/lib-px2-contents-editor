@@ -6,6 +6,7 @@ module.exports = function(px2ce){
 	var $ = require('jquery');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
+	var px2conf = {};
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -17,61 +18,68 @@ module.exports = function(px2ce){
 
 	var show_instanceTreeView = true;
 
+	function getPreviewUrl(){
+		var pathname = px2conf.path_controot + page_path;
+		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+		return px2ce.options.preview.origin + pathname;
+	}
+
 	/**
 	 * 初期化
 	 */
 	this.init = function(editorOption, callback){
 		callback = callback || function(){};
 
-		toolbar.init({
-			"btns":[
-				{
-					"label": "toggle instanceTreeView",
-					"click": function(){
-						show_instanceTreeView = (show_instanceTreeView ? false : true);
-						_this.redraw(function(){
-							// alert('完了');
-						});
-					}
-				},
-				{
-					"label": "ブラウザでプレビュー",
-					"click": function(){
-						px2ce.openUrlInBrowser( px2ce.options.preview.origin + page_path );
-					}
-				}
-			],
-			"onFinish": function(){
-				// 完了イベント
-				px2ce.finish();
-			}
-		},function(){
-			$canvas.append((function(){
-				var fin = '';
-				fin += '<div class="pickles2-contents-editor--broccoli">';
-				fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
-				fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
-				fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
-				fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
-				fin += '</div>';
-				return fin;
-			})());
+		px2ce.gpiBridge(
+			{
+				'api': 'getProjectConf'
+			},
+			function(_px2conf){
+				px2conf = _px2conf;
 
-			$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
-			$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
-			$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
-			$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
+				toolbar.init({
+					"btns":[
+						{
+							"label": "toggle instanceTreeView",
+							"click": function(){
+								show_instanceTreeView = (show_instanceTreeView ? false : true);
+								_this.redraw(function(){
+									// alert('完了');
+								});
+							}
+						},
+						{
+							"label": "ブラウザでプレビュー",
+							"click": function(){
+								px2ce.openUrlInBrowser( getPreviewUrl() );
+							}
+						}
+					],
+					"onFinish": function(){
+						// 完了イベント
+						px2ce.finish();
+					}
+				},function(){
+					$canvas.append((function(){
+						var fin = '';
+						fin += '<div class="pickles2-contents-editor--broccoli">';
+						fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
+						fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
+						fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
+						fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
+						fin += '</div>';
+						return fin;
+					})());
 
-			_this.redraw(function(){
-				px2ce.gpiBridge(
-					{
-						'api': 'getProjectConf'
-					},
-					function(px2conf){
-						// console.log(px2conf);
+					$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
+					$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
+					$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
+					$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
+
+					_this.redraw(function(){
 
 						$elmCanvas.attr({
-							"data-broccoli-preview": px2ce.options.preview.origin + page_path
+							"data-broccoli-preview": getPreviewUrl()
 						});
 
 						var customFields = {};
@@ -133,12 +141,13 @@ module.exports = function(px2ce){
 
 							}
 						);
-					}
-				);
 
-			});
+					});
 
-		});
+				});
+
+			}
+		);
 
 	};
 
