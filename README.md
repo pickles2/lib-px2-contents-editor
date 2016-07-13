@@ -196,6 +196,10 @@ $ npm run test
 
 - コンフィグ `path_controot` が `/` 以外の場合に、起きる不具合を修正。
 - ローカルリソースの読み込みの記述を、 $px->path_files() 依存に変更。
+- broccoli-html-editor
+	- selectフィールドに、オプション `"display": "radio"` を追加。ラジオボタン形式の入力欄を作成できるようになった。
+	- editWindow上 の loop appender をダブルクリック操作した後に表示が更新されない問題を修正。
+	- loopフィールドのサブモジュールに元のモジュール名が引き継がれない不具合を修正。
 
 ### pickles2-contents-editor@2.0.0-beta.2 (2016年6月8日)
 

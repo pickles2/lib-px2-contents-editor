@@ -43,7 +43,8 @@ var appPx2 = express();
 appPx2.use( require('body-parser')() );
 
 appPx2.use( '/*', expressPickles2(
-	path.resolve(__dirname, '../../htdocs/.px_execute.php'),
+	path.resolve(__dirname, '../../htdocs2/htdocs/subapp/.px_execute.php'),
+	// path.resolve(__dirname, '../../htdocs/.px_execute.php'),
 	{
 		// 'liveConfig': function(callback){
 		// 	var pj = px.getCurrentProject();
