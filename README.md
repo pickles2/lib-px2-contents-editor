@@ -192,6 +192,11 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor@2.0.0-beta.4 (2016年??月??日)
+
+- broccoli-html-editor
+	- モジュール設定 `deprecated` を追加。非推奨のモジュールに `true` をセットすると、モジュールパレットに表示されなくなる。
+
 ### pickles2-contents-editor@2.0.0-beta.3 (2016年8月3日)
 
 - コンフィグ `path_controot` が `/` 以外の場合に、起きる不具合を修正。
