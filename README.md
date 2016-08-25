@@ -197,6 +197,7 @@ $ npm run test
 - broccoli-html-editor
 	- モジュール設定 `deprecated` を追加。非推奨のモジュールに `true` をセットすると、モジュールパレットに表示されなくなる。
 	- resourceMgr に、JPEG, PNG 画像の自動ロスレス圧縮機能を追加。
+	- imageフィールドで、ウェブ上のURLを直接参照できる機能を追加。
 
 ### pickles2-contents-editor@2.0.0-beta.3 (2016年8月3日)
 
