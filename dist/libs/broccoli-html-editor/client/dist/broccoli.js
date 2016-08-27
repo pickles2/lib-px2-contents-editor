@@ -896,16 +896,27 @@
 			callback = callback || function(){};
 			it79.fnc({},[
 				function(it1, data){
+					// コンテンツを保存
+					_this.contentsSourceData.save(function(){
+						it1.next(data);
+					});
+				} ,
+				function(it1, data){
 					// リソースを保存
 					_this.resourceMgr.save(function(){
 						it1.next(data);
 					});
 				} ,
 				function(it1, data){
-					// コンテンツを保存
-					_this.contentsSourceData.save(function(){
-						it1.next(data);
-					});
+					// コンテンツを更新
+					_this.gpi(
+						'updateContents',
+						{} ,
+						function(result){
+							// console.log(result);
+							it1.next(data);
+						}
+					);
 				} ,
 				function(it1, data){
 					// console.log('editInstance done.');
@@ -4660,7 +4671,17 @@ module.exports = function(broccoli){
 							if( !utils79.is_file(data.publicRealpath) ){
 								// ↓ ダミーの Sample Image
 								data.path = _imgDummy;
+							}else{
+								try {
+									var imageBin = fs.readFileSync(data.publicRealpath);
+									data.path = 'data:'+data.resourceInfo.type+';base64,' + utils79.base64_encode( imageBin );
+								} catch (e) {
+									data.path = false;
+								}
 							}
+						}
+						if( data.path == false && data.resourceInfo.base64 ){
+							data.path = 'data:'+data.resourceInfo.type+';base64,' + data.resourceInfo.base64;
 						}
 						it1.next(data);
 					},
