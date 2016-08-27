@@ -37,7 +37,7 @@ module.exports = function(px2ce, data, callback){
 				'appMode': px2ce.getAppMode() ,
 				'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
 				'documentRoot': documentRoot,// realpath
-				'pathHtml': pageInfo.content,
+				'pathHtml': require('path').resolve(px2conf.path_controot, './'+pageInfo.content),
 				'pathResourceDir': pathResourceDir,
 				'realpathDataDir':  realpathDataDir,
 				'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,

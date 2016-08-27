@@ -896,14 +896,14 @@
 			callback = callback || function(){};
 			it79.fnc({},[
 				function(it1, data){
-					// コンテンツを保存
-					_this.contentsSourceData.save(function(){
+					// リソースを保存
+					_this.resourceMgr.save(function(){
 						it1.next(data);
 					});
 				} ,
 				function(it1, data){
-					// リソースを保存
-					_this.resourceMgr.save(function(){
+					// コンテンツを保存
+					_this.contentsSourceData.save(function(){
 						it1.next(data);
 					});
 				} ,
@@ -4584,22 +4584,85 @@ module.exports = function(broccoli){
 				[
 					function(it1, data){
 						_resMgr.getResource( rtn.resKey, function(res){
-							_resMgr.getResourcePublicPath( rtn.resKey, function(publicPath){
-								rtn.path = publicPath;
-								data.path = publicPath;
-
-								if( mode == 'canvas' ){
-									// ↓ ダミーの Sample Image
-									data.path = _imgDummy;
-
-									if( res.base64 ){
-										data.path = 'data:'+res.type+';base64,' + res.base64;
-									}
-								}
-								it1.next(data);
-							} );
+							data.resourceInfo = res;
+							it1.next(data);
 						} );
 						return;
+					},
+					function(it1, data){
+						_resMgr.getResourcePublicRealpath( rtn.resKey, function(realpath){
+							// console.log(realpath);
+							data.publicRealpath = realpath;
+							it1.next(data);
+						} );
+						return;
+					},
+					function(it1, data){
+						const imagemin = require(''+'imagemin');
+						const imageminOptipng = require(''+'imagemin-optipng');
+						const imageminJpegtran = require(''+'imagemin-jpegtran');
+
+						data.publicRealpath.match( new RegExp('\\.([a-zA-Z0-9\\_\\-]+?)$') );
+						var ext = (RegExp.$1).toLowerCase();
+						// console.log(data.publicRealpath);
+						// console.log(utils79.dirname(data.publicRealpath));
+						// console.log(ext);
+						switch(ext){
+							case 'jpg':
+							case 'jpeg':
+							case 'jpe':
+								new imagemin()
+									.src( [data.publicRealpath] )
+									.dest( utils79.dirname(data.publicRealpath) )
+									.use( imageminJpegtran({progressive: true}) )
+									.run(function (err, files) {
+										// console.log('Images optimized (JPEG)');
+										// console.log(err);
+										// console.log(files);
+										it1.next(data);
+										return;
+									})
+								;
+								break;
+
+							case 'png':
+								new imagemin()
+									.src( [data.publicRealpath] )
+									.dest( utils79.dirname(data.publicRealpath) )
+									.use( imageminOptipng({optimizationLevel: 0}) )
+									.run(function (err, files) {
+										// console.log('Images optimized (PNG)');
+										// console.log(err);
+										// console.log(files);
+										it1.next(data);
+										return;
+									})
+								;
+								break;
+
+							default:
+								it1.next(data);
+								break;
+
+						}
+						return;
+					},
+					function(it1, data){
+						_resMgr.getResourcePublicPath( rtn.resKey, function(publicPath){
+							rtn.path = publicPath;
+							data.path = publicPath;
+							it1.next(data);
+						} );
+					},
+					function(it1, data){
+						// console.log(utils79.is_file(data.publicRealpath));
+						if( mode == 'canvas' ){
+							if( !utils79.is_file(data.publicRealpath) ){
+								// ↓ ダミーの Sample Image
+								data.path = _imgDummy;
+							}
+						}
+						it1.next(data);
 					},
 					function(it1, data){
 						callback(data.path);
@@ -4663,7 +4726,9 @@ module.exports = function(broccoli){
 		if( typeof(fieldData) !== typeof({}) ){
 			rtn = {
 				"resKey":'',
-				"path":'about:blank'
+				"path":'about:blank',
+				"resType":'',
+				"webUrl":''
 			};
 		}
 		return rtn;

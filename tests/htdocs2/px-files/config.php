@@ -205,7 +205,7 @@ return call_user_func( function(){
 		//       - false: 省略できるindexファイル名を削除
 		//       - null: そのまま (default)
 		'tomk79\pickles2\pathResolver\main::exec('.json_encode(array(
-			'to' => 'absolute' ,
+			'to' => 'pass' ,
 			'supply_index_filename' => false
 		)).')' ,
 
