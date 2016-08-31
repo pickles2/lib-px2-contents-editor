@@ -24,7 +24,7 @@ console.log('port number is '+conf.originParsed.port);
 console.log('Pickles 2 preview server port number is '+conf.px2server.originParsed.port);
 
 
-app.use( require('body-parser')() );
+app.use( require('body-parser')({"limit": "1024mb"}) );
 app.use( '/common/', express.static( path.resolve(__dirname, '../../../dist/') ) );
 app.use( '/apis/px2ce', require('./apis/px2ce.js')() );
 
@@ -40,7 +40,7 @@ server.listen( conf.originParsed.port, function(){
 // Pickles2 preview server
 var expressPickles2 = require('express-pickles2');
 var appPx2 = express();
-appPx2.use( require('body-parser')() );
+appPx2.use( require('body-parser')({"limit": "1024mb"}) );
 
 appPx2.use( '/*', expressPickles2(
 	path.resolve(__dirname, '../../htdocs2/htdocs/subapp/.px_execute.php'),

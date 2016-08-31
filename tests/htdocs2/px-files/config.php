@@ -205,7 +205,7 @@ return call_user_func( function(){
 		//       - false: 省略できるindexファイル名を削除
 		//       - null: そのまま (default)
 		'tomk79\pickles2\pathResolver\main::exec('.json_encode(array(
-			'to' => 'absolute' ,
+			'to' => 'pass' ,
 			'supply_index_filename' => false
 		)).')' ,
 
@@ -225,6 +225,9 @@ return call_user_func( function(){
 	];
 	$conf->plugins->px2dt->contents_area_selector = '[data-contents-area]'; // <- コンテンツエリアを識別するセレクタ(複数の要素がマッチしてもよい)
 	$conf->plugins->px2dt->contents_bowl_name_by = 'data-contents-area'; // <- コンテンツエリアのbowl名を指定する属性名
+
+	@$conf->plugins->px2dt->guieditor->pathResourceDir = '{$dirname}/{$filename}_files/resources/'; // broccoliの引数 pathResourceDir
+	@$conf->plugins->px2dt->guieditor->realpathDataDir = './{$dirname}/{$filename}_files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
 
 
 	// -------- PHP Setting --------

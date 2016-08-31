@@ -4,6 +4,7 @@
 module.exports = function(px2ce, data, callback){
 	callback = callback || function(){};
 
+	var utils79 = require('utils79');
 	var px2proj = px2ce.px2proj,
 		page_path = px2ce.page_path,
 		px2conf = px2ce.px2conf,
@@ -14,12 +15,62 @@ module.exports = function(px2ce, data, callback){
 		pathResourceDir = px2ce.pathResourceDir
 	;
 
-	broccoliStandby(data.forBroccoli.api, data.forBroccoli.options, function(bin){
-		callback(bin);
+	parseConfig(function(){
+		broccoliStandby(data.forBroccoli.api, data.forBroccoli.options, function(bin){
+			callback(bin);
+		});
 	});
 
-	function broccoliStandby(api, options, callback){
+	function parseConfig(callback){
+		// console.log(px2conf.plugins.px2dt);
+		function bind( tpl ){
+			var data = {
+				'dirname' : utils79.dirname( pageInfo.content ),
+				'filename' : utils79.basename( (function(path){
+					var rtn = path.replace( new RegExp('\\.[a-zA-Z0-9\\_\\-]+$'), '' );
+					return rtn;
+				})( pageInfo.content ) ),
+				'ext' : (function(path){
+					path.match( new RegExp('\\.([a-zA-Z0-9\\_\\-]+)$') );
+					var rtn = (RegExp.$1).toLowerCase();
+					return rtn;
+				})( pageInfo.content )
+			};
 
+			tpl = tpl.replace( '{$dirname}', data['dirname'] );
+			tpl = tpl.replace( '{$filename}', data['filename'] );
+			tpl = tpl.replace( '{$ext}', data['ext'] );
+
+			return tpl;
+		}
+
+		try {
+			if( px2conf.plugins.px2dt.guieditor.pathResourceDir ){
+				pathResourceDir = bind( px2conf.plugins.px2dt.guieditor.pathResourceDir );
+				pathResourceDir = require('path').resolve('/' + px2conf.path_controot + '/' + pathResourceDir)+'/';
+				// console.log(pathResourceDir);
+			}
+		} catch (e) {
+		}
+
+		try {
+			if( px2conf.plugins.px2dt.guieditor.realpathDataDir ){
+				realpathDataDir = bind( px2conf.plugins.px2dt.guieditor.realpathDataDir );
+				realpathDataDir = require('path').resolve('/', documentRoot+'/'+px2conf.path_controot, realpathDataDir)+'/';
+				// console.log(realpathDataDir);
+			}
+		} catch (e) {
+		}
+
+		// console.log(pathResourceDir);
+		// console.log(realpathDataDir);
+		setTimeout(function(){
+			callback();
+		}, 0);
+		return;
+	}
+
+	function broccoliStandby(api, options, callback){
 		var Broccoli = require('broccoli-html-editor');
 		var broccoli = new Broccoli();
 		for( var idx in px2conf.plugins.px2dt.paths_module_template ){
@@ -37,7 +88,7 @@ module.exports = function(px2ce, data, callback){
 				'appMode': px2ce.getAppMode() ,
 				'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
 				'documentRoot': documentRoot,// realpath
-				'pathHtml': pageInfo.content,
+				'pathHtml': require('path').resolve(px2conf.path_controot, './'+pageInfo.content),
 				'pathResourceDir': pathResourceDir,
 				'realpathDataDir':  realpathDataDir,
 				'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
