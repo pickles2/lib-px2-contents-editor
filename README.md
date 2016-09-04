@@ -198,6 +198,7 @@ $ npm run test
 	- モジュール設定 `deprecated` を追加。非推奨のモジュールに `true` をセットすると、モジュールパレットに表示されなくなる。
 	- imageフィールドに、JPEG, PNG 画像の自動ロスレス圧縮機能を追加。
 	- imageフィールドに、ウェブ上のURLを直接参照できる機能を追加。
+	- finalize.js の第3引数に、ライブラリやリソースを供給する `supply` を追加。この中に含まれる `cheerio` を利用できるようになった。
 - Pickles 2 が深い階層にある場合に、HTMLを正常に更新できない不具合を修正。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->pathResourceDir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->realpathDataDir` を追加。
