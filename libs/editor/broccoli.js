@@ -5,6 +5,7 @@ module.exports = function(px2ce, data, callback){
 	callback = callback || function(){};
 
 	var utils79 = require('utils79');
+	var Promise = require('es6-promise').Promise;
 	var px2proj = px2ce.px2proj,
 		page_path = px2ce.page_path,
 		px2conf = px2ce.px2conf,
@@ -64,9 +65,9 @@ module.exports = function(px2ce, data, callback){
 
 		// console.log(pathResourceDir);
 		// console.log(realpathDataDir);
-		setTimeout(function(){
+		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback();
-		}, 0);
+		}); });
 		return;
 	}
 
