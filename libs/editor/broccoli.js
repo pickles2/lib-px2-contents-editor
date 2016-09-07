@@ -5,6 +5,7 @@ module.exports = function(px2ce, data, callback){
 	callback = callback || function(){};
 
 	var utils79 = require('utils79');
+	var Promise = require('es6-promise').Promise;
 	var px2proj = px2ce.px2proj,
 		page_path = px2ce.page_path,
 		px2conf = px2ce.px2conf,
@@ -25,7 +26,7 @@ module.exports = function(px2ce, data, callback){
 		// console.log(px2conf.plugins.px2dt);
 		function bind( tpl ){
 			var data = {
-				'dirname' : utils79.dirname( pageInfo.content ),
+				'dirname' : utils79.normalize_path( utils79.dirname( pageInfo.content ) ),
 				'filename' : utils79.basename( (function(path){
 					var rtn = path.replace( new RegExp('\\.[a-zA-Z0-9\\_\\-]+$'), '' );
 					return rtn;
@@ -40,6 +41,8 @@ module.exports = function(px2ce, data, callback){
 			tpl = tpl.replace( '{$dirname}', data['dirname'] );
 			tpl = tpl.replace( '{$filename}', data['filename'] );
 			tpl = tpl.replace( '{$ext}', data['ext'] );
+
+			tpl = utils79.normalize_path( tpl );
 
 			return tpl;
 		}
@@ -56,7 +59,7 @@ module.exports = function(px2ce, data, callback){
 		try {
 			if( px2conf.plugins.px2dt.guieditor.realpathDataDir ){
 				realpathDataDir = bind( px2conf.plugins.px2dt.guieditor.realpathDataDir );
-				realpathDataDir = require('path').resolve('/', documentRoot+'/'+px2conf.path_controot, realpathDataDir)+'/';
+				realpathDataDir = require('path').resolve('/', documentRoot+'/'+px2conf.path_controot + '/' + realpathDataDir)+'/';
 				// console.log(realpathDataDir);
 			}
 		} catch (e) {
@@ -64,9 +67,9 @@ module.exports = function(px2ce, data, callback){
 
 		// console.log(pathResourceDir);
 		// console.log(realpathDataDir);
-		setTimeout(function(){
+		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback();
-		}, 0);
+		}); });
 		return;
 	}
 
