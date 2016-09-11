@@ -28,6 +28,9 @@ module.exports = function(){
 		this.px2proj = require('px2agent').createProject(options.entryScript);
 		this.options = options;
 
+		this.page_path = this.page_path.replace( new RegExp('^(alias[0-9]*\\:)?\\/+'), '/' );
+		this.page_path = this.page_path.replace( new RegExp('\\{(?:\\*|\\$)[\s\S]*\\}'), '' );
+
 		this.getProjectInfo(function(pjInfo){
 			// console.log(pjInfo);
 			_this.px2conf = pjInfo.conf;

@@ -34,7 +34,8 @@ describe('createBroccoli', function() {
 	it('createBroccoli', function(done) {
 		this.timeout(10*1000);
 		Px2CEGen({}, function(px2ce){
-			console.log(px2ce);
+			// console.log(px2ce);
+			assert.equal( typeof(px2ce), typeof({}) );
 			done();
 		});
 	});
