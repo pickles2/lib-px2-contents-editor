@@ -5,7 +5,7 @@
   "private": true,
   "main": "libs/main.js",
   "scripts": {
-    "preinstall": "git submodule update -i -r -f",
+    "preinstall": "git submodule update --init --recursive --force",
     "start": "node ./tests/app/server/server.js;",
     "up": "node ./tests/app/server/server.js;",
     "preview": "gulp preview;",
