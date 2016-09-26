@@ -4,8 +4,10 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
+	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
+	var Promise = require('es6-promise').Promise;
 	var px2conf = {};
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
@@ -30,124 +32,191 @@ module.exports = function(px2ce){
 	this.init = function(editorOption, callback){
 		callback = callback || function(){};
 
-		px2ce.gpiBridge(
-			{
-				'api': 'getProjectConf'
-			},
-			function(_px2conf){
-				px2conf = _px2conf;
+		var customFields = {};
 
-				toolbar.init({
-					"btns":[
-						{
-							"label": "toggle instanceTreeView",
-							"click": function(){
-								show_instanceTreeView = (show_instanceTreeView ? false : true);
-								_this.redraw(function(){
-									// alert('完了');
-								});
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
+				px2ce.gpiBridge(
+					{
+						'api': 'getProjectConf'
+					},
+					function(_px2conf){
+						px2conf = _px2conf;
+
+						toolbar.init({
+							"btns":[
+								{
+									"label": "toggle instanceTreeView",
+									"click": function(){
+										show_instanceTreeView = (show_instanceTreeView ? false : true);
+										_this.redraw(function(){
+											// alert('完了');
+										});
+									}
+								},
+								{
+									"label": "ブラウザでプレビュー",
+									"click": function(){
+										px2ce.openUrlInBrowser( getPreviewUrl() );
+									}
+								}
+							],
+							"onFinish": function(){
+								// 完了イベント
+								px2ce.finish();
 							}
-						},
-						{
-							"label": "ブラウザでプレビュー",
-							"click": function(){
-								px2ce.openUrlInBrowser( getPreviewUrl() );
-							}
-						}
-					],
-					"onFinish": function(){
-						// 完了イベント
-						px2ce.finish();
-					}
-				},function(){
-					$canvas.append((function(){
-						var fin = '';
-						fin += '<div class="pickles2-contents-editor--broccoli">';
-						fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
-						fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
-						fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
-						fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
-						fin += '</div>';
-						return fin;
-					})());
-
-					$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
-					$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
-					$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
-					$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
-
-					_this.redraw(function(){
-
-						$elmCanvas.attr({
-							"data-broccoli-preview": getPreviewUrl()
+						},function(){
+							rlv();
 						});
 
-						var customFields = {};
-						customFields.table = window.BroccoliFieldTable;
-						for( var idx in px2ce.options.customFields ){
-							customFields[idx] = px2ce.options.customFields[idx];
-						}
-						// console.log(customFields);
+					}
+				);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				$canvas.append((function(){
+					var fin = '';
+					fin += '<div class="pickles2-contents-editor--broccoli">';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
+					fin += '</div>';
+					return fin;
+				})());
 
-						broccoli = new Broccoli();
-						broccoli.init(
-							{
-								'elmCanvas': $elmCanvas.get(0),
-								'elmModulePalette': $elmModulePalette.get(0),
-								'elmInstanceTreeView': $elmInstanceTreeView.get(0),
-								'elmInstancePathView': $elmInstancePathView.get(0),
-								'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
-								// ↑編集可能領域を探すためのクエリを設定します。
-								//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
-								'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-								// ↑bowlの名称を、data-contents属性値から取得します。
-								'customFields': customFields,
-								'gpiBridge': function(api, options, callback){
-									// GPI(General Purpose Interface) Bridge
-									// broccoliは、バックグラウンドで様々なデータ通信を行います。
-									// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-									px2ce.gpiBridge(
-										{
-											'api': 'broccoliBridge',
-											'page_path': page_path,
-											'forBroccoli':{
-												'api': api,
-												'options': options
-											}
-										},
-										function(data){
-											callback(data);
-										}
-									);
-									return;
-								},
-								'onClickContentsLink': function( uri, data ){
-									px2ce.onClickContentsLink( uri, data );
-								},
-								'onMessage': function( message ){
-									// ユーザーへ知らせるメッセージを表示する
-									px2ce.message(message);
-								}
-							} ,
-							function(){
-								// 初期化が完了すると呼びだされるコールバック関数です。
-								setKeyboardEvent(function(){
-									_this.redraw(function(){
-										// broccoli.redraw();
-									});
+				$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
+				$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
+				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
+				$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
 
-									callback();
-								});
-
-							}
+				_this.redraw(function(){
+					rlv();
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				$elmCanvas.attr({
+					"data-broccoli-preview": getPreviewUrl()
+				});
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// プロジェクトが拡張するフィールド
+				// クライアントサイドのライブラリをロードしておく
+				px2ce.gpiBridge(
+					{
+						'api': 'loadCustomFieldsClientSideLibs'
+					},
+					function(binJs){
+						// console.log(binJs);
+						$('body').append(
+							$('<script>')
+								.html(binJs)
 						);
+						rlv();
+					}
+				);
 
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// フィールドを拡張
+
+				// px2ce が拡張するフィールド
+				customFields.table = window.BroccoliFieldTable;
+
+				// 呼び出し元アプリが拡張するフィールド
+				for( var idx in px2ce.options.customFields ){
+					customFields[idx] = px2ce.options.customFields[idx];
+				}
+
+				// プロジェクトが拡張するフィールド
+				var confCustomFields = {};
+				try {
+					confCustomFields = px2conf.plugins.px2dt.guieditor.customFields;
+					for( var fieldName in confCustomFields ){
+						try {
+							if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
+								// console.log(eval( confCustomFields[fieldName].frontend.function ));
+								customFields[fieldName] = eval( confCustomFields[fieldName].frontend.function );
+							}else{
+								console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend);' );
+								console.error( 'unknown type' );
+							}
+						} catch (e) {
+							console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend);' );
+							console.error(e);
+						}
+					}
+				} catch (e) {
+					console.error( 'FAILED to load custom field config: $conf->plugins->px2dt->customFields (frontend);' );
+					console.error(e);
+				}
+
+				// console.log(customFields);
+
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+
+				broccoli = new Broccoli();
+				broccoli.init(
+					{
+						'elmCanvas': $elmCanvas.get(0),
+						'elmModulePalette': $elmModulePalette.get(0),
+						'elmInstanceTreeView': $elmInstanceTreeView.get(0),
+						'elmInstancePathView': $elmInstancePathView.get(0),
+						'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
+						// ↑編集可能領域を探すためのクエリを設定します。
+						//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
+						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+						// ↑bowlの名称を、data-contents属性値から取得します。
+						'customFields': customFields,
+						'gpiBridge': function(api, options, callback){
+							// GPI(General Purpose Interface) Bridge
+							// broccoliは、バックグラウンドで様々なデータ通信を行います。
+							// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+							px2ce.gpiBridge(
+								{
+									'api': 'broccoliBridge',
+									'page_path': page_path,
+									'forBroccoli':{
+										'api': api,
+										'options': options
+									}
+								},
+								function(data){
+									callback(data);
+								}
+							);
+							return;
+						},
+						'onClickContentsLink': function( uri, data ){
+							px2ce.onClickContentsLink( uri, data );
+						},
+						'onMessage': function( message ){
+							// ユーザーへ知らせるメッセージを表示する
+							px2ce.message(message);
+						}
+					} ,
+					function(){
+						rlv();
+					}
+				);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// 初期化が完了すると呼びだされるコールバック関数です。
+				setKeyboardEvent(function(){
+					_this.redraw(function(){
+						// broccoli.redraw();
 					});
 
+					rlv();
 				});
 
-			}
-		);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				callback();
+			}); })
+		;
 
 	};
 

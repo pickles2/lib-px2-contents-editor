@@ -345,15 +345,47 @@ module.exports = function(){
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
-				for( var idx in px2conf.plugins.px2dt.paths_module_template ){
-					px2conf.plugins.px2dt.paths_module_template[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
-				}
+				// フィールドを拡張
+
+				// px2ce が拡張するフィールド
 				customFields.table = require('broccoli-field-table');
+
+				// 呼び出し元アプリが拡張するフィールド
 				for( var idx in px2ce.options.customFields ){
 					customFields[idx] = px2ce.options.customFields[idx];
 				}
+
+				// プロジェクトが拡張するフィールド
+				var confCustomFields = {};
+				try {
+					confCustomFields = px2conf.plugins.px2dt.guieditor.customFields;
+					for( var fieldName in confCustomFields ){
+						try {
+							if( confCustomFields[fieldName].backend.require ){
+								var path_backend_field = require('path').resolve(px2ce.entryScript, '..', confCustomFields[fieldName].backend.require);
+								customFields[fieldName] = require( path_backend_field );
+							}else{
+								console.error( 'FAILED to load custom field: ' + fieldName + ' (backend);' );
+								console.error( 'unknown type' );
+							}
+						} catch (e) {
+							console.error( 'FAILED to load custom field: ' + fieldName + ' (backend);' );
+							console.error(e);
+						}
+					}
+				} catch (e) {
+					console.error( 'FAILED to load custom field config: $conf->plugins->px2dt->customFields (backend);' );
+					console.error(e);
+				}
+
 				// console.log(customFields);
 
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				for( var idx in px2conf.plugins.px2dt.paths_module_template ){
+					px2conf.plugins.px2dt.paths_module_template[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
+				}
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){

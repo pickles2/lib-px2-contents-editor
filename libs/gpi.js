@@ -72,6 +72,26 @@ module.exports = function(px2ce, data, callback){
 			});
 			break;
 
+		case "loadCustomFieldsClientSideLibs":
+			// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
+			px2ce.getProjectConf(function(conf){
+				var code = '';
+				try {
+					var confCustomFields = conf.plugins.px2dt.guieditor.customFields;
+					for(var fieldName in confCustomFields){
+						if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
+							var pathJs = require('path').resolve(px2ce.entryScript, '..', confCustomFields[fieldName].frontend.file);
+							var binJs = require('fs').readFileSync( pathJs ).toString();
+							code += binJs;
+						}
+					}
+				} catch (e) {
+					code = '/* ERROR */'
+				}
+				callback(code);
+			});
+			break;
+
 		default:
 			callback(true);
 			break;

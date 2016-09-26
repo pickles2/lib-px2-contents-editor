@@ -200,10 +200,12 @@ $ npm run test
 	- imageフィールドに、ウェブ上のURLを直接参照できる機能を追加。
 	- finalize.js の第3引数に、ライブラリやリソースを供給する `supply` を追加。この中に含まれる `cheerio` を利用できるようになった。
 - broccoli-html-editor オブジェクトを取り出すAPI `px2ce.createBroccoli()` を追加。
+- broccoli-html-editor で、プロジェクト固有のカスタムフィールドを追加できる機能を追加。
 - `page_path` に alias や dynamic path を受け取った場合に異常終了する不具合を修正。
 - Pickles 2 が深い階層にある場合に、HTMLを正常に更新できない不具合を修正。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->pathResourceDir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->realpathDataDir` を追加。
+- 新しい設定 `$conf->plugins->px2dt->guieditor->customFields` を追加。
 
 ### pickles2-contents-editor@2.0.0-beta.3 (2016年8月3日)
 
