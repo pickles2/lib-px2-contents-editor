@@ -374,8 +374,6 @@ module.exports = function(){
 						}
 					}
 				} catch (e) {
-					console.error( 'FAILED to load custom field config: $conf->plugins->px2dt->customFields (backend);' );
-					console.error(e);
 				}
 
 				// console.log(customFields);

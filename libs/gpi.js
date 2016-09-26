@@ -86,7 +86,6 @@ module.exports = function(px2ce, data, callback){
 						}
 					}
 				} catch (e) {
-					code = '/* ERROR */'
 				}
 				callback(code);
 			});
