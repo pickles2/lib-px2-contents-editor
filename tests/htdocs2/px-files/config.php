@@ -229,19 +229,59 @@ return call_user_func( function(){
 	@$conf->plugins->px2dt->guieditor->pathResourceDir = '{$dirname}/{$filename}_files/resources/'; // broccoliの引数 pathResourceDir
 	@$conf->plugins->px2dt->guieditor->realpathDataDir = '{$dirname}/{$filename}_files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
 
+	@$conf->plugins->px2dt->guieditor->customFields = array( // broccoli-html-editor のフィールド拡張
+		'projectCustom1'=>array(
+			'backend'=>array(
+				'require' => '../../px-files/broccoli-fields/projectCustom1/backend.js'
+			),
+			'frontend'=>array(
+				'file' => '../../px-files/broccoli-fields/projectCustom1/frontend.js',
+				'function' => 'window.broccoliFieldProjectCustom1'
+			),
+		),
+		'projectCustom2'=>array(
+			'backend'=>array(
+				'require' => '../../px-files/broccoli-fields/projectCustom2/backend.js'
+			),
+			'frontend'=>array(
+				'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
+				'function' => 'window.broccoliFieldProjectCustom2'
+			),
+		),
+	);
 
-	// -------- PHP Setting --------
 
-	// [memory_limit]
-	// PHPのメモリの使用量の上限を設定します。
-	// 正の整数値で上限値(byte)を与えます。
-	//     例: 1000000 (1,000,000 bytes)
-	//     例: "128K" (128 kilo bytes)
-	//     例: "128M" (128 mega bytes)
-	// -1 を与えた場合、無限(システムリソースの上限まで)に設定されます。
-	// サイトマップやコンテンツなどで、容量の大きなデータを扱う場合に調整してください。
-	// @ini_set( 'memory_limit' , -1 );
+	/**
+	 * `memory_limit`
+	 *
+	 * PHPのメモリの使用量の上限を設定します。
+	 * 正の整数値で上限値(byte)を与えます。
+	 *
+	 *     例: 1000000 (1,000,000 bytes)
+	 *     例: "128K" (128 kilo bytes)
+	 *     例: "128M" (128 mega bytes)
+	 *
+	 * -1 を与えた場合、無限(システムリソースの上限まで)に設定されます。
+	 * サイトマップやコンテンツなどで、容量の大きなデータを扱う場合に調整してください。
+	 */
+	@ini_set( 'memory_limit' , -1 );
 
+	/**
+	 * `display_errors`, `error_reporting`
+	 *
+	 * エラーを標準出力するための設定です。
+	 *
+	 * PHPの設定によっては、エラーが発生しても表示されない場合があります。
+	 * もしも、「なんか挙動がおかしいな？」と感じたら、
+	 * 必要に応じてこれらのコメントを外し、エラー出力を有効にしてみてください。
+	 *
+	 * エラーメッセージは問題解決の助けになります。
+	 */
+	@ini_set('display_errors', 1);
+	@ini_set('error_reporting', E_ALL);
+
+
+// 	$newValue->newParam = $undefinedValue['undefined'];
 
 	return $conf;
 } );

@@ -44,6 +44,21 @@
       },
       "anchor": "",
       "dec": ""
+     },
+     {
+      "modId": "local:sample/projectCustomField",
+      "fields": {
+       "projectCustom1": {
+        "src": "## project custom field 1\n\nmarkdown を書いています。",
+        "editor": "markdown"
+       },
+       "projectCustom2": {
+        "src": "## project custom field 2\n\n- list1\n- list2",
+        "editor": "markdown"
+       }
+      },
+      "anchor": "",
+      "dec": ""
      }
     ]
    },
