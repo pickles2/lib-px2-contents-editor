@@ -112,41 +112,66 @@ module.exports = function(){
 	this.getProjectInfo = function(callback){
 		callback = callback || function(){};
 		var pjInfo = {};
-		_this.px2proj.get_config(function(conf){
-			pjInfo.conf = conf;
 
-			_this.px2proj.get_page_info(_this.page_path, function(pageInfo){
-				pjInfo.pageInfo = pageInfo;
-
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.get_config(function(conf){
+					pjInfo.conf = conf;
+					rlv();
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.get_page_info(_this.page_path, function(pageInfo){
+					pjInfo.pageInfo = pageInfo;
+					rlv();
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
 				_this.px2proj.get_path_controot(function(contRoot){
 					pjInfo.contRoot = contRoot;
-
-					_this.px2proj.get_path_docroot(function(documentRoot){
-						pjInfo.documentRoot = documentRoot;
-
-						_this.px2proj.realpath_files(_this.page_path, '', function(realpathDataDir){
-							realpathDataDir = require('path').resolve(realpathDataDir, 'guieditor.ignore')+'/';
-							pjInfo.realpathDataDir = realpathDataDir;
-
-							_this.px2proj.path_files(_this.page_path, '', function(pathResourceDir){
-								pathResourceDir = require('path').resolve(pathResourceDir, 'resources')+'/';
-								pathResourceDir = pathResourceDir.replace(new RegExp('\\\\','g'), '/').replace(new RegExp('^[a-zA-Z]\\:\\/'), '/');
-									// Windows でボリュームラベル "C:" などが含まれるようなパスを渡すと、
-									// broccoli-html-editor内 resourceMgr で
-									// 「Uncaught RangeError: Maximum call stack size exceeded」が起きて落ちる。
-									// ここで渡すのはウェブ側からみえる外部のパスでありサーバー内部パスではないので、
-									// ボリュームラベルが付加された値を渡すのは間違い。
-
-								pjInfo.pathResourceDir = pathResourceDir;
-
-								callback(pjInfo);
-
-							});
-						});
-					});
+					rlv();
 				});
-			});
-		});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.get_path_docroot(function(documentRoot){
+					pjInfo.documentRoot = documentRoot;
+					rlv();
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.realpath_files(_this.page_path, '', function(realpathDataDir){
+					pjInfo.realpathFiles = realpathDataDir;
+
+					realpathDataDir = require('path').resolve(realpathDataDir, 'guieditor.ignore')+'/';
+					pjInfo.realpathDataDir = realpathDataDir;
+
+					rlv();
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.path_files(_this.page_path, '', function(pathResourceDir){
+					pjInfo.pathFiles = pathResourceDir;
+
+					pathResourceDir = require('path').resolve(pathResourceDir, 'resources')+'/';
+					pathResourceDir = pathResourceDir.replace(new RegExp('\\\\','g'), '/').replace(new RegExp('^[a-zA-Z]\\:\\/'), '/');
+						// Windows でボリュームラベル "C:" などが含まれるようなパスを渡すと、
+						// broccoli-html-editor内 resourceMgr で
+						// 「Uncaught RangeError: Maximum call stack size exceeded」が起きて落ちる。
+						// ここで渡すのはウェブ側からみえる外部のパスでありサーバー内部パスではないので、
+						// ボリュームラベルが付加された値を渡すのは間違い。
+
+					pjInfo.pathResourceDir = pathResourceDir;
+
+					rlv();
+
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				callback(pjInfo);
+			}); })
+		;
+
+		return;
 	}
 
 	/**
