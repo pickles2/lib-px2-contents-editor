@@ -358,7 +358,7 @@ module.exports = function(){
 				// プロジェクトが拡張するフィールド
 				var confCustomFields = {};
 				try {
-					confCustomFields = px2conf.plugins.px2dt.guieditor.customFields;
+					confCustomFields = px2conf.plugins.px2dt.guieditor.custom_fields;
 					for( var fieldName in confCustomFields ){
 						try {
 							if( confCustomFields[fieldName].backend.require ){
@@ -412,8 +412,8 @@ module.exports = function(){
 				}
 
 				try {
-					if( px2conf.plugins.px2dt.guieditor.pathResourceDir ){
-						pathResourceDir = bind( px2conf.plugins.px2dt.guieditor.pathResourceDir );
+					if( px2conf.plugins.px2dt.guieditor.path_resource_dir ){
+						pathResourceDir = bind( px2conf.plugins.px2dt.guieditor.path_resource_dir );
 						pathResourceDir = require('path').resolve('/' + px2conf.path_controot + '/' + pathResourceDir)+'/';
 						// console.log(pathResourceDir);
 					}
@@ -421,8 +421,8 @@ module.exports = function(){
 				}
 
 				try {
-					if( px2conf.plugins.px2dt.guieditor.realpathDataDir ){
-						realpathDataDir = bind( px2conf.plugins.px2dt.guieditor.realpathDataDir );
+					if( px2conf.plugins.px2dt.guieditor.path_data_dir ){
+						realpathDataDir = bind( px2conf.plugins.px2dt.guieditor.path_data_dir );
 						realpathDataDir = require('path').resolve('/', documentRoot+'/'+px2conf.path_controot + '/' + realpathDataDir)+'/';
 						// console.log(realpathDataDir);
 					}

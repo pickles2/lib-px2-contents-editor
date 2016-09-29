@@ -226,10 +226,10 @@ return call_user_func( function(){
 	$conf->plugins->px2dt->contents_area_selector = '[data-contents-area]'; // <- コンテンツエリアを識別するセレクタ(複数の要素がマッチしてもよい)
 	$conf->plugins->px2dt->contents_bowl_name_by = 'data-contents-area'; // <- コンテンツエリアのbowl名を指定する属性名
 
-	@$conf->plugins->px2dt->guieditor->pathResourceDir = '{$dirname}/{$filename}_files/resources/'; // broccoliの引数 pathResourceDir
-	@$conf->plugins->px2dt->guieditor->realpathDataDir = '{$dirname}/{$filename}_files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
+	@$conf->plugins->px2dt->guieditor->path_resource_dir = '{$dirname}/{$filename}_files/resources/'; // broccoliの引数 pathResourceDir
+	@$conf->plugins->px2dt->guieditor->path_data_dir = '{$dirname}/{$filename}_files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
 
-	@$conf->plugins->px2dt->guieditor->customFields = array( // broccoli-html-editor のフィールド拡張
+	@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
 		'projectCustom1'=>array(
 			'backend'=>array(
 				'require' => '../../px-files/broccoli-fields/projectCustom1/backend.js'

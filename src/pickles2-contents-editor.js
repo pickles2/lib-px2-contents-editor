@@ -180,6 +180,7 @@
 
 		/**
 		 * コマンドキー名を得る
+		 * Mac OS X では Cmdキー(`cmd`)、 Windows では Ctrlキー(`ctrl`) を返す。
 		 */
 		this.getCmdKeyName = function(){
 			var ua = window.navigator.userAgent;
