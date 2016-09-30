@@ -33,6 +33,7 @@ module.exports = function(){
 
 		this.getProjectInfo(function(pjInfo){
 			// console.log(pjInfo);
+			_this.pjInfo = pjInfo;
 			_this.px2conf = pjInfo.conf;
 			_this.pageInfo = pjInfo.pageInfo;
 			_this.documentRoot = pjInfo.documentRoot;
@@ -139,40 +140,45 @@ module.exports = function(){
 				});
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				_this.px2proj.realpath_files(_this.page_path, '', function(realpathDataDir){
-					pjInfo.realpathFiles = realpathDataDir;
-
-					realpathDataDir = require('path').resolve(realpathDataDir, 'guieditor.ignore')+'/';
-					pjInfo.realpathDataDir = realpathDataDir;
-
+				_this.px2proj.realpath_files(_this.page_path, '', function(realpathFiles){
+					pjInfo.realpathFiles = realpathFiles;
 					rlv();
 				});
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				_this.px2proj.path_files(_this.page_path, '', function(pathResourceDir){
-					pjInfo.pathFiles = pathResourceDir;
-
-					pathResourceDir = require('path').resolve(pathResourceDir, 'resources')+'/';
-					pathResourceDir = pathResourceDir.replace(new RegExp('\\\\','g'), '/').replace(new RegExp('^[a-zA-Z]\\:\\/'), '/');
-						// Windows でボリュームラベル "C:" などが含まれるようなパスを渡すと、
-						// broccoli-html-editor内 resourceMgr で
-						// 「Uncaught RangeError: Maximum call stack size exceeded」が起きて落ちる。
-						// ここで渡すのはウェブ側からみえる外部のパスでありサーバー内部パスではないので、
-						// ボリュームラベルが付加された値を渡すのは間違い。
-
-					pjInfo.pathResourceDir = pathResourceDir;
-
+				_this.px2proj.path_files(_this.page_path, '', function(pathFiles){
+					pjInfo.pathFiles = pathFiles;
 					rlv();
-
 				});
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.query(_this.page_path+'?PX=px2dthelper.get.realpath_data_dir', {
+					"output": "json",
+					"complete": function(data, code){
+						// console.log(data, code);
+						pjInfo.realpathDataDir = JSON.parse(data);
+						rlv();
+					}
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.query(_this.page_path+'?PX=px2dthelper.get.path_resource_dir', {
+					"output": "json",
+					"complete": function(data, code){
+						// console.log(data, code);
+						pjInfo.pathResourceDir = JSON.parse(data);
+						rlv();
+					}
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// console.log(pjInfo);
 				callback(pjInfo);
 			}); })
 		;
 
 		return;
-	}
+	} // getProjectInfo()
 
 	/**
 	 * コンテンツファイルを初期化する
@@ -189,6 +195,7 @@ module.exports = function(){
 		editorType = editorType||'html';
 
 		var pageInfo,
+			pjInfo = _this.pjInfo,
 			prop = {}
 		;
 
@@ -207,15 +214,12 @@ module.exports = function(){
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
-				_this.px2proj.get_page_info(_this.page_path, function(_pageInfo){
-					pageInfo = _pageInfo;
-					// console.log(pageInfo);
-					if( pageInfo == null ){
-						rjt('Page not Exists.');
-						return;
-					}
-					rlv();
-				});
+				pageInfo = pjInfo.pageInfo;
+				if( pageInfo == null ){
+					rjt('Page not Exists.');
+					return;
+				}
+				rlv();
 
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
@@ -290,11 +294,11 @@ module.exports = function(){
 				}
 				if( prop.editor_type == 'html.gui' ){
 					try {
-						fs.mkdirSync( prop.realpath_resource_dir + '/guieditor.ignore/' );
+						fs.mkdirSync( pjInfo.realpathDataDir );
 					} catch (e) {
 						rlv();
 					} finally {
-						fs.writeFile( prop.realpath_resource_dir + '/guieditor.ignore/data.json', '{}', function(err){
+						fs.writeFile( pjInfo.realpathDataDir + '/data.json', '{}', function(err){
 							if( err ){
 								rjt(err);
 								return;
@@ -327,24 +331,25 @@ module.exports = function(){
 	 */
 	this.checkEditorType = function(callback){
 		callback = callback||function(){};
-		this.getProjectInfo(function(pjInfo){
-			// console.log(pjInfo);
-			var rtn = '.not_exists';
-			if( pjInfo.pageInfo === null ){
-				callback('.page_not_exists');
-				return;
-			}
-			if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content ) ){
-				rtn = 'html';
-				if( utils79.is_file( pjInfo.realpathDataDir + '/data.json' ) ){
-					rtn = 'html.gui';
-				}
+		var pjInfo = this.pjInfo;
 
-			}else if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content + '.md' ) ){
-				rtn = 'md';
+		// console.log(pjInfo);
+		var rtn = '.not_exists';
+		if( pjInfo.pageInfo === null ){
+			callback('.page_not_exists');
+			return;
+		}
+		if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content ) ){
+			rtn = 'html';
+			if( utils79.is_file( pjInfo.realpathDataDir + '/data.json' ) ){
+				rtn = 'html.gui';
 			}
-			callback(rtn);
-		});
+
+		}else if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content + '.md' ) ){
+			rtn = 'md';
+		}
+		callback(rtn);
+
 		return;
 	}
 
@@ -406,56 +411,10 @@ module.exports = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				// モジュールてプレートを収集
 				for( var idx in px2conf.plugins.px2dt.paths_module_template ){
 					px2conf.plugins.px2dt.paths_module_template[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
 				}
-				rlv();
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				// console.log(px2conf.plugins.px2dt);
-				function bind( tpl ){
-					var data = {
-						'dirname' : utils79.normalize_path( utils79.dirname( pageInfo.content ) ),
-						'filename' : utils79.basename( (function(path){
-							var rtn = path.replace( new RegExp('\\.[a-zA-Z0-9\\_\\-]+$'), '' );
-							return rtn;
-						})( pageInfo.content ) ),
-						'ext' : (function(path){
-							path.match( new RegExp('\\.([a-zA-Z0-9\\_\\-]+)$') );
-							var rtn = (RegExp.$1).toLowerCase();
-							return rtn;
-						})( pageInfo.content )
-					};
-
-					tpl = tpl.replace( '{$dirname}', data['dirname'] );
-					tpl = tpl.replace( '{$filename}', data['filename'] );
-					tpl = tpl.replace( '{$ext}', data['ext'] );
-
-					tpl = utils79.normalize_path( tpl );
-
-					return tpl;
-				}
-
-				try {
-					if( px2conf.plugins.px2dt.guieditor.path_resource_dir ){
-						pathResourceDir = bind( px2conf.plugins.px2dt.guieditor.path_resource_dir );
-						pathResourceDir = require('path').resolve('/' + px2conf.path_controot + '/' + pathResourceDir)+'/';
-						// console.log(pathResourceDir);
-					}
-				} catch (e) {
-				}
-
-				try {
-					if( px2conf.plugins.px2dt.guieditor.path_data_dir ){
-						realpathDataDir = bind( px2conf.plugins.px2dt.guieditor.path_data_dir );
-						realpathDataDir = require('path').resolve('/', documentRoot+'/'+px2conf.path_controot + '/' + realpathDataDir)+'/';
-						// console.log(realpathDataDir);
-					}
-				} catch (e) {
-				}
-
-				// console.log(pathResourceDir);
-				// console.log(realpathDataDir);
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
@@ -466,8 +425,8 @@ module.exports = function(){
 						'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
 						'documentRoot': documentRoot,// realpath
 						'pathHtml': require('path').resolve(px2conf.path_controot, './'+pageInfo.content),
-						'pathResourceDir': pathResourceDir,
-						'realpathDataDir':  realpathDataDir,
+						'pathResourceDir': _this.pathResourceDir,
+						'realpathDataDir':  _this.realpathDataDir,
 						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
 						'customFields': customFields ,
 						'bindTemplate': function(htmls, callback){

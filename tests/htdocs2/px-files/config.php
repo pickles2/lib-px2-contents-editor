@@ -99,9 +99,6 @@ return call_user_func( function(){
 
 		// sitemapExcel
 		'tomk79\pickles2\sitemap_excel\pickles_sitemap_excel::exec' ,
-
-		// PX=px2dthelper
-		'tomk79\pickles2\px2dthelper\main::register'
 	];
 
 	// funcs: Before content
@@ -113,6 +110,8 @@ return call_user_func( function(){
 		// PX=publish
 		'picklesFramework2\commands\publish::register' ,
 
+		// PX=px2dthelper
+		'tomk79\pickles2\px2dthelper\main::register' ,
 	];
 
 
@@ -226,8 +225,8 @@ return call_user_func( function(){
 	$conf->plugins->px2dt->contents_area_selector = '[data-contents-area]'; // <- コンテンツエリアを識別するセレクタ(複数の要素がマッチしてもよい)
 	$conf->plugins->px2dt->contents_bowl_name_by = 'data-contents-area'; // <- コンテンツエリアのbowl名を指定する属性名
 
-	@$conf->plugins->px2dt->guieditor->path_resource_dir = '{$dirname}/{$filename}_files/resources/'; // broccoliの引数 pathResourceDir
-	@$conf->plugins->px2dt->guieditor->path_data_dir = '{$dirname}/{$filename}_files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
+	@$conf->plugins->px2dt->guieditor->path_resource_dir = '{$dirname}/{$filename}__files/resources/'; // broccoliの引数 pathResourceDir
+	@$conf->plugins->px2dt->guieditor->path_data_dir = '{$dirname}/{$filename}__files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
 
 	@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
 		'projectCustom1'=>array(

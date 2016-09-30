@@ -77,7 +77,7 @@ module.exports = function(px2ce, data, callback){
 			px2ce.getProjectConf(function(conf){
 				var code = '';
 				try {
-					var confCustomFields = conf.plugins.px2dt.guieditor.customFields;
+					var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
 					for(var fieldName in confCustomFields){
 						if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
 							var pathJs = require('path').resolve(px2ce.entryScript, '..', confCustomFields[fieldName].frontend.file);
