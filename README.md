@@ -206,6 +206,8 @@ $ npm run test
 - 新しい設定 `$conf->plugins->px2dt->guieditor->path_resource_dir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->path_data_dir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->custom_fields` を追加。
+- `checkEditorMode()` を px2-px2dthelper 依存に変更。
+- `initContentFiles()` を px2-px2dthelper 依存に変更。
 
 ### pickles2-contents-editor@2.0.0-beta.3 (2016年8月3日)
 

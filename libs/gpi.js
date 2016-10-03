@@ -18,7 +18,7 @@ module.exports = function(px2ce, data, callback){
 		case "initContentFiles":
 			// コンテンツファイルを初期化する
 			// console.log(data);
-			px2ce.initContentFiles(data.editor_type, function(result){
+			px2ce.initContentFiles(data.editor_mode, function(result){
 				callback(result);
 			});
 			break;
@@ -30,10 +30,10 @@ module.exports = function(px2ce, data, callback){
 			});
 			break;
 
-		case "checkEditorType":
+		case "checkEditorMode":
 			// ページの編集方法を取得する
-			px2ce.checkEditorType(function(editoryType){
-				callback(editoryType);
+			px2ce.checkEditorMode(function(editorMode){
+				callback(editorMode);
 			});
 			break;
 

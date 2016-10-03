@@ -183,173 +183,36 @@ module.exports = function(){
 	/**
 	 * コンテンツファイルを初期化する
 	 */
-	this.initContentFiles = function(editorType, callback){
-		// console.log(_this.page_path);
-		// console.log(editorType);
-		var result = {
-			'result': true,
-			'message': 'OK'
-		};
-
-		callback = callback||function(){};
-		editorType = editorType||'html';
-
-		var pageInfo,
-			pjInfo = _this.pjInfo,
-			prop = {}
-		;
-
-		/**
-		 * パス文字列を解析する
-		 */
-		function parsePath( path ){
-			var rtn = {};
-			rtn.path = path;
-			rtn.basename = utils79.basename( rtn.path );
-			rtn.dirname = utils79.dirname( rtn.path );
-			rtn.ext = rtn.basename.replace( new RegExp('^.*\\.'), '' );
-			rtn.basenameExtless = rtn.basename.replace( new RegExp('\\.'+utils79.regexp_quote(rtn.ext)+'$'), '' );
-			return rtn;
-		}
-
-		new Promise(function(rlv){rlv();})
-			.then(function(){ return new Promise(function(rlv, rjt){
-				pageInfo = pjInfo.pageInfo;
-				if( pageInfo == null ){
-					rjt('Page not Exists.');
+	this.initContentFiles = function(editorMode, callback){
+		_this.px2proj.query(
+			_this.page_path+'?PX=px2dthelper.init_content&editor_mode='+editorMode, {
+				"output": "json",
+				"complete": function(data, code){
+					// console.log(data, code);
+					var rtn = JSON.parse(data);
+					callback(rtn);
 					return;
 				}
-				rlv();
-
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				_this.px2proj.get_path_content(_this.page_path, function(contPath){
-					// console.log(contPath);
-
-					_this.px2proj.get_path_controot(function(contRoot){
-						_this.px2proj.get_path_docroot(function(docRoot){
-							if( fs.existsSync( docRoot + contRoot + contPath ) ){
-								rjt('Content Already Exists.');
-								return;
-							}
-							switch( editorType ){
-								case 'html.gui':
-								case 'html':
-								case 'md':
-									// OK
-									break;
-								default:
-									rjt('Unknown editor-type "'+editorType+'".');
-									return;
-									break;
-							}
-
-							var pathInfo = parsePath( docRoot + contRoot + contPath );
-							prop.realpath_cont = pathInfo.path;
-
-							_this.px2proj.realpath_files(_this.page_path, '', function(realpath_resource_dir){
-								prop.realpath_resource_dir = realpath_resource_dir;
-								prop.editor_type = editorType;
-								if( prop.editor_type == 'md' ){
-									prop.realpath_cont += '.'+prop.editor_type;
-								}
-
-								rlv();
-
-							});
-
-						});
-					});
-				});
-
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				// 格納ディレクトリを作る
-				if( utils79.is_dir( utils79.dirname( prop.realpath_cont ) ) ){
-					rlv();
-					return;
-				}
-				// 再帰的に作る fsx.mkdirpSync()
-				var dirpath = utils79.dirname( prop.realpath_cont );
-				if( !fsx.mkdirpSync( dirpath ) ){
-					rjt('FAILED to mkdirp - '+dirpath);
-					return;
-				}
-				rlv();
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				// コンテンツ自体を作る
-				fs.writeFile( prop.realpath_cont, '', function(err){
-					if( err ){
-						rjt(err);
-						return;
-					}
-					rlv();
-				} );
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				// リソースディレクトリを作る
-				if( !utils79.is_dir( prop.realpath_resource_dir ) ){
-					fsx.mkdirpSync( prop.realpath_resource_dir );
-				}
-				if( prop.editor_type == 'html.gui' ){
-					try {
-						fs.mkdirSync( pjInfo.realpathDataDir );
-					} catch (e) {
-						rlv();
-					} finally {
-						fs.writeFile( pjInfo.realpathDataDir + '/data.json', '{}', function(err){
-							if( err ){
-								rjt(err);
-								return;
-							}
-							rlv();
-						} );
-					}
-
-				}else{
-					rlv();
-				}
-			}); })
-			.then(function(){
-				callback(result);
-			})
-			.catch(function (err) {
-				result = {
-					'result': false,
-					'message': (typeof(err) == typeof('') ? err : err.message)
-				};
-				callback(result);
-			})
-		;
-
+			}
+		);
 		return;
 	}
 
 	/**
 	 * ページの編集方法を取得する
 	 */
-	this.checkEditorType = function(callback){
-		callback = callback||function(){};
-		var pjInfo = this.pjInfo;
-
-		// console.log(pjInfo);
-		var rtn = '.not_exists';
-		if( pjInfo.pageInfo === null ){
-			callback('.page_not_exists');
-			return;
-		}
-		if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content ) ){
-			rtn = 'html';
-			if( utils79.is_file( pjInfo.realpathDataDir + '/data.json' ) ){
-				rtn = 'html.gui';
+	this.checkEditorMode = function(callback){
+		_this.px2proj.query(
+			_this.page_path+'?PX=px2dthelper.check_editor_mode', {
+				"output": "json",
+				"complete": function(data, code){
+					// console.log(data, code);
+					var rtn = JSON.parse(data);
+					callback(rtn);
+					return;
+				}
 			}
-
-		}else if( utils79.is_file( pjInfo.documentRoot + pjInfo.contRoot + pjInfo.pageInfo.content + '.md' ) ){
-			rtn = 'md';
-		}
-		callback(rtn);
-
+		);
 		return;
 	}
 
