@@ -21,9 +21,9 @@ module.exports = function(px2ce){
 							+ '<p>コンテンツファイルが存在しません。</p>'
 							+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
 							+ '<ul>'
-								+ '<li><label><input type="radio" name="editor-type" value="html.gui" checked="checked" /> HTML + GUI Editor (<%= basename %> + data files)</label></li>'
-								+ '<li><label><input type="radio" name="editor-type" value="html" /> HTML (<%= basename %>)</label></li>'
-								+ '<li><label><input type="radio" name="editor-type" value="md" /> Markdown (<%= basename %>.md)</label></li>'
+								+ '<li><label><input type="radio" name="editor-mode" value="html.gui" checked="checked" /> HTML + GUI Editor (<%= basename %> + data files)</label></li>'
+								+ '<li><label><input type="radio" name="editor-mode" value="html" /> HTML (<%= basename %>)</label></li>'
+								+ '<li><label><input type="radio" name="editor-mode" value="md" /> Markdown (<%= basename %>.md)</label></li>'
 							+ '</ul>'
 							+ '<div class="row">'
 								+ '<div class="col-sm-8 col-sm-offset-2"><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg">コンテンツファイルを作成する</button></div>'
@@ -40,10 +40,10 @@ module.exports = function(px2ce){
 		})());
 
 		$canvas.find('form').submit(function(){
-			var editor_type = $(this).find('input[name=editor-type]:checked').val();
-			// console.log( editor_type );
-			if( !editor_type ){
-				alert('ERROR: editor-type is not selected.');
+			var editor_mode = $(this).find('input[name=editor-mode]:checked').val();
+			// console.log( editor_mode );
+			if( !editor_mode ){
+				alert('ERROR: editor-mode is not selected.');
 				return false;
 			}
 
@@ -51,7 +51,7 @@ module.exports = function(px2ce){
 				{
 					'api': 'initContentFiles',
 					'page_path': page_path,
-					'editor_type': editor_type
+					'editor_mode': editor_mode
 				},
 				function(result){
 					console.log(result);

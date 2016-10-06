@@ -71,15 +71,15 @@
 					_this.gpiBridge(
 						{
 							'page_path':_this.page_path,
-							'api':'checkEditorType'
+							'api':'checkEditorMode'
 						},
-						function(editorType){
-							// console.log(editorType);
+						function(editorMode){
+							// console.log(editorMode);
 							var editorOption = {
-								'editorType': editorType,
+								'editorMode': editorMode,
 								'serverConfig': serverConfig
 							};
-							switch(editorType){
+							switch(editorMode){
 								case '.page_not_exists':
 									// ページ自体が存在しない。
 									$canvas.html('<p>ページが存在しません。</p>');
@@ -180,6 +180,7 @@
 
 		/**
 		 * コマンドキー名を得る
+		 * Mac OS X では Cmdキー(`cmd`)、 Windows では Ctrlキー(`ctrl`) を返す。
 		 */
 		this.getCmdKeyName = function(){
 			var ua = window.navigator.userAgent;

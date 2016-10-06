@@ -131,7 +131,7 @@ module.exports = function(px2ce){
 				// プロジェクトが拡張するフィールド
 				var confCustomFields = {};
 				try {
-					confCustomFields = px2conf.plugins.px2dt.guieditor.customFields;
+					confCustomFields = px2conf.plugins.px2dt.guieditor.custom_fields;
 					for( var fieldName in confCustomFields ){
 						try {
 							if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){

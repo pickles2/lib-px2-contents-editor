@@ -195,7 +195,7 @@ module.exports = function(px2ce){
 									$elmTextareas['css'].getSession().setMode("ace/mode/scss");
 									$elmTextareas['js'].setTheme("ace/theme/xcode");
 									$elmTextareas['js'].getSession().setMode("ace/mode/javascript");
-									switch(editorOption.editorType){
+									switch(editorOption.editorMode){
 										case 'md':
 											$elmTextareas['html'].setTheme("ace/theme/github");
 											$elmTextareas['html'].getSession().setMode("ace/mode/markdown");
