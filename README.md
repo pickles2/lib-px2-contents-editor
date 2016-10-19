@@ -199,6 +199,8 @@ $ npm run test
 	- imageフィールドに、JPEG, PNG 画像の自動ロスレス圧縮機能を追加。
 	- imageフィールドに、ウェブ上のURLを直接参照できる機能を追加。
 	- finalize.js の第3引数に、ライブラリやリソースを供給する `supply` を追加。この中に含まれる `cheerio` を利用できるようになった。
+- broccoli-field-table
+	- 最後の行が結合されている場合に、列幅指定が欠落する不具合を修正。
 - broccoli-html-editor オブジェクトを取り出すAPI `px2ce.createBroccoli()` を追加。
 - broccoli-html-editor で、プロジェクト固有のカスタムフィールドを追加できる機能を追加。
 - `page_path` に alias や dynamic path を受け取った場合に異常終了する不具合を修正。
