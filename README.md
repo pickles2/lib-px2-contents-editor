@@ -33,6 +33,14 @@ app.use( '/your/api/path', function(req, res, next){
 				// ログ情報出力時にコールされます。
 				// msg を受け取り、適切なファイルへ出力するように実装してください。
 				fs.writeFileSync('/path/to/px2ce.log', {}, msg);
+			},
+			'commands'{
+				'php': {
+					// PHPコマンドのパスを表すオブジェクト
+					// または、 文字列で '/path/to/php' とすることも可 (この場合、 php.ini のパスは指定されない)
+					'bin': '/path/to/php',
+					'ini': '/path/to/php.ini'
+				}
 			}
 		},
 		function(){
@@ -208,6 +216,7 @@ $ npm run test
 - 新しい設定 `$conf->plugins->px2dt->guieditor->path_resource_dir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->path_data_dir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->custom_fields` を追加。
+- サーバーサイドのinit項目に commands.php を追加。
 - `checkEditorMode()` を px2-px2dthelper 依存に変更。
 - `initContentFiles()` を px2-px2dthelper 依存に変更。
 

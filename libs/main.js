@@ -25,7 +25,23 @@ module.exports = function(){
 		};
 		this.entryScript = options.entryScript;
 		this.page_path = options.page_path;
-		this.px2proj = require('px2agent').createProject(options.entryScript);
+		this.px2proj = require('px2agent').createProject(options.entryScript, (function(cmds){
+			try {
+				var nodePhpBinOptions = cmds.php;
+				if(!nodePhpBinOptions){
+					return undefined;
+				}
+				if( typeof(nodePhpBinOptions) == typeof('') ){
+					nodePhpBinOptions = {
+						'bin': nodePhpBinOptions,
+						'ini': null
+					};
+				}
+				return nodePhpBinOptions;
+			} catch (e) {
+				return undefined;
+			}
+		})(options.commands));
 		this.options = options;
 
 		this.page_path = this.page_path.replace( new RegExp('^(alias[0-9]*\\:)?\\/+'), '/' );
