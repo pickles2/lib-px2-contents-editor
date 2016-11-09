@@ -8,6 +8,7 @@ module.exports = function(){
 	var utils79 = require('utils79');
 	var Promise = require('es6-promise').Promise;
 	var _this = this;
+	var nodePhpBinOptions;
 
 	this.entryScript;
 	this.px2proj;
@@ -25,7 +26,26 @@ module.exports = function(){
 		};
 		this.entryScript = options.entryScript;
 		this.page_path = options.page_path;
-		this.px2proj = require('px2agent').createProject(options.entryScript);
+
+		nodePhpBinOptions = (function(cmds){
+			try {
+				var nodePhpBinOptions = cmds.php;
+				if(!nodePhpBinOptions){
+					return undefined;
+				}
+				if( typeof(nodePhpBinOptions) == typeof('') ){
+					nodePhpBinOptions = {
+						'bin': nodePhpBinOptions,
+						'ini': null
+					};
+				}
+				return nodePhpBinOptions;
+			} catch (e) {
+			}
+			return undefined;
+		})(options.commands);
+
+		this.px2proj = require('px2agent').createProject(options.entryScript, nodePhpBinOptions);
 		this.options = options;
 
 		this.page_path = this.page_path.replace( new RegExp('^(alias[0-9]*\\:)?\\/+'), '/' );
@@ -241,7 +261,7 @@ module.exports = function(){
 				// フィールドを拡張
 
 				// px2ce が拡張するフィールド
-				customFields.table = require('broccoli-field-table');
+				customFields.table = require('broccoli-field-table').get({'php': nodePhpBinOptions});
 
 				// 呼び出し元アプリが拡張するフィールド
 				for( var idx in px2ce.options.customFields ){
