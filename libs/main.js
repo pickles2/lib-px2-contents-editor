@@ -21,6 +21,7 @@ module.exports = function(){
 		options = options || {};
 		options.appMode = options.appMode || 'web'; // web | desktop
 		options.customFields = options.customFields || {}; // custom fields
+		options.customFieldsIncludePath = options.customFieldsIncludePath || {}; // custom fields include path (for cliend libs)
 		options.log = options.log || function(msg){
 			console.error(msg);
 		};

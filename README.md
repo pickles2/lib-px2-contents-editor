@@ -8,66 +8,88 @@ Pickles 2 のコンテンツ編集インターフェイスを提供します。
 
 ```js
 
-var express = require('express'),
-	app = express();
-var server = require('http').Server(app);
+var express = require('express');
 var Px2CE = require('pickles2-contents-editor');
+var entryScript = require('path').resolve('/path/to/.px_execute.php');
+var px2proj = require('px2agent').createProject(entryScript);
 
-app.use( '/your/api/path', function(req, res, next){
 
-	var px2ce = new Px2CE();
-	px2ce.init(
-		{
-			'page_path': '/path/to/page.html', // <- 編集対象ページのパス
-			'appMode': 'web', // 'web' or 'desktop'. default to 'web'
-			'entryScript': require('path').resolve('/path/to/.px_execute.php'),
-			'customFields': {
-				// この設定項目は、 broccoli-html-editor に渡されます
-				'custom1': function(broccoli){
-					// カスタムフィールドを実装します。
-					// この関数は、fieldBase.js を基底クラスとして継承します。
-					// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
-				}
-			} ,
-			'log': function(msg){
-				// ログ情報出力時にコールされます。
-				// msg を受け取り、適切なファイルへ出力するように実装してください。
-				fs.writeFileSync('/path/to/px2ce.log', {}, msg);
-			},
-			'commands'{
-				'php': {
-					// PHPコマンドのパスを表すオブジェクト
-					// または、 文字列で '/path/to/php' とすることも可 (この場合、 php.ini のパスは指定されない)
-					'bin': '/path/to/php',
-					'ini': '/path/to/php.ini'
-				}
-			}
-		},
-		function(){
-			px2ce.gpi(JSON.parse(req.body.data), function(value){
-				res
-					.status(200)
-					.set('Content-Type', 'text/json')
-					.send( JSON.stringify(value) )
-					.end();
-			});
+// --------------------------------------------------
+// Pickles 2 contents editor application server
+var app = express();
+var server = require('http').Server(app);
+px2proj.get_config(function(px2conf){
+
+	var confCustomFields = px2conf.plugins.px2dt.guieditor.custom_fields;
+	var customFieldsIncludePath = [];
+	for(var fieldName in confCustomFields){
+		if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
+			var pathJs = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.file);
+			app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathJs, '..') ) );
+			var binJs = '<script src="file://'+pathJs+'"></script>';
+			customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+utils79.basename(pathJs) );
 		}
-	);
+	}
 
-	return;
-} );
+	app.use( '/your/api/path', function(req, res, next){
 
-server.listen(8080);
+		var px2ce = new Px2CE();
+		px2ce.init(
+			{
+				'page_path': '/path/to/page.html', // <- 編集対象ページのパス
+				'appMode': 'web', // 'web' or 'desktop'. default to 'web'
+				'entryScript': entryScript,
+				'customFields': {
+					// この設定項目は、 broccoli-html-editor に渡されます
+					'custom1': function(broccoli){
+						// カスタムフィールドを実装します。
+						// この関数は、fieldBase.js を基底クラスとして継承します。
+						// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
+					}
+				} ,
+				'customFieldsIncludePath': customFieldsIncludePath,
+				'log': function(msg){
+					// ログ情報出力時にコールされます。
+					// msg を受け取り、適切なファイルへ出力するように実装してください。
+					fs.writeFileSync('/path/to/px2ce.log', {}, msg);
+				},
+				'commands'{
+					'php': {
+						// PHPコマンドのパスを表すオブジェクト
+						// または、 文字列で '/path/to/php' とすることも可 (この場合、 php.ini のパスは指定されない)
+						'bin': '/path/to/php',
+						'ini': '/path/to/php.ini'
+					}
+				}
+			},
+			function(){
+				px2ce.gpi(JSON.parse(req.body.data), function(value){
+					res
+						.status(200)
+						.set('Content-Type', 'text/json')
+						.send( JSON.stringify(value) )
+						.end();
+				});
+			}
+		);
+
+		return;
+	} );
+
+	server.listen(8080);
+
+});
 
 
 
-// Pickles2 preview server
+// --------------------------------------------------
+// Pickles 2 preview server
 var expressPickles2 = require('express-pickles2');
 var appPx2 = express();
 appPx2.use( require('body-parser')() );
 
 appPx2.use( '/*', expressPickles2(
-	path.resolve('/path/to/.px_execute.php'),
+	entryScript,
 	{
 		'processor': function(bin, ext, callback){
 			if( ext == 'html' ){
@@ -216,7 +238,8 @@ $ npm run test
 - 新しい設定 `$conf->plugins->px2dt->guieditor->path_resource_dir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->path_data_dir` を追加。
 - 新しい設定 `$conf->plugins->px2dt->guieditor->custom_fields` を追加。
-- サーバーサイドのinit項目に commands.php を追加。
+- サーバーサイドのinit項目に `commands.php` を追加。
+- サーバーサイドのinit項目に `customFieldsIncludePath` を追加。
 - `checkEditorMode()` を px2-px2dthelper 依存に変更。
 - `initContentFiles()` を px2-px2dthelper 依存に変更。
 
