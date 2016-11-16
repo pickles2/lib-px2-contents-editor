@@ -17,23 +17,47 @@ console.log(conf);
 
 var fs = require('fs');
 var path = require('path');
+var px2agent = require('px2agent');
+var utils79 = require('utils79');
 var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
 console.log('port number is '+conf.originParsed.port);
 console.log('Pickles 2 preview server port number is '+conf.px2server.originParsed.port);
 
+var entryScript = path.resolve(__dirname, '../../htdocs2/htdocs/subapp/.px_execute.php');
+// var entryScript = path.resolve(__dirname, '../../htdocs/.px_execute.php');
 
-app.use( require('body-parser')({"limit": "1024mb"}) );
-app.use( '/common/', express.static( path.resolve(__dirname, '../../../dist/') ) );
-app.use( '/apis/px2ce', require('./apis/px2ce.js')() );
+var px2proj = require('px2agent').createProject(entryScript);
 
-app.use( express.static( __dirname+'/../client/' ) );
+px2proj.get_config(function(px2conf){
+	// console.log(px2conf);
 
-// {conf.port}番ポートでLISTEN状態にする
-server.listen( conf.originParsed.port, function(){
-	console.log('server-standby');
-} );
+	var confCustomFields = px2conf.plugins.px2dt.guieditor.custom_fields;
+	var customFieldsIncludePath = [];
+	for(var fieldName in confCustomFields){
+		if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
+			var pathJs = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.file);
+			app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathJs, '..') ) );
+			var binJs = '<script src="file://'+pathJs+'"></script>';
+			customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+utils79.basename(pathJs) );
+		}
+	}
+
+	app.use( require('body-parser')({"limit": "1024mb"}) );
+	app.use( '/common/', express.static( path.resolve(__dirname, '../../../dist/') ) );
+	app.use( '/apis/px2ce', require('./apis/px2ce.js')({
+		'customFieldsIncludePath': customFieldsIncludePath
+	}) );
+
+	app.use( express.static( __dirname+'/../client/' ) );
+
+	// {conf.port}番ポートでLISTEN状態にする
+	server.listen( conf.originParsed.port, function(){
+		console.log('server-standby');
+	} );
+});
+
 
 
 
@@ -43,8 +67,7 @@ var appPx2 = express();
 appPx2.use( require('body-parser')({"limit": "1024mb"}) );
 
 appPx2.use( '/*', expressPickles2(
-	path.resolve(__dirname, '../../htdocs2/htdocs/subapp/.px_execute.php'),
-	// path.resolve(__dirname, '../../htdocs/.px_execute.php'),
+	entryScript,
 	{
 		// 'liveConfig': function(callback){
 		// 	var pj = px.getCurrentProject();

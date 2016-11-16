@@ -1,7 +1,7 @@
 /**
  * px2ce.js
  */
-module.exports = function(){
+module.exports = function(opts){
 
 	var Px2CE = require('../../../../libs/main.js');
 
@@ -19,7 +19,8 @@ module.exports = function(){
 					"custom1": function(){
 						// カスタムフィールド1
 					}
-				}
+				},
+				'customFieldsIncludePath': opts.customFieldsIncludePath
 			},
 			function(){
 				px2ce.gpi(JSON.parse(req.body.data), function(value){
