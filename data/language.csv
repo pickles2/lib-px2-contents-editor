@@ -2,3 +2,6 @@
 ui_label.ok,OK,OK,OK,OK
 ui_label.cancel,Cancel,キャンセル,取消,取消
 ui_label.close,Close,閉じる,关闭,關閉
+ui_label.done,Done,完了,,
+ui_label.toggle_instance_treeview,"toggle instanceTreeView",インスタンスツリービューを開閉,,
+ui_label.open_in_browser,"Open in Browser",ブラウザでプレビュー,,

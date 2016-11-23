@@ -46,7 +46,7 @@ module.exports = function(px2ce){
 						toolbar.init({
 							"btns":[
 								{
-									"label": "toggle instanceTreeView",
+									"label": px2ce.lb.get('ui_label.toggle_instance_treeview'),
 									"click": function(){
 										show_instanceTreeView = (show_instanceTreeView ? false : true);
 										_this.redraw(function(){
@@ -55,7 +55,7 @@ module.exports = function(px2ce){
 									}
 								},
 								{
-									"label": "ブラウザでプレビュー",
+									"label": px2ce.lb.get('ui_label.open_in_browser'),
 									"click": function(){
 										px2ce.openUrlInBrowser( getPreviewUrl() );
 									}
