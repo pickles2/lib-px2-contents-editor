@@ -166,6 +166,7 @@ module.exports = function(px2ce){
 						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
 						// ↑bowlの名称を、data-contents属性値から取得します。
 						'customFields': customFields,
+						'lang': px2ce.options.lang,
 						'gpiBridge': function(api, options, callback){
 							// GPI(General Purpose Interface) Bridge
 							// broccoliは、バックグラウンドで様々なデータ通信を行います。

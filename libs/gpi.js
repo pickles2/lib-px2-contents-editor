@@ -15,6 +15,12 @@ module.exports = function(px2ce, data, callback){
 			callback(conf);
 			break;
 
+		case "getLanguageCsv":
+			// 言語ファイル(CSV)を取得
+			var csv = require('fs').readFileSync( __dirname+'/../data/language.csv' ).toString();
+			callback(csv);
+			break;
+
 		case "initContentFiles":
 			// コンテンツファイルを初期化する
 			// console.log(data);
