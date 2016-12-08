@@ -15,6 +15,12 @@ module.exports = function(px2ce, data, callback){
 			callback(conf);
 			break;
 
+		case "getLanguageCsv":
+			// 言語ファイル(CSV)を取得
+			var csv = require('fs').readFileSync( __dirname+'/../data/language.csv' ).toString();
+			callback(csv);
+			break;
+
 		case "initContentFiles":
 			// コンテンツファイルを初期化する
 			// console.log(data);
@@ -74,7 +80,18 @@ module.exports = function(px2ce, data, callback){
 
 		case "loadCustomFieldsClientSideLibs":
 			// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
+			if(px2ce.options.customFieldsIncludePath && px2ce.options.customFieldsIncludePath.length){
+				var codes = [];
+				var confCustomFields = px2ce.options.customFieldsIncludePath;
+				for(var idx in confCustomFields){
+					var binJs = '<script src="'+confCustomFields[idx]+'"></script>';
+					codes.push(binJs);
+				}
+				callback(codes);
+				break;
+			}
 			px2ce.getProjectConf(function(conf){
+				var codes = [];
 				var code = '';
 				try {
 					var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
@@ -87,7 +104,9 @@ module.exports = function(px2ce, data, callback){
 					}
 				} catch (e) {
 				}
-				callback(code);
+				code = '<script>'+code+'</script>';
+				codes.push(code);
+				callback(codes);
 			});
 			break;
 

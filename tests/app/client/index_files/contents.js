@@ -38,6 +38,7 @@ $(window).load(function(){
 						// カスタムフィールドを実装
 					}
 				},
+				'lang': 'ja',
 				'gpiBridge': function(input, callback){
 					// GPI(General Purpose Interface) Bridge
 					// broccoliは、バックグラウンドで様々なデータ通信を行います。

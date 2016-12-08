@@ -29,6 +29,7 @@
 
 	window.Pickles2ContentsEditor = function(){
 		var $ = require('jquery');
+		var it79 = require('iterate79');
 		var $canvas;
 		var _this = this;
 		this.__dirname = __dirname;
@@ -37,6 +38,9 @@
 
 		var serverConfig;
 		var editor;
+
+		var LangBank = require('langbank');
+		this.lb = {};
 
 		/**
 		* initialize
@@ -52,6 +56,7 @@
 			this.options.onClickContentsLink = this.options.onClickContentsLink || function(uri, data){ alert('onClickContentsLink: '+uri); };
 			this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
 			this.options.preview = this.options.preview || {};
+			this.options.lang = this.options.lang || 'en';
 			this.page_path = this.options.page_path;
 
 			this.page_path = this.page_path.replace( new RegExp('^(alias[0-9]*\\:)?\\/+'), '/' );
@@ -60,65 +65,94 @@
 			$canvas = $(options.elmCanvas);
 			$canvas.addClass('pickles2-contents-editor');
 
-			_this.gpiBridge(
-				{
-					'api':'getConfig'
-				} ,
-				function(config){
-					// console.log(config);
-					serverConfig = config;
-
-					_this.gpiBridge(
-						{
-							'page_path':_this.page_path,
-							'api':'checkEditorMode'
-						},
-						function(editorMode){
-							// console.log(editorMode);
-							var editorOption = {
-								'editorMode': editorMode,
-								'serverConfig': serverConfig
-							};
-							switch(editorMode){
-								case '.page_not_exists':
-									// ページ自体が存在しない。
-									$canvas.html('<p>ページが存在しません。</p>');
-									callback();
-									break;
-
-								case '.not_exists':
-									// コンテンツが存在しない
-									$canvas.html('<p>コンテンツが存在しません。</p>');
-									editor = new (require('./editor/not_exists/not_exists.js'))(_this);
-									editor.init(editorOption, function(){
-										callback();
-									});
-									break;
-
-								case 'html.gui':
-									// broccoli
-									$canvas.html('<p>GUIエディタを起動します。</p>');
-									editor = new (require('./editor/broccoli/broccoli.js'))(_this);
-									editor.init(editorOption, function(){
-										callback();
-									});
-									break;
-
-								case 'html':
-								case 'md':
-								default:
-									// defaultテキストエディタ
-									$canvas.html('<p>テキストエディタを起動します。</p>');
-									editor = new (require('./editor/default/default.js'))(_this);
-									editor.init(editorOption, function(){
-										callback();
-									});
-									break;
+			it79.fnc(
+				{},
+				[
+					function(it1, data){
+						_this.gpiBridge(
+							{
+								'api':'getConfig'
+							} ,
+							function(config){
+								// console.log(config);
+								serverConfig = config;
+								it1.next(data);
 							}
-						}
-					);
-				}
+						);
+					} ,
+					function(it1, data){
+						_this.gpiBridge(
+							{
+								'api':'getLanguageCsv'
+							} ,
+							function(csv){
+								// console.log(csv);
+								_this.lb = new LangBank(csv, function(){
+									console.log('pickles2-contents-editor: set language "'+_this.options.lang+'"');
+									_this.lb.setLang( _this.options.lang );
+									// console.log( _this.lb.get('ui_label.close') );
+									it1.next(data);
+								});
+							}
+						);
+					} ,
+					function(it1, data){
+						_this.gpiBridge(
+							{
+								'page_path':_this.page_path,
+								'api':'checkEditorMode'
+							},
+							function(editorMode){
+								// console.log(editorMode);
+								var editorOption = {
+									'editorMode': editorMode,
+									'serverConfig': serverConfig
+								};
+								switch(editorMode){
+									case '.page_not_exists':
+										// ページ自体が存在しない。
+										$canvas.html('<p>ページが存在しません。</p>');
+										it1.next(data);
+										break;
+
+									case '.not_exists':
+										// コンテンツが存在しない
+										$canvas.html('<p>コンテンツが存在しません。</p>');
+										editor = new (require('./editor/not_exists/not_exists.js'))(_this);
+										editor.init(editorOption, function(){
+											it1.next(data);
+										});
+										break;
+
+									case 'html.gui':
+										// broccoli
+										$canvas.html('<p>GUIエディタを起動します。</p>');
+										editor = new (require('./editor/broccoli/broccoli.js'))(_this);
+										editor.init(editorOption, function(){
+											it1.next(data);
+										});
+										break;
+
+									case 'html':
+									case 'md':
+									default:
+										// defaultテキストエディタ
+										$canvas.html('<p>テキストエディタを起動します。</p>');
+										editor = new (require('./editor/default/default.js'))(_this);
+										editor.init(editorOption, function(){
+											it1.next(data);
+										});
+										break;
+								}
+							}
+						);
+					} ,
+					function(it1, data){
+						callback();
+					}
+				]
 			);
+
 
 		} // init()
 

@@ -1,4 +1,20 @@
+(function(){
+
 console.log('project custom field 2 - frontend.js');
+var __dirname = (function() {
+	if (document.currentScript) {
+		return document.currentScript.src;
+	} else {
+		var scripts = document.getElementsByTagName('script'),
+		script = scripts[scripts.length-1];
+		if (script.src) {
+			return script.src;
+		}
+	}
+	return '';
+})().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
+console.log(__dirname);
+
 window.broccoliFieldProjectCustom2 = function(broccoli){
 
 
@@ -80,3 +96,5 @@ window.broccoliFieldProjectCustom2 = function(broccoli){
 	}
 
 }
+
+})();
