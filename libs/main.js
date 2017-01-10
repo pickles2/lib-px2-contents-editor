@@ -256,6 +256,11 @@ module.exports = function(){
 			pathResourceDir = px2ce.pathResourceDir
 		;
 		var customFields = {};
+		var page_content = _this.page_path;
+		try {
+			page_content = pageInfo.content;
+		} catch (e) {
+		}
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
@@ -308,7 +313,7 @@ module.exports = function(){
 						'appMode': px2ce.getAppMode() ,
 						'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
 						'documentRoot': documentRoot,// realpath
-						'pathHtml': require('path').resolve(px2conf.path_controot, './'+pageInfo.content),
+						'pathHtml': require('path').resolve(px2conf.path_controot, './'+page_content),
 						'pathResourceDir': _this.pathResourceDir,
 						'realpathDataDir':  _this.realpathDataDir,
 						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
