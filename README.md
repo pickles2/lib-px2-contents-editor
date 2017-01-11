@@ -230,6 +230,8 @@ $ npm run test
 	- imageフィールドに、JPEG, PNG 画像の自動ロスレス圧縮機能を追加。
 	- imageフィールドに、ウェブ上のURLを直接参照できる機能を追加。
 	- finalize.js の第3引数に、ライブラリやリソースを供給する `supply` を追加。この中に含まれる `cheerio` を利用できるようになった。
+	- モジュールの `info.json` や `clip.json` がキャッシュされ、更新が反映されない場合がある問題を修正。
+	- モジュールの package, category にも `deprecated` フラグを追加。
 - broccoli-field-table
 	- 最後の行が結合されている場合に、列幅指定が欠落する不具合を修正。
 - broccoli-html-editor オブジェクトを取り出すAPI `px2ce.createBroccoli()` を追加。
@@ -244,6 +246,7 @@ $ npm run test
 - クライアントサイドの新しいオプション `lang` を追加。
 - `checkEditorMode()` を px2-px2dthelper 依存に変更。
 - `initContentFiles()` を px2-px2dthelper 依存に変更。
+- その他パフォーマンス向上、細かい不具合の修正など。
 
 ### pickles2-contents-editor@2.0.0-beta.3 (2016年8月3日)
 
