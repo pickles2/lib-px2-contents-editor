@@ -238,10 +238,11 @@ module.exports = function(){
 	}
 
 	/**
-	 * create broccoli-html-editor object
+	 * create initialize options for broccoli-html-editor
 	 */
-	this.createBroccoli = function(callback){
+	this.createBroccoliInitOptions = function(callback){
 		callback = callback||function(){};
+		var broccoliInitializeOptions = {};
 		var Broccoli = require('broccoli-html-editor');
 		var broccoli = new Broccoli();
 		var px2ce = this;
@@ -308,49 +309,80 @@ module.exports = function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 
-				broccoli.init(
-					{
-						'appMode': px2ce.getAppMode() ,
-						'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
-						'documentRoot': documentRoot,// realpath
-						'pathHtml': require('path').resolve(px2conf.path_controot, './'+page_content),
-						'pathResourceDir': _this.pathResourceDir,
-						'realpathDataDir':  _this.realpathDataDir,
-						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-						'customFields': customFields ,
-						'bindTemplate': function(htmls, callback){
-							var fin = '';
-							for( var bowlId in htmls ){
-								if( bowlId == 'main' ){
-									fin += htmls['main'];
-								}else{
-									fin += "\n";
-									fin += "\n";
-									fin += '<?php ob_start(); ?>'+"\n";
-									fin += htmls[bowlId]+"\n";
-									fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
-									fin += "\n";
-								}
+				broccoliInitializeOptions = {
+					'appMode': px2ce.getAppMode() ,
+					'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
+					'documentRoot': documentRoot,// realpath
+					'pathHtml': require('path').resolve(px2conf.path_controot, './'+page_content),
+					'pathResourceDir': _this.pathResourceDir,
+					'realpathDataDir':  _this.realpathDataDir,
+					'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+					'customFields': customFields ,
+					'bindTemplate': function(htmls, callback){
+						var fin = '';
+						for( var bowlId in htmls ){
+							if( bowlId == 'main' ){
+								fin += htmls['main'];
+							}else{
+								fin += "\n";
+								fin += "\n";
+								fin += '<?php ob_start(); ?>'+"\n";
+								fin += htmls[bowlId]+"\n";
+								fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
+								fin += "\n";
 							}
-							callback(fin);
-							return;
-						},
-						'log': function(msg){
-							// エラー発生時にコールされます。
-							px2ce.log(msg);
 						}
+						callback(fin);
+						return;
 					},
+					'log': function(msg){
+						// エラー発生時にコールされます。
+						px2ce.log(msg);
+					}
+				}
+				rlv();
+				return;
+			}); })
+			.then(function(){
+				callback( broccoliInitializeOptions );
+				return;
+			})
+		;
+
+		return;
+	}
+
+	/**
+	 * create broccoli-html-editor object
+	 */
+	this.createBroccoli = function(callback){
+		callback = callback||function(){};
+		var broccoliInitializeOptions = {};
+		var Broccoli = require('broccoli-html-editor');
+		var broccoli = new Broccoli();
+
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.createBroccoliInitOptions(function(opts){
+					broccoliInitializeOptions = opts;
+					rlv();
+				});
+				return;
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+
+				broccoli.init(
+					broccoliInitializeOptions,
 					function(){
 						rlv();
 					}
 				);
 				return;
 			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
+			.then(function(){
 				callback(broccoli);
-			}); })
+			})
 		;
-
 		return;
 	}
 
