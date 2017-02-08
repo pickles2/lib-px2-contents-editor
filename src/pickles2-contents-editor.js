@@ -260,7 +260,11 @@
 						},
 						function(scripts){
 							for(var i in scripts){
-								$('body').append(scripts[i]);
+								try {
+									$('body').append(scripts[i]);
+								} catch (e) {
+									console.error( 'Module Script Error:', scripts[i] );
+								}
 							}
 							rlv();
 						}

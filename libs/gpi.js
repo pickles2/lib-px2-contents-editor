@@ -99,12 +99,16 @@ module.exports = function(px2ce, data, callback){
 						if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
 							var pathJs = require('path').resolve(px2ce.entryScript, '..', confCustomFields[fieldName].frontend.file);
 							var binJs = require('fs').readFileSync( pathJs ).toString();
-							code += binJs;
+							code += '/**'+"\n";
+							code += ' * '+fieldName+"\n";
+							code += ' */'+"\n";
+							code += binJs+"\n";
+							code += ''+"\n";
 						}
 					}
 				} catch (e) {
 				}
-				code = '<script>'+code+'</script>';
+				code = '<script>'+"\n"+code+'</script>';
 				codes.push(code);
 				callback(codes);
 			});

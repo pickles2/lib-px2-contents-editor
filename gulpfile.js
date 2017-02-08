@@ -26,7 +26,7 @@ var _tasks = [
 
 // client-libs (frontend) を処理
 gulp.task("client-libs", function() {
-	gulp.src(["node_modules/px2style/dist/**/*"])
+	gulp.src(["node_modules/px2style/dist/**/*", "!node_modules/px2style/dist/*.css"])
 		.pipe(gulp.dest( './dist/libs/px2style/dist/' ))
 	;
 
