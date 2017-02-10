@@ -67,6 +67,18 @@
 
 			$canvas = $(options.elmCanvas);
 			$canvas.addClass('pickles2-contents-editor');
+			$canvas
+				.on('dragover', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					return;
+				})
+				.on('drop', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					return;
+				})
+			;
 
 			it79.fnc(
 				{},
