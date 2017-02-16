@@ -21801,30 +21801,6 @@ module.exports = function(px2ce){
 			broccoli.unselectInstance();
 			return true;
 		});
-		_Keypress.simple_combo(px2ce.getCmdKeyName()+" c", function(e) {
-			switch(e.target.tagName.toLowerCase()){
-				case 'input': case 'textarea':
-				return true; break;
-			}
-			// e.preventDefault();
-			broccoli.copy(function(result){
-				if(result){
-					console.log('copy instance done.');
-				}
-			});
-			return true;
-		});
-		_Keypress.simple_combo(px2ce.getCmdKeyName()+" v", function(e) {
-			switch(e.target.tagName.toLowerCase()){
-				case 'input': case 'textarea':
-				return true; break;
-			}
-			e.preventDefault();
-			broccoli.paste(function(){
-				console.log('paste instance done.');
-			});
-			return true;
-		});
 		_Keypress.simple_combo(px2ce.getCmdKeyName()+" z", function(e) {
 			switch(e.target.tagName.toLowerCase()){
 				case 'input': case 'textarea':
@@ -22045,7 +22021,7 @@ module.exports = function(px2ce){
 
 					$elmTabs = $canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch]');
 					$elmTabs
-						.click(function(){
+						.on('click', function(){
 							var $this = $(this);
 							$elmTabs.removeAttr('disabled');
 							$this.attr({'disabled': 'disabled'});
@@ -22062,7 +22038,7 @@ module.exports = function(px2ce){
 					$iframe = $('<iframe>');
 					$elmCanvas.html('').append($iframe);
 					$iframe
-						.bind('load', function(){
+						.on('load', function(){
 							console.log('pickles2-contents-editor: preview loaded');
 							// alert('pickles2-contents-editor: preview loaded');
 							onPreviewLoad( callback );
@@ -22469,6 +22445,18 @@ module.exports = function(px2ce){
 
 			$canvas = $(options.elmCanvas);
 			$canvas.addClass('pickles2-contents-editor');
+			$canvas
+				.on('dragover', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					return;
+				})
+				.on('drop', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					return;
+				})
+			;
 
 			it79.fnc(
 				{},
