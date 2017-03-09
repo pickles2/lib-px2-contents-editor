@@ -367,7 +367,7 @@ module.exports = function(){
 								fin += "\n";
 								fin += "\n";
 								fin += '<?php ob_start(); ?>'+"\n";
-								fin += htmls[bowlId]+"\n";
+								fin += (utils79.toStr(htmls[bowlId]).length ? htmls[bowlId]+"\n" : '');
 								fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
 								fin += "\n";
 							}

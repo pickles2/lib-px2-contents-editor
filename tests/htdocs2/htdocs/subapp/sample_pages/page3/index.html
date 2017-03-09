@@ -43,3 +43,8 @@
 </ul>
     </div>
 </div>
+
+
+<?php ob_start(); ?>
+<?php $px->bowl()->send( ob_get_clean(), "right_bar" ); ?>
+
