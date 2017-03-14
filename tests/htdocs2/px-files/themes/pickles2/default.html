@@ -52,6 +52,9 @@
 							<p><a href="<?= htmlspecialchars( $px->href($category_top_id) ) ?>"><?= htmlspecialchars($px->site()->get_page_info($category_top_id, 'title_label')) ?></a></p>
 <?= $theme->mk_sub_menu( $category_top_id ) ?>
 						</nav>
+						<div class="contents" <?= htmlspecialchars($theme->get_attr_bowl_name_by())?>="right_bar">
+<?= $px->bowl()->pull('right_bar') ?>
+						</div>
 					</div>
 				</div><!-- /.row -->
 			</div><!-- /.container -->

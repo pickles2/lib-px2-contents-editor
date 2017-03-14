@@ -137,6 +137,46 @@ module.exports = function(){
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.query(_this.page_path+'?PX=px2dthelper.get.all', {
+					"output": "json",
+					"complete": function(data, code){
+						try {
+							var allData = JSON.parse(data);
+							if( typeof(allData) !== typeof({}) ){
+								console.error("Error: Parsed JSON from `PX=px2dthelper.get.all` is NOT a object.", allData);
+								rlv();
+								return;
+							}
+							if( typeof(allData.config) !== typeof({}) ){
+								console.error("Error: Parsed JSON from `PX=px2dthelper.get.all` is NOT conains a config object.", allData);
+								rlv();
+								return;
+							}
+							// console.log(allData, code);
+
+							pjInfo.conf = allData.config;
+							pjInfo.pageInfo = allData.page_info;
+							pjInfo.contRoot = allData.path_controot;
+							pjInfo.documentRoot = allData.realpath_docroot;
+							pjInfo.realpathFiles = allData.realpath_files;
+							pjInfo.pathFiles = allData.path_files;
+							pjInfo.realpathDataDir = allData.realpath_data_dir;
+							pjInfo.pathResourceDir = allData.path_resource_dir;
+							pjInfo.realpath_homedir = allData.realpath_homedir;
+							callback(pjInfo);
+							return;
+
+						} catch (e) {
+							// うまく解析できなかったら、
+							// 旧来の方法で個別に取得する
+							console.error("Error: FAILED to parse JSON from `PX=px2dthelper.get.all`.");
+							rlv();
+							return;
+						}
+					}
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
 				_this.px2proj.get_config(function(conf){
 					pjInfo.conf = conf;
 					rlv();
@@ -327,7 +367,7 @@ module.exports = function(){
 								fin += "\n";
 								fin += "\n";
 								fin += '<?php ob_start(); ?>'+"\n";
-								fin += htmls[bowlId]+"\n";
+								fin += (utils79.toStr(htmls[bowlId]).length ? htmls[bowlId]+"\n" : '');
 								fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
 								fin += "\n";
 							}

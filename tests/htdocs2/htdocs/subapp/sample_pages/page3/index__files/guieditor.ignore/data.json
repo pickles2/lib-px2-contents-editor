@@ -64,6 +64,12 @@
    },
    "anchor": "",
    "dec": ""
+  },
+  "right_bar": {
+   "modId": "_sys/root",
+   "fields": {
+    "main": []
+   }
   }
  }
 }
