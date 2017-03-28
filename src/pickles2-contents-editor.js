@@ -272,10 +272,7 @@
 						},
 						function(scripts){
 							it79.ary(scripts,
-								function(itAry, scriptTag, idx){
-									var $script = $(scriptTag);
-									var scriptUrl = $script.attr('src');
-									// console.log(scriptUrl);
+								function(itAry, scriptUrl, idx){
 									var scr = document.createElement('script');
 									scr.src = scriptUrl;
 									scr.onload = function(e){
