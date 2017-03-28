@@ -271,14 +271,23 @@
 							'api': 'loadCustomFieldsClientSideLibs'
 						},
 						function(scripts){
-							for(var i in scripts){
-								try {
-									$('body').append(scripts[i]);
-								} catch (e) {
-									console.error( 'Module Script Error:', scripts[i] );
+							it79.ary(scripts,
+								function(itAry, scriptTag, idx){
+									var $script = $(scriptTag);
+									var scriptUrl = $script.attr('src');
+									// console.log(scriptUrl);
+									var scr = document.createElement('script');
+									scr.src = scriptUrl;
+									scr.onload = function(e){
+										// console.log('custom script loaded.', this);
+										itAry.next();
+									};
+									document.body.appendChild(scr);
+								},
+								function(){
+									rlv();
 								}
-							}
-							rlv();
+							);
 						}
 					);
 				}); })
