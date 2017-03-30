@@ -223,7 +223,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor@2.0.0-beta.4 (2016年??月??日)
+### pickles2-contents-editor@2.0.0-beta.4 (2017年??月??日)
 
 - broccoli-html-editor
 	- モジュール設定 `deprecated` を追加。非推奨のモジュールに `true` をセットすると、モジュールパレットに表示されなくなる。
@@ -234,6 +234,10 @@ $ npm run test
 	- モジュールの package, category にも `deprecated` フラグを追加。
 	- moduleフィールド、 loopフィールド でも `hidden`, ifフィールドでの分岐, echoフィールドからの出力 ができるようになった。
 	- 既に使用されたモジュールに、後から selectフィールドを追加した場合に、 `default` が適用されない不具合を修正。
+	- モジュールにscriptタグが含まれる場合に、編集画面では無効にするようになった。
+	- モジュールテンプレート中の `{& ~~~~ &}` のあとに改行が続く場合、1つだけ削除するようになった。(テンプレートコードの可読性向上のため)
+	- インスタンスのカット機能追加。
+	- インスタンスの範囲選択機能追加。
 - broccoli-field-table
 	- 最後の行が結合されている場合に、列幅指定が欠落する不具合を修正。
 - broccoli-html-editor オブジェクトを取り出すAPI `px2ce.createBroccoli()` を追加。
