@@ -23159,6 +23159,10 @@ module.exports = function(px2ce){
 			this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
 			this.options.preview = this.options.preview || {};
 			this.options.lang = this.options.lang || 'en';
+			this.options.clipboard = this.options.clipboard || {};
+			this.options.clipboard.set = this.options.clipboard.set || null;
+			this.options.clipboard.get = this.options.clipboard.get || null;
+
 			this.page_path = this.options.page_path;
 
 			try {
@@ -23439,15 +23443,6 @@ module.exports = function(px2ce){
 					rlv();
 				}); })
 				.then(function(){ return new Promise(function(rlv, rjt){
-					rlv();
-				}); })
-				.then(function(){ return new Promise(function(rlv, rjt){
-					rlv();
-				}); })
-				.then(function(){ return new Promise(function(rlv, rjt){
-					rlv();
-				}); })
-				.then(function(){ return new Promise(function(rlv, rjt){
 					broccoliInitializeOptions = {
 						'elmCanvas': document.createElement('div'),
 						'elmModulePalette': document.createElement('div'),
@@ -23479,6 +23474,7 @@ module.exports = function(px2ce){
 							);
 							return;
 						},
+						'clipboard': px2ce.options.clipboard,
 						'onClickContentsLink': function( uri, data ){
 							px2ce.onClickContentsLink( uri, data );
 						},
