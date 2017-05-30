@@ -26,26 +26,8 @@ var _tasks = [
 
 // client-libs (frontend) を処理
 gulp.task("client-libs", function() {
-	gulp.src(["node_modules/px2style/dist/**/*", "!node_modules/px2style/dist/*.css"])
-		.pipe(gulp.dest( './dist/libs/px2style/dist/' ))
-	;
-
-	gulp.src(["node_modules/broccoli-html-editor/client/dist/**/*"])
-		.pipe(gulp.dest( './dist/libs/broccoli-html-editor/client/dist/' ))
-	;
-
 	gulp.src(["node_modules/broccoli-field-table/dist/**/*"])
 		.pipe(gulp.dest( './dist/libs/broccoli-field-table/dist/' ))
-	;
-
-	gulp.src(["node_modules/bootstrap/dist/fonts/**/*"])
-		.pipe(gulp.dest( './dist/libs/bootstrap/dist/fonts/' ))
-	;
-	gulp.src(["node_modules/bootstrap/dist/js/**/*"])
-		.pipe(gulp.dest( './dist/libs/bootstrap/dist/js/' ))
-	;
-	gulp.src(["node_modules/ace-builds/src-noconflict/**/*"])
-		.pipe(gulp.dest( './tests/app/client/libs/ace-builds/src-noconflict/' ))
 	;
 });
 
