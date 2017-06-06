@@ -15,9 +15,7 @@
   "author": "Tomoya Koyanagi",
   "license": "MIT",
   "dependencies": {
-    "ace-builds": "file:submodules/ace-builds",
     "broccoli-field-table": "file:submodules/broccoli-field-table",
-    "broccoli-html-editor": "file:submodules/broccoli-html-editor",
     "desktop-utils": "^0.1.0",
     "ejs": "^2.4.1",
     "es6-promise": "^3.1.2",
@@ -31,8 +29,10 @@
     "utils79": "file:submodules/node-utils79"
   },
   "devDependencies": {
+    "ace-builds": "file:submodules/ace-builds",
     "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
+    "broccoli-html-editor": "file:submodules/broccoli-html-editor",
     "config": "^1.20.1",
     "express": "^4.13.3",
     "express-pickles2": "^2.0.0-alpha.4",

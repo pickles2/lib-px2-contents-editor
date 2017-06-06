@@ -1,12 +1,12 @@
 [submodule "submodules/broccoli-html-editor"]
 	path = submodules/broccoli-html-editor
-	url = https://github.com/pickles2/broccoli-html-editor.git
+	url = https://github.com/broccoli-html-editor/broccoli-html-editor.git
+[submodule "submodules/broccoli-field-table"]
+	path = submodules/broccoli-field-table
+	url = https://github.com/broccoli-html-editor/broccoli-field-table.git
 [submodule "submodules/node-utils79"]
 	path = submodules/node-utils79
 	url = https://github.com/tomk79/node-utils79.git
-[submodule "submodules/broccoli-field-table"]
-	path = submodules/broccoli-field-table
-	url = https://github.com/pickles2/broccoli-field-table.git
 [submodule "submodules/ace-builds"]
 	path = submodules/ace-builds
 	url = https://github.com/ajaxorg/ace-builds.git

@@ -14,17 +14,7 @@
 		}
 	})().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
 
-	// bootstrap をロード
-	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/bootstrap/dist/css/bootstrap.css" />');
-	document.write('<script src="'+__dirname+'/libs/bootstrap/dist/js/bootstrap.js"></script>');
-
-	// px2style をロード
-	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/px2style/dist/styles.css" />');
-	document.write('<script src="'+__dirname+'/libs/px2style/dist/scripts.js"></script>');
-
-	// broccoli-html-editor をロード
-	document.write('<link rel="stylesheet" href="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.css" />');
-	document.write('<script src="'+__dirname+'/libs/broccoli-html-editor/client/dist/broccoli.js"></script>');
+	// broccoli-field-table をロード
 	document.write('<script src="'+__dirname+'/libs/broccoli-field-table/dist/broccoli-field-table.js"></script>');
 
 	window.Pickles2ContentsEditor = function(){
@@ -57,6 +47,10 @@
 			this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
 			this.options.preview = this.options.preview || {};
 			this.options.lang = this.options.lang || 'en';
+			this.options.clipboard = this.options.clipboard || {};
+			this.options.clipboard.set = this.options.clipboard.set || null;
+			this.options.clipboard.get = this.options.clipboard.get || null;
+
 			this.page_path = this.options.page_path;
 
 			try {
@@ -337,15 +331,6 @@
 					rlv();
 				}); })
 				.then(function(){ return new Promise(function(rlv, rjt){
-					rlv();
-				}); })
-				.then(function(){ return new Promise(function(rlv, rjt){
-					rlv();
-				}); })
-				.then(function(){ return new Promise(function(rlv, rjt){
-					rlv();
-				}); })
-				.then(function(){ return new Promise(function(rlv, rjt){
 					broccoliInitializeOptions = {
 						'elmCanvas': document.createElement('div'),
 						'elmModulePalette': document.createElement('div'),
@@ -377,6 +362,7 @@
 							);
 							return;
 						},
+						'clipboard': px2ce.options.clipboard,
 						'onClickContentsLink': function( uri, data ){
 							px2ce.onClickContentsLink( uri, data );
 						},

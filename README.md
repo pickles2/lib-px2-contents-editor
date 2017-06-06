@@ -7,7 +7,6 @@ Pickles 2 のコンテンツ編集インターフェイスを提供します。
 ### Server Side
 
 ```js
-
 var express = require('express');
 var Px2CE = require('pickles2-contents-editor');
 var entryScript = require('path').resolve('/path/to/.px_execute.php');
@@ -159,6 +158,15 @@ pickles2ContentsEditor.init(
 			});
 			return;
 		},
+		'clipboard': {
+			// クリップボード操作の機能を拡張できます。
+			'set': function( data, type ){
+				// クリップボードにコピーする機能を実装してください。
+			},
+			'get': function( type ){
+				// クリップボードからデータを取得する機能を実装してください。
+			}
+		},
 		'complete': function(){
 			alert('完了しました。');
 		},
@@ -250,6 +258,7 @@ $ npm run test
 - サーバーサイドのinit項目に `commands.php` を追加。
 - サーバーサイドのinit項目に `customFieldsIncludePath` を追加。
 - クライアントサイドの新しいオプション `lang` を追加。
+- クライアントサイドに `clipboard.set()`, `clipboard.get()` オプションを追加。
 - `checkEditorMode()` を px2-px2dthelper 依存に変更。
 - `initContentFiles()` を px2-px2dthelper 依存に変更。
 - その他パフォーマンス向上、細かい不具合の修正など。
