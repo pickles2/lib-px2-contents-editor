@@ -62,7 +62,7 @@ module.exports = function(px2ce, iframe){
 		var callbackId = createUUID();
 		// console.log(callbackId);
 
-		callbackMemory[callbackId] = callback;
+		callbackMemory[callbackId] = callback; // callbackは送信先から呼ばれる。
 
 		var message = {
 			'api': api,
@@ -74,8 +74,6 @@ module.exports = function(px2ce, iframe){
 		var win = $(iframe).get(0).contentWindow;
 		var targetWindowOrigin = getTargetOrigin(iframe);
 		win.postMessage(message, targetWindowOrigin);
-
-		// callback();//TODO: 仮実装。本当は、iframe側からコールバックされる。
 		return this;
 	}
 
