@@ -38,16 +38,15 @@ module.exports = function(px2ce, iframe){
 		var win = $(iframe).get(0).contentWindow;
 		$.ajax({
 			"url": __dirname+'/pickles2-preview-contents.js',
-			// "url": __dirname+'/libs/broccoli-html-editor/client/dist/broccoli-preview-contents.js',
-			// "dataType": "text/plain",
 			"complete": function(XMLHttpRequest, textStatus){
-				// console.log(XMLHttpRequest, textStatus);
-				// console.log(XMLHttpRequest.responseText);
 				var base64 = new Buffer(XMLHttpRequest.responseText).toString('base64');
-				// console.log(base64);
-				// console.log(__dirname+'/broccoli-preview-contents.js');
 				win.postMessage({'scriptUrl':'data:text/javascript;charset=utf8;base64,'+base64}, targetWindowOrigin);
-				callback();
+				setTimeout(function(){
+					// TODO: より確実な方法が欲しい。
+					// 子ウィンドウに走らせるスクリプトの準備が整うまで若干のタイムラグが生じる。
+					// 一旦 50ms あけて callback するようにしたが、より確実に完了を拾える方法が必要。
+					callback();
+				}, 100);
 			}
 		});
 		return this;
@@ -62,7 +61,7 @@ module.exports = function(px2ce, iframe){
 		var callbackId = createUUID();
 		// console.log(callbackId);
 
-		callbackMemory[callbackId] = callback;
+		callbackMemory[callbackId] = callback; // callbackは送信先から呼ばれる。
 
 		var message = {
 			'api': api,
@@ -74,8 +73,6 @@ module.exports = function(px2ce, iframe){
 		var win = $(iframe).get(0).contentWindow;
 		var targetWindowOrigin = getTargetOrigin(iframe);
 		win.postMessage(message, targetWindowOrigin);
-
-		// callback();//TODO: 仮実装。本当は、iframe側からコールバックされる。
 		return this;
 	}
 
