@@ -363,11 +363,6 @@ module.exports = function(px2ce){
 					it1.next(data);
 				});
 			} ,
-			function( it1, data ){
-				setTimeout(function(){
-					it1.next(data);
-				}, 100); // TODO: 子ウィンドウのスクリプトの準備ができるまでタイムラグ。より確実な方法が欲しい。
-			} ,
 			function(it1, arg){
 				// iframeのサイズ合わせ
 				// TODO: 子ウィンドウは、最初の通信で Origin を記憶するので、特に必要ないけどリクエストを投げている。よりよい方法が欲しい。
