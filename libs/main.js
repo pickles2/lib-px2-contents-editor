@@ -382,6 +382,19 @@ module.exports = function(){
 						console.error('Failed to info.json; '+pathModuleDir+'/info.json');
 					}
 				}
+				if( typeof(infoJson.sort) == typeof([]) ){
+					// 並び順の指定がある場合
+					for( var idx in infoJson.sort ){
+						if( pathsModuleTemplate[infoJson.sort[idx]] ){
+							// 既に登録済みのパッケージIDは上書きしない
+							// (= paths_module_template の設定を優先)
+							continue;
+						}
+						if( utils79.is_dir(pathModuleDir+infoJson.sort[idx]) ){
+							pathsModuleTemplate[infoJson.sort[idx]] = pathModuleDir+infoJson.sort[idx];
+						}
+					}
+				}
 
 				// モジュールディレクトリ中のパッケージをスキャンして一覧に追加
 				var fileList = require('fs').readdirSync(pathModuleDir);
