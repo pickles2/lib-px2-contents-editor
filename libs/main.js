@@ -15,6 +15,9 @@ module.exports = function(){
 	this.page_path;
 	this.options;
 
+	/**
+	 * Initialize
+	 */
 	this.init = function(options, callback){
 		callback = callback||function(){};
 		// console.log(options);
@@ -27,6 +30,10 @@ module.exports = function(){
 		};
 		this.entryScript = options.entryScript;
 		this.page_path = options.page_path;
+		if(typeof(this.page_path) !== typeof('')){
+			// 編集対象ページが指定されていない場合
+			return;
+		}
 
 		nodePhpBinOptions = (function(cmds){
 			try {
@@ -294,7 +301,8 @@ module.exports = function(){
 			contRoot = px2ce.contRoot,
 			documentRoot = px2ce.documentRoot,
 			realpathDataDir = px2ce.realpathDataDir,
-			pathResourceDir = px2ce.pathResourceDir
+			pathResourceDir = px2ce.pathResourceDir,
+			pathsModuleTemplate = []
 		;
 		var customFields = {};
 		var page_content = _this.page_path;
@@ -341,17 +349,61 @@ module.exports = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				// モジュールてプレートを収集
+				// モジュールテンプレートを収集
+				// (指定モジュールをロード)
 				for( var idx in px2conf.plugins.px2dt.paths_module_template ){
-					px2conf.plugins.px2dt.paths_module_template[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
+					pathsModuleTemplate[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
 				}
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// モジュールテンプレートを収集
+				// (モジュールフォルダからロード)
+				var pathModuleDir = px2conf.plugins.px2dt.path_module_templates_dir;
+				if( typeof(pathModuleDir) != typeof('') ){
+					// モジュールフォルダの指定がない場合
+					rlv();
+					return;
+				}
+				pathModuleDir = require('path').resolve( px2ce.entryScript, '..', pathModuleDir )+'/';
+				if( !utils79.is_dir(pathModuleDir) ){
+					// 指定されたモジュールフォルダが存在しない場合
+					rlv();
+					return;
+				}
+
+				// info.json を読み込み
+				var infoJson = {};
+				if( utils79.is_file(pathModuleDir+'/info.json') ){
+					try {
+						var srcInfoJson = require('fs').readFileSync(pathModuleDir+'/info.json');
+						infoJson = JSON.parse(srcInfoJson);
+					} catch (e) {
+						console.error('Failed to info.json; '+pathModuleDir+'/info.json');
+					}
+				}
+
+				// モジュールディレクトリ中のパッケージをスキャンして一覧に追加
+				var fileList = require('fs').readdirSync(pathModuleDir);
+				fileList.sort(); // sort
+				for( var idx in fileList ){
+					if( pathsModuleTemplate[fileList[idx]] ){
+						// 既に登録済みのパッケージIDは上書きしない
+						// (= paths_module_template の設定を優先)
+						continue;
+					}
+					if( utils79.is_dir(pathModuleDir+fileList[idx]) ){
+						pathsModuleTemplate[fileList[idx]] = pathModuleDir+fileList[idx];
+					}
+				}
+
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 
 				broccoliInitializeOptions = {
 					'appMode': px2ce.getAppMode() ,
-					'paths_module_template': px2conf.plugins.px2dt.paths_module_template ,
+					'paths_module_template': pathsModuleTemplate ,
 					'documentRoot': documentRoot,// realpath
 					'pathHtml': require('path').resolve(px2conf.path_controot, './'+page_content),
 					'pathResourceDir': _this.pathResourceDir,
