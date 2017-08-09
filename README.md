@@ -258,6 +258,7 @@ $ npm run test
 - 新しい設定 `$conf->plugins->px2dt->path_module_templates_dir` を追加。
 - サーバーサイドのinit項目に `commands.php` を追加。
 - サーバーサイドのinit項目に `customFieldsIncludePath` を追加。
+- サーバーサイドのinit項目に `documentRoot`, `realpathDataDir`, `pathResourceDir` を追加。
 - クライアントサイドの新しいオプション `lang` を追加。
 - クライアントサイドに `clipboard.set()`, `clipboard.get()` オプションを追加。
 - `checkEditorMode()` を px2-px2dthelper 依存に変更。

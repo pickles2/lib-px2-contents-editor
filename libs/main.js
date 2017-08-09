@@ -68,6 +68,9 @@ module.exports = function(){
 			_this.contRoot = pjInfo.contRoot;
 			_this.realpathDataDir = pjInfo.realpathDataDir;
 			_this.pathResourceDir = pjInfo.pathResourceDir;
+			if( options.documentRoot ){ _this.documentRoot = options.documentRoot; }
+			if( options.realpathDataDir ){ _this.realpathDataDir = options.realpathDataDir; }
+			if( options.pathResourceDir ){ _this.pathResourceDir = options.pathResourceDir; }
 			callback();
 		});
 	}
