@@ -273,6 +273,27 @@ module.exports = function(){
 	 * ページの編集方法を取得する
 	 */
 	this.checkEditorMode = function(callback){
+		if( this.options.documentRoot && this.options.realpathDataDir ){
+			// ドキュメントルートの設定上書きがある場合
+			// テーマレイアウトの編集等に利用するモード
+			if( !utils79.is_file( this.options.documentRoot + _this.page_path ) ){
+				callback('.not_exists');
+				return;
+			}
+			if( utils79.is_file( this.options.realpathDataDir + '/data.json' ) ){
+				callback('html.gui');
+				return;
+			}
+			if( _this.page_path.match( /\.html\.md$/ ) ){
+				callback('md');
+				return;
+			}
+			if( _this.page_path.match( /\.html$/ ) ){
+				callback('html');
+				return;
+			}
+			return;
+		}
 		_this.px2proj.query(
 			_this.page_path+'?PX=px2dthelper.check_editor_mode', {
 				"output": "json",
