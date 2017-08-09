@@ -260,6 +260,7 @@ $ npm run test
 - サーバーサイドのinit項目に `customFieldsIncludePath` を追加。
 - サーバーサイドのinit項目に `documentRoot`, `realpathDataDir`, `pathResourceDir` を追加。
 - クライアントサイドの新しいオプション `lang` を追加。
+- クライアントサイドの新しいオプション `contents_area_selector`, `contents_bowl_name_by` を追加。
 - クライアントサイドに `clipboard.set()`, `clipboard.get()` オプションを追加。
 - `checkEditorMode()` を px2-px2dthelper 依存に変更。
 - `initContentFiles()` を px2-px2dthelper 依存に変更。
