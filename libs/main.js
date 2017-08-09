@@ -68,9 +68,11 @@ module.exports = function(){
 			_this.contRoot = pjInfo.contRoot;
 			_this.realpathDataDir = pjInfo.realpathDataDir;
 			_this.pathResourceDir = pjInfo.pathResourceDir;
+			_this.realpathFiles = pjInfo.realpathFiles;
 			if( options.documentRoot ){ _this.documentRoot = options.documentRoot; }
 			if( options.realpathDataDir ){ _this.realpathDataDir = options.realpathDataDir; }
 			if( options.pathResourceDir ){ _this.pathResourceDir = options.pathResourceDir; }
+			if( options.realpathFiles ){ _this.realpathFiles = options.realpathFiles; }
 			callback();
 		});
 	}
@@ -292,6 +294,7 @@ module.exports = function(){
 				callback('html');
 				return;
 			}
+			callback('html');
 			return;
 		}
 		_this.px2proj.query(

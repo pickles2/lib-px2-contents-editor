@@ -36,51 +36,46 @@ module.exports = function(px2ce){
 
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+
 				px2ce.px2proj.get_path_content(px2ce.page_path, function(contPath){
 					// console.log(contPath);
 
-					px2ce.px2proj.get_path_controot(function(contRoot){
+					var realpath_resource_dir = require('path').resolve(px2ce.realpathFiles);
+					var _contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.page_path);
+					if( !utils79.is_file(_contentsPath) ){
+						_contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.contRoot+contPath);
+					}
+					var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
+					var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
 
-						px2ce.px2proj.get_path_docroot(function(docRoot){
+					// console.log(_contentsPath);
+					// console.log(realpath_resource_dir);
+					// console.log(strLoaderCSS);
+					// console.log(strLoaderJS);
 
-							px2ce.px2proj.realpath_files(px2ce.page_path, '', function(realpath_resource_dir){
-								realpath_resource_dir = require('path').resolve(realpath_resource_dir);
-								var _contentsPath = require('path').resolve(docRoot + contRoot + contPath);
-								var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
-								var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
+					try {
+						if( utils79.is_file( _contentsPath ) ){
+							rtn.html = fs.readFileSync(_contentsPath).toString('utf8');
+							rtn.html = rtn.html.replace( strLoaderCSS, '' );
+							rtn.html = rtn.html.replace( strLoaderJS, '' );
+						}
+					} catch (e) {
+					}
+					try {
+						if( utils79.is_file( realpath_resource_dir + '/style.css.scss' ) ){
+							rtn.css = fs.readFileSync( realpath_resource_dir + '/style.css.scss' ).toString('utf8');
+						}
+					} catch (e) {
+					}
+					try {
+						if( utils79.is_file( realpath_resource_dir + '/script.js' ) ){
+							rtn.js = fs.readFileSync( realpath_resource_dir + '/script.js' ).toString('utf8');
+						}
+					} catch (e) {
+					}
 
-								// console.log(_contentsPath);
-								// console.log(realpath_resource_dir);
-								// console.log(strLoaderCSS);
-								// console.log(strLoaderJS);
+					rlv();
 
-								try {
-									if( utils79.is_file( _contentsPath ) ){
-										rtn.html = fs.readFileSync(_contentsPath).toString('utf8');
-										rtn.html = rtn.html.replace( strLoaderCSS, '' );
-										rtn.html = rtn.html.replace( strLoaderJS, '' );
-									}
-								} catch (e) {
-								}
-								try {
-									if( utils79.is_file( realpath_resource_dir + '/style.css.scss' ) ){
-										rtn.css = fs.readFileSync( realpath_resource_dir + '/style.css.scss' ).toString('utf8');
-									}
-								} catch (e) {
-								}
-								try {
-									if( utils79.is_file( realpath_resource_dir + '/script.js' ) ){
-										rtn.js = fs.readFileSync( realpath_resource_dir + '/script.js' ).toString('utf8');
-									}
-								} catch (e) {
-								}
-
-								rlv();
-							});
-
-						});
-
-					});
 				});
 
 			}); })
@@ -125,58 +120,52 @@ module.exports = function(px2ce){
 				px2ce.px2proj.get_path_content(px2ce.page_path, function(contPath){
 					// console.log(contPath);
 
-					px2ce.px2proj.get_path_controot(function(contRoot){
+					var realpath_resource_dir = require('path').resolve(px2ce.realpathFiles);
+					var _contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.page_path);
+					if( !utils79.is_file(_contentsPath) ){
+						_contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.contRoot+contPath);
+					}
+					var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
+					var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
 
-						px2ce.px2proj.get_path_docroot(function(docRoot){
+					// console.log(_contentsPath);
+					// console.log(realpath_resource_dir);
+					// console.log(strLoaderCSS);
+					// console.log(strLoaderJS);
 
-							px2ce.px2proj.realpath_files(px2ce.page_path, '', function(realpath_resource_dir){
-								realpath_resource_dir = require('path').resolve(realpath_resource_dir);
-								var _contentsPath = require('path').resolve(docRoot + contRoot + contPath);
-								var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
-								var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
+					try {
+						if( !codes.css.length ){
+							strLoaderCSS = '';
+						}
+						if( !codes.js.length ){
+							strLoaderJS = '';
+						}
+						fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
+					} catch (e) {
+					}
 
-								// console.log(_contentsPath);
-								// console.log(realpath_resource_dir);
-								// console.log(strLoaderCSS);
-								// console.log(strLoaderJS);
+					try {
+						fsx.mkdirpSync( realpath_resource_dir );
+						if( !codes.css.length ){
+							fs.unlinkSync( realpath_resource_dir + '/style.css.scss' );
+						}else{
+							fs.writeFileSync( realpath_resource_dir + '/style.css.scss', codes.css );
+						}
+					} catch (e) {
+					}
 
-								try {
-									if( !codes.css.length ){
-										strLoaderCSS = '';
-									}
-									if( !codes.js.length ){
-										strLoaderJS = '';
-									}
-									fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
-								} catch (e) {
-								}
+					try {
+						fsx.mkdirpSync( realpath_resource_dir );
+						if( !codes.js.length ){
+							fs.unlinkSync( realpath_resource_dir + '/script.js' );
+						}else{
+							fs.writeFileSync( realpath_resource_dir + '/script.js', codes.js );
+						}
+					} catch (e) {
+					}
 
-								try {
-									fsx.mkdirpSync( realpath_resource_dir );
-									if( !codes.css.length ){
-										fs.unlinkSync( realpath_resource_dir + '/style.css.scss' );
-									}else{
-										fs.writeFileSync( realpath_resource_dir + '/style.css.scss', codes.css );
-									}
-								} catch (e) {
-								}
+					rlv();
 
-								try {
-									fsx.mkdirpSync( realpath_resource_dir );
-									if( !codes.js.length ){
-										fs.unlinkSync( realpath_resource_dir + '/script.js' );
-									}else{
-										fs.writeFileSync( realpath_resource_dir + '/script.js', codes.js );
-									}
-								} catch (e) {
-								}
-
-								rlv();
-							});
-
-						});
-
-					});
 				});
 
 			}); })
