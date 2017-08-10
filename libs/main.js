@@ -29,7 +29,13 @@ module.exports = function(){
 			console.error(msg);
 		};
 		this.entryScript = options.entryScript;
+		this.target_mode = options.target_mode || 'page_content';
+			// ↑ コンテンツ以外にも対応範囲を拡大
+			//   - page_content = ページコンテンツ(デフォルト)
+			//   - theme_layout = テーマレイアウトテンプレート(px2-multithemeの仕様に準拠)
 		this.page_path = options.page_path;
+			// ↑`target_mode` が `theme_layout` の場合、
+			//   page_path は `{$theme_id}/{$layout_id}.html` の形式を取る
 		if(typeof(this.page_path) !== typeof('')){
 			// 編集対象ページが指定されていない場合
 			return;
@@ -69,10 +75,6 @@ module.exports = function(){
 			_this.realpathDataDir = pjInfo.realpathDataDir;
 			_this.pathResourceDir = pjInfo.pathResourceDir;
 			_this.realpathFiles = pjInfo.realpathFiles;
-			if( options.documentRoot ){ _this.documentRoot = options.documentRoot; }
-			if( options.realpathDataDir ){ _this.realpathDataDir = options.realpathDataDir; }
-			if( options.pathResourceDir ){ _this.pathResourceDir = options.pathResourceDir; }
-			if( options.realpathFiles ){ _this.realpathFiles = options.realpathFiles; }
 			callback();
 		});
 	}
