@@ -23,6 +23,9 @@ module.exports = function(px2ce){
 	function getPreviewUrl(){
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+		if( px2ce.target_mode=='theme_layout' ){
+			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+		}
 		return px2ce.options.preview.origin + pathname;
 	}
 

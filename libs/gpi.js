@@ -12,6 +12,11 @@ module.exports = function(px2ce, data, callback){
 			// pickles2-contents-editor の設定を取得する
 			var conf = {};
 			conf.appMode = px2ce.getAppMode();
+			conf.target_mode = px2ce.target_mode;
+			if(conf.target_mode == 'theme_layout'){
+				conf.theme_id = px2ce.theme_id;
+				conf.layout_id = px2ce.layout_id;
+			}
 			callback(conf);
 			break;
 

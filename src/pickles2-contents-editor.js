@@ -25,6 +25,9 @@
 		this.__dirname = __dirname;
 		this.options = {};
 		this.page_path;
+		this.target_mode;
+		this.theme_id;
+		this.layout_id;
 
 		var serverConfig;
 		var editor;
@@ -85,6 +88,9 @@
 							function(config){
 								// console.log(config);
 								serverConfig = config;
+								_this.target_mode = config.target_mode;
+								_this.theme_id = config.theme_id;
+								_this.layout_id = config.layout_id;
 								it1.next(data);
 							}
 						);
