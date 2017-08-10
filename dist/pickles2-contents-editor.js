@@ -22371,6 +22371,9 @@ module.exports = function(px2ce){
 	function getPreviewUrl(){
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+		if( px2ce.target_mode=='theme_layout' ){
+			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+		}
 		return px2ce.options.preview.origin + pathname;
 	}
 
@@ -22646,6 +22649,9 @@ module.exports = function(px2ce){
 	function getPreviewUrl(){
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+		if( px2ce.target_mode=='theme_layout' ){
+			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+		}
 		return px2ce.options.preview.origin + pathname;
 	}
 
@@ -23146,6 +23152,9 @@ module.exports = function(px2ce){
 		this.__dirname = __dirname;
 		this.options = {};
 		this.page_path;
+		this.target_mode;
+		this.theme_id;
+		this.layout_id;
 
 		var serverConfig;
 		var editor;
@@ -23206,6 +23215,9 @@ module.exports = function(px2ce){
 							function(config){
 								// console.log(config);
 								serverConfig = config;
+								_this.target_mode = config.target_mode;
+								_this.theme_id = config.theme_id;
+								_this.layout_id = config.layout_id;
 								it1.next(data);
 							}
 						);
