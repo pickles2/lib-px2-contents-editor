@@ -31,11 +31,11 @@ module.exports = function(){
 		this.entryScript = options.entryScript;
 		this.target_mode = options.target_mode || 'page_content';
 			// ↑ コンテンツ以外にも対応範囲を拡大
-			//   - page_content = ページコンテンツ(デフォルト)
-			//   - theme_layout = テーマレイアウトテンプレート(px2-multithemeの仕様に準拠)
+			//   - `page_content` = ページコンテンツ(デフォルト)
+			//   - `theme_layout` = テーマレイアウトテンプレート(px2-multithemeの仕様に準拠)
 		this.page_path = options.page_path;
 			// ↑`target_mode` が `theme_layout` の場合、
-			//   page_path は `{$theme_id}/{$layout_id}.html` の形式を取る
+			//   `page_path` は `{$theme_id}/{$layout_id}.html` の形式を取る
 		if(typeof(this.page_path) !== typeof('')){
 			// 編集対象ページが指定されていない場合
 			return;
@@ -75,6 +75,18 @@ module.exports = function(){
 			_this.realpathDataDir = pjInfo.realpathDataDir;
 			_this.pathResourceDir = pjInfo.pathResourceDir;
 			_this.realpathFiles = pjInfo.realpathFiles;
+			if( _this.target_mode == 'theme_layout' ){
+				if( _this.page_path.match(/^\/([\s\S]+?)\/([\s\S]+)\.html$/) ){
+					_this.theme_id = RegExp.$1;
+					_this.layout_id = RegExp.$2;
+				}
+				_this.documentRoot = pjInfo.realpathThemeCollectionDir;
+				_this.contRoot = '/';
+				_this.realpathFiles = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/theme_files/layouts/'+_this.layout_id+'/';
+				_this.pathResourceDir = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/theme_files/layouts/'+_this.layout_id+'/resources/';
+				_this.realpathDataDir = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/guieditor.ignore/'+_this.layout_id+'/data/';
+				// console.log(_this, '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
+			}
 			callback();
 		});
 	}
@@ -174,6 +186,7 @@ module.exports = function(){
 							pjInfo.documentRoot = allData.realpath_docroot;
 							pjInfo.realpathFiles = allData.realpath_files;
 							pjInfo.pathFiles = allData.path_files;
+							pjInfo.realpathThemeCollectionDir = allData.realpath_theme_collection_dir;
 							pjInfo.realpathDataDir = allData.realpath_data_dir;
 							pjInfo.pathResourceDir = allData.path_resource_dir;
 							pjInfo.realpath_homedir = allData.realpath_homedir;
@@ -277,23 +290,21 @@ module.exports = function(){
 	 * ページの編集方法を取得する
 	 */
 	this.checkEditorMode = function(callback){
-		if( this.options.documentRoot && this.options.realpathDataDir ){
+		if( this.target_mode == 'theme_layout' ){
 			// ドキュメントルートの設定上書きがある場合
 			// テーマレイアウトの編集等に利用するモード
-			if( !utils79.is_file( this.options.documentRoot + _this.page_path ) ){
+			// console.log([_this.documentRoot,
+			// 	_this.contRoot,
+			// 	_this.realpathFiles,
+			// 	_this.pathResourceDir,
+			// 	_this.realpathDataDir]);
+
+			if( !utils79.is_file( _this.documentRoot + _this.page_path ) ){
 				callback('.not_exists');
 				return;
 			}
-			if( utils79.is_file( this.options.realpathDataDir + '/data.json' ) ){
+			if( utils79.is_file( _this.realpathDataDir + 'data.json' ) ){
 				callback('html.gui');
-				return;
-			}
-			if( _this.page_path.match( /\.html\.md$/ ) ){
-				callback('md');
-				return;
-			}
-			if( _this.page_path.match( /\.html$/ ) ){
-				callback('html');
 				return;
 			}
 			callback('html');
