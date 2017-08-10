@@ -15,68 +15,59 @@ module.exports = function(px2ce){
 	this.getContentsSrc = function(callback){
 		callback = callback||function(){};
 
-		var pageInfo;
 		var rtn = {
 			'html': '',
 			'css': '',
 			'js': ''
 		};
 
+		var _targetPaths;
+
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
-				px2ce.px2proj.get_page_info(px2ce.page_path, function(_pageInfo){
-					pageInfo = _pageInfo;
-					// console.log(pageInfo);
-					if( pageInfo == null ){
+				generateTargetFilePath(function(paths){
+					if( paths === false ){
 						rjt('Page not Exists.');
 						return;
 					}
+					_targetPaths = paths;
 					rlv();
 				});
-
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 
-				px2ce.px2proj.get_path_content(px2ce.page_path, function(contPath){
-					// console.log(contPath);
+				var _contentsPath = _targetPaths.contentsPath;
+				var realpath_resource_dir = _targetPaths.realpathFiles;
+				var strLoaderCSS = _targetPaths.strLoaderCSS;
+				var strLoaderJS = _targetPaths.strLoaderJS;
 
-					var realpath_resource_dir = require('path').resolve(px2ce.realpathFiles);
-					var _contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.page_path);
-					if( !utils79.is_file(_contentsPath) ){
-						_contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.contRoot+contPath);
+				// console.log(_contentsPath);
+				// console.log(realpath_resource_dir);
+				// console.log(strLoaderCSS);
+				// console.log(strLoaderJS);
+
+				try {
+					if( utils79.is_file( _contentsPath ) ){
+						rtn.html = fs.readFileSync(_contentsPath).toString('utf8');
+						rtn.html = rtn.html.replace( strLoaderCSS, '' );
+						rtn.html = rtn.html.replace( strLoaderJS, '' );
 					}
-					var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
-					var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
-
-					// console.log(_contentsPath);
-					// console.log(realpath_resource_dir);
-					// console.log(strLoaderCSS);
-					// console.log(strLoaderJS);
-
-					try {
-						if( utils79.is_file( _contentsPath ) ){
-							rtn.html = fs.readFileSync(_contentsPath).toString('utf8');
-							rtn.html = rtn.html.replace( strLoaderCSS, '' );
-							rtn.html = rtn.html.replace( strLoaderJS, '' );
-						}
-					} catch (e) {
+				} catch (e) {
+				}
+				try {
+					if( utils79.is_file( realpath_resource_dir + '/style.css.scss' ) ){
+						rtn.css = fs.readFileSync( realpath_resource_dir + '/style.css.scss' ).toString('utf8');
 					}
-					try {
-						if( utils79.is_file( realpath_resource_dir + '/style.css.scss' ) ){
-							rtn.css = fs.readFileSync( realpath_resource_dir + '/style.css.scss' ).toString('utf8');
-						}
-					} catch (e) {
+				} catch (e) {
+				}
+				try {
+					if( utils79.is_file( realpath_resource_dir + '/script.js' ) ){
+						rtn.js = fs.readFileSync( realpath_resource_dir + '/script.js' ).toString('utf8');
 					}
-					try {
-						if( utils79.is_file( realpath_resource_dir + '/script.js' ) ){
-							rtn.js = fs.readFileSync( realpath_resource_dir + '/script.js' ).toString('utf8');
-						}
-					} catch (e) {
-					}
+				} catch (e) {
+				}
 
-					rlv();
-
-				});
+				rlv();
 
 			}); })
 			.then(function(){
@@ -97,7 +88,6 @@ module.exports = function(px2ce){
 		callback = callback||function(){};
 		// console.log(codes);
 
-		var pageInfo;
 		var result = {
 			'result': true,
 			'message': 'OK'
@@ -105,68 +95,59 @@ module.exports = function(px2ce){
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
-				px2ce.px2proj.get_page_info(px2ce.page_path, function(_pageInfo){
-					pageInfo = _pageInfo;
-					// console.log(pageInfo);
-					if( pageInfo == null ){
+				generateTargetFilePath(function(paths){
+					if( paths === false ){
 						rjt('Page not Exists.');
 						return;
 					}
+					_targetPaths = paths;
 					rlv();
 				});
-
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				px2ce.px2proj.get_path_content(px2ce.page_path, function(contPath){
-					// console.log(contPath);
 
-					var realpath_resource_dir = require('path').resolve(px2ce.realpathFiles);
-					var _contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.page_path);
-					if( !utils79.is_file(_contentsPath) ){
-						_contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.contRoot+contPath);
+				var _contentsPath = _targetPaths.contentsPath;
+				var realpath_resource_dir = _targetPaths.realpathFiles;
+				var strLoaderCSS = _targetPaths.strLoaderCSS;
+				var strLoaderJS = _targetPaths.strLoaderJS;
+
+				// console.log(_contentsPath);
+				// console.log(realpath_resource_dir);
+				// console.log(strLoaderCSS);
+				// console.log(strLoaderJS);
+
+				try {
+					if( !codes.css.length ){
+						strLoaderCSS = '';
 					}
-					var strLoaderCSS = '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n";
-					var strLoaderJS = '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n";
-
-					// console.log(_contentsPath);
-					// console.log(realpath_resource_dir);
-					// console.log(strLoaderCSS);
-					// console.log(strLoaderJS);
-
-					try {
-						if( !codes.css.length ){
-							strLoaderCSS = '';
-						}
-						if( !codes.js.length ){
-							strLoaderJS = '';
-						}
-						fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
-					} catch (e) {
+					if( !codes.js.length ){
+						strLoaderJS = '';
 					}
+					fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
+				} catch (e) {
+				}
 
-					try {
-						fsx.mkdirpSync( realpath_resource_dir );
-						if( !codes.css.length ){
-							fs.unlinkSync( realpath_resource_dir + '/style.css.scss' );
-						}else{
-							fs.writeFileSync( realpath_resource_dir + '/style.css.scss', codes.css );
-						}
-					} catch (e) {
+				try {
+					fsx.mkdirpSync( realpath_resource_dir );
+					if( !codes.css.length ){
+						fs.unlinkSync( realpath_resource_dir + '/style.css.scss' );
+					}else{
+						fs.writeFileSync( realpath_resource_dir + '/style.css.scss', codes.css );
 					}
+				} catch (e) {
+				}
 
-					try {
-						fsx.mkdirpSync( realpath_resource_dir );
-						if( !codes.js.length ){
-							fs.unlinkSync( realpath_resource_dir + '/script.js' );
-						}else{
-							fs.writeFileSync( realpath_resource_dir + '/script.js', codes.js );
-						}
-					} catch (e) {
+				try {
+					fsx.mkdirpSync( realpath_resource_dir );
+					if( !codes.js.length ){
+						fs.unlinkSync( realpath_resource_dir + '/script.js' );
+					}else{
+						fs.writeFileSync( realpath_resource_dir + '/script.js', codes.js );
 					}
+				} catch (e) {
+				}
 
-					rlv();
-
-				});
+				rlv();
 
 			}); })
 			.then(function(){
@@ -184,6 +165,36 @@ module.exports = function(px2ce){
 		return;
 	}
 
+	/**
+	 * 編集対象のパス情報を生成する
+	 */
+	function generateTargetFilePath(callback){
+		var rtn = {
+			realpathFiles: require('path').resolve(px2ce.realpathFiles),
+			contentsPath: require('path').resolve(px2ce.documentRoot+px2ce.page_path),
+			strLoaderCSS: '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n",
+			strLoaderJS: '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n"
+		};
+
+		px2ce.px2proj.get_page_info(px2ce.page_path, function(pageInfo){
+			if( pageInfo == null ){
+				if( !utils79.is_file(_contentsPath) ){
+					console.error('Page not Exists.');
+					callback(false);
+					return;
+				}
+			}
+			px2ce.px2proj.get_path_content(px2ce.page_path, function(contPath){
+				// console.log(contPath);
+				if( !utils79.is_file(rtn.contentsPath) ){
+					rtn.contentsPath = require('path').resolve(px2ce.documentRoot+px2ce.contRoot+contPath);
+				}
+				callback(rtn);
+			});
+		});
+
+		return;
+	}
 
 	return;
 }
