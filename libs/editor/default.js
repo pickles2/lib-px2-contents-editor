@@ -93,6 +93,8 @@ module.exports = function(px2ce){
 			'message': 'OK'
 		};
 
+		var _targetPaths;
+
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
 				generateTargetFilePath(function(paths){
@@ -178,7 +180,7 @@ module.exports = function(px2ce){
 
 		px2ce.px2proj.get_page_info(px2ce.page_path, function(pageInfo){
 			if( pageInfo == null ){
-				if( !utils79.is_file(_contentsPath) ){
+				if( !utils79.is_file(rtn.contentsPath) ){
 					console.error('Page not Exists.');
 					callback(false);
 					return;
