@@ -21,6 +21,10 @@ module.exports = function(px2ce){
 	var show_instanceTreeView = true;
 
 	function getPreviewUrl(){
+		if( px2ce.target_mode == 'theme_layout' ){
+			var path_html = px2ce.__dirname + '/editor/broccoli/canvas.html'
+			return path_html;
+		}
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		if( px2ce.target_mode=='theme_layout' ){

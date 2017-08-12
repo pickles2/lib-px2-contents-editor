@@ -10,9 +10,37 @@ module.exports = function(){
 	var _this = this;
 	var nodePhpBinOptions;
 
+	/**
+	 * 編集対象のモード
+	 * コンテンツ以外にも対応範囲を拡大
+	 * - `page_content` = ページコンテンツ(デフォルト)
+	 * - `theme_layout` = テーマレイアウトテンプレート(px2-multithemeの仕様に準拠)
+	 */
+	this.target_mode;
+
+	/**
+	 * ページのパス
+	 * `target_mode` が `theme_layout` の場合、
+	 * `page_path` は `{$theme_id}/{$layout_id}.html` の形式を取る
+	 */
+	this.page_path;
+
 	this.entryScript;
 	this.px2proj;
-	this.page_path;
+
+	/**
+	 * テーマID
+	 * `target_mode` が `theme_layout` の場合に値を持つ。
+	 * `this.page_path` をパースして生成。
+	 */
+	this.theme_id;
+	/**
+	 * レイアウトID
+	 * `target_mode` が `theme_layout` の場合に値を持つ。
+	 * `this.page_path` をパースして生成。
+	 */
+	this.layout_id;
+
 	this.options;
 
 	/**
@@ -30,12 +58,7 @@ module.exports = function(){
 		};
 		this.entryScript = options.entryScript;
 		this.target_mode = options.target_mode || 'page_content';
-			// ↑ コンテンツ以外にも対応範囲を拡大
-			//   - `page_content` = ページコンテンツ(デフォルト)
-			//   - `theme_layout` = テーマレイアウトテンプレート(px2-multithemeの仕様に準拠)
 		this.page_path = options.page_path;
-			// ↑`target_mode` が `theme_layout` の場合、
-			//   `page_path` は `{$theme_id}/{$layout_id}.html` の形式を取る
 		if(typeof(this.page_path) !== typeof('')){
 			// 編集対象ページが指定されていない場合
 			return;
@@ -342,7 +365,8 @@ module.exports = function(){
 			documentRoot = px2ce.documentRoot,
 			realpathDataDir = px2ce.realpathDataDir,
 			pathResourceDir = px2ce.pathResourceDir,
-			pathsModuleTemplate = []
+			pathsModuleTemplate = [],
+			bindTemplate = function(){}
 		;
 		var customFields = {};
 		var page_content = _this.page_path;
@@ -453,17 +477,34 @@ module.exports = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-
-				broccoliInitializeOptions = {
-					'appMode': px2ce.getAppMode() ,
-					'paths_module_template': pathsModuleTemplate ,
-					'documentRoot': documentRoot,// realpath
-					'pathHtml': require('path').resolve(px2conf.path_controot, './'+page_content),
-					'pathResourceDir': _this.pathResourceDir,
-					'realpathDataDir':  _this.realpathDataDir,
-					'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-					'customFields': customFields ,
-					'bindTemplate': function(htmls, callback){
+				if( _this.target_mode == 'theme_layout' ){
+					bindTemplate = function(htmls, callback){
+						var fin = '';
+						fin += '<!DOCTYPE html>'+"\n";
+						fin += '<html>'+"\n";
+						fin += '<head>'+"\n";
+						fin += '<title><?= htmlspecialchars($px->site()->get_current_page_info(\'title_full\')); ?></title>'+"\n";
+						fin += '</head>'+"\n";
+						fin += '<body>'+"\n";
+						for( var bowlId in htmls ){
+							if( bowlId == 'main' ){
+								fin += htmls['main'];
+							}else{
+								fin += "\n";
+								fin += "\n";
+								fin += '<?php ob_start(); ?>'+"\n";
+								fin += (utils79.toStr(htmls[bowlId]).length ? htmls[bowlId]+"\n" : '');
+								fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
+								fin += "\n";
+							}
+						}
+						fin += '</body>'+"\n";
+						fin += '</html>'+"\n";
+						callback(fin);
+						return;
+					}
+				}else{
+					bindTemplate = function(htmls, callback){
 						var fin = '';
 						for( var bowlId in htmls ){
 							if( bowlId == 'main' ){
@@ -479,7 +520,22 @@ module.exports = function(){
 						}
 						callback(fin);
 						return;
-					},
+					}
+				}
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+
+				broccoliInitializeOptions = {
+					'appMode': px2ce.getAppMode() ,
+					'paths_module_template': pathsModuleTemplate ,
+					'documentRoot': documentRoot,// realpath
+					'pathHtml': require('path').resolve(_this.contRoot, './'+page_content),
+					'pathResourceDir': _this.pathResourceDir,
+					'realpathDataDir':  _this.realpathDataDir,
+					'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+					'customFields': customFields ,
+					'bindTemplate': bindTemplate,
 					'log': function(msg){
 						// エラー発生時にコールされます。
 						px2ce.log(msg);
