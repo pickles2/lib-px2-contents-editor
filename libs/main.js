@@ -107,7 +107,7 @@ module.exports = function(){
 				_this.documentRoot = pjInfo.realpathThemeCollectionDir;
 				_this.contRoot = '/';
 				_this.realpathFiles = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/theme_files/layouts/'+_this.layout_id+'/';
-				_this.pathResourceDir = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/theme_files/layouts/'+_this.layout_id+'/resources/';
+				_this.pathResourceDir = '/'+_this.theme_id+'/theme_files/layouts/'+_this.layout_id+'/resources/';
 				_this.realpathDataDir = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/guieditor.ignore/'+_this.layout_id+'/data/';
 				// console.log(_this, '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
 			}

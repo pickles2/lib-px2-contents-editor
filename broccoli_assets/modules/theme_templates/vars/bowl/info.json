@@ -1,5 +1,5 @@
 {
-    "name": "Bowl",
+    "name": "Contents Area",
     "areaSizeDetection": "shallow",
     "interface": {
         "fields": {

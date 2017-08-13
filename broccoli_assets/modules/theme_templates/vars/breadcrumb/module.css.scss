@@ -1,0 +1,14 @@
+.theme-breadcrumb{
+    ul,li{
+        margin: 0;
+        padding: 0;
+        display: inline;
+        list-style-type: none;
+    }
+    li::after{
+        content: " > ";
+    }
+    li:last-child::after{
+        content: none;
+    }
+}

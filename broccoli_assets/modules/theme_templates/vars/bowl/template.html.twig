@@ -6,7 +6,7 @@
 {% endif %}
 
 {% if _ENV.mode == 'finalize' %}
-<div class="contents" data-px2-contents="{{bowlName}}">
+<div class="contents" <?= htmlspecialchars($theme->get_attr_bowl_name_by())?>="{{bowlName}}">
 <?= $px->bowl()->pull('{{bowlName}}') ?>
 </div>
 {% endif %}
