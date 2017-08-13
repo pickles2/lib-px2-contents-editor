@@ -10,7 +10,8 @@ module.exports = function(px2ce){
 	var page_path = px2ce.page_path;
 	var Promise = require('es6-promise').Promise;
 	var px2conf = {}
-		moduleCssJs = {css: '', js: ''};
+		moduleCssJs = {css: '', js: ''},
+		pagesByLayout = [];
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -22,7 +23,7 @@ module.exports = function(px2ce){
 
 	var show_instanceTreeView = true;
 
-	function getPreviewUrl(){
+	function getCanvasPageUrl(){
 		if( px2ce.target_mode == 'theme_layout' ){
 			var path_html = px2ce.__dirname + '/editor/broccoli/canvas.html'
 			path_html += '?css='+utils79.base64_encode(moduleCssJs.css);
@@ -32,6 +33,20 @@ module.exports = function(px2ce){
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		return px2ce.options.preview.origin + pathname;
+	}
+	function getPreviewUrl(){
+		if( px2ce.target_mode == 'theme_layout' ){
+			var page_path = '/index.html';
+			if( pagesByLayout.length ){
+				page_path = pagesByLayout[0].path;
+			}
+			var pathname = px2conf.path_controot + page_path;
+			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+			return px2ce.options.preview.origin + pathname;
+		}
+
+		return getCanvasPageUrl();
 	}
 
 	/**
@@ -48,6 +63,23 @@ module.exports = function(px2ce){
 					},
 					function(_px2conf){
 						px2conf = _px2conf;
+						rlv();
+					}
+				);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				pagesByLayout = [];
+				if( px2ce.target_mode != 'theme_layout' ){
+					rlv();
+					return;
+				}
+				px2ce.gpiBridge(
+					{
+						'api': 'getPagesByLayout',
+						'layout_id': px2ce.layout_id
+					},
+					function(pages){
+						pagesByLayout = pages;
 						rlv();
 					}
 				);
@@ -120,7 +152,7 @@ module.exports = function(px2ce){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				$elmCanvas.attr({
-					"data-broccoli-preview": getPreviewUrl()
+					"data-broccoli-preview": getCanvasPageUrl()
 				});
 				rlv();
 			}); })

@@ -78,6 +78,24 @@ module.exports = function(px2ce, data, callback){
 			});
 			break;
 
+		case "getPagesByLayout":
+			// レイアウトからページの一覧を取得する
+			var rtn = [];
+			var layout_id = data.layout_id || 'default';
+			px2ce.px2proj.get_sitemap(function(sitemap){
+				for(var idx in sitemap){
+					try {
+						var page_layout_id = sitemap[idx].layout || 'default';
+						if( page_layout_id == layout_id ){
+							rtn.push(sitemap[idx]);
+						}
+					} catch (e) {
+					}
+				}
+				callback(rtn);
+			});
+			break;
+
 		case "openUrlInBrowser":
 			px2ce.openUrlInBrowser(data.url, function(res){
 				callback(res);

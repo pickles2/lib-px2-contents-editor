@@ -7,7 +7,8 @@ module.exports = function(px2ce){
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
-	var px2conf = {};
+	var px2conf = {},
+		pagesByLayout = [];
 	var editorLib = null;
 	if(window.ace){
 		editorLib = 'ace';
@@ -22,13 +23,23 @@ module.exports = function(px2ce){
 		$elmTextareas,
 		$elmTabs;
 
-	function getPreviewUrl(){
-		var pathname = px2conf.path_controot + page_path;
-		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		if( px2ce.target_mode=='theme_layout' ){
+	function getCanvasPageUrl(){
+		if( px2ce.target_mode == 'theme_layout' ){
+			var page_path = '/index.html';
+			if( pagesByLayout.length ){
+				page_path = pagesByLayout[0].path;
+			}
+			var pathname = px2conf.path_controot + page_path;
+			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+			return px2ce.options.preview.origin + pathname;
 		}
+		var pathname = px2conf.path_controot + px2ce.page_path;
+		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		return px2ce.options.preview.origin + pathname;
+	}
+	function getPreviewUrl(){
+		return getCanvasPageUrl();
 	}
 
 	/**
@@ -45,6 +56,23 @@ module.exports = function(px2ce){
 					},
 					function(_px2conf){
 						px2conf = _px2conf;
+						it1.next(arg);
+					}
+				);
+			},
+			function(it1, arg){
+				pagesByLayout = [];
+				if( px2ce.target_mode != 'theme_layout' ){
+					it1.next(arg);
+					return;
+				}
+				px2ce.gpiBridge(
+					{
+						'api': 'getPagesByLayout',
+						'layout_id': px2ce.layout_id
+					},
+					function(pages){
+						pagesByLayout = pages;
 						it1.next(arg);
 					}
 				);
@@ -170,7 +198,7 @@ module.exports = function(px2ce){
 			},
 			function(it1, arg){
 				$elmCanvas.attr({
-					"data-pickles2-contents-editor-preview-url": getPreviewUrl()
+					"data-pickles2-contents-editor-preview-url": getCanvasPageUrl()
 				});
 
 				px2ce.gpiBridge(
