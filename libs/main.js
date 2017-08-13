@@ -3,6 +3,7 @@
  */
 module.exports = function(){
 	var px2agent = require('px2agent');
+	var ejs = require('ejs');
 	var fs = require('fs');
 	var fsx = require('fs-extra');
 	var utils79 = require('utils79');
@@ -480,12 +481,6 @@ module.exports = function(){
 				if( _this.target_mode == 'theme_layout' ){
 					bindTemplate = function(htmls, callback){
 						var fin = '';
-						fin += '<!DOCTYPE html>'+"\n";
-						fin += '<html>'+"\n";
-						fin += '<head>'+"\n";
-						fin += '<title><?= htmlspecialchars($px->site()->get_current_page_info(\'title_full\')); ?></title>'+"\n";
-						fin += '</head>'+"\n";
-						fin += '<body>'+"\n";
 						for( var bowlId in htmls ){
 							if( bowlId == 'main' ){
 								fin += htmls['main'];
@@ -498,9 +493,30 @@ module.exports = function(){
 								fin += "\n";
 							}
 						}
-						fin += '</body>'+"\n";
-						fin += '</html>'+"\n";
-						callback(fin);
+						var template = fs.readFileSync( __dirname+'/tpls/broccoli_theme_layout.html' ).toString();
+						fin = ejs.render(template, {'body': fin}, {delimiter: '%'});
+
+						var baseDir = _this.documentRoot+_this.theme_id+'/theme_files/';
+						fsx.ensureDirSync( baseDir );
+
+						_this.px2proj.query(_this.page_path+'?PX=px2dthelper.document_modules.build_css', {
+							"output": "json",
+							"complete": function(data, code){
+								// console.log(data, code);
+								fs.writeFileSync(baseDir+'modules.css', data);
+
+								_this.px2proj.query(_this.page_path+'?PX=px2dthelper.document_modules.build_js', {
+									"output": "json",
+									"complete": function(data, code){
+										// console.log(data, code);
+										fs.writeFileSync(baseDir+'modules.js', data);
+
+										callback(fin);
+									}
+								});
+							}
+						});
+
 						return;
 					}
 				}else{
