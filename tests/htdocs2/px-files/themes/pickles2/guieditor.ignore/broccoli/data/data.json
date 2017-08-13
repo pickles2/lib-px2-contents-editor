@@ -5,9 +5,9 @@
    "fields": {
     "main": [
      {
-      "modId": "FESS:units/unit",
+      "modId": "themeEditorModules:layouts/rnavi",
       "fields": {
-       "main": [
+       "header": [
         {
          "modId": "PlainHTMLElements:PlainHTML/MultiText",
          "fields": {
@@ -21,15 +21,12 @@
         },
         {
          "modId": "themeEditorModules:vars/breadcrumb",
-         "fields": {}
+         "fields": {},
+         "anchor": "",
+         "dec": ""
         }
-       ]
-      }
-     },
-     {
-      "modId": "FESS:units/cols2",
-      "fields": {
-       "column1": [
+       ],
+       "main": [
         {
          "modId": "themeEditorModules:vars/h1",
          "fields": {},
@@ -45,20 +42,27 @@
          "dec": ""
         }
        ],
-       "column2": [
+       "rnavi": [
+        {
+         "modId": "themeEditorModules:basics/image",
+         "fields": {
+          "href": "",
+          "image_src": {
+           "resKey": "bfe25c8b5ac668069c53e7acea6a68da",
+           "path": "./theme_files/layouts/broccoli/resources/31k.gif",
+           "resType": "",
+           "webUrl": ""
+          },
+          "alt_text": ""
+         },
+         "anchor": "",
+         "dec": ""
+        },
         {
          "modId": "themeEditorModules:vars/localnavigation",
          "fields": {}
         }
-       ]
-      }
-     },
-     {
-      "modId": "themeEditorModules:layouts/rnavi",
-      "fields": {
-       "header": [],
-       "main": [],
-       "rnavi": [],
+       ],
        "footer": []
       },
       "anchor": "",

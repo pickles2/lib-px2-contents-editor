@@ -13,38 +13,31 @@
 
 	</head>
 	<body>
-<div class="unit">
+<div class="theme-layouts theme-layouts--rnavi">
+	<header class="theme-layouts__header">
 <p><?= htmlspecialchars($px->conf()->name); ?></p>
-<div class="theme_breadcrumb"><?= $theme->mk_breadcrumb() ?></div>
-<!-- /.unit --></div>
-<div class="cols unit">
-	<div class="cols-col cols-1of2"><div class="cols-pad">
+<div class="theme-breadcrumb"><?= $theme->mk_breadcrumb() ?></div>
+	</header>
+	<div class="theme-layouts__body">
+		<div class="theme-layouts__content">
 <h1><?= preg_replace('/\r\n|\r|\n/', '<br />', $px->site()->get_current_page_info('title_h1')) ?></h1>
 
-<div class="contents" data-px2-contents="main">
+<div class="contents" <?= htmlspecialchars($theme->get_attr_bowl_name_by())?>="main">
 <?= $px->bowl()->pull('main') ?>
 </div>
-	</div></div>
-	<div class="cols-col cols-1of2 cols-last"><div class="cols-pad">
-<nav class="theme_common_navi">
+		</div>
+		<div class="theme-layouts__rnavi">
+<img src="<?= htmlspecialchars( $theme->files('/layouts/broccoli/resources/31k.gif') ) ?>" alt="">
+<nav class="theme-common-navi">
 <?php
 	$category_top_id = $px->site()->get_category_top();
 ?>
 	<p><a href="<?= htmlspecialchars( $px->href($category_top_id) ) ?>"><?= htmlspecialchars($px->site()->get_page_info($category_top_id, 'title_label')) ?></a></p>
 <?= $theme->mk_sub_menu( $category_top_id ) ?>
 </nav>
-	</div></div>
-</div><!-- / .cols -->
-<div class="container">
-	<header class="theme_header">
-	</header>
-	<div class="row">
-		<div class="col-sm-9">
-		</div>
-		<div class="col-sm-3">
 		</div>
 	</div>
-	<footer class="theme_footer">
+	<footer class="theme-layouts__footer">
 	</footer>
 </div>
 
