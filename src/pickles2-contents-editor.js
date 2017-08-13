@@ -337,15 +337,22 @@
 					rlv();
 				}); })
 				.then(function(){ return new Promise(function(rlv, rjt){
+					var contents_area_selector = px2conf.plugins.px2dt.contents_area_selector;
+					var contents_bowl_name_by = px2conf.plugins.px2dt.contents_bowl_name_by;
+					if(_this.target_mode == 'theme_layout'){
+						contents_area_selector = '[data-pickles2-theme-editor-contents-area]';
+						contents_bowl_name_by = 'data-pickles2-theme-editor-contents-area';
+					}
+
 					broccoliInitializeOptions = {
 						'elmCanvas': document.createElement('div'),
 						'elmModulePalette': document.createElement('div'),
 						'elmInstanceTreeView': document.createElement('div'),
 						'elmInstancePathView': document.createElement('div'),
-						'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
+						'contents_area_selector': contents_area_selector,
 							// ↑編集可能領域を探すためのクエリを設定します。
 							//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
-						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+						'contents_bowl_name_by': contents_bowl_name_by,
 							// ↑bowlの名称を、data-contents属性値から取得します。
 						'customFields': customFields,
 						'lang': px2ce.options.lang,

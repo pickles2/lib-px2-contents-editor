@@ -298,24 +298,15 @@ module.exports = function(){
 	this.getModuleCssJsSrc = function(callback){
 		callback = callback || function(){};
 		var rtn = {};
-		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_css', {
-			"output": "json",
-			"complete": function(data, code){
-				// console.log(data, code);
+		_this.createBroccoli(function(broccoli){
+			broccoli.buildModuleCss(function(data){
 				rtn.css = data;
-
-				_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js', {
-					"output": "json",
-					"complete": function(data, code){
-						// console.log(data, code);
-						rtn.js = data;
-
-						callback(rtn);
-					}
+				broccoli.buildModuleJs(function(data){
+					rtn.js = data;
+					callback(rtn);
 				});
-			}
+			});
 		});
-
 		return;
 	}
 
@@ -381,8 +372,6 @@ module.exports = function(){
 	this.createBroccoliInitOptions = function(callback){
 		callback = callback||function(){};
 		var broccoliInitializeOptions = {};
-		var Broccoli = require('broccoli-html-editor');
-		var broccoli = new Broccoli();
 		var px2ce = this;
 
 		var px2proj = px2ce.px2proj,
@@ -502,6 +491,16 @@ module.exports = function(){
 					}
 				}
 
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// モジュールテンプレートを収集
+				// (テーマエディタの拡張モジュールをロード)
+				if( _this.target_mode == 'theme_layout' ){
+					var tmpPathsModuleTemplate = {};
+					tmpPathsModuleTemplate['themeEditorModules'] = require('path').resolve(__dirname, '../broccoli_assets/modules/theme_templates/')+'/';
+					pathsModuleTemplate = Object.assign(tmpPathsModuleTemplate, pathsModuleTemplate);
+				}
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
