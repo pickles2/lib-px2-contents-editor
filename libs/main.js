@@ -297,18 +297,28 @@ module.exports = function(){
 	 */
 	this.getModuleCssJsSrc = function(callback){
 		callback = callback || function(){};
-		var rtn = {};
-		_this.createBroccoli(function(broccoli){
-			broccoli.buildModuleCss(function(data){
-				rtn.css = data;
-				broccoli.buildModuleJs(function(data){
-					rtn.js = data;
-					callback(rtn);
+		var rtn = {
+			'css': fs.readFileSync(__dirname+'/../broccoli_assets/dist_resources/modules.css').toString(),
+			'js': fs.readFileSync(__dirname+'/../broccoli_assets/dist_resources/modules.js').toString()
+		};
+		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_css', {
+			"output": "json",
+			"complete": function(data, code){
+				// console.log(data, code);
+				rtn.css += data;
+
+				_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js', {
+					"output": "json",
+					"complete": function(data, code){
+						// console.log(data, code);
+						rtn.js += data;
+
+						callback(rtn);
+					}
 				});
-			});
+			}
 		});
-		return;
-	}
+	} // getModuleCssJsSrc
 
 	/**
 	 * コンテンツファイルを初期化する

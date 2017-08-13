@@ -1,5 +1,6 @@
 var conf = require('config');
 // console.log(conf);
+var Broccoli = require('broccoli-html-editor');
 var path = require('path');
 var gulp = require('gulp');
 var sass = require('gulp-sass');//CSSコンパイラ
@@ -125,6 +126,38 @@ gulp.task("test/contents.js", function() {
 		.pipe(concat('contents.js'))
 		.pipe(gulp.dest( 'tests/app/client/index_files/' ))
 	;
+});
+
+// broccoli Theme編集用のCSS,JS をビルド
+gulp.task("buildBroccoliThemeCssJs", function() {
+	var broccoli = new Broccoli();
+	var fs = require('fs');
+	var dmyPath = __dirname+'/';
+	broccoli.init(
+		{
+			'appMode': 'desktop' ,
+			'paths_module_template': {
+				'themeEditorModules': require('path').resolve(__dirname, './broccoli_assets/modules/theme_templates/')+'/'
+			} ,
+			'documentRoot': dmyPath,// realpath
+			'pathHtml': require('path').resolve(dmyPath, './dmy.html'),
+			'pathResourceDir': dmyPath,
+			'realpathDataDir':  dmyPath,
+			'contents_bowl_name_by': 'dmy',
+			'customFields': [] ,
+			'bindTemplate': function(){},
+			'log': function(msg){}
+		},
+		function(){
+			broccoli.buildModuleCss(function(srcCss){
+				broccoli.buildModuleJs(function(srcJs){
+					// console.log(srcCss, srcJs);
+					fs.writeFileSync(__dirname+'/broccoli_assets/dist_resources/modules.css', srcCss);
+					fs.writeFileSync(__dirname+'/broccoli_assets/dist_resources/modules.js', srcJs);
+				});
+			});
+		}
+	);
 });
 
 // src 中のすべての拡張子を監視して処理
