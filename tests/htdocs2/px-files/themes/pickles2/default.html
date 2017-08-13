@@ -4,7 +4,8 @@
 		<meta charset="UTF-8" />
 		<title><?= htmlspecialchars($px->site()->get_current_page_info('title_full')); ?></title>
 <?php include(__DIR__.'/inc/headsection.inc'); ?>
-<?= $px->bowl()->pull('head') ?>
+<?= $px->bowl()->get_clean('head') ?><link rel="stylesheet" href="<?= htmlspecialchars( $theme->files('/layouts/default/style.css') ) ?>" />
+
 	</head>
 	<body>
 		<header class="theme_header" id="page_top">
@@ -40,7 +41,7 @@
 						<div class="theme_breadcrumb"><?= $theme->mk_breadcrumb() ?></div>
 						<h1><?= preg_replace('/\r\n|\r|\n/s', '<br />', htmlspecialchars($px->site()->get_current_page_info( 'title_h1' )) ); ?></h1>
 						<div class="contents" <?= htmlspecialchars($theme->get_attr_bowl_name_by())?>="main">
-<?= $px->bowl()->pull() ?>
+<?= $px->bowl()->get_clean() ?>
 						</div>
 						<div class="theme_breadcrumb"><?= $theme->mk_breadcrumb() ?></div>
 					</div>
@@ -53,7 +54,7 @@
 <?= $theme->mk_sub_menu( $category_top_id ) ?>
 						</nav>
 						<div class="contents" <?= htmlspecialchars($theme->get_attr_bowl_name_by())?>="right_bar">
-<?= $px->bowl()->pull('right_bar') ?>
+<?= $px->bowl()->get_clean('right_bar') ?>
 						</div>
 					</div>
 				</div><!-- /.row -->
@@ -80,6 +81,6 @@
 				<p style="text-align:center;">Pickles 2 is made by Tomoya Koyanagi.</p>
 			</div>
 		</footer>
-<?= $px->bowl()->pull('foot') ?>
+<?= $px->bowl()->get_clean('foot') ?>
 	</body>
 </html>

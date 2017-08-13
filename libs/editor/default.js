@@ -41,16 +41,15 @@ module.exports = function(px2ce){
 				var strLoaderCSS = _targetPaths.strLoaderCSS;
 				var strLoaderJS = _targetPaths.strLoaderJS;
 
-				// console.log(_contentsPath);
-				// console.log(realpath_resource_dir);
-				// console.log(strLoaderCSS);
-				// console.log(strLoaderJS);
-
 				try {
 					if( utils79.is_file( _contentsPath ) ){
 						rtn.html = fs.readFileSync(_contentsPath).toString('utf8');
 						rtn.html = rtn.html.replace( strLoaderCSS, '' );
 						rtn.html = rtn.html.replace( strLoaderJS, '' );
+
+						// ↓古いメソッド名も削除
+						rtn.html = rtn.html.replace( '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n", '' );
+						rtn.html = rtn.html.replace( '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n", '' );
 					}
 				} catch (e) {
 				}
@@ -113,11 +112,6 @@ module.exports = function(px2ce){
 				var strLoaderCSS = _targetPaths.strLoaderCSS;
 				var strLoaderJS = _targetPaths.strLoaderJS;
 
-				// console.log(_contentsPath);
-				// console.log(realpath_resource_dir);
-				// console.log(strLoaderCSS);
-				// console.log(strLoaderJS);
-
 				try {
 					if( !codes.css.length ){
 						strLoaderCSS = '';
@@ -125,7 +119,14 @@ module.exports = function(px2ce){
 					if( !codes.js.length ){
 						strLoaderJS = '';
 					}
-					fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
+
+					if( px2ce.target_mode == 'theme_layout' ){
+						codes.html = codes.html.replace( /(\s*\<\/head\>)/, strLoaderCSS+strLoaderJS+'$1' );
+						fs.writeFileSync(_contentsPath, codes.html);
+					}else{
+						fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
+					}
+
 				} catch (e) {
 				}
 
@@ -174,9 +175,15 @@ module.exports = function(px2ce){
 		var rtn = {
 			realpathFiles: require('path').resolve(px2ce.realpathFiles),
 			contentsPath: require('path').resolve(px2ce.documentRoot+px2ce.page_path),
-			strLoaderCSS: '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), \'head\' );?>'+"\n",
-			strLoaderJS: '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), \'foot\' );?>'+"\n"
+			strLoaderCSS: '<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?>" /><?php $px->bowl()->put( ob_get_clean(), \'head\' );?>'+"\n",
+			strLoaderJS: '<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?>"></script><?php $px->bowl()->put( ob_get_clean(), \'foot\' );?>'+"\n"
 		};
+
+		if( px2ce.target_mode == 'theme_layout' ){
+			var tmpPathThemeLayoutDir = '/layouts/'+encodeURIComponent(px2ce.layout_id)+'/';
+			rtn.strLoaderCSS = '<link rel="stylesheet" href="<?= htmlspecialchars( $theme->files(\''+tmpPathThemeLayoutDir+'style.css\') ) ?>" />'+"\n";
+			rtn.strLoaderJS = '<script src="<?= htmlspecialchars( $theme->files(\''+tmpPathThemeLayoutDir+'script.js\') ) ?>"></script>'+"\n";
+		}
 
 		px2ce.px2proj.get_page_info(px2ce.page_path, function(pageInfo){
 			if( pageInfo == null ){
