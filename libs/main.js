@@ -293,6 +293,33 @@ module.exports = function(){
 	} // getProjectInfo()
 
 	/**
+	 * モジュールCSS,JSソースを取得する
+	 */
+	this.getModuleCssJsSrc = function(callback){
+		callback = callback || function(){};
+		var rtn = {};
+		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_css', {
+			"output": "json",
+			"complete": function(data, code){
+				// console.log(data, code);
+				rtn.css = data;
+
+				_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js', {
+					"output": "json",
+					"complete": function(data, code){
+						// console.log(data, code);
+						rtn.js = data;
+
+						callback(rtn);
+					}
+				});
+			}
+		});
+
+		return;
+	}
+
+	/**
 	 * コンテンツファイルを初期化する
 	 */
 	this.initContentFiles = function(editorMode, callback){
@@ -498,23 +525,10 @@ module.exports = function(){
 
 						var baseDir = _this.documentRoot+_this.theme_id+'/theme_files/';
 						fsx.ensureDirSync( baseDir );
-
-						_this.px2proj.query(_this.page_path+'?PX=px2dthelper.document_modules.build_css', {
-							"output": "json",
-							"complete": function(data, code){
-								// console.log(data, code);
-								fs.writeFileSync(baseDir+'modules.css', data);
-
-								_this.px2proj.query(_this.page_path+'?PX=px2dthelper.document_modules.build_js', {
-									"output": "json",
-									"complete": function(data, code){
-										// console.log(data, code);
-										fs.writeFileSync(baseDir+'modules.js', data);
-
-										callback(fin);
-									}
-								});
-							}
+						_this.getModuleCssJsSrc(function(CssJs){
+							fs.writeFileSync(baseDir+'modules.css', CssJs.css);
+							fs.writeFileSync(baseDir+'modules.js', CssJs.js);
+							callback(fin);
 						});
 
 						return;

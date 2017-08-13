@@ -4,11 +4,13 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
+	var utils79 = require('utils79');
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 	var Promise = require('es6-promise').Promise;
-	var px2conf = {};
+	var px2conf = {}
+		moduleCssJs = {css: '', js: ''};
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -23,13 +25,12 @@ module.exports = function(px2ce){
 	function getPreviewUrl(){
 		if( px2ce.target_mode == 'theme_layout' ){
 			var path_html = px2ce.__dirname + '/editor/broccoli/canvas.html'
+			path_html += '?css='+utils79.base64_encode(moduleCssJs.css);
+			path_html += '&js='+utils79.base64_encode(moduleCssJs.js);
 			return path_html;
 		}
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		if( px2ce.target_mode=='theme_layout' ){
-			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
-		}
 		return px2ce.options.preview.origin + pathname;
 	}
 
@@ -98,6 +99,24 @@ module.exports = function(px2ce){
 				_this.redraw(function(){
 					rlv();
 				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// モジュールのCSS, JS ソースを取得する
+				if( px2ce.target_mode != 'theme_layout' ){
+					// テーマ編集時のみ必要。
+					rlv();
+					return;
+				}
+
+				px2ce.gpiBridge(
+					{
+						'api': 'getModuleCssJsSrc'
+					},
+					function(CssJs){
+						moduleCssJs = CssJs;
+						rlv();
+					}
+				);
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				$elmCanvas.attr({

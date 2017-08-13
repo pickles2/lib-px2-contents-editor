@@ -71,6 +71,13 @@ module.exports = function(px2ce, data, callback){
 			});
 			break;
 
+		case "getModuleCssJsSrc":
+			// モジュールCSS,JSソースを取得する
+			px2ce.getModuleCssJsSrc(function(results){
+				callback(results);
+			});
+			break;
+
 		case "openUrlInBrowser":
 			px2ce.openUrlInBrowser(data.url, function(res){
 				callback(res);
