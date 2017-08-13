@@ -163,18 +163,15 @@ module.exports = function(){
 	 * リソースフォルダを開く
 	 */
 	this.openResourceDir = function( path, callback ){
-		console.log('open resource dir: ' + path + ' of ' + _this.page_path);
+		console.log('open resource dir: ' + path + ' of ' + _this.page_path + ' ('+_this.target_mode+')');
 		// console.log(px2ce.getAppMode());
 		if( _this.getAppMode() != 'desktop' ){
 			callback(false);
 			return;
 		}
 		var desktopUtils = require('desktop-utils');
-		_this.px2proj.realpath_files(_this.page_path, path, function(pathDir){
-			// console.log(pathDir);
-			desktopUtils.open( pathDir );
-			callback(true);
-		});
+		desktopUtils.open( require('path').resolve(_this.realpathFiles, './'+path) );
+		callback(true);
 		return;
 	}
 
