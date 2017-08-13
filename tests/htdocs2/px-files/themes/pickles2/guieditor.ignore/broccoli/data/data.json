@@ -1,1 +1,71 @@
-{}
+{
+ "bowl": {
+  "main": {
+   "modId": "_sys/root",
+   "fields": {
+    "main": [
+     {
+      "modId": "FESS:units/unit",
+      "fields": {
+       "main": [
+        {
+         "modId": "PlainHTMLElements:PlainHTML/MultiText",
+         "fields": {
+          "main": {
+           "src": "<p><?= htmlspecialchars($px->conf()->name); ?></p>\n",
+           "editor": ""
+          }
+         },
+         "anchor": "",
+         "dec": ""
+        },
+        {
+         "modId": "themeEditorModules:vars/breadcrumb",
+         "fields": {}
+        }
+       ]
+      }
+     },
+     {
+      "modId": "FESS:units/cols2",
+      "fields": {
+       "column1": [
+        {
+         "modId": "themeEditorModules:vars/h1",
+         "fields": {},
+         "anchor": "",
+         "dec": ""
+        },
+        {
+         "modId": "themeEditorModules:vars/bowl",
+         "fields": {
+          "bowlName": "main"
+         },
+         "anchor": "",
+         "dec": ""
+        }
+       ],
+       "column2": [
+        {
+         "modId": "themeEditorModules:vars/localnavigation",
+         "fields": {}
+        }
+       ]
+      }
+     },
+     {
+      "modId": "themeEditorModules:layouts/rnavi",
+      "fields": {
+       "header": [],
+       "main": [],
+       "rnavi": [],
+       "footer": []
+      },
+      "anchor": "",
+      "dec": ""
+     }
+    ]
+   }
+  }
+ }
+}

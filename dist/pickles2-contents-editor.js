@@ -22352,11 +22352,13 @@ module.exports = function(px2ce){
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
+	var utils79 = require('utils79');
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 	var Promise = require('es6-promise').Promise;
-	var px2conf = {};
+	var px2conf = {}
+		moduleCssJs = {css: '', js: ''};
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -22369,11 +22371,14 @@ module.exports = function(px2ce){
 	var show_instanceTreeView = true;
 
 	function getPreviewUrl(){
+		if( px2ce.target_mode == 'theme_layout' ){
+			var path_html = px2ce.__dirname + '/editor/broccoli/canvas.html'
+			path_html += '?css='+utils79.base64_encode(moduleCssJs.css);
+			path_html += '&js='+utils79.base64_encode(moduleCssJs.js);
+			return path_html;
+		}
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		if( px2ce.target_mode=='theme_layout' ){
-			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
-		}
 		return px2ce.options.preview.origin + pathname;
 	}
 
@@ -22442,6 +22447,24 @@ module.exports = function(px2ce){
 				_this.redraw(function(){
 					rlv();
 				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// モジュールのCSS, JS ソースを取得する
+				if( px2ce.target_mode != 'theme_layout' ){
+					// テーマ編集時のみ必要。
+					rlv();
+					return;
+				}
+
+				px2ce.gpiBridge(
+					{
+						'api': 'getModuleCssJsSrc'
+					},
+					function(CssJs){
+						moduleCssJs = CssJs;
+						rlv();
+					}
+				);
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				$elmCanvas.attr({
@@ -22621,7 +22644,7 @@ module.exports = function(px2ce){
 
 }
 
-},{"../../apis/toolbar.js":122,"es6-promise":18,"iterate79":22,"jquery":23}],124:[function(require,module,exports){
+},{"../../apis/toolbar.js":122,"es6-promise":18,"iterate79":22,"jquery":23,"utils79":56}],124:[function(require,module,exports){
 /**
  * default/default.js
  */
@@ -23464,15 +23487,22 @@ module.exports = function(px2ce){
 					rlv();
 				}); })
 				.then(function(){ return new Promise(function(rlv, rjt){
+					var contents_area_selector = px2conf.plugins.px2dt.contents_area_selector;
+					var contents_bowl_name_by = px2conf.plugins.px2dt.contents_bowl_name_by;
+					if(_this.target_mode == 'theme_layout'){
+						contents_area_selector = '[data-pickles2-theme-editor-contents-area]';
+						contents_bowl_name_by = 'data-pickles2-theme-editor-contents-area';
+					}
+
 					broccoliInitializeOptions = {
 						'elmCanvas': document.createElement('div'),
 						'elmModulePalette': document.createElement('div'),
 						'elmInstanceTreeView': document.createElement('div'),
 						'elmInstancePathView': document.createElement('div'),
-						'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
+						'contents_area_selector': contents_area_selector,
 							// ↑編集可能領域を探すためのクエリを設定します。
 							//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
-						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+						'contents_bowl_name_by': contents_bowl_name_by,
 							// ↑bowlの名称を、data-contents属性値から取得します。
 						'customFields': customFields,
 						'lang': px2ce.options.lang,
