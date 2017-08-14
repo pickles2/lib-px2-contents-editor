@@ -292,19 +292,20 @@ module.exports = function(){
 	/**
 	 * モジュールCSS,JSソースを取得する
 	 */
-	this.getModuleCssJsSrc = function(callback){
+	this.getModuleCssJsSrc = function(theme_id, callback){
 		callback = callback || function(){};
+		theme_id = theme_id || '';
 		var rtn = {
-			'css': fs.readFileSync(__dirname+'/../broccoli_assets/dist_resources/modules.css').toString(),
-			'js': fs.readFileSync(__dirname+'/../broccoli_assets/dist_resources/modules.js').toString()
+			'css': '',
+			'js': ''
 		};
-		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_css', {
+		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_css&theme_id='+encodeURIComponent(theme_id), {
 			"output": "json",
 			"complete": function(data, code){
 				// console.log(data, code);
 				rtn.css += data;
 
-				_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js', {
+				_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js&theme_id='+encodeURIComponent(theme_id), {
 					"output": "json",
 					"complete": function(data, code){
 						// console.log(data, code);
@@ -439,6 +440,11 @@ module.exports = function(){
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// モジュールテンプレートを収集
 				// (指定モジュールをロード)
+				if( _this.target_mode == 'theme_layout' ){
+					// テーマ編集ではスキップ
+					rlv();
+					return;
+				}
 				for( var idx in px2conf.plugins.px2dt.paths_module_template ){
 					pathsModuleTemplate[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
 				}
@@ -448,6 +454,10 @@ module.exports = function(){
 				// モジュールテンプレートを収集
 				// (モジュールフォルダからロード)
 				var pathModuleDir = px2conf.plugins.px2dt.path_module_templates_dir;
+				if( _this.target_mode == 'theme_layout' ){
+					// テーマ編集では `broccoli_module_packages` をロードする。
+					pathModuleDir = _this.documentRoot+_this.theme_id+'/broccoli_module_packages/';
+				}
 				if( typeof(pathModuleDir) != typeof('') ){
 					// モジュールフォルダの指定がない場合
 					rlv();
@@ -501,16 +511,6 @@ module.exports = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				// モジュールテンプレートを収集
-				// (テーマエディタの拡張モジュールをロード)
-				if( _this.target_mode == 'theme_layout' ){
-					var tmpPathsModuleTemplate = {};
-					tmpPathsModuleTemplate['themeEditorModules'] = require('path').resolve(__dirname, '../broccoli_assets/modules/theme_templates/')+'/';
-					pathsModuleTemplate = Object.assign(tmpPathsModuleTemplate, pathsModuleTemplate);
-				}
-				rlv();
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
 				if( _this.target_mode == 'theme_layout' ){
 					bindTemplate = function(htmls, callback){
 						var fin = '';
@@ -531,7 +531,7 @@ module.exports = function(){
 
 						var baseDir = _this.documentRoot+_this.theme_id+'/theme_files/';
 						fsx.ensureDirSync( baseDir );
-						_this.getModuleCssJsSrc(function(CssJs){
+						_this.getModuleCssJsSrc(_this.theme_id, function(CssJs){
 							fs.writeFileSync(baseDir+'modules.css', CssJs.css);
 							fs.writeFileSync(baseDir+'modules.js', CssJs.js);
 							callback(fin);

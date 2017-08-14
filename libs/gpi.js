@@ -73,7 +73,7 @@ module.exports = function(px2ce, data, callback){
 
 		case "getModuleCssJsSrc":
 			// モジュールCSS,JSソースを取得する
-			px2ce.getModuleCssJsSrc(function(results){
+			px2ce.getModuleCssJsSrc(data.theme_id, function(results){
 				callback(results);
 			});
 			break;

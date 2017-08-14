@@ -9,7 +9,7 @@
       "fields": {
        "header": [
         {
-         "modId": "PlainHTMLElements:PlainHTML/MultiText",
+         "modId": "themeEditorModules:basics/multitext",
          "fields": {
           "main": {
            "src": "<p><?= htmlspecialchars($px->conf()->name); ?></p>\n",
