@@ -12,6 +12,11 @@ module.exports = function(px2ce, data, callback){
 			// pickles2-contents-editor の設定を取得する
 			var conf = {};
 			conf.appMode = px2ce.getAppMode();
+			conf.target_mode = px2ce.target_mode;
+			if(conf.target_mode == 'theme_layout'){
+				conf.theme_id = px2ce.theme_id;
+				conf.layout_id = px2ce.layout_id;
+			}
 			callback(conf);
 			break;
 
@@ -63,6 +68,31 @@ module.exports = function(px2ce, data, callback){
 			var broccoliBridge = require('./editor/broccoli.js');
 			broccoliBridge(px2ce, data, function(data){
 				callback(data);
+			});
+			break;
+
+		case "getModuleCssJsSrc":
+			// モジュールCSS,JSソースを取得する
+			px2ce.getModuleCssJsSrc(data.theme_id, function(results){
+				callback(results);
+			});
+			break;
+
+		case "getPagesByLayout":
+			// レイアウトからページの一覧を取得する
+			var rtn = [];
+			var layout_id = data.layout_id || 'default';
+			px2ce.px2proj.get_sitemap(function(sitemap){
+				for(var idx in sitemap){
+					try {
+						var page_layout_id = sitemap[idx].layout || 'default';
+						if( page_layout_id == layout_id ){
+							rtn.push(sitemap[idx]);
+						}
+					} catch (e) {
+					}
+				}
+				callback(rtn);
 			});
 			break;
 

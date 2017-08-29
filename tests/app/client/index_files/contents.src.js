@@ -37,7 +37,7 @@ $(window).load(function(){
 					$.ajax({
 						"url": "/apis/px2ce",
 						"type": 'post',
-						'data': {'page_path':params.page_path, 'data':JSON.stringify(input)},
+						'data': {'page_path':params.page_path, 'target_mode':params.target_mode, 'data':JSON.stringify(input)},
 						"success": function(data){
 							// console.log(data);
 							callback(data);

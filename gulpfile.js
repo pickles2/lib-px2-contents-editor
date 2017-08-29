@@ -1,5 +1,6 @@
 var conf = require('config');
 // console.log(conf);
+var Broccoli = require('broccoli-html-editor');
 var path = require('path');
 var gulp = require('gulp');
 var sass = require('gulp-sass');//CSSコンパイラ

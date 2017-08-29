@@ -25,6 +25,9 @@
 		this.__dirname = __dirname;
 		this.options = {};
 		this.page_path;
+		this.target_mode;
+		this.theme_id;
+		this.layout_id;
 
 		var serverConfig;
 		var editor;
@@ -85,6 +88,9 @@
 							function(config){
 								// console.log(config);
 								serverConfig = config;
+								_this.target_mode = config.target_mode;
+								_this.theme_id = config.theme_id;
+								_this.layout_id = config.layout_id;
 								it1.next(data);
 							}
 						);
@@ -331,16 +337,23 @@
 					rlv();
 				}); })
 				.then(function(){ return new Promise(function(rlv, rjt){
+					var contents_area_selector = px2conf.plugins.px2dt.contents_area_selector;
+					var contents_bowl_name_by = px2conf.plugins.px2dt.contents_bowl_name_by;
+					if(_this.target_mode == 'theme_layout'){
+						contents_area_selector = '[data-pickles2-theme-editor-contents-area]';
+						contents_bowl_name_by = 'data-pickles2-theme-editor-contents-area';
+					}
+
 					broccoliInitializeOptions = {
 						'elmCanvas': document.createElement('div'),
 						'elmModulePalette': document.createElement('div'),
 						'elmInstanceTreeView': document.createElement('div'),
 						'elmInstancePathView': document.createElement('div'),
-						'contents_area_selector': px2conf.plugins.px2dt.contents_area_selector,
-						// ↑編集可能領域を探すためのクエリを設定します。
-						//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
-						'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-						// ↑bowlの名称を、data-contents属性値から取得します。
+						'contents_area_selector': contents_area_selector,
+							// ↑編集可能領域を探すためのクエリを設定します。
+							//  この例では、data-contents属性が付いている要素が編集可能領域として認識されます。
+						'contents_bowl_name_by': contents_bowl_name_by,
+							// ↑bowlの名称を、data-contents属性値から取得します。
 						'customFields': customFields,
 						'lang': px2ce.options.lang,
 						'gpiBridge': function(api, options, callback){

@@ -22,6 +22,7 @@ var utils79 = require('utils79');
 var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
+var session = require('express-session');
 console.log('port number is '+conf.originParsed.port);
 console.log('Pickles 2 preview server port number is '+conf.px2server.originParsed.port);
 
@@ -45,6 +46,13 @@ px2proj.get_config(function(px2conf){
 	}
 
 	app.use( require('body-parser')({"limit": "1024mb"}) );
+	var mdlWareSession = session({
+		secret: "pickles2webtool",
+		cookie: {
+			httpOnly: false
+		}
+	});
+	app.use( mdlWareSession );
 	app.use( '/common/bootstrap/', express.static( path.resolve(__dirname, '../../../node_modules/bootstrap/dist/') ) );
 	app.use( '/common/pickles2-contents-editor/', express.static( path.resolve(__dirname, '../../../dist/') ) );
 	app.use( '/common/broccoli-html-editor/', express.static( path.resolve(__dirname, '../../../node_modules/broccoli-html-editor/client/dist/') ) );
@@ -69,6 +77,13 @@ px2proj.get_config(function(px2conf){
 var expressPickles2 = require('express-pickles2');
 var appPx2 = express();
 appPx2.use( require('body-parser')({"limit": "1024mb"}) );
+var mdlWareSession = session({
+	secret: "pickles2webtool",
+	cookie: {
+		httpOnly: false
+	}
+});
+appPx2.use( mdlWareSession );
 
 appPx2.use( '/*', expressPickles2(
 	entryScript,

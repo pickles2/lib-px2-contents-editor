@@ -11,6 +11,7 @@ module.exports = function(opts){
 		var px2ce = new Px2CE();
 		px2ce.init(
 			{
+				'target_mode': req.body.target_mode || 'page_content',
 				'page_path': req.body.page_path,
 				'appMode': 'web', // 'web' or 'desktop'. default to 'web'
 				'entryScript': require('path').resolve(__dirname,'../../../htdocs2/htdocs/subapp/.px_execute.php'),

@@ -3,6 +3,7 @@
  */
 module.exports = function(){
 	var px2agent = require('px2agent');
+	var ejs = require('ejs');
 	var fs = require('fs');
 	var fsx = require('fs-extra');
 	var utils79 = require('utils79');
@@ -10,9 +11,37 @@ module.exports = function(){
 	var _this = this;
 	var nodePhpBinOptions;
 
+	/**
+	 * 編集対象のモード
+	 * コンテンツ以外にも対応範囲を拡大
+	 * - `page_content` = ページコンテンツ(デフォルト)
+	 * - `theme_layout` = テーマレイアウトテンプレート(px2-multithemeの仕様に準拠)
+	 */
+	this.target_mode;
+
+	/**
+	 * ページのパス
+	 * `target_mode` が `theme_layout` の場合、
+	 * `page_path` は `{$theme_id}/{$layout_id}.html` の形式を取る
+	 */
+	this.page_path;
+
 	this.entryScript;
 	this.px2proj;
-	this.page_path;
+
+	/**
+	 * テーマID
+	 * `target_mode` が `theme_layout` の場合に値を持つ。
+	 * `this.page_path` をパースして生成。
+	 */
+	this.theme_id;
+	/**
+	 * レイアウトID
+	 * `target_mode` が `theme_layout` の場合に値を持つ。
+	 * `this.page_path` をパースして生成。
+	 */
+	this.layout_id;
+
 	this.options;
 
 	/**
@@ -29,6 +58,7 @@ module.exports = function(){
 			console.error(msg);
 		};
 		this.entryScript = options.entryScript;
+		this.target_mode = options.target_mode || 'page_content';
 		this.page_path = options.page_path;
 		if(typeof(this.page_path) !== typeof('')){
 			// 編集対象ページが指定されていない場合
@@ -68,6 +98,19 @@ module.exports = function(){
 			_this.contRoot = pjInfo.contRoot;
 			_this.realpathDataDir = pjInfo.realpathDataDir;
 			_this.pathResourceDir = pjInfo.pathResourceDir;
+			_this.realpathFiles = pjInfo.realpathFiles;
+			if( _this.target_mode == 'theme_layout' ){
+				if( _this.page_path.match(/^\/([\s\S]+?)\/([\s\S]+)\.html$/) ){
+					_this.theme_id = RegExp.$1;
+					_this.layout_id = RegExp.$2;
+				}
+				_this.documentRoot = pjInfo.realpathThemeCollectionDir;
+				_this.contRoot = '/';
+				_this.realpathFiles = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/theme_files/layouts/'+_this.layout_id+'/';
+				_this.pathResourceDir = '/'+_this.theme_id+'/theme_files/layouts/'+_this.layout_id+'/resources/';
+				_this.realpathDataDir = pjInfo.realpathThemeCollectionDir+_this.theme_id+'/guieditor.ignore/'+_this.layout_id+'/data/';
+				// console.log(_this, '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
+			}
 			callback();
 		});
 	}
@@ -120,18 +163,15 @@ module.exports = function(){
 	 * リソースフォルダを開く
 	 */
 	this.openResourceDir = function( path, callback ){
-		console.log('open resource dir: ' + path + ' of ' + _this.page_path);
+		console.log('open resource dir: ' + path + ' of ' + _this.page_path + ' ('+_this.target_mode+')');
 		// console.log(px2ce.getAppMode());
 		if( _this.getAppMode() != 'desktop' ){
 			callback(false);
 			return;
 		}
 		var desktopUtils = require('desktop-utils');
-		_this.px2proj.realpath_files(_this.page_path, path, function(pathDir){
-			// console.log(pathDir);
-			desktopUtils.open( pathDir );
-			callback(true);
-		});
+		desktopUtils.open( require('path').resolve(_this.realpathFiles, './'+path) );
+		callback(true);
 		return;
 	}
 
@@ -167,6 +207,7 @@ module.exports = function(){
 							pjInfo.documentRoot = allData.realpath_docroot;
 							pjInfo.realpathFiles = allData.realpath_files;
 							pjInfo.pathFiles = allData.path_files;
+							pjInfo.realpathThemeCollectionDir = allData.realpath_theme_collection_dir;
 							pjInfo.realpathDataDir = allData.realpath_data_dir;
 							pjInfo.pathResourceDir = allData.path_resource_dir;
 							pjInfo.realpath_homedir = allData.realpath_homedir;
@@ -249,6 +290,35 @@ module.exports = function(){
 	} // getProjectInfo()
 
 	/**
+	 * モジュールCSS,JSソースを取得する
+	 */
+	this.getModuleCssJsSrc = function(theme_id, callback){
+		callback = callback || function(){};
+		theme_id = theme_id || '';
+		var rtn = {
+			'css': '',
+			'js': ''
+		};
+		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_css&theme_id='+encodeURIComponent(theme_id), {
+			"output": "json",
+			"complete": function(data, code){
+				// console.log(data, code);
+				rtn.css += data;
+
+				_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js&theme_id='+encodeURIComponent(theme_id), {
+					"output": "json",
+					"complete": function(data, code){
+						// console.log(data, code);
+						rtn.js += data;
+
+						callback(rtn);
+					}
+				});
+			}
+		});
+	} // getModuleCssJsSrc
+
+	/**
 	 * コンテンツファイルを初期化する
 	 */
 	this.initContentFiles = function(editorMode, callback){
@@ -270,6 +340,26 @@ module.exports = function(){
 	 * ページの編集方法を取得する
 	 */
 	this.checkEditorMode = function(callback){
+		if( this.target_mode == 'theme_layout' ){
+			// ドキュメントルートの設定上書きがある場合
+			// テーマレイアウトの編集等に利用するモード
+			// console.log([_this.documentRoot,
+			// 	_this.contRoot,
+			// 	_this.realpathFiles,
+			// 	_this.pathResourceDir,
+			// 	_this.realpathDataDir]);
+
+			if( !utils79.is_file( _this.documentRoot + _this.page_path ) ){
+				callback('.not_exists');
+				return;
+			}
+			if( utils79.is_file( _this.realpathDataDir + 'data.json' ) ){
+				callback('html.gui');
+				return;
+			}
+			callback('html');
+			return;
+		}
 		_this.px2proj.query(
 			_this.page_path+'?PX=px2dthelper.check_editor_mode', {
 				"output": "json",
@@ -290,8 +380,6 @@ module.exports = function(){
 	this.createBroccoliInitOptions = function(callback){
 		callback = callback||function(){};
 		var broccoliInitializeOptions = {};
-		var Broccoli = require('broccoli-html-editor');
-		var broccoli = new Broccoli();
 		var px2ce = this;
 
 		var px2proj = px2ce.px2proj,
@@ -302,7 +390,8 @@ module.exports = function(){
 			documentRoot = px2ce.documentRoot,
 			realpathDataDir = px2ce.realpathDataDir,
 			pathResourceDir = px2ce.pathResourceDir,
-			pathsModuleTemplate = []
+			pathsModuleTemplate = [],
+			bindTemplate = function(){}
 		;
 		var customFields = {};
 		var page_content = _this.page_path;
@@ -351,6 +440,11 @@ module.exports = function(){
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// モジュールテンプレートを収集
 				// (指定モジュールをロード)
+				if( _this.target_mode == 'theme_layout' ){
+					// テーマ編集ではスキップ
+					rlv();
+					return;
+				}
 				for( var idx in px2conf.plugins.px2dt.paths_module_template ){
 					pathsModuleTemplate[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
 				}
@@ -360,6 +454,10 @@ module.exports = function(){
 				// モジュールテンプレートを収集
 				// (モジュールフォルダからロード)
 				var pathModuleDir = px2conf.plugins.px2dt.path_module_templates_dir;
+				if( _this.target_mode == 'theme_layout' ){
+					// テーマ編集では `broccoli_module_packages` をロードする。
+					pathModuleDir = _this.documentRoot+_this.theme_id+'/broccoli_module_packages/';
+				}
 				if( typeof(pathModuleDir) != typeof('') ){
 					// モジュールフォルダの指定がない場合
 					rlv();
@@ -413,17 +511,36 @@ module.exports = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				if( _this.target_mode == 'theme_layout' ){
+					bindTemplate = function(htmls, callback){
+						var fin = '';
+						for( var bowlId in htmls ){
+							if( bowlId == 'main' ){
+								fin += htmls['main'];
+							}else{
+								fin += "\n";
+								fin += "\n";
+								fin += '<?php ob_start(); ?>'+"\n";
+								fin += (utils79.toStr(htmls[bowlId]).length ? htmls[bowlId]+"\n" : '');
+								fin += '<?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?>'+"\n";
+								fin += "\n";
+							}
+						}
+						var template = fs.readFileSync( __dirname+'/tpls/broccoli_theme_layout.html' ).toString();
+						fin = ejs.render(template, {'body': fin}, {delimiter: '%'});
 
-				broccoliInitializeOptions = {
-					'appMode': px2ce.getAppMode() ,
-					'paths_module_template': pathsModuleTemplate ,
-					'documentRoot': documentRoot,// realpath
-					'pathHtml': require('path').resolve(px2conf.path_controot, './'+page_content),
-					'pathResourceDir': _this.pathResourceDir,
-					'realpathDataDir':  _this.realpathDataDir,
-					'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-					'customFields': customFields ,
-					'bindTemplate': function(htmls, callback){
+						var baseDir = _this.documentRoot+_this.theme_id+'/theme_files/';
+						fsx.ensureDirSync( baseDir );
+						_this.getModuleCssJsSrc(_this.theme_id, function(CssJs){
+							fs.writeFileSync(baseDir+'modules.css', CssJs.css);
+							fs.writeFileSync(baseDir+'modules.js', CssJs.js);
+							callback(fin);
+						});
+
+						return;
+					}
+				}else{
+					bindTemplate = function(htmls, callback){
 						var fin = '';
 						for( var bowlId in htmls ){
 							if( bowlId == 'main' ){
@@ -439,7 +556,22 @@ module.exports = function(){
 						}
 						callback(fin);
 						return;
-					},
+					}
+				}
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+
+				broccoliInitializeOptions = {
+					'appMode': px2ce.getAppMode() ,
+					'paths_module_template': pathsModuleTemplate ,
+					'documentRoot': documentRoot,// realpath
+					'pathHtml': require('path').resolve(_this.contRoot, './'+page_content),
+					'pathResourceDir': _this.pathResourceDir,
+					'realpathDataDir':  _this.realpathDataDir,
+					'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
+					'customFields': customFields ,
+					'bindTemplate': bindTemplate,
 					'log': function(msg){
 						// エラー発生時にコールされます。
 						px2ce.log(msg);
