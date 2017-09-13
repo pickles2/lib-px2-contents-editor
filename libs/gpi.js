@@ -133,7 +133,7 @@ module.exports = function(px2ce, data, callback){
 					}
 				} catch (e) {
 				}
-				code = '<script>'+"\n"+code+'</script>';
+				code = 'data:text/javascript;base64,'+(new Buffer(code).toString('base64'));
 				codes.push(code);
 				callback(codes);
 			});
