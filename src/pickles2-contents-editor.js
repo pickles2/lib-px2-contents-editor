@@ -414,6 +414,13 @@
 		}
 
 		/**
+		 * エディタオブジェクトを取得する
+		 */
+		this.getEditor = function(){
+			return editor;
+		}
+
+		/**
 		 * ユーザーへのメッセージを表示する
 		 */
 		this.message = function(message, callback){
