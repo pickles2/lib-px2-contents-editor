@@ -170,7 +170,14 @@ module.exports = function(){
 			return;
 		}
 		var desktopUtils = require('desktop-utils');
-		desktopUtils.open( require('path').resolve(_this.realpathFiles, './'+path) );
+		if( !utils79.is_dir(_this.realpathFiles) ){
+			fsx.mkdirSync(_this.realpathFiles);
+		}
+		var realpath_target = require('path').resolve(_this.realpathFiles, './'+path);
+		if( !utils79.is_dir(utils79.dirname(realpath_target)) ){
+			fsx.mkdirSync(utils79.dirname(realpath_target));
+		}
+		desktopUtils.open( realpath_target );
 		callback(true);
 		return;
 	}
