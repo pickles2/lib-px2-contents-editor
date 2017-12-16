@@ -250,6 +250,7 @@ $ npm run test
 	- 最後の行が結合されている場合に、列幅指定が欠落する不具合を修正。
 - broccoli-html-editor オブジェクトを取り出すAPI `px2ce.createBroccoli()` を追加。
 - broccoli-html-editor で、プロジェクト固有のカスタムフィールドを追加できる機能を追加。
+- テーマの編集に対応した。
 - `page_path` に alias や dynamic path を受け取った場合に異常終了する不具合を修正。
 - Pickles 2 が深い階層にある場合に、HTMLを正常に更新できない不具合を修正。
 - 新しい Pickles 2 共有設定 `$conf->plugins->px2dt->guieditor->path_resource_dir` を追加。
