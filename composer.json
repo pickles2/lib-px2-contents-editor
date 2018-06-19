@@ -1,4 +1,7 @@
 {
+    "name": "pickles2/lib-px2-contents-editor",
+    "description": "Pickles 2 contents editor library.",
+    "keywords": ["pickles2"],
     "license": "MIT",
     "authors": [
         {
@@ -9,7 +12,9 @@
     "repositories": [
     ],
     "require": {
-        "php": ">=5.4.0" ,
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
         "pickles2/px-fw-2.x": "dev-develop",
         "pickles2/broccoli-module-fess": "*",
         "pickles2/broccoli-module-plain-html-elements": "*",
@@ -19,7 +24,5 @@
         "pickles2/px2-px2dthelper": "dev-develop",
         "pickles2/px2-remove-attr": "dev-develop",
         "pickles2/px2-sitemapexcel": "dev-develop"
-    },
-    "require-dev": {
     }
 }

@@ -232,7 +232,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor@2.0.0-beta.4 (2018年??月??日)
+### pickles2-contents-editor@2.0.0-beta.4 (2018年6月22日)
 
 - broccoli-html-editor を外部からの供給に依存するようになった。
 - broccoli-field-table
