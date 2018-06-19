@@ -9,6 +9,14 @@
             "email": "tomk79@gmail.com"
         }
     ],
+    "scripts":{
+        "start": [
+            "php -S 127.0.0.1:8088 -t ./"
+        ],
+        "test": [
+            "php ./vendor/phpunit/phpunit/phpunit"
+        ]
+    } ,
     "repositories": [
     ],
     "require": {
@@ -23,6 +31,12 @@
         "pickles2/px2-path-resolver": "dev-develop",
         "pickles2/px2-px2dthelper": "dev-develop",
         "pickles2/px2-remove-attr": "dev-develop",
-        "pickles2/px2-sitemapexcel": "dev-develop"
+        "pickles2/px2-sitemapexcel": "dev-develop",
+        "phpunit/phpunit": "^4.1.0"
+    },
+    "autoload": {
+        "files": [
+            "php/main.php"
+        ]
     }
 }
