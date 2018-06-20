@@ -302,34 +302,39 @@ class main{
 		return $pjInfo;
 	} // getProjectInfo()
 
-	// /**
-	//  * モジュールCSS,JSソースを取得する
-	//  */
-	// this.getModuleCssJsSrc = function(theme_id, callback){
-	// 	callback = callback || function(){};
-	// 	theme_id = theme_id || '';
-	// 	var rtn = {
-	// 		'css': '',
-	// 		'js': ''
-	// 	};
-	// 	$this->px2query('/?PX=px2dthelper.document_modules.build_css&theme_id='+encodeURIComponent(theme_id), {
-	// 		"output": "json",
-	// 		"complete": function(data, code){
-	// 			// var_dump(data, code);
-	// 			rtn.css += data;
+	/**
+	 * モジュールCSS,JSソースを取得する
+	 */
+	public function getModuleCssJsSrc($theme_id){
+		if(!strlen($theme_id)){
+			$theme_id = '';
+		}
+		$rtn = array(
+			'css' => '',
+			'js' => ''
+		);
+		$data = $this->px2query(
+			'/?PX=px2dthelper.document_modules.build_css&theme_id='.urlencode($theme_id),
+			array(
+				"output" => "json"
+			)
+		);
 
-	// 			$this->px2query('/?PX=px2dthelper.document_modules.build_js&theme_id='+encodeURIComponent(theme_id), {
-	// 				"output": "json",
-	// 				"complete": function(data, code){
-	// 					// var_dump(data, code);
-	// 					rtn.js += data;
+		// var_dump($data);
+		$rtn['css'] .= $data;
 
-	// 					callback(rtn);
-	// 				}
-	// 			});
-	// 		}
-	// 	});
-	// } // getModuleCssJsSrc
+		$data = $this->px2query(
+			'/?PX=px2dthelper.document_modules.build_js&theme_id='.urlencode($theme_id),
+			array(
+				"output" => "json"
+			)
+		);
+
+		// var_dump($data);
+		$rtn['js'] .= $data;
+
+		return $rtn;
+	} // getModuleCssJsSrc
 
 	/**
 	 * コンテンツファイルを初期化する
@@ -638,13 +643,13 @@ class main{
 		return $gpi->gpi($data);
 	}
 
-	// /**
-	//  * ログファイルにメッセージを出力する
-	//  */
-	// this.log = function(msg){
-	// 	this.options.log(msg);
-	// 	return;
-	// }
+	/**
+	 * ログファイルにメッセージを出力する
+	 */
+	public function log($msg){
+		$this->options['log']($msg);
+		return;
+	}
 
 	/**
 	 * Pickles 2 にリクエストを発行し、結果を受け取る

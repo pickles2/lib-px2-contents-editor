@@ -81,37 +81,32 @@ class gpi{
 				return $result;
 				break;
 
-			// case "broccoliBridge":
-			// 	var broccoliBridge = require('./editor/broccoli.js');
-			// 	broccoliBridge(px2ce, data, function(data){
-			// 		callback(data);
-			// 	});
-			// 	break;
+			case "broccoliBridge":
+				$broccoliBridge = new editor_broccoli($this->px2ce);
+				$result = $broccoliBridge->bridge($data);
+				return $result;
+				break;
 
-			// case "getModuleCssJsSrc":
-			// 	// モジュールCSS,JSソースを取得する
-			// 	$this->px2ce->getModuleCssJsSrc($data.theme_id, function(results){
-			// 		callback(results);
-			// 	});
-			// 	break;
+			case "getModuleCssJsSrc":
+				// モジュールCSS,JSソースを取得する
+				$results = $this->px2ce->getModuleCssJsSrc($data['theme_id']);
+				return $results;
+				break;
 
-			// case "getPagesByLayout":
-			// 	// レイアウトからページの一覧を取得する
-			// 	var rtn = [];
-			// 	var layout_id = $data.layout_id || 'default';
-			// 	$this->px2ce->px2proj.get_sitemap(function(sitemap){
-			// 		for(var idx in sitemap){
-			// 			try {
-			// 				var page_layout_id = sitemap[idx].layout || 'default';
-			// 				if( page_layout_id == layout_id ){
-			// 					rtn.push(sitemap[idx]);
-			// 				}
-			// 			} catch (e) {
-			// 			}
-			// 		}
-			// 		callback(rtn);
-			// 	});
-			// 	break;
+			case "getPagesByLayout":
+				// レイアウトからページの一覧を取得する
+				$rtn = array();
+				$layout_id = (strlen(@$data['layout_id']) ? $data['layout_id'] : 'default');
+				$sitemap = $this->px2ce->px2query('/?PX=api.get.sitemap', array("output"=>"json"));
+
+				foreach($sitemap as $idx=>$page_info){
+					$page_layout_id = (strlen(@$sitemap[$idx]->layout) ? $sitemap[$idx]->layout : 'default');
+					if( $page_layout_id == $layout_id ){
+						array_push( $rtn, $sitemap[$idx] );
+					}
+				}
+				return $rtn;
+				break;
 
 			case "openUrlInBrowser":
 				$res = $this->px2ce->openUrlInBrowser($data['url']);
@@ -123,36 +118,36 @@ class gpi{
 				return $res;
 				break;
 
-			// case "loadCustomFieldsClientSideLibs":
-			// 	// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
-			// 	if($this->px2ce->options.customFieldsIncludePath && $this->px2ce->options.customFieldsIncludePath.length){
-			// 		var confCustomFields = $this->px2ce->options.customFieldsIncludePath;
-			// 		callback(confCustomFields);
-			// 		break;
-			// 	}
-			// 	$this->px2ce->getProjectConf(function(conf){
-			// 		var codes = [];
-			// 		var code = '';
-			// 		try {
-			// 			var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
-			// 			for(var fieldName in confCustomFields){
-			// 				if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
-			// 					var pathJs = require('path').resolve($this->px2ce->entryScript, '..', confCustomFields[fieldName].frontend.file);
-			// 					var binJs = file_get_contents( pathJs ).toString();
-			// 					code += '/**'+"\n";
-			// 					code += ' * '+fieldName+"\n";
-			// 					code += ' */'+"\n";
-			// 					code += binJs+"\n";
-			// 					code += ''+"\n";
-			// 				}
-			// 			}
-			// 		} catch (e) {
-			// 		}
-			// 		code = 'data:text/javascript;base64,'+(new Buffer(code).toString('base64'));
-			// 		codes.push(code);
-			// 		callback(codes);
-			// 	});
-			// 	break;
+			case "loadCustomFieldsClientSideLibs":
+				// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
+				if(@$this->px2ce->options['customFieldsIncludePath'] && strlen($this->px2ce->options['customFieldsIncludePath'])){
+					$confCustomFields = $this->px2ce->options['customFieldsIncludePath'];
+					return $confCustomFields;
+					break;
+				}
+				$conf = $this->px2ce->getProjectConf();
+
+				$codes = array();
+				$code = '';
+
+				$confCustomFields = @$conf->plugins->px2dt->guieditor->custom_fields;
+				foreach($confCustomFields as $fieldName=>$field){
+					if( $confCustomFields[$fieldName]->frontend->file && $confCustomFields[$fieldName]->frontend->function ){
+						$pathJs = $this->px2ce->fs()->get_realpath(dirname($this->px2ce->entryScript).'/'.$confCustomFields[$fieldName]->frontend->file);
+						$binJs = file_get_contents( $pathJs );
+						$code .= '/**'."\n";
+						$code .= ' * '.$fieldName."\n";
+						$code .= ' */'."\n";
+						$code .= $binJs."\n";
+						$code .= ''."\n";
+					}
+				}
+
+				$code = 'data:text/javascript;base64,'.base64_encode($code);
+				array_push($codes, $code);
+
+				return $codes;
+				break;
 
 			default:
 				return true;

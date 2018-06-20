@@ -41,7 +41,8 @@
         "files": [
             "php/main.php",
             "php/gpi.php",
-            "php/editor/default.php"
+            "php/editor/default.php",
+            "php/editor/broccoli.php"
         ]
     }
 }
