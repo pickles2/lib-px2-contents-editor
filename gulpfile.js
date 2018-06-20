@@ -126,6 +126,14 @@ gulp.task("test/contents.js", function() {
 		.pipe(concat('contents.js'))
 		.pipe(gulp.dest( 'tests/app/client/index_files/' ))
 	;
+	gulp.src(["tests/app/client_php/index_files/contents.src.js"])
+		.pipe(plumber())
+		.pipe(browserify({
+		}))
+		// .pipe(uglify())
+		.pipe(concat('contents.js'))
+		.pipe(gulp.dest( 'tests/app/client_php/index_files/' ))
+	;
 });
 
 // src 中のすべての拡張子を監視して処理

@@ -570,23 +570,13 @@ class main{
 	// 	return;
 	// }
 
-	// /**
-	//  * 汎用API
-	//  */
-	// this.gpi = function(data, callback){
-	// 	callback = callback||function(){};
-	// 	// this.page_path = data.page_path;
-	// 	// var_dump(this.page_path);
-	// 	var gpi = require( __dirname+'/gpi.js' );
-	// 	gpi(
-	// 		this,
-	// 		data,
-	// 		function(rtn){
-	// 			callback(rtn);
-	// 		}
-	// 	);
-	// 	return this;
-	// }
+	/**
+	 * 汎用API
+	 */
+	public function gpi($data){
+		$gpi = new gpi($this);
+		return $gpi->gpi($data);
+	}
 
 	// /**
 	//  * ログファイルにメッセージを出力する

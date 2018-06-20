@@ -13,6 +13,9 @@
         "start": [
             "php -S 127.0.0.1:8088 -t ./"
         ],
+        "open-in-browser": [
+            "open http://127.0.0.1:8088/tests/app/client_php/"
+        ],
         "test": [
             "php ./vendor/phpunit/phpunit/phpunit"
         ]
@@ -36,7 +39,8 @@
     },
     "autoload": {
         "files": [
-            "php/main.php"
+            "php/main.php",
+            "php/gpi.php"
         ]
     }
 }
