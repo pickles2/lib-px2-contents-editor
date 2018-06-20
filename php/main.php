@@ -380,260 +380,191 @@ class main{
 		return $data;
 	}
 
-	// /**
-	//  * create initialize options for broccoli-html-editor
-	//  */
-	// this.createBroccoliInitOptions = function(callback){
-	// 	callback = callback||function(){};
-	// 	var broccoliInitializeOptions = {};
-	// 	var px2ce = this;
+	/**
+	 * create initialize options for broccoli-html-editor
+	 */
+	private function createBroccoliInitOptions(){
+		$broccoliInitializeOptions = array();
+		$px2ce = $this;
 
-	// 	var px2proj = px2ce.px2proj,
-	// 		page_path = px2ce.page_path,
-	// 		px2conf = px2ce.px2conf,
-	// 		pageInfo = px2ce.pageInfo,
-	// 		contRoot = px2ce.contRoot,
-	// 		documentRoot = px2ce.documentRoot,
-	// 		realpathDataDir = px2ce.realpathDataDir,
-	// 		pathResourceDir = px2ce.pathResourceDir,
-	// 		pathsModuleTemplate = [],
-	// 		bindTemplate = function(){}
-	// 	;
-	// 	var customFields = {};
-	// 	var page_content = $this->page_path;
-	// 	try {
-	// 		page_content = pageInfo.content;
-	// 	} catch (e) {
-	// 	}
+		$page_path = $this->page_path;
+		$px2conf = $this->px2conf;
+		$pageInfo = $this->pageInfo;
+		$contRoot = $this->contRoot;
+		$documentRoot = $this->documentRoot;
+		$realpathDataDir = $this->realpathDataDir;
+		$pathResourceDir = $this->pathResourceDir;
+		$pathsModuleTemplate = array();
+		$bindTemplate = function(){};
 
-	// 	new Promise(function(rlv){rlv();})
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
-	// 			// フィールドを拡張
+		$customFields = array();
+		$page_content = $this->page_path;
+		if( strlen(@$pageInfo->content) ){
+			$page_content = $pageInfo->content;
+		}
 
-	// 			// px2ce が拡張するフィールド
-	// 			customFields.table = require('broccoli-field-table').get({'php': nodePhpBinOptions});
+		// フィールドを拡張
 
-	// 			// 呼び出し元アプリが拡張するフィールド
-	// 			for( var idx in px2ce.options.customFields ){
-	// 				customFields[idx] = px2ce.options.customFields[idx];
-	// 			}
+		// px2ce が拡張するフィールド
+		// $customFields['table'] = '........'; // TODO: 未実装
 
-	// 			// プロジェクトが拡張するフィールド
-	// 			var confCustomFields = {};
-	// 			try {
-	// 				confCustomFields = px2conf.plugins.px2dt.guieditor.custom_fields;
-	// 				for( var fieldName in confCustomFields ){
-	// 					try {
-	// 						if( confCustomFields[fieldName].backend.require ){
-	// 							var path_backend_field = require('path').resolve(px2ce.entryScript, '..', confCustomFields[fieldName].backend.require);
-	// 							customFields[fieldName] = require( path_backend_field );
-	// 						}else{
-	// 							console.error( 'FAILED to load custom field: ' + fieldName + ' (backend);' );
-	// 							console.error( 'unknown type' );
-	// 						}
-	// 					} catch (e) {
-	// 						console.error( 'FAILED to load custom field: ' + fieldName + ' (backend);' );
-	// 						console.error(e);
-	// 					}
-	// 				}
-	// 			} catch (e) {
-	// 			}
+		// 呼び出し元アプリが拡張するフィールド
+		foreach( $this->options['customFields'] as $idx=>$customField ){
+			$customFields[$idx] = $this->options['customFields'][$idx];
+		}
 
-	// 			// var_dump(customFields);
+		// プロジェクトが拡張するフィールド
+		$confCustomFields = @$px2conf->plugins->px2dt->guieditor->custom_fields;
+		foreach( $confCustomFields as $fieldName=>$field ){
+			if( $confCustomFields[$fieldName]->backend->require ){
+				// TODO: カスタムフィールドの読み込み、この処理であってる？
+				$path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields[$fieldName]->backend->require);
+				$customFields[$fieldName] = require_once( $path_backend_field );
+			}
+		}
 
-	// 			rlv();
-	// 		}); })
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
-	// 			// モジュールテンプレートを収集
-	// 			// (指定モジュールをロード)
-	// 			if( _$this->target_mode == 'theme_layout' ){
-	// 				// テーマ編集ではスキップ
-	// 				rlv();
-	// 				return;
-	// 			}
-	// 			for( var idx in px2conf.plugins.px2dt.paths_module_template ){
-	// 				pathsModuleTemplate[idx] = require('path').resolve( px2ce.entryScript, '..', px2conf.plugins.px2dt.paths_module_template[idx] )+'/';
-	// 			}
-	// 			rlv();
-	// 		}); })
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
-	// 			// モジュールテンプレートを収集
-	// 			// (モジュールフォルダからロード)
-	// 			var pathModuleDir = px2conf.plugins.px2dt.path_module_templates_dir;
-	// 			if( _$this->target_mode == 'theme_layout' ){
-	// 				// テーマ編集では `broccoli_module_packages` をロードする。
-	// 				pathModuleDir = $this->documentRoot+_this.theme_id+'/broccoli_module_packages/';
-	// 			}
-	// 			if( typeof(pathModuleDir) != typeof('') ){
-	// 				// モジュールフォルダの指定がない場合
-	// 				rlv();
-	// 				return;
-	// 			}
-	// 			pathModuleDir = require('path').resolve( px2ce.entryScript, '..', pathModuleDir )+'/';
-	// 			if( !utils79.is_dir(pathModuleDir) ){
-	// 				// 指定されたモジュールフォルダが存在しない場合
-	// 				rlv();
-	// 				return;
-	// 			}
+		// var_dump($customFields);
 
-	// 			// info.json を読み込み
-	// 			var infoJson = {};
-	// 			if( is_file(pathModuleDir+'/info.json') ){
-	// 				try {
-	// 					var srcInfoJson = require('fs').readFileSync(pathModuleDir+'/info.json');
-	// 					infoJson = JSON.parse(srcInfoJson);
-	// 				} catch (e) {
-	// 					console.error('Failed to info.json; '+pathModuleDir+'/info.json');
-	// 				}
-	// 			}
-	// 			if( typeof(infoJson.sort) == typeof([]) ){
-	// 				// 並び順の指定がある場合
-	// 				for( var idx in infoJson.sort ){
-	// 					if( pathsModuleTemplate[infoJson.sort[idx]] ){
-	// 						// 既に登録済みのパッケージIDは上書きしない
-	// 						// (= paths_module_template の設定を優先)
-	// 						continue;
-	// 					}
-	// 					if( utils79.is_dir(pathModuleDir+infoJson.sort[idx]) ){
-	// 						pathsModuleTemplate[infoJson.sort[idx]] = pathModuleDir+infoJson.sort[idx];
-	// 					}
-	// 				}
-	// 			}
+		// モジュールテンプレートを収集
+		// (指定モジュールをロード)
+		if( $this->target_mode == 'theme_layout' ){
+			// テーマ編集ではスキップ
+		}else{
+			foreach( @$px2conf->plugins->px2dt->paths_module_template as $idx=>$path_module_template ){
+				$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( dirname($this->entryScript).'/'.$px2conf->plugins->px2dt->paths_module_template[$idx].'/' );
+			}
+		}
 
-	// 			// モジュールディレクトリ中のパッケージをスキャンして一覧に追加
-	// 			var fileList = require('fs').readdirSync(pathModuleDir);
-	// 			fileList.sort(); // sort
-	// 			for( var idx in fileList ){
-	// 				if( pathsModuleTemplate[fileList[idx]] ){
-	// 					// 既に登録済みのパッケージIDは上書きしない
-	// 					// (= paths_module_template の設定を優先)
-	// 					continue;
-	// 				}
-	// 				if( utils79.is_dir(pathModuleDir+fileList[idx]) ){
-	// 					pathsModuleTemplate[fileList[idx]] = pathModuleDir+fileList[idx];
-	// 				}
-	// 			}
+		// モジュールテンプレートを収集
+		// (モジュールフォルダからロード)
+		$pathModuleDir = @$px2conf->plugins->px2dt->path_module_templates_dir;
+		if( $this->target_mode == 'theme_layout' ){
+			// テーマ編集では `broccoli_module_packages` をロードする。
+			$pathModuleDir = $this->documentRoot.$this->theme_id.'/broccoli_module_packages/';
+		}
+		if( !is_string($pathModuleDir) ){
+			// モジュールフォルダの指定がない場合
+		}else{
+			$pathModuleDir = $this->fs()->get_realpath( dirname($this->entryScript).'/'.$pathModuleDir.'/' );
+			if( !is_dir($pathModuleDir) ){
+				// 指定されたモジュールフォルダが存在しない場合
+			}else{
+				// info.json を読み込み
+				$infoJson = array();
+				if( is_file($pathModuleDir.'/info.json') ){
+					$srcInfoJson = file_get_contents($pathModuleDir.'/info.json');
+					$infoJson = json_decode($srcInfoJson);
+				}
+				if( is_array(@$infoJson->sort) ){
+					// 並び順の指定がある場合
+					foreach( $infoJson->sort as $idx=>$row ){
+						if( @$pathsModuleTemplate[$infoJson->sort[$idx]] ){
+							// 既に登録済みのパッケージIDは上書きしない
+							// (= paths_module_template の設定を優先)
+							continue;
+						}
+						if( is_dir($pathModuleDir.$infoJson->sort[$idx]) ){
+							$pathsModuleTemplate[$infoJson->sort[$idx]] = $pathModuleDir.$infoJson->sort[$idx];
+						}
+					}
+				}
 
-	// 			rlv();
-	// 		}); })
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
-	// 			if( _$this->target_mode == 'theme_layout' ){
-	// 				bindTemplate = function(htmls, callback){
-	// 					var fin = '';
-	// 					for( var bowlId in htmls ){
-	// 						if( bowlId == 'main' ){
-	// 							fin += htmls['main'];
-	// 						}else{
-	// 							fin += "\n";
-	// 							fin += "\n";
-	// 							fin += '<'.'?php ob_start(); ?'.'>'+"\n";
-	// 							fin += (utils79.toStr(htmls[bowlId]).length ? htmls[bowlId]+"\n" : '');
-	// 							fin += '<'.'?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?'.'>'+"\n";
-	// 							fin += "\n";
-	// 						}
-	// 					}
-	// 					var template = '<%- body %>';
-	// 					var pathThemeLayout = $this->documentRoot+_this.theme_id+'/broccoli_module_packages/_layout.html';
-	// 					if(is_file(pathThemeLayout)){
-	// 						template = fs.readFileSync( pathThemeLayout ).toString();
-	// 					}else{
-	// 						template = fs.readFileSync( __dirname+'/tpls/broccoli_theme_layout.html' ).toString();
-	// 					}
-	// 					fin = ejs.render(template, {'body': fin}, {delimiter: '%'});
+				// モジュールディレクトリ中のパッケージをスキャンして一覧に追加
+				$fileList = $this->fs()->ls($pathModuleDir);
+				sort($fileList); // sort
+				foreach( $fileList as $idx=>$row){
+					if( @$pathsModuleTemplate[$fileList[$idx]] ){
+						// 既に登録済みのパッケージIDは上書きしない
+						// (= paths_module_template の設定を優先)
+						continue;
+					}
+					if( is_dir($pathModuleDir.$fileList[$idx]) ){
+						$pathsModuleTemplate[$fileList[$idx]] = $pathModuleDir.$fileList[$idx];
+					}
+				}
+			}
+		}
 
-	// 					var baseDir = $this->documentRoot+_this.theme_id+'/theme_files/';
-	// 					fsx.ensureDirSync( baseDir );
-	// 					_this.getModuleCssJsSrc(_this.theme_id, function(CssJs){
-	// 						fs.writeFileSync(baseDir+'modules.css', CssJs.css);
-	// 						fs.writeFileSync(baseDir+'modules.js', CssJs.js);
-	// 						callback(fin);
-	// 					});
+		if( $this->target_mode == 'theme_layout' ){
+			$bindTemplate = function($htmls){
+				$fin = '';
+				foreach( $htmls as $bowlId=>$html ){
+					if( $bowlId == 'main' ){
+						$fin .= $htmls['main'];
+					}else{
+						$fin .= "\n";
+						$fin .= "\n";
+						$fin .= '<'.'?php ob_start(); ?'.'>'."\n";
+						$fin .= (strlen($htmls[$bowlId]) ? $htmls[$bowlId]."\n" : '');
+						$fin .= '<'.'?php $px->bowl()->send( ob_get_clean(), '.json_encode($bowlId).' ); ?'.'>'."\n";
+						$fin .= "\n";
+					}
+				}
+				$template = '<'.'%- body %'.'>';
+				$pathThemeLayout = $this->documentRoot.$this->theme_id.'/broccoli_module_packages/_layout.html';
+				if(is_file($pathThemeLayout)){
+					$template = file_get_contents( $pathThemeLayout );
+				}else{
+					$template = file_get_contents( __DIR__.'/tpls/broccoli_theme_layout.html' );
+				}
+				// TODO: PHP では ejs は使えない
+				// $fin = ejs.render(template, {'body': fin}, {delimiter: '%'});
 
-	// 					return;
-	// 				}
-	// 			}else{
-	// 				bindTemplate = function(htmls, callback){
-	// 					var fin = '';
-	// 					for( var bowlId in htmls ){
-	// 						if( bowlId == 'main' ){
-	// 							fin += htmls['main'];
-	// 						}else{
-	// 							fin += "\n";
-	// 							fin += "\n";
-	// 							fin += '<'.'?php ob_start(); ?'.'>'+"\n";
-	// 							fin += (utils79.toStr(htmls[bowlId]).length ? htmls[bowlId]+"\n" : '');
-	// 							fin += '<'.'?php $px->bowl()->send( ob_get_clean(), '+JSON.stringify(bowlId)+' ); ?'.'>'+"\n";
-	// 							fin += "\n";
-	// 						}
-	// 					}
-	// 					callback(fin);
-	// 					return;
-	// 				}
-	// 			}
-	// 			rlv();
-	// 		}); })
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
+				$baseDir = $this->documentRoot.$this->theme_id.'/theme_files/';
+				$this->fs()->mkdir_r( $baseDir );
+				$CssJs = $this->getModuleCssJsSrc($this->theme_id);
 
-	// 			broccoliInitializeOptions = {
-	// 				'appMode': px2ce.get_app_mode() ,
-	// 				'paths_module_template': pathsModuleTemplate ,
-	// 				'documentRoot': documentRoot,// realpath
-	// 				'pathHtml': require('path').resolve(_this.contRoot, './'+page_content),
-	// 				'pathResourceDir': _this.pathResourceDir,
-	// 				'realpathDataDir':  $this->realpathDataDir,
-	// 				'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-	// 				'customFields': customFields ,
-	// 				'bindTemplate': bindTemplate,
-	// 				'log': function(msg){
-	// 					// エラー発生時にコールされます。
-	// 					px2ce.log(msg);
-	// 				}
-	// 			}
-	// 			rlv();
-	// 			return;
-	// 		}); })
-	// 		.then(function(){
-	// 			callback( broccoliInitializeOptions );
-	// 			return;
-	// 		})
-	// 	;
+				$this->fs()->save_file($baseDir.'modules.css', $CssJs['css']);
+				$this->fs()->save_file($baseDir.'modules.js', $CssJs['js']);
+				return $fin;
+			};
+		}else{
+			$bindTemplate = function($htmls){
+				$fin = '';
+				foreach( $htmls as $bowlId=>$html ){
+					if( $bowlId == 'main' ){
+						$fin .= $htmls['main'];
+					}else{
+						$fin .= "\n";
+						$fin .= "\n";
+						$fin .= '<'.'?php ob_start(); ?'.'>'."\n";
+						$fin .= (strlen($htmls[$bowlId]) ? $htmls[$bowlId]."\n" : '');
+						$fin .= '<'.'?php $px->bowl()->send( ob_get_clean(), '.json_encode($bowlId).' ); ?'.'>'."\n";
+						$fin .= "\n";
+					}
+				}
+				return $fin;
+			};
+		}
 
-	// 	return;
-	// }
+		$broccoliInitializeOptions = array(
+			'appMode' => $this->get_app_mode() ,
+			'paths_module_template' => $pathsModuleTemplate ,
+			'documentRoot' => $documentRoot,// realpath
+			'pathHtml' => $this->fs()->get_real_path($this->contRoot.'/'.$page_content),
+			'pathResourceDir' => $this->pathResourceDir,
+			'realpathDataDir' =>  $this->realpathDataDir,
+			'contents_bowl_name_by' => @$px2conf->plugins->px2dt->contents_bowl_name_by,
+			'customFields' => $customFields ,
+			'bindTemplate' => $bindTemplate,
+			'log' => function($msg){
+				// エラー発生時にコールされます。
+				// px2ce.log(msg);
+			}
+		);
 
-	// /**
-	//  * create broccoli-html-editor object
-	//  */
-	// this.createBroccoli = function(callback){
-	// 	callback = callback||function(){};
-	// 	var broccoliInitializeOptions = {};
-	// 	var Broccoli = require('broccoli-html-editor');
-	// 	var broccoli = new Broccoli();
+		return $broccoliInitializeOptions;
+	}
 
-	// 	new Promise(function(rlv){rlv();})
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
-	// 			_this.createBroccoliInitOptions(function(opts){
-	// 				broccoliInitializeOptions = opts;
-	// 				rlv();
-	// 			});
-	// 			return;
-	// 		}); })
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
-
-	// 			broccoli.init(
-	// 				broccoliInitializeOptions,
-	// 				function(){
-	// 					rlv();
-	// 				}
-	// 			);
-	// 			return;
-	// 		}); })
-	// 		.then(function(){
-	// 			callback(broccoli);
-	// 		})
-	// 	;
-	// 	return;
-	// }
+	/**
+	 * create broccoli-html-editor object
+	 */
+	public function createBroccoli(){
+		$broccoliInitializeOptions = $this->createBroccoliInitOptions();
+		$broccoli = new \broccoliHtmlEditor\broccoliHtmlEditor();
+		$broccoli->init($broccoliInitializeOptions);
+		return $broccoli;
+	}
 
 	/**
 	 * 汎用API
