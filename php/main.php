@@ -232,44 +232,47 @@ class main{
 		return $this->contRoot;
 	}
 
-	// /**
-	//  * ブラウザでURLを開く
-	//  */
-	// this.openUrlInBrowser = function( url, callback ){
-	// 	var_dump('open URL: ' + url);
-	// 	// var_dump(px2ce.get_app_mode());
-	// 	if( this.get_app_mode() != 'desktop' ){
-	// 		callback(false);
-	// 		return;
-	// 	}
-	// 	var desktopUtils = require('desktop-utils');
-	// 	desktopUtils.open( url );
-	// 	callback(true);
-	// 	return;
-	// }
+	/**
+	 * ブラウザでURLを開く
+	 */
+	public function openUrlInBrowser( $url ){
+		if( $this->get_app_mode() != 'desktop' ){
+			return false;
+		}
+		if( realpath('/') == '/' ){
+			// Linux or macOS
+			exec('open '.json_encode($url));
+		}else{
+			// Windows
+			exec('explorer '.json_encode($url));
+		}
+		return true;
+	}
 
-	// /**
-	//  * リソースフォルダを開く
-	//  */
-	// this.openResourceDir = function( path, callback ){
-	// 	var_dump('open resource dir: ' + path + ' of ' + $this->page_path + ' ('+_$this->target_mode+')');
-	// 	// var_dump(px2ce.get_app_mode());
-	// 	if( _this.get_app_mode() != 'desktop' ){
-	// 		callback(false);
-	// 		return;
-	// 	}
-	// 	var desktopUtils = require('desktop-utils');
-	// 	if( !utils79.is_dir(_this.realpathFiles) ){
-	// 		fsx.mkdirSync(_this.realpathFiles);
-	// 	}
-	// 	var realpath_target = require('path').resolve(_this.realpathFiles, './'+path);
-	// 	if( !utils79.is_dir(utils79.dirname(realpath_target)) ){
-	// 		fsx.mkdirSync(utils79.dirname(realpath_target));
-	// 	}
-	// 	desktopUtils.open( realpath_target );
-	// 	callback(true);
-	// 	return;
-	// }
+	/**
+	 * リソースフォルダを開く
+	 */
+	public function openResourceDir( $path ){
+		if( $this->get_app_mode() != 'desktop' ){
+			return false;
+		}
+		if( !is_dir($this->realpathFiles) ){
+			$this->fs()->mkdir($this->realpathFiles);
+		}
+		$realpath_target = $this->fs()->get_realpath($this->realpathFiles.'/'.$path);
+		if( !is_dir(dirname($realpath_target)) ){
+			$this->fs()->mkdir(dirname($realpath_target));
+		}
+
+		if( realpath('/') == '/' ){
+			// Linux or macOS
+			exec('open '.json_encode($realpath_target));
+		}else{
+			// Windows
+			exec('explorer '.json_encode($realpath_target));
+		}
+		return true;
+	}
 
 	/**
 	 * プロジェクト情報をまとめて取得する

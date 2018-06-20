@@ -113,17 +113,15 @@ class gpi{
 			// 	});
 			// 	break;
 
-			// case "openUrlInBrowser":
-			// 	$this->px2ce->openUrlInBrowser($data.url, function(res){
-			// 		callback(res);
-			// 	});
-			// 	break;
+			case "openUrlInBrowser":
+				$res = $this->px2ce->openUrlInBrowser($data['url']);
+				return $res;
+				break;
 
-			// case "openResourceDir":
-			// 	$this->px2ce->openResourceDir('/', function(res){
-			// 		callback(res);
-			// 	});
-			// 	break;
+			case "openResourceDir":
+				$res = $this->px2ce->openResourceDir('/');
+				return $res;
+				break;
 
 			// case "loadCustomFieldsClientSideLibs":
 			// 	// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
