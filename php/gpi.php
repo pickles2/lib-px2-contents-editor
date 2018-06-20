@@ -48,13 +48,12 @@ class gpi{
 				return $csv;
 				break;
 
-			// case "initContentFiles":
-			// 	// コンテンツファイルを初期化する
-			// 	// console.log(data);
-			// 	$this->px2ce->initContentFiles($data.editor_mode, function(result){
-			// 		callback(result);
-			// 	});
-			// 	break;
+			case "initContentFiles":
+				// コンテンツファイルを初期化する
+				// var_dump($data);
+				$result = $this->px2ce->init_content_files($data['editor_mode']);
+				return $result;
+				break;
 
 			case "getProjectConf":
 				// プロジェクトの設定を取得する

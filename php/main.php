@@ -328,23 +328,18 @@ class main{
 	// 	});
 	// } // getModuleCssJsSrc
 
-	// /**
-	//  * コンテンツファイルを初期化する
-	//  */
-	// this.initContentFiles = function(editorMode, callback){
-	// 	$this->px2query(
-	// 		$this->page_path+'?PX=px2dthelper.init_content&editor_mode='+editorMode, {
-	// 			"output": "json",
-	// 			"complete": function(data, code){
-	// 				// var_dump(data, code);
-	// 				var rtn = JSON.parse(data);
-	// 				callback(rtn);
-	// 				return;
-	// 			}
-	// 		}
-	// 	);
-	// 	return;
-	// }
+	/**
+	 * コンテンツファイルを初期化する
+	 */
+	public function init_content_files($editorMode){
+		$data = $this->px2query(
+			$this->page_path.'?PX=px2dthelper.init_content&editor_mode='.urlencode($editorMode),
+			array(
+				"output" => "json"
+			)
+		);
+		return $data;
+	}
 
 	/**
 	 * ページの編集方法を取得する
