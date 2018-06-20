@@ -22,7 +22,7 @@ $(window).load(function(){
 				'page_path': params.page_path ,
 				'elmCanvas': $canvas.get(0),
 				'preview':{
-					'origin': conf.px2server.origin
+					'origin': 'http://px2ce-preview.localhost'
 				},
 				'customFields':{
 					'custom1': function(broccoli){

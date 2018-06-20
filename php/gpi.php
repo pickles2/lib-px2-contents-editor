@@ -75,13 +75,12 @@ class gpi{
 				return $contentsCodes;
 				break;
 
-			// case "saveContentsSrc":
-			// 	// コンテンツのソースを保存する
-			// 	var defaultEditor = new (require('./editor/default.js'))(px2ce);
-			// 	defaultEditor.saveContentsSrc($data.codes, function(result){
-			// 		callback(result);
-			// 	});
-			// 	break;
+			case "saveContentsSrc":
+				// コンテンツのソースを保存する
+				$defaultEditor = new editor_default($this->px2ce);
+				$result = $defaultEditor->saveContentsSrc($data['codes']);
+				return $result;
+				break;
 
 			// case "broccoliBridge":
 			// 	var broccoliBridge = require('./editor/broccoli.js');

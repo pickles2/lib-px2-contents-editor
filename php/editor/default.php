@@ -65,93 +65,58 @@ class editor_default{
 		return $rtn;
 	}
 
-	// /**
-	//  * コンテンツのソースを保存する
-	//  */
-	// this.saveContentsSrc = function(codes, callback){
-	// 	callback = callback||function(){};
-	// 	// var_dump(codes);
+	/**
+	 * コンテンツのソースを保存する
+	 */
+	public function saveContentsSrc($codes){
 
-	// 	var result = {
-	// 		'result': true,
-	// 		'message': 'OK'
-	// 	};
+		$result = array(
+			'result' => true,
+			'message' => 'OK'
+		);
 
-	// 	var _targetPaths;
+		$_targetPaths = $this->generateTargetFilePath();
+		if( $_targetPaths === false ){
+			return false;
+		}
 
-	// 	new Promise(function(rlv){rlv();})
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
-	// 			generateTargetFilePath(function(paths){
-	// 				if( paths === false ){
-	// 					rjt('Page not Exists.');
-	// 					return;
-	// 				}
-	// 				_targetPaths = paths;
-	// 				rlv();
-	// 			});
-	// 		}); })
-	// 		.then(function(){ return new Promise(function(rlv, rjt){
+		$_contentsPath = $_targetPaths['contentsPath'];
+		$realpath_resource_dir = $_targetPaths['realpathFiles'];
+		$strLoaderCSS = $_targetPaths['strLoaderCSS'];
+		$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-	// 			var _contentsPath = _targetPaths.contentsPath;
-	// 			var realpath_resource_dir = _targetPaths.realpathFiles;
-	// 			var strLoaderCSS = _targetPaths.strLoaderCSS;
-	// 			var strLoaderJS = _targetPaths.strLoaderJS;
+		if( !strlen($codes['css']) ){
+			$strLoaderCSS = '';
+		}
+		if( !strlen($codes['js']) ){
+			$strLoaderJS = '';
+		}
 
-	// 			try {
-	// 				if( !codes.css.length ){
-	// 					strLoaderCSS = '';
-	// 				}
-	// 				if( !codes.js.length ){
-	// 					strLoaderJS = '';
-	// 				}
+		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+			$codes['html'] = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $codes['html'] );
+			$this->px2ce->fs()->save_file($_contentsPath, $codes['html']);
+		}else{
+			$this->px2ce->fs()->save_file($_contentsPath, $strLoaderCSS . $strLoaderJS . $codes['html']);
+		}
 
-	// 				if( $this->px2ce->target_mode == 'theme_layout' ){
-	// 					codes.html = codes.html.replace( /(\s*\<\/head\>)/, strLoaderCSS+strLoaderJS+'$1' );
-	// 					fs.writeFileSync(_contentsPath, codes.html);
-	// 				}else{
-	// 					fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
-	// 				}
+		// CSSファイルを保存
+		$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
+		if( !strlen($codes['css']) ){
+			unlink( $realpath_resource_dir . '/style.css.scss' );
+		}else{
+			$this->px2ce->fs()->save_file( $realpath_resource_dir . '/style.css.scss', $codes['css'] );
+		}
 
-	// 			} catch (e) {
-	// 			}
+		// JSファイルを保存
+		$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
+		if( !strlen($codes['js']) ){
+			unlink( $realpath_resource_dir . '/script.js' );
+		}else{
+			$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
+		}
 
-	// 			try {
-	// 				fsx.mkdirpSync( realpath_resource_dir );
-	// 				if( !codes.css.length ){
-	// 					fs.unlinkSync( realpath_resource_dir + '/style.css.scss' );
-	// 				}else{
-	// 					fs.writeFileSync( realpath_resource_dir + '/style.css.scss', codes.css );
-	// 				}
-	// 			} catch (e) {
-	// 			}
-
-	// 			try {
-	// 				fsx.mkdirpSync( realpath_resource_dir );
-	// 				if( !codes.js.length ){
-	// 					fs.unlinkSync( realpath_resource_dir + '/script.js' );
-	// 				}else{
-	// 					fs.writeFileSync( realpath_resource_dir + '/script.js', codes.js );
-	// 				}
-	// 			} catch (e) {
-	// 			}
-
-	// 			rlv();
-
-	// 		}); })
-	// 		.then(function(){
-	// 			callback(result);
-	// 		})
-	// 		.catch(function (err) {
-	// 			result = {
-	// 				'result': true,
-	// 				'message': (typeof(err) == typeof('') ? err : err.message)
-	// 			};
-	// 			callback(result);
-	// 		})
-	// 	;
-
-	// 	return;
-	// }
+		return $result;
+	}
 
 	/**
 	 * 編集対象のパス情報を生成する
