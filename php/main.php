@@ -11,6 +11,9 @@ namespace pickles2\libs\contentsEditor;
  */
 class main{
 
+	/** Filesystem Utility */
+	private $fs;
+
 	/**
 	 * 編集対象のモード
 	 * コンテンツ以外にも対応範囲を拡大
@@ -59,6 +62,12 @@ class main{
 	private $options;
 
 	/**
+	 * Constructor
+	 */
+	public function __construct(){
+	}
+
+	/**
 	 * Initialize
 	 */
 	public function init( $options ){
@@ -95,6 +104,7 @@ class main{
 			$this->php_command['php_extension_dir'] = $options['php_extension_dir'];
 		}
 
+		$this->fs = new \tomk79\filesystem();
 		$this->entryScript = $options['entryScript'];
 		$this->target_mode = (@strlen($options['target_mode']) ? $options['target_mode'] : 'page_content');
 		$this->page_path = @$options['page_path'];
@@ -135,41 +145,100 @@ class main{
 		return;
 	}
 
-	// /**
-	//  * プロジェクトの設定情報を取得する
-	//  */
-	// this.getProjectConf = function(callback){
-	// 	callback = callback || function(){};
-	// 	this.px2proj.get_config(function(val){
-	// 		callback(val);
-	// 	});
-	// 	return;
-	// }
+	/**
+	 * $fs
+	 */
+	public function fs(){
+		return $this->fs;
+	}
 
-	// /**
-	//  * アプリケーションの実行モード設定を取得する (同期)
-	//  * @return string 'web'|'desktop'
-	//  */
-	// this.getAppMode = function(){
-	// 	var rtn = this.options.appMode;
-	// 	switch(rtn){
-	// 		case 'web':
-	// 		case 'desktop':
-	// 			break;
-	// 		default:
-	// 			rtn = 'web';
-	// 			break;
-	// 	}
-	// 	return rtn;
-	// }
+	/**
+	 * $target_mode を取得
+	 */
+	public function get_target_mode(){
+		return $this->target_mode;
+	}
+
+	/**
+	 * $theme_id を取得
+	 */
+	public function get_theme_id(){
+		return $this->theme_id;
+	}
+
+	/**
+	 * $layout_id を取得
+	 */
+	public function get_layout_id(){
+		return $this->layout_id;
+	}
+
+	/**
+	 * プロジェクトの設定情報を取得する
+	 */
+	public function get_project_conf(){
+		$conf = $this->px2query(
+			'/?PX=api.get.config',
+			array(
+				"output" => "json"
+			)
+		);
+		return $conf;
+		return;
+	}
+
+	/**
+	 * アプリケーションの実行モード設定を取得する
+	 * @return string 'web'|'desktop'
+	 */
+	public function get_app_mode(){
+		$rtn = $this->options['appMode'];
+		switch($rtn){
+			case 'web':
+			case 'desktop':
+				break;
+			default:
+				$rtn = 'web';
+				break;
+		}
+		return $rtn;
+	}
+
+	/**
+	 * $realpathFiles
+	 */
+	public function get_realpath_files(){
+		return $this->realpathFiles;
+	}
+
+	/**
+	 * $documentRoot
+	 */
+	public function get_document_root(){
+		return $this->documentRoot;
+	}
+
+	/**
+	 * $page_path
+	 */
+	public function get_page_path(){
+		return $this->page_path;
+	}
+
+	/**
+	 * $contRoot
+	 */
+	public function get_cont_root(){
+		return $this->contRoot;
+	}
 
 	// /**
 	//  * ブラウザでURLを開く
 	//  */
 	// this.openUrlInBrowser = function( url, callback ){
 	// 	var_dump('open URL: ' + url);
-	// 	// var_dump(px2ce.getAppMode());
-	// 	if( this.getAppMode() != 'desktop' ){
+	// 	// var_dump(px2ce.get_app_mode());
+	// 	if( this.get_app_mode() != 'desktop' ){
 	// 		callback(false);
 	// 		return;
 	// 	}
@@ -183,9 +252,9 @@ class main{
 	//  * リソースフォルダを開く
 	//  */
 	// this.openResourceDir = function( path, callback ){
-	// 	var_dump('open resource dir: ' + path + ' of ' + $this->page_path + ' ('+_this.target_mode+')');
-	// 	// var_dump(px2ce.getAppMode());
-	// 	if( _this.getAppMode() != 'desktop' ){
+	// 	var_dump('open resource dir: ' + path + ' of ' + $this->page_path + ' ('+_$this->target_mode+')');
+	// 	// var_dump(px2ce.get_app_mode());
+	// 	if( _this.get_app_mode() != 'desktop' ){
 	// 		callback(false);
 	// 		return;
 	// 	}
@@ -277,43 +346,36 @@ class main{
 	// 	return;
 	// }
 
-	// /**
-	//  * ページの編集方法を取得する
-	//  */
-	// this.checkEditorMode = function(callback){
-	// 	if( this.target_mode == 'theme_layout' ){
-	// 		// ドキュメントルートの設定上書きがある場合
-	// 		// テーマレイアウトの編集等に利用するモード
-	// 		// var_dump([_this.documentRoot,
-	// 		// 	_this.contRoot,
-	// 		// 	_this.realpathFiles,
-	// 		// 	_this.pathResourceDir,
-	// 		// 	_this.realpathDataDir]);
+	/**
+	 * ページの編集方法を取得する
+	 */
+	public function check_editor_mode(){
+		if( $this->target_mode == 'theme_layout' ){
+			// ドキュメントルートの設定上書きがある場合
+			// テーマレイアウトの編集等に利用するモード
+			// var_dump([$this->documentRoot,
+			// 	$this->contRoot,
+			// 	$this->realpathFiles,
+			// 	$this->pathResourceDir,
+			// 	$this->realpathDataDir]);
 
-	// 		if( !utils79.is_file( _this.documentRoot + $this->page_path ) ){
-	// 			callback('.not_exists');
-	// 			return;
-	// 		}
-	// 		if( utils79.is_file( _this.realpathDataDir + 'data.json' ) ){
-	// 			callback('html.gui');
-	// 			return;
-	// 		}
-	// 		callback('html');
-	// 		return;
-	// 	}
-	// 	$this->px2query(
-	// 		$this->page_path+'?PX=px2dthelper.check_editor_mode', {
-	// 			"output": "json",
-	// 			"complete": function(data, code){
-	// 				// var_dump(data, code);
-	// 				var rtn = JSON.parse(data);
-	// 				callback(rtn);
-	// 				return;
-	// 			}
-	// 		}
-	// 	);
-	// 	return;
-	// }
+			if( !is_file( $this->documentRoot . $this->page_path ) ){
+				return '.not_exists';
+			}
+			if( is_file( $this->realpathDataDir . 'data.json' ) ){
+				return 'html.gui';
+			}
+			return 'html';
+		}
+		$data = $this->px2query(
+			$this->page_path.'?PX=px2dthelper.check_editor_mode',
+			array(
+				"output" => "json"
+			)
+		);
+		// var_dump($data);
+		return $data;
+	}
 
 	// /**
 	//  * create initialize options for broccoli-html-editor
@@ -381,7 +443,7 @@ class main{
 	// 		.then(function(){ return new Promise(function(rlv, rjt){
 	// 			// モジュールテンプレートを収集
 	// 			// (指定モジュールをロード)
-	// 			if( _this.target_mode == 'theme_layout' ){
+	// 			if( _$this->target_mode == 'theme_layout' ){
 	// 				// テーマ編集ではスキップ
 	// 				rlv();
 	// 				return;
@@ -395,9 +457,9 @@ class main{
 	// 			// モジュールテンプレートを収集
 	// 			// (モジュールフォルダからロード)
 	// 			var pathModuleDir = px2conf.plugins.px2dt.path_module_templates_dir;
-	// 			if( _this.target_mode == 'theme_layout' ){
+	// 			if( _$this->target_mode == 'theme_layout' ){
 	// 				// テーマ編集では `broccoli_module_packages` をロードする。
-	// 				pathModuleDir = _this.documentRoot+_this.theme_id+'/broccoli_module_packages/';
+	// 				pathModuleDir = $this->documentRoot+_this.theme_id+'/broccoli_module_packages/';
 	// 			}
 	// 			if( typeof(pathModuleDir) != typeof('') ){
 	// 				// モジュールフォルダの指定がない場合
@@ -413,7 +475,7 @@ class main{
 
 	// 			// info.json を読み込み
 	// 			var infoJson = {};
-	// 			if( utils79.is_file(pathModuleDir+'/info.json') ){
+	// 			if( is_file(pathModuleDir+'/info.json') ){
 	// 				try {
 	// 					var srcInfoJson = require('fs').readFileSync(pathModuleDir+'/info.json');
 	// 					infoJson = JSON.parse(srcInfoJson);
@@ -452,7 +514,7 @@ class main{
 	// 			rlv();
 	// 		}); })
 	// 		.then(function(){ return new Promise(function(rlv, rjt){
-	// 			if( _this.target_mode == 'theme_layout' ){
+	// 			if( _$this->target_mode == 'theme_layout' ){
 	// 				bindTemplate = function(htmls, callback){
 	// 					var fin = '';
 	// 					for( var bowlId in htmls ){
@@ -468,15 +530,15 @@ class main{
 	// 						}
 	// 					}
 	// 					var template = '<%- body %>';
-	// 					var pathThemeLayout = _this.documentRoot+_this.theme_id+'/broccoli_module_packages/_layout.html';
-	// 					if(utils79.is_file(pathThemeLayout)){
+	// 					var pathThemeLayout = $this->documentRoot+_this.theme_id+'/broccoli_module_packages/_layout.html';
+	// 					if(is_file(pathThemeLayout)){
 	// 						template = fs.readFileSync( pathThemeLayout ).toString();
 	// 					}else{
 	// 						template = fs.readFileSync( __dirname+'/tpls/broccoli_theme_layout.html' ).toString();
 	// 					}
 	// 					fin = ejs.render(template, {'body': fin}, {delimiter: '%'});
 
-	// 					var baseDir = _this.documentRoot+_this.theme_id+'/theme_files/';
+	// 					var baseDir = $this->documentRoot+_this.theme_id+'/theme_files/';
 	// 					fsx.ensureDirSync( baseDir );
 	// 					_this.getModuleCssJsSrc(_this.theme_id, function(CssJs){
 	// 						fs.writeFileSync(baseDir+'modules.css', CssJs.css);
@@ -510,12 +572,12 @@ class main{
 	// 		.then(function(){ return new Promise(function(rlv, rjt){
 
 	// 			broccoliInitializeOptions = {
-	// 				'appMode': px2ce.getAppMode() ,
+	// 				'appMode': px2ce.get_app_mode() ,
 	// 				'paths_module_template': pathsModuleTemplate ,
 	// 				'documentRoot': documentRoot,// realpath
 	// 				'pathHtml': require('path').resolve(_this.contRoot, './'+page_content),
 	// 				'pathResourceDir': _this.pathResourceDir,
-	// 				'realpathDataDir':  _this.realpathDataDir,
+	// 				'realpathDataDir':  $this->realpathDataDir,
 	// 				'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
 	// 				'customFields': customFields ,
 	// 				'bindTemplate': bindTemplate,
@@ -600,7 +662,7 @@ class main{
 	 *
 	 * リクエストから標準エラー出力を検出した場合、 `$px->error( $stderr )` に転送します。
 	 */
-	private function px2query($request_path, $options = null, &$return_var = null){
+	public function px2query($request_path, $options = null, &$return_var = null){
 		if(!is_string($request_path)){
 			// $this->error('Invalid argument supplied for 1st option $request_path in $px->internal_sub_request(). It required String value.');
 			return false;

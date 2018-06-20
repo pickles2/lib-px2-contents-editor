@@ -12,15 +12,15 @@ namespace pickles2\libs\contentsEditor;
 class gpi{
 
 	/**
-	 * $main
+	 * $px2ce
 	 */
-	private $main;
+	private $px2ce;
 
 	/**
 	 * Constructor
 	 */
-	public function __construct( $main ){
-		$this->main = $main;
+	public function __construct( $px2ce ){
+		$this->px2ce = $px2ce;
 	}
 
 	/**
@@ -30,53 +30,50 @@ class gpi{
 		$data = json_decode( json_encode($data), true );
 
 		switch($data['api']){
-			// case "getConfig":
-			// 	// pickles2-contents-editor の設定を取得する
-			// 	var conf = {};
-			// 	conf.appMode = px2ce.getAppMode();
-			// 	conf.target_mode = px2ce.target_mode;
-			// 	if(conf.target_mode == 'theme_layout'){
-			// 		conf.theme_id = px2ce.theme_id;
-			// 		conf.layout_id = px2ce.layout_id;
-			// 	}
-			// 	callback(conf);
-			// 	break;
+			case "getConfig":
+				// pickles2-contents-editor の設定を取得する
+				$conf = array();
+				$conf['appMode'] = $this->px2ce->get_app_mode();
+				$conf['target_mode'] = $this->px2ce->get_target_mode();
+				if($conf['target_mode'] == 'theme_layout'){
+					$conf['theme_id'] = $this->px2ce->get_theme_id();
+					$conf['layout_id'] = $this->px2ce->get_layout_id();
+				}
+				return $conf;
+				break;
 
-			// case "getLanguageCsv":
-			// 	// 言語ファイル(CSV)を取得
-			// 	var csv = require('fs').readFileSync( __dirname+'/../data/language.csv' ).toString();
-			// 	callback(csv);
-			// 	break;
+			case "getLanguageCsv":
+				// 言語ファイル(CSV)を取得
+				$csv = file_get_contents( __DIR__.'/../data/language.csv' );
+				return $csv;
+				break;
 
 			// case "initContentFiles":
 			// 	// コンテンツファイルを初期化する
 			// 	// console.log(data);
-			// 	px2ce.initContentFiles($data.editor_mode, function(result){
+			// 	$this->px2ce->initContentFiles($data.editor_mode, function(result){
 			// 		callback(result);
 			// 	});
 			// 	break;
 
-			// case "getProjectConf":
-			// 	// プロジェクトの設定を取得する
-			// 	px2ce.getProjectConf(function(conf){
-			// 		callback(conf);
-			// 	});
-			// 	break;
+			case "getProjectConf":
+				// プロジェクトの設定を取得する
+				$conf = $this->px2ce->get_project_conf();
+				return $conf;
+				break;
 
-			// case "checkEditorMode":
-			// 	// ページの編集方法を取得する
-			// 	px2ce.checkEditorMode(function(editorMode){
-			// 		callback(editorMode);
-			// 	});
-			// 	break;
+			case "checkEditorMode":
+				// ページの編集方法を取得する
+				$editorMode = $this->px2ce->check_editor_mode();
+				return $editorMode;
+				break;
 
-			// case "getContentsSrc":
-			// 	// コンテンツのソースを取得する
-			// 	var defaultEditor = new (require('./editor/default.js'))(px2ce);
-			// 	defaultEditor.getContentsSrc(function(contentsCodes){
-			// 		callback(contentsCodes);
-			// 	});
-			// 	break;
+			case "getContentsSrc":
+				// コンテンツのソースを取得する
+				$defaultEditor = new editor_default($this->px2ce);
+				$contentsCodes = $defaultEditor->getContentsSrc();
+				return $contentsCodes;
+				break;
 
 			// case "saveContentsSrc":
 			// 	// コンテンツのソースを保存する
@@ -95,7 +92,7 @@ class gpi{
 
 			// case "getModuleCssJsSrc":
 			// 	// モジュールCSS,JSソースを取得する
-			// 	px2ce.getModuleCssJsSrc($data.theme_id, function(results){
+			// 	$this->px2ce->getModuleCssJsSrc($data.theme_id, function(results){
 			// 		callback(results);
 			// 	});
 			// 	break;
@@ -104,7 +101,7 @@ class gpi{
 			// 	// レイアウトからページの一覧を取得する
 			// 	var rtn = [];
 			// 	var layout_id = $data.layout_id || 'default';
-			// 	px2ce.px2proj.get_sitemap(function(sitemap){
+			// 	$this->px2ce->px2proj.get_sitemap(function(sitemap){
 			// 		for(var idx in sitemap){
 			// 			try {
 			// 				var page_layout_id = sitemap[idx].layout || 'default';
@@ -119,33 +116,33 @@ class gpi{
 			// 	break;
 
 			// case "openUrlInBrowser":
-			// 	px2ce.openUrlInBrowser($data.url, function(res){
+			// 	$this->px2ce->openUrlInBrowser($data.url, function(res){
 			// 		callback(res);
 			// 	});
 			// 	break;
 
 			// case "openResourceDir":
-			// 	px2ce.openResourceDir('/', function(res){
+			// 	$this->px2ce->openResourceDir('/', function(res){
 			// 		callback(res);
 			// 	});
 			// 	break;
 
 			// case "loadCustomFieldsClientSideLibs":
 			// 	// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
-			// 	if(px2ce.options.customFieldsIncludePath && px2ce.options.customFieldsIncludePath.length){
-			// 		var confCustomFields = px2ce.options.customFieldsIncludePath;
+			// 	if($this->px2ce->options.customFieldsIncludePath && $this->px2ce->options.customFieldsIncludePath.length){
+			// 		var confCustomFields = $this->px2ce->options.customFieldsIncludePath;
 			// 		callback(confCustomFields);
 			// 		break;
 			// 	}
-			// 	px2ce.getProjectConf(function(conf){
+			// 	$this->px2ce->getProjectConf(function(conf){
 			// 		var codes = [];
 			// 		var code = '';
 			// 		try {
 			// 			var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
 			// 			for(var fieldName in confCustomFields){
 			// 				if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
-			// 					var pathJs = require('path').resolve(px2ce.entryScript, '..', confCustomFields[fieldName].frontend.file);
-			// 					var binJs = require('fs').readFileSync( pathJs ).toString();
+			// 					var pathJs = require('path').resolve($this->px2ce->entryScript, '..', confCustomFields[fieldName].frontend.file);
+			// 					var binJs = file_get_contents( pathJs ).toString();
 			// 					code += '/**'+"\n";
 			// 					code += ' * '+fieldName+"\n";
 			// 					code += ' */'+"\n";

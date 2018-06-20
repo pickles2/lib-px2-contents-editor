@@ -1,6 +1,5 @@
 <?php
 require_once(__DIR__.'/../../../vendor/autoload.php');
-ob_start();var_dump(__LINE__);error_log(ob_get_clean(),3,__DIR__.'/__dump.txt');
 $px2ce = new pickles2\libs\contentsEditor\main();
 $px2ce->init(array(
 	'target_mode' => (strlen(@$_REQUEST['target_mode']) ? $_REQUEST['target_mode'] : 'page_content'),
