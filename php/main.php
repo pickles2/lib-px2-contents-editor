@@ -416,10 +416,10 @@ class main{
 		// プロジェクトが拡張するフィールド
 		$confCustomFields = @$px2conf->plugins->px2dt->guieditor->custom_fields;
 		foreach( $confCustomFields as $fieldName=>$field ){
-			if( $confCustomFields[$fieldName]->backend->require ){
+			if( $confCustomFields->{$fieldName}->backend->require ){
 				// TODO: カスタムフィールドの読み込み、この処理であってる？
-				$path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields[$fieldName]->backend->require);
-				$customFields[$fieldName] = require_once( $path_backend_field );
+				// $path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields->{$fieldName}->backend->require);
+				// $customFields[$fieldName] = require_once( $path_backend_field );
 			}
 		}
 
@@ -431,7 +431,7 @@ class main{
 			// テーマ編集ではスキップ
 		}else{
 			foreach( @$px2conf->plugins->px2dt->paths_module_template as $idx=>$path_module_template ){
-				$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( dirname($this->entryScript).'/'.$px2conf->plugins->px2dt->paths_module_template[$idx].'/' );
+				$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( dirname($this->entryScript).'/'.$path_module_template.'/' );
 			}
 		}
 
@@ -508,7 +508,8 @@ class main{
 					$template = file_get_contents( __DIR__.'/tpls/broccoli_theme_layout.html' );
 				}
 				// TODO: PHP では ejs は使えない
-				// $fin = ejs.render(template, {'body': fin}, {delimiter: '%'});
+				// $fin = $ejs.render($template, {'body': $fin}, {'delimiter': '%'});
+				$fin = str_replace('<'.'%- body %'.'>', $fin, $template);
 
 				$baseDir = $this->documentRoot.$this->theme_id.'/theme_files/';
 				$this->fs()->mkdir_r( $baseDir );
@@ -541,7 +542,7 @@ class main{
 			'appMode' => $this->get_app_mode() ,
 			'paths_module_template' => $pathsModuleTemplate ,
 			'documentRoot' => $documentRoot,// realpath
-			'pathHtml' => $this->fs()->get_real_path($this->contRoot.'/'.$page_content),
+			'pathHtml' => $this->fs()->get_realpath($this->contRoot.'/'.$page_content),
 			'pathResourceDir' => $this->pathResourceDir,
 			'realpathDataDir' =>  $this->realpathDataDir,
 			'contents_bowl_name_by' => @$px2conf->plugins->px2dt->contents_bowl_name_by,
