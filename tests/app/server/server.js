@@ -40,7 +40,6 @@ px2proj.get_config(function(px2conf){
 		if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
 			var pathJs = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.file);
 			app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathJs, '..') ) );
-			var binJs = '<script src="file://'+pathJs+'"></script>';
 			customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+utils79.basename(pathJs) );
 		}
 	}

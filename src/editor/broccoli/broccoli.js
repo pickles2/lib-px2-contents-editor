@@ -21,7 +21,7 @@ module.exports = function(px2ce){
 		$elmInstanceTreeView,
 		$elmInstancePathView;
 
-	var show_instanceTreeView = true;
+	var show_instanceTreeView = false;
 
 	function getCanvasPageUrl(){
 		if( px2ce.target_mode == 'theme_layout' ){
@@ -43,6 +43,7 @@ module.exports = function(px2ce){
 			var pathname = px2conf.path_controot + page_path;
 			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
 			return px2ce.options.preview.origin + pathname;
 		}
 
@@ -261,6 +262,13 @@ module.exports = function(px2ce){
 		// });
 		callback(true);
 		return;
+	}
+
+	/**
+	 * broccoli client オブジェクトを取得する
+	 */
+	_this.getBroccoliClient = function(){
+		return broccoli;
 	}
 
 	/**

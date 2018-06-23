@@ -22369,7 +22369,7 @@ module.exports = function(px2ce){
 		$elmInstanceTreeView,
 		$elmInstancePathView;
 
-	var show_instanceTreeView = true;
+	var show_instanceTreeView = false;
 
 	function getCanvasPageUrl(){
 		if( px2ce.target_mode == 'theme_layout' ){
@@ -22391,6 +22391,7 @@ module.exports = function(px2ce){
 			var pathname = px2conf.path_controot + page_path;
 			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
 			return px2ce.options.preview.origin + pathname;
 		}
 
@@ -22612,6 +22613,13 @@ module.exports = function(px2ce){
 	}
 
 	/**
+	 * broccoli client オブジェクトを取得する
+	 */
+	_this.getBroccoliClient = function(){
+		return broccoli;
+	}
+
+	/**
 	 * window.resize イベントハンドラ
 	 */
 	_this.redraw = function( callback ){
@@ -22712,6 +22720,7 @@ module.exports = function(px2ce){
 			var pathname = px2conf.path_controot + page_path;
 			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
 			return px2ce.options.preview.origin + pathname;
 		}
 		var pathname = px2conf.path_controot + px2ce.page_path;
@@ -23622,6 +23631,13 @@ module.exports = function(px2ce){
 				);
 			});
 			return;
+		}
+
+		/**
+		 * エディタオブジェクトを取得する
+		 */
+		this.getEditor = function(){
+			return editor;
 		}
 
 		/**

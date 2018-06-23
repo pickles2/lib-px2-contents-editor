@@ -170,7 +170,14 @@ module.exports = function(){
 			return;
 		}
 		var desktopUtils = require('desktop-utils');
-		desktopUtils.open( require('path').resolve(_this.realpathFiles, './'+path) );
+		if( !utils79.is_dir(_this.realpathFiles) ){
+			fsx.mkdirSync(_this.realpathFiles);
+		}
+		var realpath_target = require('path').resolve(_this.realpathFiles, './'+path);
+		if( !utils79.is_dir(utils79.dirname(realpath_target)) ){
+			fsx.mkdirSync(utils79.dirname(realpath_target));
+		}
+		desktopUtils.open( realpath_target );
 		callback(true);
 		return;
 	}
@@ -526,7 +533,13 @@ module.exports = function(){
 								fin += "\n";
 							}
 						}
-						var template = fs.readFileSync( __dirname+'/tpls/broccoli_theme_layout.html' ).toString();
+						var template = '<%- body %>';
+						var pathThemeLayout = _this.documentRoot+_this.theme_id+'/broccoli_module_packages/_layout.html';
+						if(utils79.is_file(pathThemeLayout)){
+							template = fs.readFileSync( pathThemeLayout ).toString();
+						}else{
+							template = fs.readFileSync( __dirname+'/tpls/broccoli_theme_layout.html' ).toString();
+						}
 						fin = ejs.render(template, {'body': fin}, {delimiter: '%'});
 
 						var baseDir = _this.documentRoot+_this.theme_id+'/theme_files/';

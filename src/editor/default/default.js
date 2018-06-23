@@ -32,6 +32,7 @@ module.exports = function(px2ce){
 			var pathname = px2conf.path_controot + page_path;
 			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
 			return px2ce.options.preview.origin + pathname;
 		}
 		var pathname = px2conf.path_controot + px2ce.page_path;
