@@ -2,7 +2,7 @@
   "name": "pickles2-contents-editor",
   "version": "2.0.0-beta.4",
   "description": "Pickles 2 contents editor library.",
-  "private": true,
+  "private": false,
   "main": "libs/main.js",
   "scripts": {
     "preinstall": "git submodule update --init --recursive --force",
