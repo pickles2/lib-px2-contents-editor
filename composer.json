@@ -9,6 +9,18 @@
             "email": "tomk79@gmail.com"
         }
     ],
+    "scripts":{
+        "start": [
+            "php -S 127.0.0.1:8088 -t ./"
+        ],
+        "open-in-browser": [
+            "open http://127.0.0.1:8088/tests/app/client_php/"
+        ],
+        "test": [
+            "php ./vendor/phpunit/phpunit/phpunit"
+        ]
+    } ,
+    "minimum-stability": "dev",
     "repositories": [
     ],
     "require": {
@@ -16,13 +28,22 @@
     },
     "require-dev": {
         "pickles2/px-fw-2.x": "dev-develop",
-        "pickles2/broccoli-module-fess": "*",
-        "pickles2/broccoli-module-plain-html-elements": "*",
+        "broccoli-html-editor/broccoli-module-fess": "*",
+        "broccoli-html-editor/broccoli-module-plain-html-elements": "*",
         "pickles2/px2-dec": "dev-master",
         "pickles2/px2-multitheme": "dev-develop",
         "pickles2/px2-path-resolver": "dev-develop",
         "pickles2/px2-px2dthelper": "dev-develop",
         "pickles2/px2-remove-attr": "dev-develop",
-        "pickles2/px2-sitemapexcel": "dev-develop"
+        "pickles2/px2-sitemapexcel": "dev-develop",
+        "phpunit/phpunit": "^4.1.0"
+    },
+    "autoload": {
+        "files": [
+            "php/main.php",
+            "php/gpi.php",
+            "php/editor/default.php",
+            "php/editor/broccoli.php"
+        ]
     }
 }
