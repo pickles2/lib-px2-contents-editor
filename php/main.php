@@ -233,6 +233,13 @@ class main{
 	}
 
 	/**
+	 * $options
+	 */
+	public function options(){
+		return $this->options;
+	}
+
+	/**
 	 * ブラウザでURLを開く
 	 */
 	public function openUrlInBrowser( $url ){

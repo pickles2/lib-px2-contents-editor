@@ -120,27 +120,28 @@ class gpi{
 
 			case "loadCustomFieldsClientSideLibs":
 				// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
-				if(@$this->px2ce->options['customFieldsIncludePath'] && strlen($this->px2ce->options['customFieldsIncludePath'])){
-					$confCustomFields = $this->px2ce->options['customFieldsIncludePath'];
+				if(@$this->px2ce->options()['customFieldsIncludePath'] && strlen($this->px2ce->options()['customFieldsIncludePath'])){
+					$confCustomFields = $this->px2ce->options()['customFieldsIncludePath'];
 					return $confCustomFields;
 					break;
 				}
-				$conf = $this->px2ce->getProjectConf();
+				$conf = $this->px2ce->get_project_conf();
 
 				$codes = array();
 				$code = '';
 
 				$confCustomFields = @$conf->plugins->px2dt->guieditor->custom_fields;
 				foreach($confCustomFields as $fieldName=>$field){
-					if( $confCustomFields[$fieldName]->frontend->file && $confCustomFields[$fieldName]->frontend->function ){
-						$pathJs = $this->px2ce->fs()->get_realpath(dirname($this->px2ce->entryScript).'/'.$confCustomFields[$fieldName]->frontend->file);
-						$binJs = file_get_contents( $pathJs );
-						$code .= '/**'."\n";
-						$code .= ' * '.$fieldName."\n";
-						$code .= ' */'."\n";
-						$code .= $binJs."\n";
-						$code .= ''."\n";
-					}
+					// TODO: 設計についてあとで見直します。
+					// if( $confCustomFields[$fieldName]->frontend->file && $confCustomFields[$fieldName]->frontend->function ){
+					// 	$pathJs = $this->px2ce->fs()->get_realpath(dirname($this->px2ce->entryScript).'/'.$confCustomFields[$fieldName]->frontend->file);
+					// 	$binJs = file_get_contents( $pathJs );
+					// 	$code .= '/**'."\n";
+					// 	$code .= ' * '.$fieldName."\n";
+					// 	$code .= ' */'."\n";
+					// 	$code .= $binJs."\n";
+					// 	$code .= ''."\n";
+					// }
 				}
 
 				$code = 'data:text/javascript;base64,'.base64_encode($code);
