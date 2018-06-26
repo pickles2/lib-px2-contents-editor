@@ -138,7 +138,7 @@ gulp.task("test/contents.js", function() {
 
 // src 中のすべての拡張子を監視して処理
 gulp.task("watch", function() {
-	gulp.watch(["src/**/*"], _tasks);
+	gulp.watch(["src/**/*", "tests/app/client/**/*.src.js", "tests/app/client_php/**/*.src.js"], _tasks);
 });
 
 // ブラウザを立ち上げてプレビューする

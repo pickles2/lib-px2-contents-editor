@@ -100,9 +100,9 @@ class gpi{
 				$sitemap = $this->px2ce->px2query('/?PX=api.get.sitemap', array("output"=>"json"));
 
 				foreach($sitemap as $idx=>$page_info){
-					$page_layout_id = (strlen(@$sitemap[$idx]->layout) ? $sitemap[$idx]->layout : 'default');
+					$page_layout_id = (strlen(@$sitemap->{$idx}->layout) ? $sitemap->{$idx}->layout : 'default');
 					if( $page_layout_id == $layout_id ){
-						array_push( $rtn, $sitemap[$idx] );
+						array_push( $rtn, $sitemap->{$idx} );
 					}
 				}
 				return $rtn;

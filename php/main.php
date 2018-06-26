@@ -514,7 +514,7 @@ class main{
 				}else{
 					$template = file_get_contents( __DIR__.'/tpls/broccoli_theme_layout.html' );
 				}
-				// TODO: PHP では ejs は使えない
+				// PHP では ejs は使えないので、単純置換することにした。
 				// $fin = $ejs.render($template, {'body': $fin}, {'delimiter': '%'});
 				$fin = str_replace('<'.'%- body %'.'>', $fin, $template);
 
