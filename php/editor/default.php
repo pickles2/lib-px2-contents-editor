@@ -122,9 +122,13 @@ class editor_default{
 	 * 編集対象のパス情報を生成する
 	 */
 	private function generateTargetFilePath(){
+		$page_path = $this->px2ce->get_page_path();
+		if(is_null($page_path)){
+			return false;
+		}
 		$rtn = array(
 			'realpathFiles' => $this->px2ce->fs()->get_realpath($this->px2ce->get_realpath_files()),
-			'contentsPath' => $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_page_path()),
+			'contentsPath' => $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$page_path),
 			'strLoaderCSS' => '<'.'?php ob_start(); ?'.'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'.'>" /><'.'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'.'>'."\n",
 			'strLoaderJS' => '<'.'?php ob_start(); ?'.'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'.'>"></script><'.'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'.'>'."\n"
 		);
@@ -135,13 +139,13 @@ class editor_default{
 			$rtn['strLoaderJS'] = '<script src="<?= htmlspecialchars( $theme->files(\''.$tmpPathThemeLayoutDir.'script.js\') ) ?'.'>"></script>'."\n";
 		}
 
-		$pageInfo = $this->px2ce->px2query( $this->px2ce->get_page_path().'?PX=api.get.page_info&path='.urlencode($this->px2ce->get_page_path()), array('output'=>'json') );
+		$pageInfo = $this->px2ce->px2query( $page_path.'?PX=api.get.page_info&path='.urlencode($page_path), array('output'=>'json') );
 		if( $pageInfo == null ){
 			if( !is_file($rtn['contentsPath']) ){
 				return false;
 			}
 		}
-		$contPath = $this->px2ce->px2query($this->px2ce->get_page_path().'?PX=api.get.path_content', array('output'=>'json'));
+		$contPath = $this->px2ce->px2query($page_path.'?PX=api.get.path_content', array('output'=>'json'));
 
 		// var_dump($contPath);
 		if( !is_file($rtn['contentsPath']) ){

@@ -61,6 +61,10 @@
 				this.page_path = this.page_path.replace( new RegExp('\\{(?:\\*|\\$)[\s\S]*\\}'), '' );
 			} catch (e) {
 			}
+			if(!this.page_path){
+				// page_path option is required
+				return false;
+			}
 
 			$canvas = $(options.elmCanvas);
 			$canvas.addClass('pickles2-contents-editor');
