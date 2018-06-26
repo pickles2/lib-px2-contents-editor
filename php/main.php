@@ -438,7 +438,7 @@ class main{
 			// テーマ編集ではスキップ
 		}else{
 			foreach( @$px2conf->plugins->px2dt->paths_module_template as $idx=>$path_module_template ){
-				$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( dirname($this->entryScript).'/'.$path_module_template.'/' );
+				$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( $path_module_template.'/', dirname($this->entryScript) );
 			}
 		}
 
@@ -452,7 +452,7 @@ class main{
 		if( !is_string($pathModuleDir) ){
 			// モジュールフォルダの指定がない場合
 		}else{
-			$pathModuleDir = $this->fs()->get_realpath( dirname($this->entryScript).'/'.$pathModuleDir.'/' );
+			$pathModuleDir = $this->fs()->get_realpath( $pathModuleDir.'/', dirname($this->entryScript) );
 			if( !is_dir($pathModuleDir) ){
 				// 指定されたモジュールフォルダが存在しない場合
 			}else{
