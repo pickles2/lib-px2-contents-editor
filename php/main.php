@@ -390,7 +390,7 @@ class main{
 	/**
 	 * create initialize options for broccoli-html-editor
 	 */
-	private function createBroccoliInitOptions(){
+	public function createBroccoliInitOptions(){
 		$broccoliInitializeOptions = array();
 		$px2ce = $this;
 
@@ -662,7 +662,7 @@ class main{
 
 		$bin = $io[1]; // stdout
 		if( strlen( $io[2] ) ){
-			$this->error($io[2]); // stderr
+			// $this->error($io[2]); // stderr
 		}
 
 		if( @$options['output'] == 'json' ){
