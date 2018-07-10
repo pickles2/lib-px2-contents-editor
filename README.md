@@ -232,11 +232,11 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor@2.0.0-beta.5 (リリース日未定)
+### pickles2-contents-editor v2.0.0 (2018年7月11日)
 
-- バックエンドの処理を PHP に移植。
+- バックエンドの処理を PHP に移行。 (NodeJS の実装は、しばらく残した後に、削除される予定)
 
-### pickles2-contents-editor@2.0.0-beta.4 (2018年6月22日)
+### pickles2-contents-editor v2.0.0-beta.4 (2018年6月22日)
 
 - broccoli-html-editor を外部からの供給に依存するようになった。
 - broccoli-field-table
@@ -259,7 +259,7 @@ $ npm run test
 - `initContentFiles()` を px2-px2dthelper 依存に変更。
 - その他パフォーマンス向上、細かい不具合の修正など。
 
-### pickles2-contents-editor@2.0.0-beta.3 (2016年8月3日)
+### pickles2-contents-editor v2.0.0-beta.3 (2016年8月3日)
 
 - コンフィグ `path_controot` が `/` 以外の場合に、起きる不具合を修正。
 - ローカルリソースの読み込みの記述を、 $px->path_files() 依存に変更。
@@ -271,7 +271,7 @@ $ npm run test
 	- データ上のエラーで、誤ったモジュールが混入した場合に異常終了しないように修正。
 	- loopフィールドのサブモジュールに元のモジュール名が引き継がれない不具合を修正。
 
-### pickles2-contents-editor@2.0.0-beta.2 (2016年6月8日)
+### pickles2-contents-editor v2.0.0-beta.2 (2016年6月8日)
 
 - broccoli-html-editor@0.1.0-beta.9 に更新。
 - 設定項目 customFields を追加。
