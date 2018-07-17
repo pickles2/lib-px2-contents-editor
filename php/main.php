@@ -181,7 +181,22 @@ class main{
 	 * @return object css および js ファイルの一覧
 	 */
 	public function get_client_resources($realpath_dist = null){
+		$path_vendor = __DIR__;
+		while(1){
+			if( realpath($path_vendor) === realpath(dirname($path_vendor)) ){
+				break;
+			}
+			if( is_file($path_vendor.'/vendor/autoload.php') ){
+				$path_vendor = $this->fs->get_realpath($path_vendor.'/vendor/');
+				break;
+			}
+			$path_vendor = dirname($path_vendor);
+		}
 		$rtn = json_decode('{"css": [], "js": []}');
+		array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.js'));
+		array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.css'));
+		array_push($rtn->js, realpath(__DIR__.'/../dist/pickles2-contents-editor.min.js'));
+		array_push($rtn->css, realpath(__DIR__.'/../dist/pickles2-contents-editor.min.css'));
 		return $rtn;
 	}
 
