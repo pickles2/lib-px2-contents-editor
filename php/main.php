@@ -174,6 +174,18 @@ class main{
 	}
 
 	/**
+	 * クライアントリソースの一覧を取得する
+	 * 
+	 * @param string $realpath_dist リソースファイルの出力先。
+	 * 省略時は、各ファイルのサーバー内部パスを返す。
+	 * @return object css および js ファイルの一覧
+	 */
+	public function get_client_resources($realpath_dist = null){
+		$rtn = json_decode('{"css": [], "js": []}');
+		return $rtn;
+	}
+
+	/**
 	 * プロジェクトの設定情報を取得する
 	 */
 	public function get_project_conf(){
