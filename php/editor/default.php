@@ -102,7 +102,7 @@ class editor_default{
 		// CSSファイルを保存
 		$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 		if( !strlen($codes['css']) ){
-			unlink( $realpath_resource_dir . '/style.css.scss' );
+			@unlink( $realpath_resource_dir . '/style.css.scss' );
 		}else{
 			$this->px2ce->fs()->save_file( $realpath_resource_dir . '/style.css.scss', $codes['css'] );
 		}
@@ -110,7 +110,7 @@ class editor_default{
 		// JSファイルを保存
 		$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 		if( !strlen($codes['js']) ){
-			unlink( $realpath_resource_dir . '/script.js' );
+			@unlink( $realpath_resource_dir . '/script.js' );
 		}else{
 			$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
 		}
