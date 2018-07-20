@@ -65,6 +65,7 @@ class main{
 	 * Constructor
 	 */
 	public function __construct(){
+		$this->fs = new \tomk79\filesystem();
 	}
 
 	/**
@@ -104,7 +105,6 @@ class main{
 			$this->php_command['php_extension_dir'] = $options['php_extension_dir'];
 		}
 
-		$this->fs = new \tomk79\filesystem();
 		$this->entryScript = $options['entryScript'];
 		$this->target_mode = (@strlen($options['target_mode']) ? $options['target_mode'] : 'page_content');
 		$this->page_path = @$options['page_path'];
