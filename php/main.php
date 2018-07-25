@@ -82,9 +82,6 @@ class main{
 		if( !@is_array( $options['customFields'] ) ){
 			$options['customFields'] = array(); // custom fields
 		}
-		if( !@is_array( $options['customFieldsIncludePath'] ) ){
-			$options['customFieldsIncludePath'] = array(); // custom fields include path (for cliend libs)
-		}
 		if( !@is_callable( $options['log'] ) ){
 			$options['log'] = function($msg){
 				// var_dump($msg);
@@ -192,11 +189,89 @@ class main{
 			}
 			$path_vendor = dirname($path_vendor);
 		}
+
 		$rtn = json_decode('{"css": [], "js": []}');
-		array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.js'));
-		array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.css'));
-		array_push($rtn->js, realpath(__DIR__.'/../dist/pickles2-contents-editor.min.js'));
-		array_push($rtn->css, realpath(__DIR__.'/../dist/pickles2-contents-editor.min.css'));
+
+
+		// broccoli-html-editor
+		if(is_string($realpath_dist) && is_dir($realpath_dist)){
+			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/', $realpath_dist.'/broccoli/');
+			array_push($rtn->js, 'broccoli/broccoli.min.js');
+			array_push($rtn->css, 'broccoli/broccoli.min.css');
+		}else{
+			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.js'));
+			array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.css'));
+		}
+
+		// px2ce
+		if(is_string($realpath_dist) && is_dir($realpath_dist)){
+			$this->fs->copy_r(__DIR__.'/../dist/', $realpath_dist.'/px2ce/');
+			array_push($rtn->js, 'px2ce/pickles2-contents-editor.min.js');
+			array_push($rtn->css, 'px2ce/pickles2-contents-editor.min.css');
+		}else{
+			array_push($rtn->js, realpath(__DIR__.'/../dist/pickles2-contents-editor.min.js'));
+			array_push($rtn->css, realpath(__DIR__.'/../dist/pickles2-contents-editor.min.css'));
+		}
+
+		// broccoli-field-table
+		if(is_string($realpath_dist) && is_dir($realpath_dist)){
+			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/', $realpath_dist.'/broccoli-field-table/');
+			array_push($rtn->js, 'broccoli-field-table/broccoli-field-table.min.js');
+		}else{
+			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/broccoli-field-table.min.js'));
+		}
+
+		// プロジェクト定義のカスタムフィールドを追加
+		$confCustomFields = @$this->px2conf->plugins->px2dt->guieditor->custom_fields;
+		$realpath_contRoot = dirname( $this->entryScript );
+		if(is_object($confCustomFields)){
+			foreach( $confCustomFields as $fieldName=>$field ){
+				$path_client_lib_dir = @$confCustomFields->{$fieldName}->frontend->dir;
+				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
+				if(is_string($realpath_dist) && is_dir($realpath_dist) && @$confCustomFields->{$fieldName}->frontend->dir){
+					$this->fs->copy_r($path_client_lib_dir, $realpath_dist.'/custom_fields/'.urlencode($fieldName).'/');
+				}
+
+				$paths_client_lib = @$confCustomFields->{$fieldName}->frontend->file;
+				if(is_string($paths_client_lib)){
+					$paths_client_lib = array( $paths_client_lib );
+				}
+				if( is_array($paths_client_lib) && count($paths_client_lib) ){
+					foreach($paths_client_lib as $path_client_lib){
+						if(!$path_client_lib){ continue; }
+						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
+						$ext = @strtolower($matched[1]);
+
+						if(is_string($realpath_dist) && is_dir($realpath_dist) ){
+							if(@$confCustomFields->{$fieldName}->frontend->dir){
+								if( $ext == 'css' ){
+									array_push($rtn->css, 'custom_fields/'.urlencode($fieldName).'/'.$path_client_lib);
+								}elseif( $ext == 'js' ){
+									array_push($rtn->js, 'custom_fields/'.urlencode($fieldName).'/'.$path_client_lib);
+								}
+							}else{
+								$path_client_lib = $this->fs->get_realpath($path_client_lib, realpath($path_client_lib_dir));
+								$tmp_res_local_path = 'custom_fields/'.urlencode($fieldName).'/'.urlencode(basename($path_client_lib));
+								$this->fs->copy_r($path_client_lib, $realpath_dist.'/'.$tmp_res_local_path);
+								if( $ext == 'css' ){
+									array_push($rtn->css, $tmp_res_local_path);
+								}elseif( $ext == 'js' ){
+									array_push($rtn->js, $tmp_res_local_path);
+								}
+							}
+						}else{
+							$path_client_lib = $this->fs->get_realpath($path_client_lib, realpath($path_client_lib_dir));
+							if( $ext == 'css' ){
+								array_push($rtn->css, $path_client_lib);
+							}elseif( $ext == 'js' ){
+								array_push($rtn->js, $path_client_lib);
+							}
+						}
+					}
+				}
+			}
+		}
+
 		return $rtn;
 	}
 
@@ -450,10 +525,12 @@ class main{
 		// プロジェクトが拡張するフィールド
 		$confCustomFields = @$px2conf->plugins->px2dt->guieditor->custom_fields;
 		foreach( $confCustomFields as $fieldName=>$field ){
-			if( $confCustomFields->{$fieldName}->backend->require ){
-				// TODO: カスタムフィールドの読み込み、この処理であってる？
-				// $path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields->{$fieldName}->backend->require);
-				// $customFields[$fieldName] = require_once( $path_backend_field );
+			if( @$confCustomFields->{$fieldName}->backend->require ){
+				$path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields->{$fieldName}->backend->require);
+				require_once( $path_backend_field );
+			}
+			if( @$confCustomFields->{$fieldName}->backend->class ){
+				$customFields[$fieldName] = $confCustomFields->{$fieldName}->backend->class;
 			}
 		}
 

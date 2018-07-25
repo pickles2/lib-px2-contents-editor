@@ -224,6 +224,11 @@ return call_user_func( function(){
 
 	// config for Pickles2 Desktop Tool.
 	$conf->plugins->px2dt = new stdClass;
+
+	// GUI編集エンジンの選択
+	$conf->plugins->px2dt->guiEngine = "broccoli-html-editor-php";
+	// $conf->plugins->px2dt->guiEngine = "broccoli-html-editor";
+
 	$conf->plugins->px2dt->path_module_templates_dir = "../../px-files/modules/";
 	$conf->plugins->px2dt->paths_module_template = [
 		"PlainHTMLElements" => "../../../../vendor/broccoli-html-editor/broccoli-module-plain-html-elements/modules/",
@@ -235,26 +240,52 @@ return call_user_func( function(){
 	@$conf->plugins->px2dt->guieditor->path_resource_dir = '{$dirname}/{$filename}__files/resources/'; // broccoliの引数 pathResourceDir
 	@$conf->plugins->px2dt->guieditor->path_data_dir = '{$dirname}/{$filename}__files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
 
-	@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
-		'projectCustom1'=>array(
-			'backend'=>array(
-				'require' => '../../px-files/broccoli-fields/projectCustom1/backend.js'
+	if(@$conf->plugins->px2dt->guiEngine == "broccoli-html-editor-php"){
+		@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
+			'projectCustom1'=>array(
+				'backend'=>array(
+					'require' => '../../px-files/broccoli-fields/projectCustom1/backend.php',
+					'class' => 'projectCustom1',
+				),
+				'frontend'=>array(
+					'dir' => '../../px-files/broccoli-fields/projectCustom1/',
+					'file' => 'frontend.js',
+					'function' => 'window.broccoliFieldProjectCustom1'
+				),
 			),
-			'frontend'=>array(
-				'file' => '../../px-files/broccoli-fields/projectCustom1/frontend.js',
-				'function' => 'window.broccoliFieldProjectCustom1'
+			'projectCustom2'=>array(
+				'backend'=>array(
+					'require' => '../../px-files/broccoli-fields/projectCustom2/backend.php',
+					'class' => 'projectCustom2',
+				),
+				'frontend'=>array(
+					'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
+					'function' => 'window.broccoliFieldProjectCustom2'
+				),
 			),
-		),
-		'projectCustom2'=>array(
-			'backend'=>array(
-				'require' => '../../px-files/broccoli-fields/projectCustom2/backend.js'
+		);
+	}else{
+		@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
+			'projectCustom1'=>array(
+				'backend'=>array(
+					'require' => '../../px-files/broccoli-fields/projectCustom1/backend.js'
+				),
+				'frontend'=>array(
+					'file' => '../../px-files/broccoli-fields/projectCustom1/frontend.js',
+					'function' => 'window.broccoliFieldProjectCustom1'
+				),
 			),
-			'frontend'=>array(
-				'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
-				'function' => 'window.broccoliFieldProjectCustom2'
+			'projectCustom2'=>array(
+				'backend'=>array(
+					'require' => '../../px-files/broccoli-fields/projectCustom2/backend.js'
+				),
+				'frontend'=>array(
+					'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
+					'function' => 'window.broccoliFieldProjectCustom2'
+				),
 			),
-		),
-	);
+		);
+	}
 
 
 	/**

@@ -1,3 +1,5 @@
+var it79 = require('iterate79');
+
 $(window).load(function(){
 	var conf = require('../../../../config/default.json');
 	// console.log(conf);
@@ -15,62 +17,106 @@ $(window).load(function(){
 		return;
 	}
 
-	var pickles2ContentsEditor = new Pickles2ContentsEditor();
-	windowResized(function(){
-		pickles2ContentsEditor.init(
-			{
-				'page_path': params.page_path ,
-				'elmCanvas': $canvas.get(0),
-				'preview':{
-					'origin': 'http://px2ce-preview.localhost'
-				},
-				'customFields':{
-					'custom1': function(broccoli){
-						// カスタムフィールドを実装
-					}
-				},
-				'lang': 'ja',
-				'gpiBridge': function(input, callback){
-					// GPI(General Purpose Interface) Bridge
-					// broccoliは、バックグラウンドで様々なデータ通信を行います。
-					// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-					$.ajax({
-						"url": "./apis.php",
-						"type": 'post',
-						'data': {'page_path':params.page_path, 'target_mode':params.target_mode, 'data':JSON.stringify(input)},
-						"success": function(data){
-							// console.log(data);
-							callback(data);
+	it79.fnc({}, [
+		function(it1, arg){
+			$.ajax({
+				"url": "./apis.php",
+				"type": 'get',
+				'data': {'page_path':params.page_path, 'client_resources':1},
+				"success": function(resources){
+					// console.info('-------',resources);
+
+					it79.ary(
+						resources.css,
+						function(it2, row, idx){
+							var link = document.createElement('link');
+							link.addEventListener('load', function(){
+								it2.next();
+							});
+							$('head').append(link);
+							link.rel = 'stylesheet';
+							link.href = 'caches/'+row;
+						},
+						function(){
+							it79.ary(
+								resources.js,
+								function(it3, row, idx){
+									var script = document.createElement('script');
+									script.addEventListener('load', function(){
+										it3.next();
+									});
+									$('head').append(script);
+									script.src = 'caches/'+row;
+								},
+								function(){
+									it1.next(arg);
+								}
+							);
 						}
-					});
-					return;
-				},
-				'complete': function(){
-					alert('完了しました。');
-				},
-				'onClickContentsLink': function( uri, data ){
-					alert('編集: ' +  uri);
-				},
-				'onMessage': function( message ){
-					console.info('message: '+message);
+					);
+
 				}
-			},
-			function(){
+			});
+		},
+		function(it1, arg){
+			var pickles2ContentsEditor = new Pickles2ContentsEditor();
+			windowResized(function(){
+				pickles2ContentsEditor.init(
+					{
+						'page_path': params.page_path ,
+						'elmCanvas': $canvas.get(0),
+						'preview':{
+							'origin': 'http://px2ce-preview.localhost'
+						},
+						'customFields':{
+							'custom1': function(broccoli){
+								// カスタムフィールドを実装
+							}
+						},
+						'lang': 'ja',
+						'gpiBridge': function(input, callback){
+							// GPI(General Purpose Interface) Bridge
+							// broccoliは、バックグラウンドで様々なデータ通信を行います。
+							// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+							$.ajax({
+								"url": "./apis.php",
+								"type": 'post',
+								'data': {'page_path':params.page_path, 'target_mode':params.target_mode, 'data':JSON.stringify(input)},
+								"success": function(data){
+									// console.log(data);
+									callback(data);
+								}
+							});
+							return;
+						},
+						'complete': function(){
+							alert('完了しました。');
+						},
+						'onClickContentsLink': function( uri, data ){
+							alert('編集: ' +  uri);
+						},
+						'onMessage': function( message ){
+							console.info('message: '+message);
+						}
+					},
+					function(){
 
-				$(window).resize(function(){
-					// このメソッドは、canvasの再描画を行います。
-					// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
-					windowResized(function(){
-						pickles2ContentsEditor.redraw();
-					});
-				});
+						$(window).resize(function(){
+							// このメソッドは、canvasの再描画を行います。
+							// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
+							windowResized(function(){
+								pickles2ContentsEditor.redraw();
+							});
+						});
 
-				console.info('standby!!');
-			}
-		);
+						console.info('standby!!');
+						it1.next(arg);
+					}
+				);
 
-	});
-
+			});
+		}
+	]);
 
 });
 

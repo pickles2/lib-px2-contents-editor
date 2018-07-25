@@ -56,11 +56,7 @@ class testHelper{
 			'entryScript' => realpath(__DIR__.'/../htdocs2/htdocs/subapp/.px_execute.php'),
 			'customFields' => array(
 				// この設定項目は、 broccoli-html-editor に渡されます
-				'custom1' => function($broccoli){
-					// カスタムフィールドを実装します。
-					// この関数は、fieldBase.js を基底クラスとして継承します。
-					// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
-				}
+				'custom1' => 'test_php_field_custom1',
 			) ,
 			'log' => function($msg){
 				// ログ情報出力時にコールされます。
