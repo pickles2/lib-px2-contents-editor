@@ -350,10 +350,10 @@ class main{
 		}
 		if( realpath('/') == '/' ){
 			// Linux or macOS
-			exec('open '.json_encode($url));
+			exec('open '.escapeshellarg($url));
 		}else{
 			// Windows
-			exec('explorer '.json_encode($url));
+			exec('explorer '.escapeshellarg($url));
 		}
 		return true;
 	}
@@ -375,10 +375,10 @@ class main{
 
 		if( realpath('/') == '/' ){
 			// Linux or macOS
-			exec('open '.json_encode($realpath_target));
+			exec('open '.escapeshellarg($realpath_target));
 		}else{
 			// Windows
-			exec('explorer '.json_encode($realpath_target));
+			exec('explorer '.escapeshellarg($realpath_target));
 		}
 		return true;
 	}
