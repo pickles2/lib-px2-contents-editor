@@ -515,7 +515,7 @@ class main{
 		// フィールドを拡張
 
 		// px2ce が拡張するフィールド
-		// $customFields['table'] = '........'; // TODO: 未実装
+		$customFields['table'] = 'broccoliHtmlEditor\\broccoliFieldTable\\main';
 
 		// 呼び出し元アプリが拡張するフィールド
 		foreach( $this->options['customFields'] as $idx=>$customField ){
