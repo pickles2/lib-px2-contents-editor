@@ -1,131 +1,82 @@
-# pickles2-contents-editor
+# pickles2/lib-px2-contents-editor
 
 Pickles 2 のコンテンツ編集インターフェイスを提供します。
 
 ## Usage
 
-### Server Side
+### Server Side (PHP)
 
-```js
-var express = require('express');
-var Px2CE = require('pickles2-contents-editor');
-var entryScript = require('path').resolve('/path/to/.px_execute.php');
-var px2proj = require('px2agent').createProject(entryScript);
+```php
+<?php
+/**
+ * api.php
+ */
+require_once('vendor/autoload.php');
 
+$px2ce = new pickles2\libs\contentsEditor\main();
+$px2ce->init(array(
+	'target_mode' => 'page_content', // <- 編集対象のモード ('page_content' (default) or 'theme_layout')
+	'page_path' => '/path/to/page.html', // <- 編集対象ページのパス (target_mode=theme_layout のとき、 `/{theme_id}/{layout_id}.html` の形式)
+	'appMode' => 'web', // 'web' or 'desktop'. default to 'web'
+	'entryScript' => '/realpath/to/.px_execute.php', // Pickles 2 のエンドポイント
+	'customFields' => array(
+		// カスタムフィールドのサーバーサイドスクリプト。クラス名(ネームスペース含む)を指定します。
+		// この関数は、`broccoliHtmlEditor\fieldBase` を基底クラスとして継承します。
+		// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
+		'custom1' => 'test_php_field_custom1',
+	) ,
+	'log' => function($msg){
+		// ログ情報出力時にコールされます。
+		// $msg を受け取り、適切なファイルへ出力するように実装してください。
+		file_put_contents('/path/to/px2ce.log', $msg);
+	},
+	'commands' => array(
+		'php' => array(
+			// PHPコマンドのパスを表すオブジェクト
+			// または、 文字列で '/path/to/php' とすることも可 (この場合、 php.ini のパスは指定されない)
+			'bin' => '/path/to/php',
+			'ini' => '/path/to/php.ini'
+		)
+	)
+));
 
-// --------------------------------------------------
-// Pickles 2 contents editor application server
-var app = express();
-var server = require('http').Server(app);
-px2proj.get_config(function(px2conf){
-
-	var confCustomFields = px2conf.plugins.px2dt.guieditor.custom_fields;
-	var customFieldsIncludePath = [];
-	for(var fieldName in confCustomFields){
-		if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
-			var pathJs = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.file);
-			app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathJs, '..') ) );
-			var binJs = '<script src="file://'+pathJs+'"></script>';
-			customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+utils79.basename(pathJs) );
-		}
-	}
-
-	app.use( '/your/api/path', function(req, res, next){
-
-		var px2ce = new Px2CE();
-		px2ce.init(
-			{
-				'target_mode': 'page_content', // <- 編集対象のモード ('page_content' (default) or 'theme_layout')
-				'page_path': '/path/to/page.html', // <- 編集対象ページのパス (target_mode=theme_layout のとき、 `/{theme_id}/{layout_id}.html` の形式)
-				'appMode': 'web', // 'web' or 'desktop'. default to 'web'
-				'entryScript': entryScript,
-				'customFields': {
-					// この設定項目は、 broccoli-html-editor に渡されます
-					'custom1': function(broccoli){
-						// カスタムフィールドを実装します。
-						// この関数は、fieldBase.js を基底クラスとして継承します。
-						// customFields オブジェクトのキー(ここでは custom1)が、フィールドの名称になります。
-					}
-				} ,
-				'customFieldsIncludePath': customFieldsIncludePath,
-				'log': function(msg){
-					// ログ情報出力時にコールされます。
-					// msg を受け取り、適切なファイルへ出力するように実装してください。
-					fs.writeFileSync('/path/to/px2ce.log', {}, msg);
-				},
-				'commands'{
-					'php': {
-						// PHPコマンドのパスを表すオブジェクト
-						// または、 文字列で '/path/to/php' とすることも可 (この場合、 php.ini のパスは指定されない)
-						'bin': '/path/to/php',
-						'ini': '/path/to/php.ini'
-					}
-				}
-			},
-			function(){
-				px2ce.gpi(JSON.parse(req.body.data), function(value){
-					res
-						.status(200)
-						.set('Content-Type', 'text/json')
-						.send( JSON.stringify(value) )
-						.end();
-				});
-			}
-		);
-
-		return;
-	} );
-
-	server.listen(8080);
-
-});
-
-
-
-// --------------------------------------------------
-// Pickles 2 preview server
-var expressPickles2 = require('express-pickles2');
-var appPx2 = express();
-appPx2.use( require('body-parser')() );
-
-appPx2.use( '/*', expressPickles2(
-	entryScript,
-	{
-		'processor': function(bin, ext, callback){
-			if( ext == 'html' ){
-				bin += (function(){
-					var scriptSrc = fs.readFileSync('node_modules/pickles2-contents-editor/dist/libs/broccoli-html-editor/client/dist/broccoli-preview-contents.js').toString('utf-8');
-					var fin = '';
-						fin += '<script data-broccoli-receive-message="yes">'+"\n";
-						fin += 'window.addEventListener(\'message\',(function() {'+"\n";
-						fin += 'return function f(event) {'+"\n";
-						fin += 'if(window.location.hostname!=\'127.0.0.1\'){alert(\'Unauthorized access.\');return;}'+"\n";
-						fin += 'if(!event.data.scriptUrl){return;}'+"\n";
-						fin += scriptSrc+';'+"\n";
-						fin += 'window.removeEventListener(\'message\', f, false);'+"\n";
-						fin += '}'+"\n";
-						fin += '})(),false);'+"\n";
-						fin += '</script>'+"\n";
-					return fin;
-				})();
-			}
-			callback(bin);
-			return;
-		}
-	}
-) );
-appPx2.listen(8081);
-
+if(@$_GET['client_resources']){
+	$value = $px2ce->get_client_resources(__DIR__.'/caches/');
+	header('Content-type: text/json');
+	echo json_encode($value);
+	exit;
+}
+$value = $px2ce->gpi( json_decode( $_REQUEST['data'] ) );
+header('Content-type: text/json');
+echo json_encode($value);
+exit;
 ```
+
 
 ### Client Side
 
-```html
+```php
 <div id="canvas"></div>
 
-<!-- Pickles 2 Contents Editor -->
-<link rel="stylesheet" href="/path/to/pickles2-contents-editor.css" />
-<script src="/path/to/pickles2-contents-editor.js"></script>
+<!--
+エディタが利用する CSS や JavaScript などのリソースファイルがあります。
+`$px2ce->get_client_resources()` からリソースの一覧を取得し、読み込んでください。
+-->
+
+<?php
+require_once('vendor/autoload.php');
+
+$px2ce = new pickles2\libs\contentsEditor\main();
+$px2ce->init( /* any options */ );
+
+$resources = $px2ce->get_client_resources();
+foreach($resources->css as $css_file){
+	echo('<link rel="stylesheet" href="'.htmlspecialchars($css_file).'" />');
+}
+foreach($resources->js as $js_file){
+	echo('<script src="'.htmlspecialchars($js_file).'"></script>');
+}
+?>
 
 <script>
 var pickles2ContentsEditor = new Pickles2ContentsEditor();
