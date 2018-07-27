@@ -423,20 +423,14 @@ class main{
 			'js' => ''
 		);
 		$data = $this->px2query(
-			'/?PX=px2dthelper.document_modules.build_css&theme_id='.urlencode($theme_id),
-			array(
-				"output" => "json"
-			)
+			'/?PX=px2dthelper.document_modules.build_css&theme_id='.urlencode($theme_id)
 		);
 
 		// var_dump($data);
 		$rtn['css'] .= $data;
 
 		$data = $this->px2query(
-			'/?PX=px2dthelper.document_modules.build_js&theme_id='.urlencode($theme_id),
-			array(
-				"output" => "json"
-			)
+			'/?PX=px2dthelper.document_modules.build_js&theme_id='.urlencode($theme_id)
 		);
 
 		// var_dump($data);

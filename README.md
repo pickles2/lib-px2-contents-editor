@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.0.2 (リリース日未定)
+
+- モジュールのCSS、JSが取得できない不具合を修正。
+
 ### pickles2-contents-editor v2.0.1 (2018年7月27日)
 
 - PHP版でフィールドプラグインを読み込めるようになった。
