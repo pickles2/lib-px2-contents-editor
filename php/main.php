@@ -524,13 +524,15 @@ class main{
 
 		// プロジェクトが拡張するフィールド
 		$confCustomFields = @$px2conf->plugins->px2dt->guieditor->custom_fields;
-		foreach( $confCustomFields as $fieldName=>$field ){
-			if( @$confCustomFields->{$fieldName}->backend->require ){
-				$path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields->{$fieldName}->backend->require);
-				require_once( $path_backend_field );
-			}
-			if( @$confCustomFields->{$fieldName}->backend->class ){
-				$customFields[$fieldName] = $confCustomFields->{$fieldName}->backend->class;
+		if(is_object($confCustomFields)){
+			foreach( $confCustomFields as $fieldName=>$field ){
+				if( @$confCustomFields->{$fieldName}->backend->require ){
+					$path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields->{$fieldName}->backend->require);
+					require_once( $path_backend_field );
+				}
+				if( @$confCustomFields->{$fieldName}->backend->class ){
+					$customFields[$fieldName] = $confCustomFields->{$fieldName}->backend->class;
+				}
 			}
 		}
 
@@ -541,8 +543,11 @@ class main{
 		if( $this->target_mode == 'theme_layout' ){
 			// テーマ編集ではスキップ
 		}else{
-			foreach( @$px2conf->plugins->px2dt->paths_module_template as $idx=>$path_module_template ){
-				$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( $path_module_template.'/', dirname($this->entryScript) );
+			$tmp_paths_module_template = @$px2conf->plugins->px2dt->paths_module_template;
+			if( is_array($tmp_paths_module_template) || is_object($tmp_paths_module_template) ){
+				foreach( $tmp_paths_module_template as $idx=>$path_module_template ){
+					$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( $path_module_template.'/', dirname($this->entryScript) );
+				}
 			}
 		}
 
