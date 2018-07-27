@@ -183,10 +183,11 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.1 (リリース日未定)
+### pickles2-contents-editor v2.0.1 (2018年7月27日)
 
 - PHP版でフィールドプラグインを読み込めるようになった。
 - PHP版でオプション `customFieldsIncludePath` を削除。 `get_client_resources()` が必要なリソースリストを提供するように変更。
+- その他いくつかの不具合を修正。
 
 ### pickles2-contents-editor v2.0.0 (2018年7月11日)
 
