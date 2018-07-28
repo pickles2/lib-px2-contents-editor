@@ -378,7 +378,7 @@ class main{
 			exec('open '.escapeshellarg($realpath_target));
 		}else{
 			// Windows
-			exec('explorer '.escapeshellarg($realpath_target));
+			exec(escapeshellcmd('explorer '.$realpath_target));
 		}
 		return true;
 	}
