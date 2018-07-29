@@ -185,7 +185,8 @@ $ npm run test
 
 ### pickles2-contents-editor v2.0.2 (リリース日未定)
 
-- モジュールのCSS、JSが取得できない不具合を修正。
+- PHP版で、モジュールのCSS、JSが取得できない不具合を修正。
+- PHP版で、Windows上で起きていたいくつかの不具合を修正。
 
 ### pickles2-contents-editor v2.0.1 (2018年7月27日)
 
