@@ -353,7 +353,7 @@ class main{
 			exec('open '.escapeshellarg($url));
 		}else{
 			// Windows
-			exec('explorer '.escapeshellarg($url));
+			exec(escapeshellcmd('explorer '.$url));
 		}
 		return true;
 	}
@@ -743,7 +743,13 @@ class main{
 			array_push($php_command, '-u');
 			array_push($php_command, escapeshellarg($options['user_agent']));
 		}
-		array_push($php_command, escapeshellarg($request_path));
+		if( realpath('/') == '/' ){
+			// Linux
+			array_push($php_command, escapeshellarg($request_path));
+		}else{
+			// Windows
+			array_push($php_command, escapeshellcmd($request_path));
+		}
 
 
 		$cmd = implode( ' ', $php_command );
