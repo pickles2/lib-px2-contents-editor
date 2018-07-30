@@ -183,7 +183,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.2 (リリース日未定)
+### pickles2-contents-editor v2.0.2 (2018年7月30日)
 
 - PHP版で、モジュールのCSS、JSが取得できない不具合を修正。
 - PHP版で、Windows上で起きていたいくつかの不具合を修正。
