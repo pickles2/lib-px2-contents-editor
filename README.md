@@ -183,6 +183,12 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.0.3 (リリース日未定)
+
+- NodeJS版のオプションで、 カスタムフィールドの frontend.dir に対応した。
+- PHP版で、依存ライブラリのバージョン指定に関する間違いを修正。
+
+
 ### pickles2-contents-editor v2.0.2 (2018年7月30日)
 
 - PHP版で、モジュールのCSS、JSが取得できない不具合を修正。
