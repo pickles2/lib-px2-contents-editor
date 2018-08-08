@@ -99,20 +99,20 @@ appPx2.use( '/*', expressPickles2(
 			if( ext == 'html' ){
 				bin += (function(){
 					var fin = '';
-						fin += '<script data-broccoli-receive-message="yes">'+"\n";
-						// fin += 'console.log(window.location);'+"\n";
-						fin += 'window.addEventListener(\'message\',(function() {'+"\n";
-						fin += 'return function f(event) {'+"\n";
-						// fin += 'console.log(event.origin);'+"\n";
-						// fin += 'console.log(event.data);'+"\n";
-						fin += 'if(window.location.origin!=\''+conf.px2server.origin+'\'){alert(\'Unauthorized access.\');return;}'+"\n";
-						fin += 'if(!event.data.scriptUrl){return;}'+"\n";
-						fin += 'var s=document.createElement(\'script\');'+"\n";
-						fin += 'document.querySelector(\'body\').appendChild(s);s.src=event.data.scriptUrl;'+"\n";
-						fin += 'window.removeEventListener(\'message\', f, false);'+"\n";
-						fin += '}'+"\n";
-						fin += '})(),false);'+"\n";
-						fin += '</script>'+"\n";
+						// fin += '<script data-broccoli-receive-message="yes">'+"\n";
+						// // fin += 'console.log(window.location);'+"\n";
+						// fin += 'window.addEventListener(\'message\',(function() {'+"\n";
+						// fin += 'return function f(event) {'+"\n";
+						// // fin += 'console.log(event.origin);'+"\n";
+						// // fin += 'console.log(event.data);'+"\n";
+						// fin += 'if(window.location.origin!=\''+conf.px2server.origin+'\'){alert(\'Unauthorized access.\');return;}'+"\n";
+						// fin += 'if(!event.data.scriptUrl){return;}'+"\n";
+						// fin += 'var s=document.createElement(\'script\');'+"\n";
+						// fin += 'document.querySelector(\'body\').appendChild(s);s.src=event.data.scriptUrl;'+"\n";
+						// fin += 'window.removeEventListener(\'message\', f, false);'+"\n";
+						// fin += '}'+"\n";
+						// fin += '})(),false);'+"\n";
+						// fin += '</script>'+"\n";
 					return fin;
 				})();
 			}

@@ -2,7 +2,7 @@
  * gpi.js (General Purpose Interface)
  */
 module.exports = function(px2ce, data, callback){
-	delete(require.cache[require('path').resolve(__filename)]);
+	var utils79 = require('utils79');
 
 	var _this = this;
 	callback = callback || function(){};
@@ -121,14 +121,26 @@ module.exports = function(px2ce, data, callback){
 				try {
 					var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
 					for(var fieldName in confCustomFields){
-						if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
-							var pathJs = require('path').resolve(px2ce.entryScript, '..', confCustomFields[fieldName].frontend.file);
-							var binJs = require('fs').readFileSync( pathJs ).toString();
-							code += '/**'+"\n";
-							code += ' * '+fieldName+"\n";
-							code += ' */'+"\n";
-							code += binJs+"\n";
-							code += ''+"\n";
+						var file = confCustomFields[fieldName].frontend.file;
+						var dir = confCustomFields[fieldName].frontend.dir;
+						var fnc = confCustomFields[fieldName].frontend.function;
+						if( file && fnc ){
+							if( typeof(file) == typeof('') ){
+								file = [file];
+							}
+							for(var idx in file){
+								var filePath = '.';
+								if( typeof(dir) == typeof('') && utils79.is_dir(require('path').resolve(px2ce.entryScript, '..', dir)) ){
+									filePath = dir;
+								}
+								var pathJs = require('path').resolve(px2ce.entryScript, '..', filePath, file[idx]);
+								var binJs = require('fs').readFileSync( pathJs ).toString();
+								code += '/**'+"\n";
+								code += ' * '+fieldName+"\n";
+								code += ' */'+"\n";
+								code += binJs+"\n";
+								code += ''+"\n";
+							}
 						}
 					}
 				} catch (e) {
