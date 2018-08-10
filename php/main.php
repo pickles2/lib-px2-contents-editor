@@ -353,7 +353,7 @@ class main{
 			exec('open '.escapeshellarg($url));
 		}else{
 			// Windows
-			exec(escapeshellcmd('explorer '.$url));
+			exec(escapeshellcmd('explorer '.escapeshellarg($url)));
 		}
 		return true;
 	}
@@ -378,7 +378,7 @@ class main{
 			exec('open '.escapeshellarg($realpath_target));
 		}else{
 			// Windows
-			exec(escapeshellcmd('explorer '.$realpath_target));
+			exec(escapeshellcmd('explorer '.escapeshellarg($realpath_target)));
 		}
 		return true;
 	}
