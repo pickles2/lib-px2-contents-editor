@@ -184,9 +184,9 @@ $ npm run test
 ## 更新履歴 - Change log
 
 
-### pickles2-contents-editor v2.0.4 (リリース日未定)
+### pickles2-contents-editor v2.0.4 (2018年8月10日)
 
-- Windows で、テーマのプレビューを開けない問題を修正。
+- PHP版で、 Windows でテーマのプレビューを開けない問題を修正。
 
 ### pickles2-contents-editor v2.0.3 (2018年8月8日)
 
