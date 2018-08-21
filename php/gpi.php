@@ -30,6 +30,38 @@ class gpi{
 		$data = json_decode( json_encode($data), true );
 
 		switch($data['api']){
+			case "getBootupInfomations":
+				// 初期起動時に必要なすべての情報を取得する
+				$bootup = array();
+				$bootup['conf'] = array();
+				$bootup['conf']['appMode'] = $this->px2ce->get_app_mode();
+				$bootup['conf']['target_mode'] = $this->px2ce->get_target_mode();
+				if($bootup['conf']['target_mode'] == 'theme_layout'){
+					$bootup['conf']['theme_id'] = $this->px2ce->get_theme_id();
+					$bootup['conf']['layout_id'] = $this->px2ce->get_layout_id();
+				}
+
+				$bootup['languageCsv'] = file_get_contents( __DIR__.'/../data/language.csv' );
+				$bootup['editorMode'] = $this->px2ce->check_editor_mode();
+				$bootup['projectConf'] = $this->px2ce->get_project_conf();
+				$bootup['customFieldsClientSideLibs'] = array();
+				$code = '';
+				$code = 'data:text/javascript;base64,'.base64_encode($code);
+				array_push($bootup['customFieldsClientSideLibs'], $code);
+
+				$bootup['pagesByLayout'] = array();
+				$layout_id = (strlen(@$data['layout_id']) ? $data['layout_id'] : 'default');
+				$sitemap = $this->px2ce->px2query('/?PX=api.get.sitemap', array("output"=>"json"));
+
+				foreach($sitemap as $idx=>$page_info){
+					$page_layout_id = (strlen(@$sitemap->{$idx}->layout) ? $sitemap->{$idx}->layout : 'default');
+					if( $page_layout_id == $layout_id ){
+						array_push( $bootup['pagesByLayout'], $sitemap->{$idx} );
+					}
+				}
+
+				return $bootup;
+
 			case "getConfig":
 				// pickles2-contents-editor の設定を取得する
 				$conf = array();

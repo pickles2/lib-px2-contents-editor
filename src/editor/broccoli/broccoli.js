@@ -58,15 +58,8 @@ module.exports = function(px2ce){
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
-				px2ce.gpiBridge(
-					{
-						'api': 'getProjectConf'
-					},
-					function(_px2conf){
-						px2conf = _px2conf;
-						rlv();
-					}
-				);
+				px2conf = px2ce.getBootupInfomations().projectConf;
+				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				pagesByLayout = [];
@@ -74,16 +67,8 @@ module.exports = function(px2ce){
 					rlv();
 					return;
 				}
-				px2ce.gpiBridge(
-					{
-						'api': 'getPagesByLayout',
-						'layout_id': px2ce.layout_id
-					},
-					function(pages){
-						pagesByLayout = pages;
-						rlv();
-					}
-				);
+				pagesByLayout = px2ce.getBootupInfomations().pagesByLayout;
+				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				toolbar.init({

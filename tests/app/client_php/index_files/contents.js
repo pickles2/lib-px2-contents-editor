@@ -1397,12 +1397,15 @@ $(window).load(function(){
 							// GPI(General Purpose Interface) Bridge
 							// broccoliは、バックグラウンドで様々なデータ通信を行います。
 							// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+							// console.info('=-=-=-=-=-=-=-= gpiBridge', input);
+							// var startTime = (new Date()).getTime();
 							$.ajax({
 								"url": "./apis.php",
 								"type": 'post',
 								'data': {'page_path':params.page_path, 'target_mode':params.target_mode, 'data':JSON.stringify(input)},
 								"success": function(data){
 									// console.log(data);
+									// console.log('--- record: ', (new Date()).getTime() - startTime);
 									callback(data);
 								}
 							});
