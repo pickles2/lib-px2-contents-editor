@@ -8,6 +8,89 @@ module.exports = function(px2ce, data, callback){
 	callback = callback || function(){};
 
 	switch(data.api){
+		case "getBootupInfomations":
+			// 初期起動時に必要なすべての情報を取得する
+			$bootup = {};
+			$bootup['conf'] = {};
+			$bootup['conf'].appMode = px2ce.getAppMode();
+			$bootup['conf'].target_mode = px2ce.target_mode;
+			if($bootup['conf'].target_mode == 'theme_layout'){
+				$bootup['conf'].theme_id = px2ce.theme_id;
+				$bootup['conf'].layout_id = px2ce.layout_id;
+			}
+
+			$bootup['languageCsv'] = require('fs').readFileSync( __dirname+'/../data/language.csv' ).toString();
+
+			px2ce.checkEditorMode(function(editorMode){
+				$bootup['editorMode'] = editorMode;
+
+				px2ce.getProjectConf(function(projectConf){
+					$bootup['projectConf'] = projectConf;
+
+					if(px2ce.options.customFieldsIncludePath && px2ce.options.customFieldsIncludePath.length){
+						var confCustomFields = px2ce.options.customFieldsIncludePath;
+						callback(confCustomFields);
+						break;
+					}
+					px2ce.getProjectConf(function(conf){
+						var codes = [];
+						var code = '';
+						try {
+							var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
+							for(var fieldName in confCustomFields){
+								var file = confCustomFields[fieldName].frontend.file;
+								var dir = confCustomFields[fieldName].frontend.dir;
+								var fnc = confCustomFields[fieldName].frontend.function;
+								if( file && fnc ){
+									if( typeof(file) == typeof('') ){
+										file = [file];
+									}
+									for(var idx in file){
+										var filePath = '.';
+										if( typeof(dir) == typeof('') && utils79.is_dir(require('path').resolve(px2ce.entryScript, '..', dir)) ){
+											filePath = dir;
+										}
+										var pathJs = require('path').resolve(px2ce.entryScript, '..', filePath, file[idx]);
+										var binJs = require('fs').readFileSync( pathJs ).toString();
+										code += '/**'+"\n";
+										code += ' * '+fieldName+"\n";
+										code += ' */'+"\n";
+										code += binJs+"\n";
+										code += ''+"\n";
+									}
+								}
+							}
+						} catch (e) {
+						}
+						code = 'data:text/javascript;base64,'+(new Buffer(code).toString('base64'));
+						codes.push(code);
+
+						$bootup['customFieldsClientSideLibs'] = codes;
+
+						$bootup['pagesByLayout'] = [];
+						var layout_id = data.layout_id || 'default';
+						px2ce.px2proj.get_sitemap(function(sitemap){
+							for(var idx in sitemap){
+								try {
+									var page_layout_id = sitemap[idx].layout || 'default';
+									if( page_layout_id == layout_id ){
+										$bootup['pagesByLayout'].push(sitemap[idx]);
+									}
+								} catch (e) {
+								}
+							}
+
+							callback($bootup);
+						});
+
+					});
+
+				});
+
+			});
+
+			break;
+
 		case "getConfig":
 			// pickles2-contents-editor の設定を取得する
 			var conf = {};
