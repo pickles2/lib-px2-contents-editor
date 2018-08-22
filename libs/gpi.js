@@ -27,45 +27,45 @@ module.exports = function(px2ce, data, callback){
 				px2ce.getProjectConf(function(projectConf){
 					$bootup['projectConf'] = projectConf;
 
-					if(px2ce.options.customFieldsIncludePath && px2ce.options.customFieldsIncludePath.length){
-						var confCustomFields = px2ce.options.customFieldsIncludePath;
-						callback(confCustomFields);
-						break;
-					}
 					px2ce.getProjectConf(function(conf){
-						var codes = [];
-						var code = '';
-						try {
-							var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
-							for(var fieldName in confCustomFields){
-								var file = confCustomFields[fieldName].frontend.file;
-								var dir = confCustomFields[fieldName].frontend.dir;
-								var fnc = confCustomFields[fieldName].frontend.function;
-								if( file && fnc ){
-									if( typeof(file) == typeof('') ){
-										file = [file];
-									}
-									for(var idx in file){
-										var filePath = '.';
-										if( typeof(dir) == typeof('') && utils79.is_dir(require('path').resolve(px2ce.entryScript, '..', dir)) ){
-											filePath = dir;
+						if(px2ce.options.customFieldsIncludePath && px2ce.options.customFieldsIncludePath.length){
+							var confCustomFields = px2ce.options.customFieldsIncludePath;
+							$bootup['customFieldsClientSideLibs'] = confCustomFields;
+						}else{
+							var codes = [];
+							var code = '';
+							try {
+								var confCustomFields = conf.plugins.px2dt.guieditor.custom_fields;
+								for(var fieldName in confCustomFields){
+									var file = confCustomFields[fieldName].frontend.file;
+									var dir = confCustomFields[fieldName].frontend.dir;
+									var fnc = confCustomFields[fieldName].frontend.function;
+									if( file && fnc ){
+										if( typeof(file) == typeof('') ){
+											file = [file];
 										}
-										var pathJs = require('path').resolve(px2ce.entryScript, '..', filePath, file[idx]);
-										var binJs = require('fs').readFileSync( pathJs ).toString();
-										code += '/**'+"\n";
-										code += ' * '+fieldName+"\n";
-										code += ' */'+"\n";
-										code += binJs+"\n";
-										code += ''+"\n";
+										for(var idx in file){
+											var filePath = '.';
+											if( typeof(dir) == typeof('') && utils79.is_dir(require('path').resolve(px2ce.entryScript, '..', dir)) ){
+												filePath = dir;
+											}
+											var pathJs = require('path').resolve(px2ce.entryScript, '..', filePath, file[idx]);
+											var binJs = require('fs').readFileSync( pathJs ).toString();
+											code += '/**'+"\n";
+											code += ' * '+fieldName+"\n";
+											code += ' */'+"\n";
+											code += binJs+"\n";
+											code += ''+"\n";
+										}
 									}
 								}
+							} catch (e) {
 							}
-						} catch (e) {
-						}
-						code = 'data:text/javascript;base64,'+(new Buffer(code).toString('base64'));
-						codes.push(code);
+							code = 'data:text/javascript;base64,'+(new Buffer(code).toString('base64'));
+							codes.push(code);
 
-						$bootup['customFieldsClientSideLibs'] = codes;
+							$bootup['customFieldsClientSideLibs'] = codes;
+						}
 
 						$bootup['pagesByLayout'] = [];
 						var layout_id = data.layout_id || 'default';
