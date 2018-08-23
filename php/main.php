@@ -520,10 +520,6 @@ class main{
 		$confCustomFields = @$px2conf->plugins->px2dt->guieditor->custom_fields;
 		if(is_object($confCustomFields)){
 			foreach( $confCustomFields as $fieldName=>$field ){
-				if( @$confCustomFields->{$fieldName}->backend->require ){
-					$path_backend_field = $this->fs()->get_realpath(dirname($this->entryScript).'/'.$confCustomFields->{$fieldName}->backend->require);
-					require_once( $path_backend_field );
-				}
 				if( @$confCustomFields->{$fieldName}->backend->class ){
 					$customFields[$fieldName] = $confCustomFields->{$fieldName}->backend->class;
 				}

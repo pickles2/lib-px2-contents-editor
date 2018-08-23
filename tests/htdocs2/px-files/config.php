@@ -240,52 +240,31 @@ return call_user_func( function(){
 	@$conf->plugins->px2dt->guieditor->path_resource_dir = '{$dirname}/{$filename}__files/resources/'; // broccoliの引数 pathResourceDir
 	@$conf->plugins->px2dt->guieditor->path_data_dir = '{$dirname}/{$filename}__files/guieditor.ignore/'; // broccoliの引数 realpathDataDir
 
-	if(@$conf->plugins->px2dt->guiEngine == "broccoli-html-editor-php"){
-		@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
-			'projectCustom1'=>array(
-				'backend'=>array(
-					'require' => '../../px-files/broccoli-fields/projectCustom1/backend.php',
-					'class' => 'projectCustom1',
-				),
-				'frontend'=>array(
-					'dir' => '../../px-files/broccoli-fields/projectCustom1/',
-					'file' => 'frontend.js',
-					'function' => 'window.broccoliFieldProjectCustom1'
-				),
+	require_once( '../../px-files/broccoli-fields/projectCustom1/backend.php' );
+	require_once( '../../px-files/broccoli-fields/projectCustom2/backend.php' );
+	@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
+		'projectCustom1'=>array(
+			'backend'=>array(
+				'require' => '../../px-files/broccoli-fields/projectCustom1/backend.js',
+				'class' => 'projectCustom1',
 			),
-			'projectCustom2'=>array(
-				'backend'=>array(
-					'require' => '../../px-files/broccoli-fields/projectCustom2/backend.php',
-					'class' => 'projectCustom2',
-				),
-				'frontend'=>array(
-					'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
-					'function' => 'window.broccoliFieldProjectCustom2'
-				),
+			'frontend'=>array(
+				'dir' => '../../px-files/broccoli-fields/projectCustom1/',
+				'file' => 'frontend.js',
+				'function' => 'window.broccoliFieldProjectCustom1'
 			),
-		);
-	}else{
-		@$conf->plugins->px2dt->guieditor->custom_fields = array( // broccoli-html-editor のフィールド拡張
-			'projectCustom1'=>array(
-				'backend'=>array(
-					'require' => '../../px-files/broccoli-fields/projectCustom1/backend.js'
-				),
-				'frontend'=>array(
-					'file' => '../../px-files/broccoli-fields/projectCustom1/frontend.js',
-					'function' => 'window.broccoliFieldProjectCustom1'
-				),
+		),
+		'projectCustom2'=>array(
+			'backend'=>array(
+				'require' => '../../px-files/broccoli-fields/projectCustom2/backend.js',
+				'class' => 'projectCustom2',
 			),
-			'projectCustom2'=>array(
-				'backend'=>array(
-					'require' => '../../px-files/broccoli-fields/projectCustom2/backend.js'
-				),
-				'frontend'=>array(
-					'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
-					'function' => 'window.broccoliFieldProjectCustom2'
-				),
+			'frontend'=>array(
+				'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
+				'function' => 'window.broccoliFieldProjectCustom2'
 			),
-		);
-	}
+		),
+	);
 
 
 	/**
