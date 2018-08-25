@@ -184,7 +184,7 @@ $ npm run test
 ## 更新履歴 - Change log
 
 
-### pickles2-contents-editor v2.0.5 (リリース日未定)
+### pickles2-contents-editor v2.0.5 (2018年8月25日)
 
 - 初期起動時のパフォーマンスを向上した。
 
