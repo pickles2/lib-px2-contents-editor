@@ -13,13 +13,16 @@
         "start": [
             "php -S 127.0.0.1:8088 -t ./"
         ],
-        "open-in-browser": [
+        "preview": [
             "open http://127.0.0.1:8088/tests/app/client_php/"
         ],
         "test": [
             "php ./vendor/phpunit/phpunit/phpunit"
         ]
     } ,
+    "config": {
+        "process-timeout": 0
+    },
     "minimum-stability": "dev",
     "repositories": [
     ],
@@ -29,15 +32,15 @@
         "broccoli-html-editor/broccoli-field-table": "^0.2"
     },
     "require-dev": {
-        "pickles2/px-fw-2.x": "dev-develop",
+        "pickles2/px-fw-2.x": "*",
         "broccoli-html-editor/broccoli-module-fess": "*",
         "broccoli-html-editor/broccoli-module-plain-html-elements": "*",
-        "pickles2/px2-dec": "dev-master",
-        "pickles2/px2-multitheme": "dev-develop",
-        "pickles2/px2-path-resolver": "dev-develop",
-        "pickles2/px2-px2dthelper": "dev-develop",
-        "pickles2/px2-remove-attr": "dev-develop",
-        "pickles2/px2-sitemapexcel": "dev-develop",
+        "pickles2/px2-dec": "*",
+        "pickles2/px2-multitheme": "*",
+        "pickles2/px2-path-resolver": "*",
+        "pickles2/px2-px2dthelper": "*",
+        "pickles2/px2-remove-attr": "*",
+        "pickles2/px2-sitemapexcel": "*",
         "phpunit/phpunit": "^4.1.0"
     },
     "autoload": {
