@@ -160,15 +160,15 @@ module.exports = function(px2ce){
 				});
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				// 初期化が完了すると呼びだされるコールバック関数です。
 				setKeyboardEvent(function(){
-					// _this.redraw(function(){
-					// 	// broccoli.redraw();
-					// });
-
 					rlv();
 				});
 
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.redraw(function(){
+					rlv();
+				});
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				callback();
