@@ -187,6 +187,7 @@ $ npm run test
 ### pickles2-contents-editor v2.0.6 (リリース日未定)
 
 - モジュールパレットの表示サイズの調整が少しズレる問題を修正。
+- コンテンツの作成をキャンセルできるようになった。
 
 ### pickles2-contents-editor v2.0.5 (2018年8月25日)
 

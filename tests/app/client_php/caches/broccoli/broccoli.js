@@ -3769,7 +3769,9 @@ module.exports = function(broccoli){
 	 */
 	this.duplicateData = function( data, callback, resources ){
 		callback = callback||function(){};
-		data = JSON.parse( JSON.stringify( data ) );
+		try{
+			data = JSON.parse( JSON.stringify( data ) );
+		}catch(e){}
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback(data);
 		}); });
@@ -6195,7 +6197,12 @@ module.exports = function(broccoli){
 	 */
 	this.mkEditor = function( mod, data, elm, callback ){
 		var _this = this;
-		if(typeof(data) !== typeof({})){ data = {'src':''+data,'editor':'markdown'}; }
+		if( typeof(data) !== typeof({}) ){
+			data = {
+				'src':'' + ( typeof(data) === typeof('') ? data : '' ),
+				'editor':'markdown'
+			};
+		}
 		var rows = 12;
 		if( mod.rows ){
 			rows = mod.rows;
@@ -6362,8 +6369,11 @@ module.exports = function(broccoli){
 		var _this = this;
 		var fixedLang = mod.lang || null;
 
-		if(typeof(data) !== typeof({})){
-			data = {'src':''+data,'lang':(fixedLang ? fixedLang : 'javascript')};
+		if( typeof(data) !== typeof({}) ){
+			data = {
+				'src': ''+(typeof(data) === typeof('') ? data : ''),
+				'lang': (fixedLang ? fixedLang : 'javascript')
+			};
 		}
 		if( fixedLang ){
 			data.lang = fixedLang;

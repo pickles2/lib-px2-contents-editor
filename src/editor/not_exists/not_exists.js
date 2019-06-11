@@ -26,9 +26,12 @@ module.exports = function(px2ce){
 								+ '<li><label><input type="radio" name="editor-mode" value="md" /> Markdown (<%= basename %>.md)</label></li>'
 							+ '</ul>'
 							+ '<div class="row">'
-								+ '<div class="col-sm-8 col-sm-offset-2"><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg">コンテンツファイルを作成する</button></div>'
+								+ '<div class="col-sm-8 col-sm-offset-2"><p><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg" type="submit">コンテンツファイルを作成する</button></p></div>'
 							+ '</div>'
 						+ '</form>'
+						+ '<div class="row">'
+							+ '<div class="col-sm-6 col-sm-offset-3"><p><button class="pickles2-contents-editor__btn-cancel px2-btn px2-btn--default px2-btn--block" type="button">キャンセル</button></p></div>'
+						+ '</div>'
 					+ '</div>'
 				+ '</div>'
 			;
@@ -61,6 +64,13 @@ module.exports = function(px2ce){
 
 			return false;
 		});
+
+		// キャンセルボタン
+		$canvas.find('.pickles2-contents-editor__btn-cancel')
+			.on('click', function(){
+				px2ce.finish();
+			})
+		;
 
 		callback();
 	}
