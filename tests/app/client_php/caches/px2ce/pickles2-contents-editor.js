@@ -22620,9 +22620,7 @@ module.exports = function(px2ce){
 	var $elmCanvas,
 		$elmModulePalette,
 		$elmInstanceTreeView,
-		$elmInstancePathView,
-		$elmCssEditor,
-		$elmJsEditor;
+		$elmInstancePathView;
 
 	var show_instanceTreeView = false;
 
@@ -22694,13 +22692,13 @@ module.exports = function(px2ce){
 						{
 							"label": 'CSS',
 							"click": function(){
-								$elmCssEditor.show();
+								openCssJsEditor('css');
 							}
 						},
 						{
 							"label": 'JavaScript',
 							"click": function(){
-								$elmJsEditor.show();
+								openCssJsEditor('js');
 							}
 						}
 					],
@@ -22720,8 +22718,6 @@ module.exports = function(px2ce){
 					fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-editor-body-css"></div>';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-editor-body-js"></div>';
 					fin += '</div>';
 					return fin;
 				})());
@@ -22731,8 +22727,6 @@ module.exports = function(px2ce){
 				$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
 				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
 				$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
-				$elmCssEditor = $canvas.find('.pickles2-contents-editor--broccoli-editor-body-css');
-				$elmJsEditor = $canvas.find('.pickles2-contents-editor--broccoli-editor-body-js');
 
 				_this.redraw(function(){
 					rlv();
@@ -22753,80 +22747,6 @@ module.exports = function(px2ce){
 					},
 					function(CssJs){
 						moduleCssJs = CssJs;
-						rlv();
-					}
-				);
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				px2ce.gpiBridge(
-					{
-						'api': 'getContentsSrc',
-						'page_path': page_path
-					},
-					function(codes){
-						// console.log(codes);
-						$elmCssEditor.hide();
-						$elmJsEditor.hide();
-
-						if( editorLib == 'ace' ){
-							$elmCssEditor.append('<div>').css({'height': 300});
-							$elmJsEditor.append('<div>').css({'height': 300});
-
-							var aceCss = {
-								'position': 'relative',
-								'width': '100%',
-								'height': '100%'
-							};
-							$elmTextareas = {};
-							$elmTextareas['css'] = ace.edit(
-								$elmCssEditor.find('div').text(codes['css']).css(aceCss).get(0)
-							);
-							$elmTextareas['js'] = ace.edit(
-								$elmJsEditor.find('div').text(codes['js']).css(aceCss).get(0)
-							);
-							for(var i in $elmTextareas){
-								$elmTextareas[i].setFontSize(16);
-								$elmTextareas[i].getSession().setUseWrapMode(true);// Ace 自然改行
-								$elmTextareas[i].setShowInvisibles(true);// Ace 不可視文字の可視化
-								$elmTextareas[i].$blockScrolling = Infinity;
-								$elmTextareas[i].setTheme("ace/theme/github");
-								$elmTextareas[i].getSession().setMode("ace/mode/html");
-							}
-							$elmTextareas['css'].setTheme("ace/theme/tomorrow");
-							$elmTextareas['css'].getSession().setMode("ace/mode/scss");
-							$elmTextareas['js'].setTheme("ace/theme/xcode");
-							$elmTextareas['js'].getSession().setMode("ace/mode/javascript");
-
-						}else{
-							$elmTextareas = {};
-
-							$elmCssEditor.append('<textarea>');
-							$elmTextareas['css'] = $elmCssEditor.find('textarea');
-							$elmTextareas['css'] .val(codes['css']);
-
-							$elmJsEditor.append('<textarea>');
-							$elmTextareas['js'] = $elmJsEditor.find('textarea');
-							$elmTextareas['js']  .val(codes['js']);
-
-						}
-
-						$elmCssEditor.append($('<div>').append( $('<button class="px2-btn px2-btn--primary">')
-							.text('OK')
-							.on('click', function(){
-								saveContentsSrc(function(){
-									$elmCssEditor.hide();
-								});
-							})
-						));
-						$elmJsEditor.append($('<div>').append( $('<button class="px2-btn px2-btn--primary">')
-							.text('OK')
-							.on('click', function(){
-								saveContentsSrc(function(){
-									$elmJsEditor.hide();
-								});
-							})
-						));
-
 						rlv();
 					}
 				);
@@ -22873,21 +22793,96 @@ module.exports = function(px2ce){
 
 
 	/**
+	 * CSS, JS のエディタを開く
+	 */
+	function openCssJsEditor(cssOrJs){
+		var $dialogBody = $('<div>');
+		var $submitButton = $('<button type="submit" class="px2-btn px2-btn--primary">OK</button>');
+		var loadedCodes = [];
+		var $elmTextareas;
+
+		$submitButton.attr({'disabled': 'disabled'});
+
+		px2style.modal(
+			{
+				title: (cssOrJs == 'css' ? 'CSS (SCSS)' : 'JavaScript'),
+				body: $dialogBody,
+				buttons: [
+					$submitButton
+				],
+				form: {
+					action: 'javascript:;',
+					method: 'get',
+					submit: function(){
+						if( editorLib == 'ace' ){
+							loadedCodes[cssOrJs] = $elmTextareas.getValue();
+						}else{
+							loadedCodes[cssOrJs] = $elmTextareas.val();
+						}
+
+						saveContentsSrc(loadedCodes, function(){
+							px2style.closeModal();
+						});
+					}
+				},
+				width: 700
+			},
+			function(){
+				console.log('done.');
+			}
+		);
+
+		px2ce.gpiBridge(
+			{
+				'api': 'getContentsSrc',
+				'page_path': page_path
+			},
+			function(codes){
+				loadedCodes = codes;
+				// console.log(codes);
+
+				if( editorLib == 'ace' ){
+					$dialogBody.css({'height': 300});
+					var aceCss = {
+						'position': 'relative',
+						'width': '100%',
+						'height': '100%'
+					};
+					$dialogBody.append('<div>');
+					$elmTextareas = ace.edit(
+						$dialogBody.find('div').text(codes[cssOrJs]).css(aceCss).get(0)
+					);
+
+					$elmTextareas.setFontSize(16);
+					$elmTextareas.getSession().setUseWrapMode(true);// Ace 自然改行
+					$elmTextareas.setShowInvisibles(true);// Ace 不可視文字の可視化
+					$elmTextareas.$blockScrolling = Infinity;
+					$elmTextareas.setTheme("ace/theme/github");
+					$elmTextareas.getSession().setMode("ace/mode/html");
+
+					if( cssOrJs == 'css' ){
+						$elmTextareas.setTheme("ace/theme/tomorrow");
+						$elmTextareas.getSession().setMode("ace/mode/scss");
+					}else{
+						$elmTextareas.setTheme("ace/theme/xcode");
+						$elmTextareas.getSession().setMode("ace/mode/javascript");
+					}
+
+				}else{
+					$dialogBody.append('<textarea>');
+					$elmTextareas = $dialogBody.find('textarea');
+					$elmTextareas .val(codes[cssOrJs]);
+				}
+
+				$submitButton.removeAttr('disabled');
+			}
+		);
+	}
+
+	/**
 	 * 編集したコンテンツを保存する
 	 */
-	function saveContentsSrc(callback){
-		var codes;
-		if( editorLib == 'ace' ){
-			codes = {
-				'css':  $elmTextareas['css'].getValue(),
-				'js':   $elmTextareas['js'].getValue()
-			};
-		}else{
-			codes = {
-				'css':  $elmTextareas['css'].val(),
-				'js':   $elmTextareas['js'].val()
-			};
-		}
+	function saveContentsSrc(codes, callback){
 		px2ce.gpiBridge(
 			{
 				'api': 'saveContentsSrc',
