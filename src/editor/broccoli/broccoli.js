@@ -224,6 +224,13 @@ module.exports = function(px2ce){
 						}
 
 						saveContentsSrc(loadedCodes, function(){
+							var $broccoliCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
+							$broccoliCanvas.find('iframe')
+								.attr({
+									'src': $broccoliCanvas.attr('data-broccoli-preview')
+								})
+							;
+
 							px2style.closeModal();
 						});
 					}
