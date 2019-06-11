@@ -555,7 +555,7 @@ module.exports = function(){
 				}else{
 					bindTemplate = function(htmls, callback){
 						var fin = '';
-						var $realpathFiles = pjInfo.pathFiles;
+						var $realpathFiles = require('path').resolve(px2ce.realpathFiles)+'/';
 						if( utils79.is_file($realpathFiles+'style.css') || utils79.is_file($realpathFiles+'style.css.scss') ){
 							fin += '<'+'?php ob_start(); ?'+'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'+'>" /><'+'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'+'>'+"\n";
 						}
