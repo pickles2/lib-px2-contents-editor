@@ -22609,6 +22609,10 @@ module.exports = function(px2ce){
 	var px2conf = {}
 		moduleCssJs = {css: '', js: ''},
 		pagesByLayout = [];
+	var editorLib = null;
+	if(window.ace){
+		editorLib = 'ace';
+	}
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -22616,7 +22620,9 @@ module.exports = function(px2ce){
 	var $elmCanvas,
 		$elmModulePalette,
 		$elmInstanceTreeView,
-		$elmInstancePathView;
+		$elmInstancePathView,
+		$elmCssEditor,
+		$elmJsEditor;
 
 	var show_instanceTreeView = false;
 
@@ -22684,6 +22690,18 @@ module.exports = function(px2ce){
 							"click": function(){
 								px2ce.openUrlInBrowser( getPreviewUrl() );
 							}
+						},
+						{
+							"label": 'CSS',
+							"click": function(){
+								$elmCssEditor.show();
+							}
+						},
+						{
+							"label": 'JavaScript',
+							"click": function(){
+								$elmJsEditor.show();
+							}
 						}
 					],
 					"onFinish": function(){
@@ -22702,14 +22720,19 @@ module.exports = function(px2ce){
 					fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-editor-body-css"></div>';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-editor-body-js"></div>';
 					fin += '</div>';
 					return fin;
 				})());
+
 
 				$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
 				$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
 				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
 				$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
+				$elmCssEditor = $canvas.find('.pickles2-contents-editor--broccoli-editor-body-css');
+				$elmJsEditor = $canvas.find('.pickles2-contents-editor--broccoli-editor-body-js');
 
 				_this.redraw(function(){
 					rlv();
@@ -22730,6 +22753,80 @@ module.exports = function(px2ce){
 					},
 					function(CssJs){
 						moduleCssJs = CssJs;
+						rlv();
+					}
+				);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				px2ce.gpiBridge(
+					{
+						'api': 'getContentsSrc',
+						'page_path': page_path
+					},
+					function(codes){
+						// console.log(codes);
+						$elmCssEditor.hide();
+						$elmJsEditor.hide();
+
+						if( editorLib == 'ace' ){
+							$elmCssEditor.append('<div>').css({'height': 300});
+							$elmJsEditor.append('<div>').css({'height': 300});
+
+							var aceCss = {
+								'position': 'relative',
+								'width': '100%',
+								'height': '100%'
+							};
+							$elmTextareas = {};
+							$elmTextareas['css'] = ace.edit(
+								$elmCssEditor.find('div').text(codes['css']).css(aceCss).get(0)
+							);
+							$elmTextareas['js'] = ace.edit(
+								$elmJsEditor.find('div').text(codes['js']).css(aceCss).get(0)
+							);
+							for(var i in $elmTextareas){
+								$elmTextareas[i].setFontSize(16);
+								$elmTextareas[i].getSession().setUseWrapMode(true);// Ace 自然改行
+								$elmTextareas[i].setShowInvisibles(true);// Ace 不可視文字の可視化
+								$elmTextareas[i].$blockScrolling = Infinity;
+								$elmTextareas[i].setTheme("ace/theme/github");
+								$elmTextareas[i].getSession().setMode("ace/mode/html");
+							}
+							$elmTextareas['css'].setTheme("ace/theme/tomorrow");
+							$elmTextareas['css'].getSession().setMode("ace/mode/scss");
+							$elmTextareas['js'].setTheme("ace/theme/xcode");
+							$elmTextareas['js'].getSession().setMode("ace/mode/javascript");
+
+						}else{
+							$elmTextareas = {};
+
+							$elmCssEditor.append('<textarea>');
+							$elmTextareas['css'] = $elmCssEditor.find('textarea');
+							$elmTextareas['css'] .val(codes['css']);
+
+							$elmJsEditor.append('<textarea>');
+							$elmTextareas['js'] = $elmJsEditor.find('textarea');
+							$elmTextareas['js']  .val(codes['js']);
+
+						}
+
+						$elmCssEditor.append($('<div>').append( $('<button class="px2-btn px2-btn--primary">')
+							.text('OK')
+							.on('click', function(){
+								saveContentsSrc(function(){
+									$elmCssEditor.hide();
+								});
+							})
+						));
+						$elmJsEditor.append($('<div>').append( $('<button class="px2-btn px2-btn--primary">')
+							.text('OK')
+							.on('click', function(){
+								saveContentsSrc(function(){
+									$elmJsEditor.hide();
+								});
+							})
+						));
+
 						rlv();
 					}
 				);
@@ -22773,6 +22870,36 @@ module.exports = function(px2ce){
 		;
 
 	};
+
+
+	/**
+	 * 編集したコンテンツを保存する
+	 */
+	function saveContentsSrc(callback){
+		var codes;
+		if( editorLib == 'ace' ){
+			codes = {
+				'css':  $elmTextareas['css'].getValue(),
+				'js':   $elmTextareas['js'].getValue()
+			};
+		}else{
+			codes = {
+				'css':  $elmTextareas['css'].val(),
+				'js':   $elmTextareas['js'].val()
+			};
+		}
+		px2ce.gpiBridge(
+			{
+				'api': 'saveContentsSrc',
+				'page_path': page_path,
+				'codes': codes
+			},
+			function(result){
+				// console.log(result);
+				callback(result);
+			}
+		);
+	}
 
 	/**
 	 * キーボードイベントハンドラ

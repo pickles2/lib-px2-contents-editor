@@ -82,37 +82,45 @@ class editor_default{
 
 		$_contentsPath = $_targetPaths['contentsPath'];
 		$realpath_resource_dir = $_targetPaths['realpathFiles'];
-		$strLoaderCSS = $_targetPaths['strLoaderCSS'];
-		$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-		if( !strlen($codes['css']) ){
-			$strLoaderCSS = '';
-		}
-		if( !strlen($codes['js']) ){
-			$strLoaderJS = '';
-		}
+		// HTMLファイルを保存
+		if( array_key_exists('html', $codes) ){
+			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
+			$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
-			$codes['html'] = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $codes['html'] );
-			$this->px2ce->fs()->save_file($_contentsPath, $codes['html']);
-		}else{
-			$this->px2ce->fs()->save_file($_contentsPath, $strLoaderCSS . $strLoaderJS . $codes['html']);
+			if( !strlen($codes['css']) ){
+				$strLoaderCSS = '';
+			}
+			if( !strlen($codes['js']) ){
+				$strLoaderJS = '';
+			}
+
+			if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+				$codes['html'] = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $codes['html'] );
+				$this->px2ce->fs()->save_file($_contentsPath, $codes['html']);
+			}else{
+				$this->px2ce->fs()->save_file($_contentsPath, $strLoaderCSS . $strLoaderJS . $codes['html']);
+			}
 		}
 
 		// CSSファイルを保存
-		$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-		if( !strlen($codes['css']) ){
-			@unlink( $realpath_resource_dir . '/style.css.scss' );
-		}else{
-			$this->px2ce->fs()->save_file( $realpath_resource_dir . '/style.css.scss', $codes['css'] );
+		if( array_key_exists('css', $codes) ){
+			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
+			if( !strlen($codes['css']) ){
+				@unlink( $realpath_resource_dir . '/style.css.scss' );
+			}else{
+				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/style.css.scss', $codes['css'] );
+			}
 		}
 
 		// JSファイルを保存
-		$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-		if( !strlen($codes['js']) ){
-			@unlink( $realpath_resource_dir . '/script.js' );
-		}else{
-			$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
+		if( array_key_exists('js', $codes) ){
+			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
+			if( !strlen($codes['js']) ){
+				@unlink( $realpath_resource_dir . '/script.js' );
+			}else{
+				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
+			}
 		}
 
 		return $result;

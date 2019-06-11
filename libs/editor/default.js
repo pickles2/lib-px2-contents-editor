@@ -113,39 +113,45 @@ module.exports = function(px2ce){
 				var strLoaderJS = _targetPaths.strLoaderJS;
 
 				try {
-					if( !codes.css.length ){
-						strLoaderCSS = '';
-					}
-					if( !codes.js.length ){
-						strLoaderJS = '';
-					}
+					if( codes.html !== undefined ){
+						if( !codes.css.length ){
+							strLoaderCSS = '';
+						}
+						if( !codes.js.length ){
+							strLoaderJS = '';
+						}
 
-					if( px2ce.target_mode == 'theme_layout' ){
-						codes.html = codes.html.replace( /(\s*\<\/head\>)/, strLoaderCSS+strLoaderJS+'$1' );
-						fs.writeFileSync(_contentsPath, codes.html);
-					}else{
-						fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
+						if( px2ce.target_mode == 'theme_layout' ){
+							codes.html = codes.html.replace( /(\s*\<\/head\>)/, strLoaderCSS+strLoaderJS+'$1' );
+							fs.writeFileSync(_contentsPath, codes.html);
+						}else{
+							fs.writeFileSync(_contentsPath, strLoaderCSS + strLoaderJS + codes.html);
+						}
 					}
 
 				} catch (e) {
 				}
 
 				try {
-					fsx.mkdirpSync( realpath_resource_dir );
-					if( !codes.css.length ){
-						fs.unlinkSync( realpath_resource_dir + '/style.css.scss' );
-					}else{
-						fs.writeFileSync( realpath_resource_dir + '/style.css.scss', codes.css );
+					if( codes.css !== undefined ){
+						fsx.mkdirpSync( realpath_resource_dir );
+						if( !codes.css.length ){
+							fs.unlinkSync( realpath_resource_dir + '/style.css.scss' );
+						}else{
+							fs.writeFileSync( realpath_resource_dir + '/style.css.scss', codes.css );
+						}
 					}
 				} catch (e) {
 				}
 
 				try {
-					fsx.mkdirpSync( realpath_resource_dir );
-					if( !codes.js.length ){
-						fs.unlinkSync( realpath_resource_dir + '/script.js' );
-					}else{
-						fs.writeFileSync( realpath_resource_dir + '/script.js', codes.js );
+					if( codes.js !== undefined ){
+						fsx.mkdirpSync( realpath_resource_dir );
+						if( !codes.js.length ){
+							fs.unlinkSync( realpath_resource_dir + '/script.js' );
+						}else{
+							fs.writeFileSync( realpath_resource_dir + '/script.js', codes.js );
+						}
 					}
 				} catch (e) {
 				}
