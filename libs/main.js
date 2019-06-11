@@ -555,6 +555,14 @@ module.exports = function(){
 				}else{
 					bindTemplate = function(htmls, callback){
 						var fin = '';
+						var $realpathFiles = pjInfo.pathFiles;
+						if( utils79.is_file($realpathFiles+'style.css') || utils79.is_file($realpathFiles+'style.css.scss') ){
+							fin += '<'+'?php ob_start(); ?'+'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'+'>" /><'+'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'+'>'+"\n";
+						}
+						if( utils79.is_file($realpathFiles+'script.js') ){
+							fin += '<'+'?php ob_start(); ?'+'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'+'>"></script><'+'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'+'>'+"\n";
+						}
+
 						for( var bowlId in htmls ){
 							if( bowlId == 'main' ){
 								fin += htmls['main'];
@@ -568,13 +576,6 @@ module.exports = function(){
 							}
 						}
 
-						var $realpathFiles = pjInfo.pathFiles;
-						if( utils79.is_file($realpathFiles+'style.css') || utils79.is_file($realpathFiles+'style.css.scss') ){
-							fin += '<'+'?php ob_start(); ?'+'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'+'>" /><'+'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'+'>'+"\n";
-						}
-						if( utils79.is_file($realpathFiles+'script.js') ){
-							fin += '<'+'?php ob_start(); ?'+'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'+'>"></script><'+'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'+'>'+"\n";
-						}
 						callback(fin);
 						return;
 					}

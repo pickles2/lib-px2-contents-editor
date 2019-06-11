@@ -628,6 +628,14 @@ class main{
 		}else{
 			$bindTemplate = function($htmls){
 				$fin = '';
+				$realpathFiles = $this->fs()->get_realpath($this->get_realpath_files());
+				if( is_file($realpathFiles.'style.css') || is_file($realpathFiles.'style.css.scss') ){
+					$fin .= '<'.'?php ob_start(); ?'.'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'.'>" /><'.'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'.'>'."\n";
+				}
+				if( is_file($realpathFiles.'script.js') ){
+					$fin .= '<'.'?php ob_start(); ?'.'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'.'>"></script><'.'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'.'>'."\n";
+				}
+
 				foreach( $htmls as $bowlId=>$html ){
 					if( $bowlId == 'main' ){
 						$fin .= $htmls['main'];
@@ -641,13 +649,6 @@ class main{
 					}
 				}
 
-				$realpathFiles = $this->fs()->get_realpath($this->get_realpath_files());
-				if( is_file($realpathFiles.'style.css') || is_file($realpathFiles.'style.css.scss') ){
-					$fin .= '<'.'?php ob_start(); ?'.'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'.'>" /><'.'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'.'>'."\n";
-				}
-				if( is_file($realpathFiles.'script.js') ){
-					$fin .= '<'.'?php ob_start(); ?'.'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'.'>"></script><'.'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'.'>'."\n";
-				}
 				return $fin;
 			};
 		}
