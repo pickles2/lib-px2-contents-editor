@@ -91,19 +91,23 @@ module.exports = function(px2ce){
 							"click": function(){
 								px2ce.openUrlInBrowser( getPreviewUrl() );
 							}
-						},
-						{
-							"label": 'CSS',
-							"click": function(){
-								openCssJsEditor('css');
-							}
-						},
-						{
-							"label": 'JavaScript',
-							"click": function(){
-								openCssJsEditor('js');
-							}
 						}
+						// ↓ CSSとJavaScriptをBroccoli編集画面から編集できる機能を
+						// 　試作してみたが、乱用された場合にコンテンツデザインの
+						// 　一貫性を損ねるリスクがあるので、
+						// 　ひとまずペンディングにする。
+						// {
+						// 	"label": 'CSS',
+						// 	"click": function(){
+						// 		openCssJsEditor('css');
+						// 	}
+						// },
+						// {
+						// 	"label": 'JavaScript',
+						// 	"click": function(){
+						// 		openCssJsEditor('js');
+						// 	}
+						// }
 					],
 					"onFinish": function(){
 						// 完了イベント
