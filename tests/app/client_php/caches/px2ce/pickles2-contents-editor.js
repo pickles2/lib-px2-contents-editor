@@ -22644,7 +22644,7 @@ module.exports = function(px2ce){
 			rtn = RegExp.$1;
 			query = RegExp.$2;
 		}
-		rtn += (query.length ? '?'+query+'&' : '?') + 'PX2_CONTENTS_EDITOR=broccoli';
+		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=broccoli';
 		rtn += (hash.length ? '#'+hash : '');
 		// console.log(rtn);
 		return rtn;
@@ -23117,7 +23117,7 @@ module.exports = function(px2ce){
 			rtn = RegExp.$1;
 			query = RegExp.$2;
 		}
-		rtn += (query.length ? '?'+query+'&' : '?') + 'PX2_CONTENTS_EDITOR=default';
+		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=default';
 		rtn += (hash.length ? '#'+hash : '');
 		// console.log(rtn);
 		return rtn;

@@ -73,16 +73,16 @@ class main{
 	 */
 	public function init( $options ){
 		// var_dump(options);
-		if(!is_array($options)){
+		if( !is_array($options) ){
 			$options = array();
 		}
-		if( !@strlen( $options['appMode'] ) ){
+		if( !array_key_exists('appMode', $options) || !strlen( $options['appMode'] ) ){
 			$options['appMode'] = 'web'; // web | desktop
 		}
-		if( !@is_array( $options['customFields'] ) ){
+		if( !array_key_exists('customFields', $options) || !is_array( $options['customFields'] ) ){
 			$options['customFields'] = array(); // custom fields
 		}
-		if( !@is_callable( $options['log'] ) ){
+		if( !array_key_exists('log', $options) || !is_callable( $options['log'] ) ){
 			$options['log'] = function($msg){
 				// var_dump($msg);
 			};
@@ -92,13 +92,13 @@ class main{
 			'php_ini'=>null,
 			'php_extension_dir'=>null,
 		);
-		if( strlen(@$options['php']) ){
+		if( array_key_exists('php', $options) && strlen($options['php']) ){
 			$this->php_command['php'] = $options['php'];
 		}
-		if( strlen(@$options['php_ini']) ){
+		if( array_key_exists('php_ini', $options) && strlen($options['php_ini']) ){
 			$this->php_command['php_ini'] = $options['php_ini'];
 		}
-		if( strlen(@$options['php_extension_dir']) ){
+		if( array_key_exists('php_extension_dir', $options) && strlen($options['php_extension_dir']) ){
 			$this->php_command['php_extension_dir'] = $options['php_extension_dir'];
 		}
 
@@ -126,6 +126,8 @@ class main{
 		$this->realpathDataDir = $pjInfo['realpathDataDir'];
 		$this->pathResourceDir = $pjInfo['pathResourceDir'];
 		$this->realpathFiles = $pjInfo['realpathFiles'];
+
+		$this->find_autoload_custom_fields();
 
 		if( $this->target_mode == 'theme_layout' ){
 			if( preg_match('/^\/([\s\S]+?)\/([\s\S]+)\.html$/', $this->page_path, $matched) ){
@@ -178,17 +180,7 @@ class main{
 	 * @return object css および js ファイルの一覧
 	 */
 	public function get_client_resources($realpath_dist = null){
-		$path_vendor = __DIR__;
-		while(1){
-			if( realpath($path_vendor) === realpath(dirname($path_vendor)) ){
-				break;
-			}
-			if( is_file($path_vendor.'/vendor/autoload.php') ){
-				$path_vendor = $this->fs->get_realpath($path_vendor.'/vendor/');
-				break;
-			}
-			$path_vendor = dirname($path_vendor);
-		}
+		$path_vendor = $this->get_realpath_vendor();
 
 		$rtn = json_decode('{"css": [], "js": []}');
 
@@ -273,6 +265,29 @@ class main{
 		}
 
 		return $rtn;
+	}
+
+	/**
+	 * vendorフォルダのパスを取得
+	 */
+	public function get_realpath_vendor(){
+		static $path_vendor = null;
+		if(!is_null($path_vendor)){
+			return $path_vendor;
+		}
+
+		$path_vendor = __DIR__;
+		while(1){
+			if( realpath($path_vendor) === realpath(dirname($path_vendor)) ){
+				break;
+			}
+			if( is_file($path_vendor.'/vendor/autoload.php') ){
+				$path_vendor = $this->fs->get_realpath($path_vendor.'/vendor/');
+				break;
+			}
+			$path_vendor = dirname($path_vendor);
+		}
+		return $path_vendor;
 	}
 
 	/**
@@ -410,6 +425,57 @@ class main{
 		// var_dump($pjInfo);
 		return $pjInfo;
 	} // getProjectInfo()
+
+	/**
+	 * 自動ロードのカスタムフィールドを検索する
+	 */
+	private function find_autoload_custom_fields(){
+		if( !@is_object($this->px2conf->plugins->px2dt->guieditor->custom_fields) ){
+			@$this->px2conf->plugins->px2dt->guieditor->custom_fields = json_decode('{}');
+		}
+		$realpath_vendor = $this->get_realpath_vendor();
+		foreach($this->fs->ls( $realpath_vendor ) as $vendor){
+			if( !is_dir($realpath_vendor.$vendor.'/') ){
+				continue;
+			}
+			foreach($this->fs->ls( $realpath_vendor.$vendor.'/' ) as $package){
+				if( is_file($realpath_vendor.$vendor.'/'.$package.'/broccoli.json') ){
+					$realpath_json = $realpath_vendor.$vendor.'/'.$package.'/broccoli.json';
+					try{
+						$json = json_decode( file_get_contents($realpath_json) );
+						$ary = array();
+						if( !is_array($json) ){
+							array_push($ary, $json);
+						}else{
+							$ary = $json;
+						}
+						foreach( $ary as $item ){
+							if( $item->type != 'field' ){
+								// fieldではない
+								continue;
+							}
+							if( !property_exists($item, 'id') || !strlen($item->id) ){
+								// IDが未設定
+								continue;
+							}
+							if( property_exists($this->px2conf->plugins->px2dt->guieditor->custom_fields, $item->id) ){
+								// すでに登録済みのID
+								continue;
+							}
+							$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id} = json_decode('{}');
+							$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id}->name = $item->name;
+							$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id}->backend = $item->backend;
+							$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id}->frontend = $item->frontend;
+							$realpath = $this->fs->get_realpath( $item->frontend->dir, dirname($realpath_json).'/' );
+							$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id}->frontend->dir = $realpath;
+						}
+					}catch(\Exception $e){
+					}
+				}
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * モジュールCSS,JSソースを取得する

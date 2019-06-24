@@ -99,6 +99,9 @@ module.exports = function(){
 			_this.realpathDataDir = pjInfo.realpathDataDir;
 			_this.pathResourceDir = pjInfo.pathResourceDir;
 			_this.realpathFiles = pjInfo.realpathFiles;
+
+			find_autoload_custom_fields();
+
 			if( _this.target_mode == 'theme_layout' ){
 				if( _this.page_path.match(/^\/([\s\S]+?)\/([\s\S]+)\.html$/) ){
 					_this.theme_id = RegExp.$1;
@@ -113,6 +116,26 @@ module.exports = function(){
 			}
 			callback();
 		});
+	}
+
+	/**
+	 * vendorフォルダのパスを取得
+	 */
+	function get_realpath_vendor(){
+		var $path_vendor = null;
+
+		$path_vendor = utils79.dirname(_this.options.entryScript);
+		while(1){
+			if( fs.realpathSync($path_vendor) === fs.realpathSync(utils79.dirname($path_vendor)) ){
+				break;
+			}
+			if( utils79.is_file($path_vendor+'/vendor/autoload.php') ){
+				$path_vendor = fs.realpathSync($path_vendor+'/vendor/')+'/';
+				break;
+			}
+			$path_vendor = utils79.dirname($path_vendor);
+		}
+		return $path_vendor;
 	}
 
 	/**
@@ -295,6 +318,69 @@ module.exports = function(){
 
 		return;
 	} // getProjectInfo()
+
+	/**
+	 * 自動ロードのカスタムフィールドを検索する
+	 */
+	function find_autoload_custom_fields(){
+		_this.px2conf = _this.px2conf || {};
+		_this.px2conf.plugins = _this.px2conf.plugins || {};
+		_this.px2conf.plugins.px2dt = _this.px2conf.plugins.px2dt || {};
+		_this.px2conf.plugins.px2dt.guieditor = _this.px2conf.plugins.px2dt.guieditor || {};
+		_this.px2conf.plugins.px2dt.guieditor.custom_fields = _this.px2conf.plugins.px2dt.guieditor.custom_fields || {};
+
+		var $realpath_vendor = get_realpath_vendor();
+		var vendorList = fs.readdirSync($realpath_vendor);
+		for(idxVendor in vendorList){
+			var $vendor = vendorList[idxVendor];
+			if( !utils79.is_dir($realpath_vendor+$vendor+'/') ){
+				continue;
+			}
+			var packageList = fs.readdirSync( $realpath_vendor+$vendor+'/' );
+			for(idxPackage in packageList){
+				var $package = packageList[idxPackage];
+				if( utils79.is_file($realpath_vendor+$vendor+'/'+$package+'/broccoli.json') ){
+					var $realpath_json = $realpath_vendor+$vendor+'/'+$package+'/broccoli.json';
+					try{
+						var $json = JSON.parse( fs.readFileSync($realpath_json) );
+						var $ary = [];
+						if( $json.type ){
+							$ary.push($json);
+						}else{
+							$ary = $json;
+						}
+						for( idxItem in $ary ){
+							var $item = $ary[idxItem];
+							if( $item.type != 'field' ){
+								// fieldではない
+								continue;
+							}
+							if( !$item.id ){
+								// IDが未設定
+								continue;
+							}
+							if( _this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id] ){
+								// すでに登録済みのID
+								continue;
+							}
+							_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id] = {};
+							_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].name = $item.name;
+							_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].backend = $item.backend || {};
+							_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].frontend = $item.frontend || {};
+							var $realpath = require('path').resolve( utils79.dirname($realpath_json)+'/', $item.frontend.dir )+'/';
+							_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].frontend.dir = $realpath;
+							if($item.backend && $item.backend.file){
+								var $realpath = require('path').resolve( utils79.dirname($realpath_json)+'/', $item.backend.file )+'/';
+								_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].backend.file = $realpath;
+							}
+						}
+					}catch(e){
+					}
+				}
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * モジュールCSS,JSソースを取得する

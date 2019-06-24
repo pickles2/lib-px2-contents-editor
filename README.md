@@ -186,6 +186,7 @@ $ npm run test
 ### pickles2-contents-editor v2.0.7 (リリース日未定)
 
 - 編集中のプレビューにGETパラメータ `PICKLES2_CONTENTS_EDITOR` を付加するようになった。
+- `vendor` ディレクトリ中のカスタムフィールドを自動的に検索して読み込むようになった。
 
 ### pickles2-contents-editor v2.0.6 (2019年6月15日)
 
