@@ -36,7 +36,21 @@ module.exports = function(px2ce){
 		}
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		return px2ce.options.preview.origin + pathname;
+		var rtn = px2ce.options.preview.origin + pathname;
+		var hash = '';
+		var query = '';
+		if(rtn.match(/^([\s\S]*?)\#([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			hash = RegExp.$2;
+		}
+		if(rtn.match(/^([\s\S]*?)\?([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			query = RegExp.$2;
+		}
+		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=broccoli';
+		rtn += (hash.length ? '#'+hash : '');
+		// console.log(rtn);
+		return rtn;
 	}
 	function getPreviewUrl(){
 		if( px2ce.target_mode == 'theme_layout' ){

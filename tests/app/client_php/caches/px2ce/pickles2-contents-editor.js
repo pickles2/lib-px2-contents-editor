@@ -4183,7 +4183,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/ejs/-/ejs-2.6.1.tgz",
   "_shasum": "498ec0d495655abc6f23cd61868d926464071aa0",
   "_spec": "ejs@^2.4.1",
-  "_where": "/mydoc_TomK/Dropbox/localhosts/pickles2projects/pickles2/node-pickles2-contents-editor",
+  "_where": "/mydoc_TomK/projs/pickles2/pickles2/node-pickles2-contents-editor",
   "author": {
     "name": "Matthew Eernisse",
     "email": "mde@fleegix.org",
@@ -22633,7 +22633,21 @@ module.exports = function(px2ce){
 		}
 		var pathname = px2conf.path_controot + page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		return px2ce.options.preview.origin + pathname;
+		var rtn = px2ce.options.preview.origin + pathname;
+		var hash = '';
+		var query = '';
+		if(rtn.match(/^([\s\S]*?)\#([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			hash = RegExp.$2;
+		}
+		if(rtn.match(/^([\s\S]*?)\?([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			query = RegExp.$2;
+		}
+		rtn += (query.length ? '?'+query+'&' : '?') + 'PX2_CONTENTS_EDITOR=broccoli';
+		rtn += (hash.length ? '#'+hash : '');
+		// console.log(rtn);
+		return rtn;
 	}
 	function getPreviewUrl(){
 		if( px2ce.target_mode == 'theme_layout' ){
@@ -22688,19 +22702,23 @@ module.exports = function(px2ce){
 							"click": function(){
 								px2ce.openUrlInBrowser( getPreviewUrl() );
 							}
-						},
-						{
-							"label": 'CSS',
-							"click": function(){
-								openCssJsEditor('css');
-							}
-						},
-						{
-							"label": 'JavaScript',
-							"click": function(){
-								openCssJsEditor('js');
-							}
 						}
+						// ↓ CSSとJavaScriptをBroccoli編集画面から編集できる機能を
+						// 　試作してみたが、乱用された場合にコンテンツデザインの
+						// 　一貫性を損ねるリスクがあるので、
+						// 　ひとまずペンディングにする。
+						// {
+						// 	"label": 'CSS',
+						// 	"click": function(){
+						// 		openCssJsEditor('css');
+						// 	}
+						// },
+						// {
+						// 	"label": 'JavaScript',
+						// 	"click": function(){
+						// 		openCssJsEditor('js');
+						// 	}
+						// }
 					],
 					"onFinish": function(){
 						// 完了イベント
@@ -23088,7 +23106,21 @@ module.exports = function(px2ce){
 		}
 		var pathname = px2conf.path_controot + px2ce.page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		return px2ce.options.preview.origin + pathname;
+		var rtn = px2ce.options.preview.origin + pathname;
+		var hash = '';
+		var query = '';
+		if(rtn.match(/^([\s\S]*?)\#([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			hash = RegExp.$2;
+		}
+		if(rtn.match(/^([\s\S]*?)\?([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			query = RegExp.$2;
+		}
+		rtn += (query.length ? '?'+query+'&' : '?') + 'PX2_CONTENTS_EDITOR=default';
+		rtn += (hash.length ? '#'+hash : '');
+		// console.log(rtn);
+		return rtn;
 	}
 	function getPreviewUrl(){
 		return getCanvasPageUrl();
