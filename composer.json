@@ -41,7 +41,8 @@
         "pickles2/px2-px2dthelper": "*",
         "pickles2/px2-remove-attr": "*",
         "pickles2/px2-sitemapexcel": "*",
-        "phpunit/phpunit": "^4.1.0"
+        "phpunit/phpunit": "^4.1.0",
+        "tomk79/broccoli-module-lp": "dev-develop"
     },
     "autoload": {
         "files": [

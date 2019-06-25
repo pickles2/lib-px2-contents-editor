@@ -5,6 +5,33 @@
             "fields": {
                 "main": [
                     {
+                        "modId": "lp:containers/container",
+                        "fields": {
+                            "background-color": "",
+                            "background-image": {
+                                "resKey": "0c970563e14ddda96bb786403b60fba0",
+                                "path": "./index__files/resources/0c970563e14ddda96bb786403b60fba0.txt",
+                                "resType": "none",
+                                "webUrl": ""
+                            },
+                            "background-image-effect": "",
+                            "min-height": "",
+                            "margin-padding": {
+                                "marginTop": "",
+                                "marginRight": "",
+                                "marginBottom": "",
+                                "marginLeft": "",
+                                "paddingTop": "",
+                                "paddingRight": "",
+                                "paddingBottom": "",
+                                "paddingLeft": ""
+                            },
+                            "main": []
+                        },
+                        "anchor": "",
+                        "dec": ""
+                    },
+                    {
                         "modId": "PlainHTMLElements:PlainHTML/MultiText",
                         "fields": {
                             "main": {

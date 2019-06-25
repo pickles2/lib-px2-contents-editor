@@ -294,14 +294,7 @@ class main{
 	 * プロジェクトの設定情報を取得する
 	 */
 	public function get_project_conf(){
-		$conf = $this->px2query(
-			'/?PX=api.get.config',
-			array(
-				"output" => "json"
-			)
-		);
-		return $conf;
-		return;
+		return $this->px2conf;
 	}
 
 	/**
@@ -468,6 +461,10 @@ class main{
 							$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id}->frontend = $item->frontend;
 							$realpath = $this->fs->get_realpath( $item->frontend->dir, dirname($realpath_json).'/' );
 							$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id}->frontend->dir = $realpath;
+							if( property_exists( $item->backend, 'require' ) ){
+								$realpath = $this->fs->get_realpath( $item->backend->require, dirname($realpath_json).'/' );
+								$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$item->id}->backend->require = $realpath;
+							}
 						}
 					}catch(\Exception $e){
 					}

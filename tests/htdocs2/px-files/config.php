@@ -231,6 +231,7 @@ return call_user_func( function(){
 
 	$conf->plugins->px2dt->path_module_templates_dir = "../../px-files/modules/";
 	$conf->plugins->px2dt->paths_module_template = [
+		"lp" => "../../../../vendor/tomk79/broccoli-module-lp/modules/",
 		"PlainHTMLElements" => "../../../../vendor/broccoli-html-editor/broccoli-module-plain-html-elements/modules/",
 		"FESS" => "../../../../vendor/broccoli-html-editor/broccoli-module-fess/modules/"
 	];

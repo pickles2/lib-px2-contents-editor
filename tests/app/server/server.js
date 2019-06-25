@@ -35,12 +35,30 @@ px2proj.get_config(function(px2conf){
 	// console.log(px2conf);
 
 	var confCustomFields = px2conf.plugins.px2dt.guieditor.custom_fields;
+	confCustomFields['css-margin-padding'] = {
+		'frontend': {
+			'file': '../../../../vendor/tomk79/broccoli-module-lp/fields/cssMarginPadding/frontend/frontend.js',
+			'function': 'window.broccoliFieldLpCssMarginPadding'
+		}
+	};
+
 	var customFieldsIncludePath = [];
 	for(var fieldName in confCustomFields){
 		if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
-			var pathJs = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.file);
-			app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathJs, '..') ) );
-			customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+utils79.basename(pathJs) );
+			if( confCustomFields[fieldName].frontend.dir ){
+				var pathDir = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.dir);
+				app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathDir) ) );
+				if( typeof(confCustomFields[fieldName].frontend.file) === typeof('') ){
+					confCustomFields[fieldName].frontend.file = [confCustomFields[fieldName].frontend.file];
+				}
+				for( idx in confCustomFields[fieldName].frontend.file ){
+					customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+confCustomFields[fieldName].frontend.file[idx] );
+				}
+			}else{
+				var pathJs = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.file);
+				app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathJs, '..') ) );
+				customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+utils79.basename(pathJs) );
+			}
 		}
 	}
 

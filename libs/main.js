@@ -142,10 +142,7 @@ module.exports = function(){
 	 * プロジェクトの設定情報を取得する
 	 */
 	this.getProjectConf = function(callback){
-		callback = callback || function(){};
-		this.px2proj.get_config(function(val){
-			callback(val);
-		});
+		callback(_this.px2conf);
 		return;
 	}
 
@@ -369,9 +366,9 @@ module.exports = function(){
 							_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].frontend = $item.frontend || {};
 							var $realpath = require('path').resolve( utils79.dirname($realpath_json)+'/', $item.frontend.dir )+'/';
 							_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].frontend.dir = $realpath;
-							if($item.backend && $item.backend.file){
-								var $realpath = require('path').resolve( utils79.dirname($realpath_json)+'/', $item.backend.file )+'/';
-								_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].backend.file = $realpath;
+							if($item.backend && $item.backend.require){
+								var $realpath = require('path').resolve( utils79.dirname($realpath_json)+'/', $item.backend.require );
+								_this.px2conf.plugins.px2dt.guieditor.custom_fields[$item.id].backend.require = $realpath;
 							}
 						}
 					}catch(e){
