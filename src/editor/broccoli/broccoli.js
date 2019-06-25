@@ -28,15 +28,12 @@ module.exports = function(px2ce){
 	var show_instanceTreeView = false;
 
 	function getCanvasPageUrl(){
+		var rtn = getPreviewUrl();
 		if( px2ce.target_mode == 'theme_layout' ){
-			var path_html = px2ce.__dirname + '/editor/broccoli/canvas.html'
-			path_html += '?css='+utils79.base64_encode(moduleCssJs.css);
-			path_html += '&js='+utils79.base64_encode(moduleCssJs.js);
-			return path_html;
+			rtn = px2ce.__dirname + '/editor/broccoli/canvas.html'
+			rtn += '?css='+utils79.base64_encode(moduleCssJs.css);
+			rtn += '&js='+utils79.base64_encode(moduleCssJs.js);
 		}
-		var pathname = px2conf.path_controot + page_path;
-		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		var rtn = px2ce.options.preview.origin + pathname;
 		var hash = '';
 		var query = '';
 		if(rtn.match(/^([\s\S]*?)\#([\s\S]*)$/g)){
@@ -65,7 +62,11 @@ module.exports = function(px2ce){
 			return px2ce.options.preview.origin + pathname;
 		}
 
-		return getCanvasPageUrl();
+		var pathname = px2conf.path_controot + px2ce.page_path;
+		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+		var rtn = px2ce.options.preview.origin + pathname;
+		// console.log(rtn);
+		return rtn;
 	}
 
 	/**
