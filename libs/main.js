@@ -409,7 +409,7 @@ module.exports = function(){
 	} // getModuleCssJsSrc
 
 	/**
-	 * モジュールCSS,JSソースを取得する
+	 * ローカルCSS,JSソースを取得する
 	 */
 	this.getLocalCssJsSrc = function(theme_id, layout_id, callback){
 		callback = callback || function(){};
@@ -419,25 +419,53 @@ module.exports = function(){
 			'css': '',
 			'js': ''
 		};
-		callback(rtn); // TODO: 開発中
 
-		// _this.px2proj.query('/?PX=px2dthelper.document_modules.build_css&theme_id='+encodeURIComponent(theme_id), {
-		// 	"output": "json",
-		// 	"complete": function(data, code){
-		// 		// console.log(data, code);
-		// 		rtn.css += data;
+		var $public_cache_dir = _this.px2conf.public_cache_dir;
+		$public_cache_dir = $public_cache_dir.replace(/^\/*/g, '/');
+		$public_cache_dir = $public_cache_dir.replace(/\/*$/g, '/');
 
-		// 		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js&theme_id='+encodeURIComponent(theme_id), {
-		// 			"output": "json",
-		// 			"complete": function(data, code){
-		// 				// console.log(data, code);
-		// 				rtn.js += data;
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// キャッシュ生成
+				_this.px2proj.query('/?THEME='+encodeURIComponent(theme_id)+'&LAYOUT='+encodeURIComponent(layout_id), {
+					"output": "json",
+					"complete": function(data, code){
+						rlv();
+					}
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.query($public_cache_dir+'p/theme/'+encodeURIComponent(theme_id)+'/layouts/'+encodeURIComponent(layout_id)+'/style.css', {
+					"output": "json",
+					"complete": function(data, code){
+						data = JSON.parse(data);
+						console.log(data, code);
+						if( data.status == 200 ){
+							rtn.css += utils79.base64_decode(data.body_base64);
+						}
+						rlv();
+					}
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				_this.px2proj.query($public_cache_dir+'p/theme/'+encodeURIComponent(theme_id)+'/layouts/'+encodeURIComponent(layout_id)+'/script.js', {
+					"output": "json",
+					"complete": function(data, code){
+						data = JSON.parse(data);
+						console.log(data, code);
+						if( data.status == 200 ){
+							rtn.js += utils79.base64_decode(data.body_base64);
+						}
+						rlv();
+					}
+				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				callback(rtn);
+				rlv();
+			}); })
+		;
 
-		// 				callback(rtn);
-		// 			}
-		// 		});
-		// 	}
-		// });
 	} // getLocalCssJsSrc
 
 	/**
