@@ -22705,40 +22705,42 @@ module.exports = function(px2ce){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				toolbar.init({
-					"btns":[
-						{
-							"label": px2ce.lb.get('ui_label.toggle_instance_treeview'),
-							"click": function(){
-								show_instanceTreeView = (show_instanceTreeView ? false : true);
-								_this.redraw(function(){
-									// alert('完了');
-								});
-							}
-						},
-						{
-							"label": px2ce.lb.get('ui_label.open_in_browser'),
-							"click": function(){
-								px2ce.openUrlInBrowser( getPreviewUrl() );
-							}
+				var btns = [
+					{
+						"label": px2ce.lb.get('ui_label.toggle_instance_treeview'),
+						"click": function(){
+							show_instanceTreeView = (show_instanceTreeView ? false : true);
+							_this.redraw(function(){
+								// alert('完了');
+							});
 						}
-						// ↓ CSSとJavaScriptをBroccoli編集画面から編集できる機能を
-						// 　試作してみたが、乱用された場合にコンテンツデザインの
-						// 　一貫性を損ねるリスクがあるので、
-						// 　ひとまずペンディングにする。
-						// {
-						// 	"label": 'CSS',
-						// 	"click": function(){
-						// 		openCssJsEditor('css');
-						// 	}
-						// },
-						// {
-						// 	"label": 'JavaScript',
-						// 	"click": function(){
-						// 		openCssJsEditor('js');
-						// 	}
-						// }
-					],
+					},
+					{
+						"label": px2ce.lb.get('ui_label.open_in_browser'),
+						"click": function(){
+							px2ce.openUrlInBrowser( getPreviewUrl() );
+						}
+					}
+				];
+				// ↓ CSSとJavaScriptをBroccoli編集画面から編集できる機能を
+				// 　試作してみたが、乱用された場合にコンテンツデザインの
+				// 　一貫性を損ねるリスクがあるので、
+				// 　ひとまずペンディングにする。
+				// btns.push({
+				// 	"label": 'CSS',
+				// 	"click": function(){
+				// 		openCssJsEditor('css');
+				// 	}
+				// });
+				// btns.push({
+				// 	"label": 'JavaScript',
+				// 	"click": function(){
+				// 		openCssJsEditor('js');
+				// 	}
+				// });
+
+				toolbar.init({
+					"btns":btns,
 					"onFinish": function(){
 						// 完了イベント
 						px2ce.finish();
