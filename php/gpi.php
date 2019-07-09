@@ -125,6 +125,12 @@ class gpi{
 				return $results;
 				break;
 
+			case "getLocalCssJsSrc":
+				// ローカルCSS,JSソースを取得する
+				$results = $this->px2ce->getLocalCssJsSrc($data['theme_id'], $data['layout_id']);
+				return $results;
+				break;
+
 			case "getPagesByLayout":
 				// レイアウトからページの一覧を取得する
 				$rtn = array();

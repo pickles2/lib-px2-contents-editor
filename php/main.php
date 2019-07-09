@@ -477,7 +477,7 @@ class main{
 	/**
 	 * モジュールCSS,JSソースを取得する
 	 */
-	public function getModuleCssJsSrc($theme_id){
+	public function getModuleCssJsSrc($theme_id = null){
 		if(!strlen($theme_id)){
 			$theme_id = '';
 		}
@@ -501,6 +501,42 @@ class main{
 
 		return $rtn;
 	} // getModuleCssJsSrc
+
+	/**
+	 * ローカルCSS,JSソースを取得する
+	 */
+	public function getLocalCssJsSrc($theme_id = null, $layout_id = null){
+		if(!strlen($theme_id)){
+			$theme_id = '';
+		}
+		$rtn = array(
+			'css' => '',
+			'js' => ''
+		);
+		$this->px2query('/?THEME='.urlencode($theme_id).'&LAYOUT='.urlencode($layout_id)); // キャッシュ生成のため
+
+		$public_cache_dir = $this->px2conf->public_cache_dir;
+		$public_cache_dir = preg_replace('/^\/*/', '/', $public_cache_dir);
+		$public_cache_dir = preg_replace('/\/*$/', '/', $public_cache_dir);
+
+		$data = $this->px2query(
+			$public_cache_dir.'p/theme/'.urlencode($theme_id).'/layouts/'.urlencode($layout_id).'/style.css',
+			array('output'=>'json')
+		);
+		if( $data->status == 200 ){
+			$rtn['css'] .= base64_decode($data->body_base64);
+		}
+
+		$data = $this->px2query(
+			$public_cache_dir.'p/theme/'.urlencode($theme_id).'/layouts/'.urlencode($layout_id).'/script.js',
+			array('output'=>'json')
+		);
+		if( $data->status == 200 ){
+			$rtn['js'] .= base64_decode($data->body_base64);
+		}
+
+		return $rtn;
+	} // getLocalCssJsSrc
 
 	/**
 	 * コンテンツファイルを初期化する

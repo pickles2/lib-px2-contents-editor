@@ -161,6 +161,13 @@ module.exports = function(px2ce, data, callback){
 			});
 			break;
 
+		case "getLocalCssJsSrc":
+			// ローカルCSS,JSソースを取得する
+			px2ce.getLocalCssJsSrc(data.theme_id, data.layout_id, function(results){
+				callback(results);
+			});
+			break;
+
 		case "getPagesByLayout":
 			// レイアウトからページの一覧を取得する
 			var rtn = [];

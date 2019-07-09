@@ -409,6 +409,38 @@ module.exports = function(){
 	} // getModuleCssJsSrc
 
 	/**
+	 * モジュールCSS,JSソースを取得する
+	 */
+	this.getLocalCssJsSrc = function(theme_id, layout_id, callback){
+		callback = callback || function(){};
+		theme_id = theme_id || '';
+		layout_id = layout_id || '';
+		var rtn = {
+			'css': '',
+			'js': ''
+		};
+		callback(rtn); // TODO: 開発中
+
+		// _this.px2proj.query('/?PX=px2dthelper.document_modules.build_css&theme_id='+encodeURIComponent(theme_id), {
+		// 	"output": "json",
+		// 	"complete": function(data, code){
+		// 		// console.log(data, code);
+		// 		rtn.css += data;
+
+		// 		_this.px2proj.query('/?PX=px2dthelper.document_modules.build_js&theme_id='+encodeURIComponent(theme_id), {
+		// 			"output": "json",
+		// 			"complete": function(data, code){
+		// 				// console.log(data, code);
+		// 				rtn.js += data;
+
+		// 				callback(rtn);
+		// 			}
+		// 		});
+		// 	}
+		// });
+	} // getLocalCssJsSrc
+
+	/**
 	 * コンテンツファイルを初期化する
 	 */
 	this.initContentFiles = function(editorMode, callback){

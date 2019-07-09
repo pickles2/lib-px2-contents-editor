@@ -22626,6 +22626,7 @@ module.exports = function(px2ce){
 	var Promise = require('es6-promise').Promise;
 	var px2conf = {}
 		moduleCssJs = {css: '', js: ''},
+		localCssJs = {css: '', js: ''},
 		pagesByLayout = [];
 	var editorLib = null;
 	if(window.ace){
@@ -22646,8 +22647,8 @@ module.exports = function(px2ce){
 		var rtn = getPreviewUrl();
 		if( px2ce.target_mode == 'theme_layout' ){
 			rtn = px2ce.__dirname + '/editor/broccoli/canvas.html'
-			rtn += '?css='+utils79.base64_encode(moduleCssJs.css);
-			rtn += '&js='+utils79.base64_encode(moduleCssJs.js);
+			rtn += '?css='+utils79.base64_encode(moduleCssJs.css + "/* */\n" + localCssJs.css);
+			rtn += '&js='+utils79.base64_encode(moduleCssJs.js + "/* */\n" + localCssJs.js);
 		}
 		var hash = '';
 		var query = '';
@@ -22795,6 +22796,26 @@ module.exports = function(px2ce){
 				);
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				// ローカルのCSS, JS ソースを取得する
+				if( px2ce.target_mode != 'theme_layout' ){
+					// テーマ編集時のみ必要。
+					rlv();
+					return;
+				}
+
+				px2ce.gpiBridge(
+					{
+						'api': 'getLocalCssJsSrc',
+						'theme_id': px2ce.theme_id,
+						'layout_id': px2ce.layout_id
+					},
+					function(CssJs){
+						localCssJs = CssJs;
+						rlv();
+					}
+				);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
 				$elmCanvas.attr({
 					"data-broccoli-preview": getCanvasPageUrl()
 				});
@@ -22865,13 +22886,42 @@ module.exports = function(px2ce){
 
 						saveContentsSrc(loadedCodes, function(){
 							var $broccoliCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
-							$broccoliCanvas.find('iframe')
-								.attr({
-									'src': $broccoliCanvas.attr('data-broccoli-preview')
-								})
-							;
 
-							px2style.closeModal();
+							new Promise(function(rlv){rlv();})
+								.then(function(){ return new Promise(function(rlv, rjt){
+									if( px2ce.target_mode != 'theme_layout' ){
+										rlv();
+										return;
+									}
+									px2ce.gpiBridge(
+										{
+											'api': 'getLocalCssJsSrc',
+											'theme_id': px2ce.theme_id,
+											'layout_id': px2ce.layout_id
+										},
+										function(CssJs){
+											localCssJs = CssJs;
+											rlv();
+										}
+									);
+								}); })
+								.then(function(){ return new Promise(function(rlv, rjt){
+									$elmCanvas.attr({
+										"data-broccoli-preview": getCanvasPageUrl()
+									});
+									rlv();
+								}); })
+								.then(function(){ return new Promise(function(rlv, rjt){
+									$broccoliCanvas.find('iframe')
+										.attr({
+											'src': $broccoliCanvas.attr('data-broccoli-preview')
+										})
+									;
+
+									px2style.closeModal();
+									rlv();
+								}); })
+							;
 						});
 					}
 				},
