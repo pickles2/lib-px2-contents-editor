@@ -107,22 +107,26 @@ module.exports = function(px2ce){
 						}
 					}
 				];
-				// ↓ CSSとJavaScriptをBroccoli編集画面から編集できる機能を
-				// 　試作してみたが、乱用された場合にコンテンツデザインの
-				// 　一貫性を損ねるリスクがあるので、
-				// 　ひとまずペンディングにする。
-				// btns.push({
-				// 	"label": 'CSS',
-				// 	"click": function(){
-				// 		openCssJsEditor('css');
-				// 	}
-				// });
-				// btns.push({
-				// 	"label": 'JavaScript',
-				// 	"click": function(){
-				// 		openCssJsEditor('js');
-				// 	}
-				// });
+
+				if( px2ce.target_mode == 'theme_layout' ){
+					// ↓ CSSとJavaScriptをBroccoli編集画面から編集できる機能
+					// 　テーマ編集にのみ適用する。
+					// 　当初、コンテンツ編集に導入する想定で試作してみたが、
+					// 　濫用された場合にコンテンツデザインの一貫性を損ねるリスクがあるため却下とし、
+					// 　テーマ編集のみの適用範囲で再実装した。
+					btns.push({
+						"label": 'CSS',
+						"click": function(){
+							openCssJsEditor('css');
+						}
+					});
+					btns.push({
+						"label": 'JavaScript',
+						"click": function(){
+							openCssJsEditor('js');
+						}
+					});
+				}
 
 				toolbar.init({
 					"btns":btns,

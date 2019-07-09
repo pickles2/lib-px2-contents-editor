@@ -10,7 +10,9 @@
 
 		<link rel="stylesheet" href="<?= htmlspecialchars( $theme->files('/modules.css') ); ?>" />
 
-<?= $px->bowl()->get_clean('head'); ?>
+<?= $px->bowl()->get_clean('head'); ?><link rel="stylesheet" href="<?= htmlspecialchars( $theme->files('/layouts/broccoli/style.css') ) ?>" />
+<script src="<?= htmlspecialchars( $theme->files('/layouts/broccoli/script.js') ) ?>"></script>
+
 
 	</head>
 	<body>

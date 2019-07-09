@@ -187,6 +187,7 @@ $ npm run test
 
 - 編集中のプレビューにGETパラメータ `PICKLES2_CONTENTS_EDITOR` を付加するようになった。
 - `vendor` ディレクトリ中のカスタムフィールドを自動的に検索して読み込むようになった。
+- テーマをBroccoliエディタモードで編集するとき、カスタムCSSとJavaScriptを記述できるようになった。
 
 ### pickles2-contents-editor v2.0.6 (2019年6月15日)
 
