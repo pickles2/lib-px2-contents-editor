@@ -185,7 +185,7 @@ $ npm run test
 
 ### pickles2-contents-editor v2.0.8 (リリース日未定)
 
-- ???????????????
+- 内部のライブラリ構成を調整した。
 
 ### pickles2-contents-editor v2.0.7 (2019年7月10日)
 
