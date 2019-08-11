@@ -362,7 +362,7 @@ module.exports = function(px2ce){
 		});
 		$elmCanvas.css({
 			'position': 'absolute',
-			'overflow': 'hidden',
+			'overflow': 'auto',
 			'top': tbHeight,
 			'left': 0,
 			'width': '60%',
