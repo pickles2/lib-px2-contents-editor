@@ -183,7 +183,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.8 (リリース日未定)
+### pickles2-contents-editor v2.0.8 (2019年8月11日)
 
 - 内部のライブラリ構成を調整した。
 - タッチ端末でのスクロールに関する問題を修正。
