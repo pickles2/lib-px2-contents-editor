@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.0.9 (リリース日未定)
+
+- プレビューの読み込みに 30秒以上かかる場合、タイムアウトを発生させて強制的に編集画面へ移行するようになった。
+
 ### pickles2-contents-editor v2.0.8 (2019年8月11日)
 
 - 内部のライブラリ構成を調整した。
