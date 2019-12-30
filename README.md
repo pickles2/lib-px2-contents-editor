@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.0.10 (リリース日未定)
+
+- PHP 7.4 に対応した。
+
 ### pickles2-contents-editor v2.0.9 (2019年12月13日)
 
 - プレビューの読み込みに 30秒以上かかる場合、タイムアウトを発生させて強制的に編集画面へ移行するようになった。
