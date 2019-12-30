@@ -32,7 +32,7 @@
     "ace-builds": "file:submodules/ace-builds",
     "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
-    "broccoli-html-editor": "^0.3.8",
+    "broccoli-html-editor": "^0.3.11",
     "config": "^1.20.1",
     "express": "^4.13.3",
     "express-pickles2": "^2.0.0-alpha.4",

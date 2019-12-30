@@ -1,0 +1,14 @@
+table.broccoli-field-lp-css-margin-padding__table{
+    border-collapse: collapse;
+    margin: 0px auto;
+}
+table.broccoli-field-lp-css-margin-padding__table td{
+    padding: 7px 9px;
+    border: 0px solid #999;
+}
+table.broccoli-field-lp-css-margin-padding__table td.broccoli-field-lp-css-margin-padding__margin{
+    background-color: #fdffcc;
+}
+table.broccoli-field-lp-css-margin-padding__table td.broccoli-field-lp-css-margin-padding__padding{
+    background-color: #fcdbff;
+}

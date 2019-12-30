@@ -10651,15 +10651,15 @@ window.broccoliFieldLpCssMarginPadding = function(broccoli){
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// サーバーサイドの bind() に相当する処理
 				if(typeof(fieldData) == typeof({})){
-					rtn += fieldData.marginTop;
-					rtn += ' '+fieldData.marginRight;
-					rtn += ' '+fieldData.marginBottom;
-					rtn += ' '+fieldData.marginLeft;
+					rtn += 'margin: '+(fieldData.marginTop||'-');
+					rtn += ' '+(fieldData.marginRight||'-');
+					rtn += ' '+(fieldData.marginBottom||'-');
+					rtn += ' '+(fieldData.marginLeft||'-')+'; ';
 
-					rtn += ' '+fieldData.paddingTop;
-					rtn += ' '+fieldData.paddingRight;
-					rtn += ' '+fieldData.paddingBottom;
-					rtn += ' '+fieldData.paddingLeft;
+					rtn += 'padding: '+(fieldData.paddingTop||'-');
+					rtn += ' '+(fieldData.paddingRight||'-');
+					rtn += ' '+(fieldData.paddingBottom||'-');
+					rtn += ' '+(fieldData.paddingLeft||'-')+';';
 				}else{
 					rtn = 'no data';
 				}
@@ -10710,67 +10710,77 @@ window.broccoliFieldLpCssMarginPadding = function(broccoli){
 		}
 
 		var $rtn = $('<div>');
-		$rtn
-			// margin
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__margin-top'
-				})
-				.val(data.marginTop || '')
-				.css({'width':'5em'})
-			)
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__margin-right'
-				})
-				.val(data.marginRight || '')
-				.css({'width':'5em'})
-			)
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__margin-bottom'
-				})
-				.val(data.marginBottom || '')
-				.css({'width':'5em'})
-			)
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__margin-left'
-				})
-				.val(data.marginLeft || '')
-				.css({'width':'5em'})
-			)
+		$rtn.append(
+			'<p>ボックスの内側、外側のスペースを設定します。単位を含めて入力してください。</p>'
+		);
+		$rtn.append(
+			'<table class="broccoli-field-lp-css-margin-padding__table">'+
+				'<tr>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin">margin</td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"><input type="text" class="form-control" name="'+mod.name+'__margin-top" value="" style="width: 5em;" /></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+				'</tr>'+
+				'<tr>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-top-width: 1px; border-left-width: 1px;">padding</td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-top-width: 1px;"><input type="text" class="form-control" name="'+mod.name+'__padding-top" value="" style="width: 5em;" /></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-top-width: 1px; border-right-width: 1px;"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+				'</tr>'+
+				'<tr>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"><input type="text" class="form-control" name="'+mod.name+'__margin-left" value="" style="width: 5em;" /></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-left-width: 1px;"><input type="text" class="form-control" name="'+mod.name+'__padding-left" value="" style="width: 5em;" /></td>'+
+					'<td></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-right-width: 1px;"><input type="text" class="form-control" name="'+mod.name+'__padding-right" value="" style="width: 5em;" /></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"><input type="text" class="form-control" name="'+mod.name+'__margin-right" value="" style="width: 5em;" /></td>'+
+				'</tr>'+
+				'<tr>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-bottom-width: 1px; border-left-width: 1px;"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-bottom-width: 1px;"><input type="text" class="form-control" name="'+mod.name+'__padding-bottom" value="" style="width: 5em;" /></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__padding" style="border-bottom-width: 1px; border-right-width: 1px;"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+				'</tr>'+
+				'<tr>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"><input type="text" class="form-control" name="'+mod.name+'__margin-bottom" value="" style="width: 5em;" /></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+					'<td class="broccoli-field-lp-css-margin-padding__margin"></td>'+
+				'</tr>'+
+			'</table>'
+		);
 
-			// padding
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__padding-top'
-				})
-				.val(data.paddingTop || '')
-				.css({'width':'5em'})
-			)
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__padding-right'
-				})
-				.val(data.paddingRight || '')
-				.css({'width':'5em'})
-			)
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__padding-bottom'
-				})
-				.val(data.paddingBottom || '')
-				.css({'width':'5em'})
-			)
-			.append( $('<input class="form-control">')
-				.attr({
-					"name": mod.name+'__padding-left'
-				})
-				.val(data.paddingLeft || '')
-				.css({'width':'5em'})
-			)
+		// margin
+		$rtn.find( 'input[name='+(mod.name)+'__margin-top]' )
+			.val(data.marginTop || '')
 		;
+		$rtn.find( 'input[name='+(mod.name)+'__margin-right]' )
+			.val(data.marginRight || '')
+		;
+		$rtn.find( 'input[name='+(mod.name)+'__margin-bottom]' )
+			.val(data.marginBottom || '')
+		;
+		$rtn.find( 'input[name='+(mod.name)+'__margin-left]' )
+			.val(data.marginLeft || '')
+		;
+
+		// padding
+		$rtn.find( 'input[name='+(mod.name)+'__padding-top]' )
+			.val(data.paddingTop || '')
+		;
+		$rtn.find( 'input[name='+(mod.name)+'__padding-right]' )
+			.val(data.paddingRight || '')
+		;
+		$rtn.find( 'input[name='+(mod.name)+'__padding-bottom]' )
+			.val(data.paddingBottom || '')
+		;
+		$rtn.find( 'input[name='+(mod.name)+'__padding-left]' )
+			.val(data.paddingLeft || '')
+		;
+
 		$(elm).html($rtn);
 
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
