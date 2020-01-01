@@ -183,7 +183,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.10 (リリース日未定)
+### pickles2-contents-editor v2.0.10 (2020年1月2日)
 
 - PHP 7.4 に対応した。
 
@@ -293,5 +293,5 @@ MIT License
 ## Author
 
 - Tomoya Koyanagi <tomk79@gmail.com>
-- website: <http://www.pxt.jp/>
-- Twitter: @tomk79 <http://twitter.com/tomk79/>
+- website: <https://www.pxt.jp/>
+- Twitter: @tomk79 <https://twitter.com/tomk79/>
