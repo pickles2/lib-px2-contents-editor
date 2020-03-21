@@ -10,6 +10,7 @@ module.exports = function(px2ce){
 	var ejs = require('ejs');
 
 	var $toolbar;
+	var $btns;
 	var options;
 
 	this.init = function(_options, callback){
@@ -36,11 +37,7 @@ module.exports = function(px2ce){
 
 		$btns = $('.pickles2-contents-editor--toolbar-btns .btn-group');
 		for( var idx in options.btns ){
-			var btn = options.btns[idx];
-			$btns.append( $('<button class="px2-btn px2-btn--sm">')
-				.text( btn.label )
-				.click( btn.click )
-			);
+			this.addButton(options.btns[idx]);
 		}
 
 		// 完了イベント発火
@@ -51,6 +48,29 @@ module.exports = function(px2ce){
 		callback();
 	}
 
+	/**
+	 * ボタンを追加する
+	 */
+	this.addButton = function(btn){
+		btn = btn || {};
+		$btns.append( $('<button class="px2-btn px2-btn--sm">')
+			.text( btn.label )
+			.on('click', btn.click )
+		);
+		return;
+	}
+
+	/**
+	 * ボタンを初期化する
+	 */
+	this.clearButtons = function(btn){
+		$btns.html('');
+		return;
+	}
+
+	/**
+	 * ツールバー要素を取得する
+	 */
 	this.getElm = function(){
 		return $toolbar;
 	}

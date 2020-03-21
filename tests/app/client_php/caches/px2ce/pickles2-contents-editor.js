@@ -23377,6 +23377,7 @@ module.exports = function(px2ce){
 	var ejs = require('ejs');
 
 	var $toolbar;
+	var $btns;
 	var options;
 
 	this.init = function(_options, callback){
@@ -23403,11 +23404,7 @@ module.exports = function(px2ce){
 
 		$btns = $('.pickles2-contents-editor--toolbar-btns .btn-group');
 		for( var idx in options.btns ){
-			var btn = options.btns[idx];
-			$btns.append( $('<button class="px2-btn px2-btn--sm">')
-				.text( btn.label )
-				.click( btn.click )
-			);
+			this.addButton(options.btns[idx]);
 		}
 
 		// 完了イベント発火
@@ -23418,6 +23415,29 @@ module.exports = function(px2ce){
 		callback();
 	}
 
+	/**
+	 * ボタンを追加する
+	 */
+	this.addButton = function(btn){
+		btn = btn || {};
+		$btns.append( $('<button class="px2-btn px2-btn--sm">')
+			.text( btn.label )
+			.on('click', btn.click )
+		);
+		return;
+	}
+
+	/**
+	 * ボタンを初期化する
+	 */
+	this.clearButtons = function(btn){
+		$btns.html('');
+		return;
+	}
+
+	/**
+	 * ツールバー要素を取得する
+	 */
 	this.getElm = function(){
 		return $toolbar;
 	}
@@ -23965,6 +23985,7 @@ module.exports = function(px2ce){
 	var page_path = px2ce.page_path;
 	var px2conf = {},
 		pagesByLayout = [];
+		useWrapMode = true;
 	var editorLib = null;
 	if(window.ace){
 		editorLib = 'ace';
@@ -24016,6 +24037,27 @@ module.exports = function(px2ce){
 		// console.log(rtn);
 		return rtn;
 	}
+	function toggleWordWrapMode(){
+		useWrapMode = !useWrapMode;
+		setWordWrapMode(useWrapMode);
+		return;
+	}
+	function setWordWrapMode(wrapTo){
+		useWrapMode = !!wrapTo;
+		console.info(useWrapMode);
+		if( editorLib == 'ace' ){
+			for(var i in $elmTextareas){
+				$elmTextareas[i].getSession().setUseWrapMode(useWrapMode);
+			}
+		}else{
+			for(var i in $elmTextareas){
+				$elmTextareas[i].css({
+					'white-space': (useWrapMode ? 'pre-wrap' : 'pre')
+				});
+			}
+		}
+		return;
+	}
 
 	/**
 	 * 初期化
@@ -24054,34 +24096,6 @@ module.exports = function(px2ce){
 			},
 			function(it1, arg){
 				toolbar.init({
-					"btns":[
-						{
-							"label": "ブラウザでプレビュー",
-							"click": function(){
-								px2ce.openUrlInBrowser( getPreviewUrl() );
-							}
-						},
-						{
-							"label": "リソース",
-							"click": function(){
-								px2ce.openResourceDir();
-							}
-						},
-						{
-							"label": "保存する",
-							"click": function(){
-								saveContentsSrc(
-									function(result){
-										console.log(result);
-										if(!result.result){
-											alert(result.message);
-										}
-										updatePreview();
-									}
-								);
-							}
-						}
-					],
 					"onFinish": function(){
 						// 完了イベント
 						saveContentsSrc(
@@ -24095,6 +24109,38 @@ module.exports = function(px2ce){
 						);
 					}
 				},function(){
+					toolbar.addButton({
+						"label": "ブラウザでプレビュー",
+						"click": function(){
+							px2ce.openUrlInBrowser( getPreviewUrl() );
+						}
+					});
+					toolbar.addButton({
+						"label": "リソース",
+						"click": function(){
+							px2ce.openResourceDir();
+						}
+					});
+					toolbar.addButton({
+						"label": "折返し",
+						"click": function(){
+							toggleWordWrapMode();
+						}
+					});
+					toolbar.addButton({
+						"label": "保存する",
+						"click": function(){
+							saveContentsSrc(
+								function(result){
+									if(!result.result){
+										console.error(result);
+										alert(result.message);
+									}
+									updatePreview();
+								}
+							);
+						}
+					});
 					it1.next(arg);
 				});
 			},
@@ -24215,7 +24261,7 @@ module.exports = function(px2ce){
 							);
 							for(var i in $elmTextareas){
 								$elmTextareas[i].setFontSize(16);
-								$elmTextareas[i].getSession().setUseWrapMode(true);// Ace 自然改行
+								$elmTextareas[i].getSession().setUseWrapMode(useWrapMode);// Ace 自然改行
 								$elmTextareas[i].setShowInvisibles(true);// Ace 不可視文字の可視化
 								$elmTextareas[i].$blockScrolling = Infinity;
 								$elmTextareas[i].setTheme("ace/theme/github");

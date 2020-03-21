@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.0.11 (リリース日未定)
+
+- defaultエディタで、行の折り返しのモードを切り替えられるようになった。
+
 ### pickles2-contents-editor v2.0.10 (2020年1月2日)
 
 - PHP 7.4 に対応した。
