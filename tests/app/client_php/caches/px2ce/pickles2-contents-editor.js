@@ -24271,16 +24271,12 @@ module.exports = function(px2ce){
 			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
 
-console.log('0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0');
 
 		if(broccoli){
-console.log('broccoli redraw');
 			broccoli.redraw(function(){
-console.log('broccoli redraw done');
 				callback();
 			});
 		}else{
-console.log('no broccoli');
 			callback();
 		}
 		return;
