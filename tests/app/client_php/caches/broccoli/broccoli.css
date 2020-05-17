@@ -21,8 +21,8 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 10px;
-    border: none; }
+    height: 100%;
+    border: 0px none; }
   .broccoli--canvas .broccoli--panels {
     position: absolute;
     top: 0;
@@ -293,38 +293,38 @@
     top: auto;
     bottom: -8px; }
 
-.broccoli--edit-window h2 {
+.broccoli__edit-window h2 {
   font-weight: bold;
   text-align: center;
   margin: 1em; }
 
-.broccoli--edit-window-fields {
+.broccoli__edit-window-fields {
   margin: 0.5em 0 3em 30px; }
 
-.broccoli--edit-window-field {
+.broccoli__edit-window-field {
   margin: 1em 0 2em; }
 
-.broccoli--edit-window h3 {
+.broccoli__edit-window h3 {
   padding: 0 0 0 10px;
   border-left: 3px solid #999;
   margin: 0.5em 0 0.5em -30px;
   background-color: #fff;
   font-weight: bold; }
 
-.broccoli--edit-window .has-error h3 {
+.broccoli__edit-window .has-error h3 {
   color: #a94442; }
 
-.broccoli--edit-window-field-required h3::before {
+.broccoli__edit-window-field-required h3::before {
   content: "*";
   color: #f33;
   margin-right: 0.5em;
   font-size: 80%; }
 
-.broccoli--edit-window-message-field {
+.broccoli__edit-window-message-field {
   display: none;
   margin: 10px; }
 
-.broccoli--edit-window-module-readme-inner {
+.broccoli__edit-window-module-readme-inner {
   border: 1px solid #ddd;
   border-radius: 3px;
   background-color: #f9f9f9;
@@ -333,16 +333,16 @@
   overflow: auto;
   margin: 0.5em 1em 2em; }
 
-.broccoli--edit-window-module-readme-switch {
+.broccoli__edit-window-module-readme-switch {
   text-align: right; }
 
-.broccoli--edit-window-builtin-fields {
-  border: 1px solid #99e;
+.broccoli__edit-window-builtin-fields {
+  border: 1px solid #ddd;
   padding: 1em;
-  margin: 1em 5%;
-  background: #eef; }
+  margin: 1em 0;
+  background: #f9f9f9; }
 
-.broccoli--edit-window-module-fields {
+.broccoli__edit-window-module-fields {
   padding: 10px;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -353,33 +353,33 @@
   background: #fafafa;
   display: -ms-flexbox;
   display: flex; }
-  .broccoli--edit-window-module-fields__instances {
+  .broccoli__edit-window-module-fields__instances {
     width: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     overflow-scrolling: touch; }
-    .broccoli--edit-window-module-fields--fieldtype-module .broccoli--edit-window-module-fields__instances {
+    .broccoli__edit-window-module-fields--fieldtype-module .broccoli__edit-window-module-fields__instances {
       padding-right: 5px;
       margin-right: 5px;
       width: 70%; }
-    .broccoli--edit-window-module-fields__instances ul {
+    .broccoli__edit-window-module-fields__instances ul {
       padding: 0; }
-      .broccoli--edit-window-module-fields__instances ul li {
+      .broccoli__edit-window-module-fields__instances ul li {
         border-bottom: 1px solid #bbb;
         list-style-type: none;
         margin: 0;
         padding: 0; }
-        .broccoli--edit-window-module-fields__instances ul li a {
+        .broccoli__edit-window-module-fields__instances ul li a {
           display: block;
           position: relative;
           outline: none !important;
           padding: 0.5em 1em;
           margin: 0; }
-          .broccoli--edit-window-module-fields__instances ul li a:hover {
+          .broccoli__edit-window-module-fields__instances ul li a:hover {
             background: #eee; }
-          .broccoli--edit-window-module-fields__instances ul li a:last-child {
+          .broccoli__edit-window-module-fields__instances ul li a:last-child {
             border-bottom: none; }
-    .broccoli--edit-window-module-fields__instances [data-broccoli-is-appender] {
+    .broccoli__edit-window-module-fields__instances [data-broccoli-is-appender] {
       padding: 9px;
       background-color: #eef;
       border-color: #8585d2;
@@ -395,7 +395,7 @@
       box-sizing: border-box;
       clear: both;
       white-space: nowrap; }
-      .broccoli--edit-window-module-fields__instances [data-broccoli-is-appender][data-broccoli-sub-mod-name] {
+      .broccoli__edit-window-module-fields__instances [data-broccoli-is-appender][data-broccoli-sub-mod-name] {
         padding: 5px 15px;
         background-color: #dfe;
         border-color: #6dcd9d;
@@ -405,34 +405,97 @@
         box-sizing: border-box;
         clear: both;
         white-space: nowrap; }
-  .broccoli--edit-window-module-fields__palette {
+  .broccoli__edit-window-module-fields__palette {
     display: none; }
-    .broccoli--edit-window-module-fields--fieldtype-module .broccoli--edit-window-module-fields__palette {
+    .broccoli__edit-window-module-fields--fieldtype-module .broccoli__edit-window-module-fields__palette {
       width: 30%;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
       overflow-scrolling: touch;
       display: block; }
 
-.broccoli--edit-window-logical-path {
+.broccoli__edit-window-logical-path {
   font-size: 74%; }
-  .broccoli--edit-window-logical-path ul {
+  .broccoli__edit-window-logical-path ul {
     margin: 0;
     padding: 0; }
-    .broccoli--edit-window-logical-path ul li {
+    .broccoli__edit-window-logical-path ul li {
       margin: 0;
       padding: 0;
       list-style-type: none;
       display: inline; }
-      .broccoli--edit-window-logical-path ul li::before {
+      .broccoli__edit-window-logical-path ul li::before {
         content: ">";
         margin: 0 0.5em; }
 
-.broccoli--edit-window-form-buttons {
+.broccoli__edit-window-form-buttons {
   margin-top: 1em;
   padding-bottom: 0.5em; }
+  .broccoli__edit-window-form-buttons-fluid {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: stretch;
+        align-items: stretch;
+    text-align: center;
+    padding: 10px 0; }
+    @media all and (max-width: 600px) {
+      .broccoli__edit-window-form-buttons-fluid {
+        display: block; } }
+  .broccoli__edit-window-form-buttons-ok {
+    text-align: center;
+    -ms-flex-positive: 1;
+        flex-grow: 1;
+    padding: 10px; }
+    .broccoli__edit-window-form-buttons-ok button {
+      max-width: 100%;
+      width: 60%; }
+      @media all and (max-width: 600px) {
+        .broccoli__edit-window-form-buttons-ok button {
+          width: 100%; } }
+  .broccoli__edit-window-form-buttons-cancel {
+    text-align: left;
+    -ms-flex-positive: 1;
+        flex-grow: 1;
+    padding: 10px;
+    width: 50%; }
+    @media all and (max-width: 600px) {
+      .broccoli__edit-window-form-buttons-cancel {
+        text-align: center;
+        width: 100%; } }
+    .broccoli__edit-window-form-buttons-cancel button {
+      max-width: 360px;
+      width: 80%; }
+      @media all and (max-width: 600px) {
+        .broccoli__edit-window-form-buttons-cancel button {
+          width: 100%; } }
+  .broccoli__edit-window-form-buttons-delete {
+    text-align: right;
+    -ms-flex-positive: 1;
+        flex-grow: 1;
+    padding: 10px;
+    width: 50%; }
+    @media all and (max-width: 600px) {
+      .broccoli__edit-window-form-buttons-delete {
+        text-align: center;
+        width: 100%; } }
+    .broccoli__edit-window-form-buttons-delete button {
+      max-width: 360px;
+      width: 80%; }
+      @media all and (max-width: 600px) {
+        .broccoli__edit-window-form-buttons-delete button {
+          width: 100%; } }
 
-.broccoli--edit-window-field-error-message {
+.broccoli__edit-window-field-preview {
+  font-size: 64%;
+  line-height: 1.1; }
+  .broccoli__edit-window-field-preview * {
+    color: #666;
+    text-decoration: none;
+    max-width: 100%;
+    max-height: 1.2em;
+    display: inline; }
+
+.broccoli__edit-window-field-error-message {
   display: none; }
 
 .broccoli__lightbox {
@@ -567,29 +630,29 @@
         border: 2px solid #999;
         box-sizing: border-box; }
 
-.broccoli--module-palette {
+.broccoli__module-palette {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   overflow-scrolling: touch; }
-  .broccoli--module-palette div.broccoli--module-palette-inner {
+  .broccoli__module-palette div.broccoli__module-palette-inner {
     overflow: hidden; }
-  .broccoli--module-palette div.broccoli--module-palette-filter {
+  .broccoli__module-palette div.broccoli__module-palette-filter {
     overflow: hidden;
     padding: 3px 1px; }
-    .broccoli--module-palette div.broccoli--module-palette-filter input {
+    .broccoli__module-palette div.broccoli__module-palette-filter input {
       font-size: 11px;
       border: 1px #999 solid; }
-  .broccoli--module-palette ul.broccoli--module-palette-list {
+  .broccoli__module-palette ul.broccoli__module-palette-list {
     margin: 0;
     padding: 0;
     font-size: small;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     overflow-scrolling: touch; }
-    .broccoli--module-palette ul.broccoli--module-palette-list li {
+    .broccoli__module-palette ul.broccoli__module-palette-list li {
       list-style-type: none;
       padding: 0; }
-      .broccoli--module-palette ul.broccoli--module-palette-list li a.broccoli--module-palette--buttongroups {
+      .broccoli__module-palette ul.broccoli__module-palette-list li a.broccoli__module-palette--buttongroups {
         display: block;
         color: #eee;
         border-top: 1px solid #666;
@@ -600,13 +663,13 @@
         text-overflow: ellipsis;
         font-weight: bold;
         font-size: 12px; }
-        .broccoli--module-palette ul.broccoli--module-palette-list li a.broccoli--module-palette--buttongroups:active, .broccoli--module-palette ul.broccoli--module-palette-list li a.broccoli--module-palette--buttongroups:focus, .broccoli--module-palette ul.broccoli--module-palette-list li a.broccoli--module-palette--buttongroups:hover {
+        .broccoli__module-palette ul.broccoli__module-palette-list li a.broccoli__module-palette--buttongroups:active, .broccoli__module-palette ul.broccoli__module-palette-list li a.broccoli__module-palette--buttongroups:focus, .broccoli__module-palette ul.broccoli__module-palette-list li a.broccoli__module-palette--buttongroups:hover {
           color: #fff; }
-      .broccoli--module-palette ul.broccoli--module-palette-list li ul {
+      .broccoli__module-palette ul.broccoli__module-palette-list li ul {
         margin: 0;
         padding: 0;
         font-size: small; }
-        .broccoli--module-palette ul.broccoli--module-palette-list li ul li a.broccoli--module-palette--buttongroups {
+        .broccoli__module-palette ul.broccoli__module-palette-list li ul li a.broccoli__module-palette--buttongroups {
           color: #000;
           border-top: 1px solid #999;
           background-color: #666;
@@ -614,15 +677,15 @@
           padding: 0.3em 2em;
           font-weight: normal;
           font-size: 11px; }
-          .broccoli--module-palette ul.broccoli--module-palette-list li ul li a.broccoli--module-palette--buttongroups:active, .broccoli--module-palette ul.broccoli--module-palette-list li ul li a.broccoli--module-palette--buttongroups:focus, .broccoli--module-palette ul.broccoli--module-palette-list li ul li a.broccoli--module-palette--buttongroups:hover {
+          .broccoli__module-palette ul.broccoli__module-palette-list li ul li a.broccoli__module-palette--buttongroups:active, .broccoli__module-palette ul.broccoli__module-palette-list li ul li a.broccoli__module-palette--buttongroups:focus, .broccoli__module-palette ul.broccoli__module-palette-list li ul li a.broccoli__module-palette--buttongroups:hover {
             color: #fff; }
-        .broccoli--module-palette ul.broccoli--module-palette-list li ul li ul {
+        .broccoli__module-palette ul.broccoli__module-palette-list li ul li ul {
           margin: 0;
           padding: 0;
           font-size: small; }
-          .broccoli--module-palette ul.broccoli--module-palette-list li ul li ul li {
+          .broccoli__module-palette ul.broccoli__module-palette-list li ul li ul li {
             padding: 0; }
-  .broccoli--module-palette a.broccoli--module-palette--draggablebutton {
+  .broccoli__module-palette a.broccoli__module-palette--draggablebutton {
     box-sizing: border-box;
     display: -ms-flexbox;
     display: flex;
@@ -647,21 +710,23 @@
     overflow: hidden;
     cursor: move;
     font-weight: bold; }
-    .broccoli--module-palette a.broccoli--module-palette--draggablebutton:after {
-      content: "@";
+    .broccoli__module-palette a.broccoli__module-palette--draggablebutton:after {
+      content: url("./images/clip.png");
+      width: 20px;
+      height: 20px;
       margin-left: 0.5em;
       color: #669; }
-    .broccoli--module-palette a.broccoli--module-palette--draggablebutton[data-clip="false"] {
+    .broccoli__module-palette a.broccoli__module-palette--draggablebutton[data-clip="false"] {
       font-weight: normal; }
-      .broccoli--module-palette a.broccoli--module-palette--draggablebutton[data-clip="false"]:after {
+      .broccoli__module-palette a.broccoli__module-palette--draggablebutton[data-clip="false"]:after {
         content: "";
         margin-left: 0; }
-    .broccoli--module-palette a.broccoli--module-palette--draggablebutton:hover {
+    .broccoli__module-palette a.broccoli__module-palette--draggablebutton:hover {
       background-color: #ddd;
       background: linear-gradient(to bottom, #f9f9f9, #ddd);
       text-decoration: none;
       color: #000; }
-  .broccoli--module-palette span.broccoli--module-palette--draggablebutton-thumb {
+  .broccoli__module-palette span.broccoli__module-palette--draggablebutton-thumb {
     text-overflow: ellipsis;
     overflow: hidden;
     background-color: #ccc;
@@ -670,16 +735,16 @@
     min-width: 35px;
     height: 35px;
     min-height: 35px; }
-    .broccoli--module-palette span.broccoli--module-palette--draggablebutton-thumb img {
+    .broccoli__module-palette span.broccoli__module-palette--draggablebutton-thumb img {
       width: 100%;
       height: 100%; }
-  .broccoli--module-palette span.broccoli--module-palette--draggablebutton-label {
+  .broccoli__module-palette span.broccoli__module-palette--draggablebutton-label {
     text-overflow: ellipsis;
     overflow: hidden;
     padding-left: 8px; }
-  .broccoli--module-palette a.broccoli--module-palette--draggablebutton-children {
+  .broccoli__module-palette a.broccoli__module-palette--draggablebutton-children {
     padding-left: 24px; }
-    .broccoli--module-palette a.broccoli--module-palette--draggablebutton-children span.broccoli--module-palette--draggablebutton-thumb {
+    .broccoli__module-palette a.broccoli__module-palette--draggablebutton-children span.broccoli__module-palette--draggablebutton-thumb {
       width: 27px;
       min-width: 27px;
       height: 27px;

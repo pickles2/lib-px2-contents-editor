@@ -23697,10 +23697,18 @@ module.exports = function(px2ce){
 	 */
 	this.addButton = function(btn){
 		btn = btn || {};
-		$btns.append( $('<button class="px2-btn px2-btn--sm">')
+		var $btn = $('<button class="px2-btn px2-btn--sm">');
+		$btns.append( $btn
 			.text( btn.label )
 			.on('click', btn.click )
 		);
+		if( typeof(btn.cssClass) == typeof('') ){
+			$btn.addClass(btn.cssClass);
+		}else if( btn.cssClass ){
+			for( var idx in btn.cssClass ){
+				$btn.addClass(btn.cssClass[idx]);
+			}
+		}
 		return;
 	}
 
@@ -24314,8 +24322,13 @@ module.exports = function(px2ce){
 		// console.log(rtn);
 		return rtn;
 	}
-	function toggleWordWrapMode(){
+	function toggleWordWrapMode(elmBtn){
 		useWrapMode = !useWrapMode;
+		if( useWrapMode ){
+			$(elmBtn).addClass('px2-btn--toggle-on');
+		}else{
+			$(elmBtn).removeClass('px2-btn--toggle-on');
+		}
 		setWordWrapMode(useWrapMode);
 		return;
 	}
@@ -24401,8 +24414,11 @@ module.exports = function(px2ce){
 					toolbar.addButton({
 						"label": "折返し",
 						"click": function(){
-							toggleWordWrapMode();
-						}
+							toggleWordWrapMode(this);
+						},
+						"cssClass": [
+							"px2-btn--toggle-on"
+						]
 					});
 					toolbar.addButton({
 						"label": "保存する",

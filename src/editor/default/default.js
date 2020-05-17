@@ -61,8 +61,13 @@ module.exports = function(px2ce){
 		// console.log(rtn);
 		return rtn;
 	}
-	function toggleWordWrapMode(){
+	function toggleWordWrapMode(elmBtn){
 		useWrapMode = !useWrapMode;
+		if( useWrapMode ){
+			$(elmBtn).addClass('px2-btn--toggle-on');
+		}else{
+			$(elmBtn).removeClass('px2-btn--toggle-on');
+		}
 		setWordWrapMode(useWrapMode);
 		return;
 	}
@@ -148,8 +153,11 @@ module.exports = function(px2ce){
 					toolbar.addButton({
 						"label": "折返し",
 						"click": function(){
-							toggleWordWrapMode();
-						}
+							toggleWordWrapMode(this);
+						},
+						"cssClass": [
+							"px2-btn--toggle-on"
+						]
 					});
 					toolbar.addButton({
 						"label": "保存する",

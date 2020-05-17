@@ -57,16 +57,25 @@
 			options.clipboard = options.clipboard || {};
 			options.clipboard.set = options.clipboard.set || null;
 			options.clipboard.get = options.clipboard.get || null;
+			options.enableModuleDec = ( typeof(options.enableModuleDec) == typeof(true) ? options.enableModuleDec : true );
+			options.enableModuleAnchor = ( typeof(options.enableModuleAnchor) == typeof(true) ? options.enableModuleAnchor : true );
 
 			this.options = options;
 
 			uiState = 'initialize';
+
+			// 内容を消去
+			$(options.elmCanvas).html('');
+			$(options.elmInstancePathView).html('...');
+			$(options.elmInstanceTreeView).html('...');
+			$(options.elmModulePalette).html('...');
 
 			$canvas = $(options.elmCanvas);
 			$canvas
 				.addClass('broccoli')
 				.addClass('broccoli--canvas')
 				.append( $('<iframe>')
+					.css({'border': 'none'})
 				)
 				.append( $('<div class="broccoli--panels">')
 				)
@@ -74,10 +83,12 @@
 			$canvas.find('iframe')
 				.bind('load', function(){
 					var contWin = $canvas.find('iframe').get(0).contentWindow;
-					if(contWin.location.href == 'about:blank'){
-						return;
-					}
-					console.log('broccoli: preview loaded:', contWin.location.href);
+					try{
+						if(contWin.location.href == 'about:blank'){
+							return;
+						}
+						console.log('broccoli: preview loaded:', contWin.location.href);
+					}catch(e){}
 					_this.setUiState('standby');
 					onPreviewLoad( callback );
 				})
@@ -112,6 +123,8 @@
 				_this.fieldDefinitions.script = loadFieldDefinition('script', require('./../../../fields/client/app.fields.script.js'));
 				_this.fieldDefinitions.select = loadFieldDefinition('select', require('./../../../fields/client/app.fields.select.js'));
 				_this.fieldDefinitions.text = loadFieldDefinition('text', require('./../../../fields/client/app.fields.text.js'));
+				_this.fieldDefinitions.color = loadFieldDefinition('color', require('./../../../fields/client/app.fields.color.js'));
+				_this.fieldDefinitions.datetime = loadFieldDefinition('datetime', require('./../../../fields/client/app.fields.datetime.js'));
 
 				if( _this.options.customFields ){
 					for( var idx in _this.options.customFields ){
@@ -149,17 +162,13 @@
 				{},
 				[
 					function(it1, data){
-						// プログレスを表示
-						_this.progress(function(){
-							it1.next(data);
-						});
-					} ,
-					function(it1, data){
+						// リソースファイルの読み込み
 						var css = [
 							__dirname+'/libs/bootstrap/dist/css/bootstrap.css',
 							__dirname+'/libs/px2style/dist/styles.css',
 							__dirname+'/broccoli.css',
 						];
+						$('head *[data-broccoli-resource]').remove(); // 一旦削除
 						it79.ary(
 							css,
 							function(it2, row, idx){
@@ -171,11 +180,18 @@
 								$('head').append(link);
 								link.rel = 'stylesheet';
 								link.href = row;
+								link.setAttribute('data-broccoli-resource', true);
 							},
 							function(){
 								it1.next(data);
 							}
 						);
+					} ,
+					function(it1, data){
+						// プログレスを表示
+						_this.progress(function(){
+							it1.next(data);
+						});
 					} ,
 					function(it1, data){
 						_this.progressMessage('データを読み込んでいます...。');
@@ -338,6 +354,7 @@
 					})
 				;
 			}
+			return;
 		}
 
 		/**
@@ -383,7 +400,7 @@
 					}
 				]
 			);
-			return this;
+			return;
 		}
 
 
@@ -452,7 +469,7 @@
 								// console.log('bowlList:', bowlList);
 								if( typeof(bowlList)!==typeof([]) || !bowlList.length ){
 									_this.message('FAILED to list bowls.');
-									console.log('bowlList - - - - - -', bowlList);
+									console.error('FAILED to list bowls - - - - - -', 'bowlList',  bowlList);
 								}
 								var indexOfMain = bowlList.indexOf('main');
 								if( typeof(indexOfMain) != typeof(0) || indexOfMain < 0 ){
@@ -540,9 +557,9 @@
 					function( it1, data ){
 						// モジュールパレットのサイズ合わせ
 						_this.progressMessage('モジュールパレットのサイズを合わせています...。');
-						var $elm = $(_this.options.elmModulePalette).find('.broccoli--module-palette-inner');
-						var filterHeight = $elm.find('.broccoli--module-palette-filter').outerHeight();
-						$elm.find('.broccoli--module-palette-list').css({
+						var $elm = $(_this.options.elmModulePalette).find('.broccoli__module-palette-inner');
+						var filterHeight = $elm.find('.broccoli__module-palette-filter').outerHeight();
+						$elm.find('.broccoli__module-palette-list').css({
 							'height': $elm.parent().outerHeight() - filterHeight
 						});
 
@@ -552,7 +569,7 @@
 						// インスタンスツリービュー描画
 						_this.progressMessage('インスタンスツリービューを描画しています...。');
 						_this.instanceTreeView.update( function(){
-							console.log('broccoli: instanceTreeView redoraw : done.');
+							console.log('broccoli: instanceTreeView redraw : done.');
 							it1.next(data);
 						} );
 					} ,
@@ -560,7 +577,7 @@
 						// インスタンスパスビューを更新
 						_this.progressMessage('インスタンスパスビューを描画しています...。');
 						_this.instancePathView.update( function(){
-							console.log('broccoli: instancePathView redoraw : done.');
+							console.log('broccoli: instancePathView redraw : done.');
 							it1.next(data);
 						} );
 					} ,
@@ -583,7 +600,7 @@
 					}
 				]
 			);
-			return this;
+			return;
 		} // redraw()
 
 		/**
@@ -615,7 +632,7 @@
 				}
 				callback(result);
 			});
-			return this;
+			return;
 		} // gpi()
 
 		/**
@@ -685,7 +702,7 @@
 					} );
 				} );
 			});
-			return this;
+			return;
 		} // editInstance()
 
 		/**
@@ -713,7 +730,7 @@
 					});
 				});
 			});
-			return this;
+			return;
 		}
 
 		/**
@@ -725,7 +742,7 @@
 			if( !selectedInstance ){
 				// 無選択状態だったら、選択操作に転送する。
 				this.selectInstance(instancePathRegionTo, callback);
-				return this;
+				return;
 			}
 			console.log("Select Region: from "+selectedInstance+" to "+instancePathRegionTo);
 			selectedInstance.match(/^([\s\S]*?)([0-9]*)$/, '$1');
@@ -737,7 +754,7 @@
 				// ずれた階層間での範囲選択はできません。
 				console.error('ずれた階層間での範囲選択はできません。');
 				callback(false);
-				return this;
+				return;
 			}
 
 			var numberTo = instancePathRegionTo.split(commonLayer)[1];
@@ -760,7 +777,7 @@
 					callback();
 				});
 			});
-			return this;
+			return;
 		}
 
 		/**
@@ -780,7 +797,7 @@
 					});
 				});
 			});
-			return this;
+			return;
 		}
 
 		/**
@@ -813,7 +830,7 @@
 					callback();
 				});
 			});
-			return this;
+			return;
 
 		}
 
@@ -825,7 +842,7 @@
 			this.panels.unfocusInstance(function(){
 				callback();
 			});
-			return this;
+			return;
 		}
 
 		/**
@@ -1085,6 +1102,11 @@
 				callback(false);
 				return;
 			}
+			if( this.isLightboxOpened() ){
+				// lightboxを表示中は削除を受け付けない。
+				callback(false);
+				return;
+			}
 			selectedInstanceRegion = JSON.parse( JSON.stringify(selectedInstanceRegion) );
 			selectedInstanceRegion.reverse();//先頭から削除すると添字がリアルタイムに変わってしまうので、逆順に削除する。
 
@@ -1138,7 +1160,7 @@
 					});
 				});
 			});
-			return this;
+			return;
 		}
 
 		/**
@@ -1159,19 +1181,18 @@
 					});
 				});
 			});
-			return this;
+			return;
 		}
 
 		/**
 		 * モジュールパレットを描画する
-		 * @param  {Object}   moduleList モジュール一覧。
 		 * @param  {Element}  targetElm  描画する対象の要素
 		 * @param  {Function} callback   callback function.
 		 * @return {Object}              this.
 		 */
 		this.drawModulePalette = function(targetElm, callback){
 			require( './drawModulePalette.js' )(_this, targetElm, callback);
-			return this;
+			return;
 		}
 
 		/**
@@ -1181,7 +1202,7 @@
 		 */
 		this.drawPanels = function(callback){
 			this.panels.init(this.options.elmPanels, callback);
-			return this;
+			return;
 		}
 
 		/**
@@ -1189,7 +1210,7 @@
 		 */
 		this.drawEditWindow = function(instancePath, elmEditWindow, callback){
 			this.editWindow.init(instancePath, elmEditWindow, callback);
-			return this;
+			return;
 		}
 
 		/**
@@ -1222,7 +1243,7 @@
 			;
 
 			callback( $dom.get(0) );
-			return this;
+			return;
 		}
 
 		/**
@@ -1253,7 +1274,7 @@
 				)
 			;
 			this.setUiState('standby');
-			return this;
+			return;
 		}
 
 		/**
@@ -1274,7 +1295,7 @@
 			;
 			var dom = $('body').find('.px2-loading').get(0);
 			callback(dom);
-			return this;
+			return;
 		}
 
 		/**
@@ -1285,6 +1306,7 @@
 			console.log(str);
 			var $userMessage = $('.broccoli__progress-comment');
 			$userMessage.text(str);
+			return;
 		}
 
 		/**
@@ -1306,7 +1328,7 @@
 					}
 				)
 			;
-			return this;
+			return;
 		}
 
 		/**
@@ -1320,7 +1342,7 @@
 			console.info(message);
 			this.options.onMessage(message);
 			callback();
-			return this;
+			return;
 		}
 
 		/**
@@ -1367,11 +1389,12 @@
 				function(it1, data){
 					// コンテンツを更新
 					_this.progressMessage('コンテンツを更新しています...');
+						// この処理は、サーバーサイドでHTMLやリソースのリビルドを実行しています。
 					_this.gpi(
 						'updateContents',
 						{} ,
 						function(result){
-							// console.log(result);
+							// console.log('------ gpi.updateContents result --', result);
 							it1.next(data);
 						}
 					);
@@ -1384,7 +1407,7 @@
 					it1.next(data);
 				}
 			]);
-			return this;
+			return;
 		}
 
 		/**
@@ -1409,7 +1432,7 @@
 
 })(module);
 
-},{"../../../libs/fncs/incrementInstancePath.js":25,"../../../libs/fncs/parseModuleId.js":26,"./../../../fields/client/app.fields.href.js":16,"./../../../fields/client/app.fields.html.js":17,"./../../../fields/client/app.fields.html_attr_text.js":18,"./../../../fields/client/app.fields.image.js":19,"./../../../fields/client/app.fields.markdown.js":20,"./../../../fields/client/app.fields.multitext.js":21,"./../../../fields/client/app.fields.script.js":22,"./../../../fields/client/app.fields.select.js":23,"./../../../fields/client/app.fields.text.js":24,"./clipboard.js":2,"./contentsSourceData.js":3,"./contextmenu.js":4,"./drawModulePalette.js":5,"./editWindow.js":6,"./fieldBase.js":7,"./instancePathView.js":9,"./instanceTreeView.js":10,"./panels.js":11,"./postMessenger.js":12,"./resourceMgr.js":13,"./validator.js":14,"ejs":79,"iterate79":116,"jquery":118,"langbank":119,"phpjs":127,"underscore":140}],2:[function(require,module,exports){
+},{"../../../libs/fncs/incrementInstancePath.js":27,"../../../libs/fncs/parseModuleId.js":28,"./../../../fields/client/app.fields.color.js":16,"./../../../fields/client/app.fields.datetime.js":17,"./../../../fields/client/app.fields.href.js":18,"./../../../fields/client/app.fields.html.js":19,"./../../../fields/client/app.fields.html_attr_text.js":20,"./../../../fields/client/app.fields.image.js":21,"./../../../fields/client/app.fields.markdown.js":22,"./../../../fields/client/app.fields.multitext.js":23,"./../../../fields/client/app.fields.script.js":24,"./../../../fields/client/app.fields.select.js":25,"./../../../fields/client/app.fields.text.js":26,"./clipboard.js":2,"./contentsSourceData.js":3,"./contextmenu.js":4,"./drawModulePalette.js":5,"./editWindow.js":6,"./fieldBase.js":7,"./instancePathView.js":9,"./instanceTreeView.js":10,"./panels.js":11,"./postMessenger.js":12,"./resourceMgr.js":13,"./validator.js":14,"ejs":83,"iterate79":121,"jquery":123,"langbank":124,"phpjs":133,"underscore":146}],2:[function(require,module,exports){
 /**
  * clipboard.js
  * クリップボード管理オブジェクト
@@ -1465,7 +1488,7 @@ module.exports = function(broccoli){
 
 }
 
-},{"jquery":118}],3:[function(require,module,exports){
+},{"jquery":123}],3:[function(require,module,exports){
 /**
  * contentsSourceData.js
  */
@@ -1482,6 +1505,11 @@ module.exports = function(broccoli){
 
 	var _contentsSourceData = broccoli.getBootupInfomations().contentsDataJson; // <= data.jsonの中身
 	var _modTpls = broccoli.getBootupInfomations().allModuleList; // <- module の一覧
+
+	var _moduleInternalIdMap = {};
+	for(var idx in _modTpls){
+		_moduleInternalIdMap[_modTpls[idx].internalId] = idx;
+	}
 
 	/**
 	 * 初期化
@@ -1542,12 +1570,13 @@ module.exports = function(broccoli){
 		var tmpCur = cur.split('.');
 		var container = tmpCur[0];
 		var fieldName = tmpCur[1];
-		var modTpl = _this.getModule( data.modId, data.subModName );
+		var modTpl = _this.getModuleByInternalId( data.modId, data.subModName );
 
 		if( container == 'bowl' ){
 			return this.get( aryPath, data.bowl[fieldName] );
 		}
 
+		modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 		if( !aryPath.length ){
 			// ここが最後のインスタンスだったら
 			if( !data.fields ){
@@ -1591,7 +1620,7 @@ module.exports = function(broccoli){
 		if( !current ){
 			callback([]);return;
 		}
-		var modTpl = _this.getModule( current.modId, current.subModName );
+		var modTpl = _this.getModuleByInternalId( current.modId, current.subModName );
 		var targetFieldNames = {};
 		for( var fieldName in modTpl.fields ){
 			switch( modTpl.fields[fieldName].fieldType ){
@@ -1626,19 +1655,20 @@ module.exports = function(broccoli){
 
 		var newData = {};
 		if( typeof(modId) === typeof('') ){
-			newData = new (function(){
-				this.modId = modId ,
+			var modTpl = _this.getModuleByInternalId( modId, subModName );
+			newData = new (function(modId, subModName){
+				this.modId =  modId,
 				this.fields = {}
 				if( typeof(subModName) === typeof('') ){
 					this.subModName = subModName;
 				}
-			})(modId, subModName);
-			var modTpl = _this.getModule( newData.modId, subModName );
+			})(modTpl.internalId, subModName);
 
 			// 初期データ追加
 			var fieldList = _.keys( modTpl.fields );
 			for( var idx in fieldList ){
 				var fieldName = fieldList[idx];
+				modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 				if( modTpl.fields[fieldName].fieldType == 'input' ){
 					newData.fields[fieldName] = '';
 					if( modTpl.fields[fieldName].default !== undefined ){
@@ -1674,7 +1704,7 @@ module.exports = function(broccoli){
 			var tmpCur = cur.split('.');
 			var container = tmpCur[0];
 			var fieldName = tmpCur[1];
-			var modTpl = _this.getModule( data.modId, data.subModName );
+			var modTpl = _this.getModuleByInternalId( data.modId, data.subModName );
 
 			if( container == 'bowl' ){
 				// ルート要素だったらスキップして次へ
@@ -1689,11 +1719,12 @@ module.exports = function(broccoli){
 				if( !data.fields[fieldName] ){
 					data.fields[fieldName] = [];
 				}
+				modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 				if( modTpl.fields[fieldName].fieldType == 'input'){
 					data.fields[fieldName] = newData;
 				}else if( modTpl.fields[fieldName].fieldType == 'module'){
 					data.fields[fieldName] = data.fields[fieldName]||[];
-					var newDataModTpl = _this.getModule( newData.modId );
+					var newDataModTpl = _this.getModuleByInternalId( newData.modId );
 					if( modTpl.fields[fieldName]['maxLength'] && data.fields[fieldName].length >= modTpl.fields[fieldName]['maxLength'] ){
 						// 最大件数に達していたら、追加できない
 						broccoli.message('モジュールの数が最大件数 '+modTpl.fields[fieldName]['maxLength']+' に達しています。');
@@ -1713,7 +1744,7 @@ module.exports = function(broccoli){
 							return false;
 						}
 					}
-					if(modTpl.fields[fieldName].enabledChildren.length){
+					if(typeof(modTpl.fields[fieldName].enabledChildren)==typeof([]) && modTpl.fields[fieldName].enabledChildren.length){
 						var tmpIsEnabledChild = false;
 						for(var tmpIdx in modTpl.fields[fieldName].enabledChildren){
 							if(modTpl.fields[fieldName].enabledChildren[tmpIdx] == newDataModTpl.id){
@@ -1756,6 +1787,7 @@ module.exports = function(broccoli){
 				return true;
 			}else{
 				// もっと深かったら
+				modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 				if( modTpl.fields[fieldName].fieldType == 'input'){
 					return set_r( aryPath, data.fields[fieldName], newData );
 				}else if( modTpl.fields[fieldName].fieldType == 'module'){
@@ -1781,7 +1813,7 @@ module.exports = function(broccoli){
 	 * インスタンスを更新する
 	 */
 	this.updateInstance = function( newData, containerInstancePath, cb ){
-		// console.log( '----- updateInstance: '+containerInstancePath );
+		// console.log( '----- updateInstance:', containerInstancePath, newData );
 		cb = cb||function(){};
 
 		var containerInstancePath = this.parseInstancePath( containerInstancePath );
@@ -1800,7 +1832,7 @@ module.exports = function(broccoli){
 			var tmpCur = cur.split('.');
 			var container = tmpCur[0];
 			var fieldName = tmpCur[1];
-			var modTpl = _this.getModule( data.modId, data.subModName );
+			var modTpl = _this.getModuleByInternalId( data.modId, data.subModName );
 
 			if( container == 'bowl' ){
 				// ルート要素だったら
@@ -1812,6 +1844,7 @@ module.exports = function(broccoli){
 				return set_r( aryPath, data.bowl[fieldName], newData );
 			}
 
+			modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 			if( !aryPath.length ){
 				// ここが最後のインスタンスだったら
 				if( !data.fields ){
@@ -1986,6 +2019,7 @@ module.exports = function(broccoli){
 		it79.ary(
 			modTpl.fields,
 			function(it1, field, fieldName){
+				modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 				if( modTpl.fields[fieldName].fieldType == 'input' ){
 					broccoli.getFieldDefinition(modTpl.fields[fieldName].type).duplicateData( objInstance.fields[fieldName], function( result ){
 						newData.fields[fieldName] = result;
@@ -2050,13 +2084,14 @@ module.exports = function(broccoli){
 		callback = callback || function(){};
 		var _this = this;
 		var resourceIdList = [];
-		var modTpl = _this.getModule( objInstance.modId, objInstance.subModName );
+		var modTpl = _this.getModuleByInternalId( objInstance.modId, objInstance.subModName );
 
 		// 初期データ追加
 		var fieldList = _.keys( modTpl.fields );
 		it79.ary(
 			modTpl.fields,
 			function(it1, field, fieldName){
+				modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 				if( modTpl.fields[fieldName].fieldType == 'input' ){
 					broccoli.getFieldDefinition(modTpl.fields[fieldName].type).extractResourceId( objInstance.fields[fieldName], function( result ){
 						resourceIdList = resourceIdList.concat(result);
@@ -2134,13 +2169,14 @@ module.exports = function(broccoli){
 			var tmpCur = cur.split('.');
 			var container = tmpCur[0];
 			var fieldName = tmpCur[1];
-			var modTpl = _this.getModule( data.modId, data.subModName );
+			var modTpl = _this.getModuleByInternalId( data.modId, data.subModName );
 
 			if( container == 'bowl' ){
 				// ルート要素だったらスキップして次へ
 				return remove_r( aryPath, data.bowl[fieldName] );
 			}
 
+			modTpl.fields[fieldName].fieldType = modTpl.fields[fieldName].fieldType || 'input';
 			if( !aryPath.length ){
 				// ここが最後のインスタンスだったら
 				if( !data.fields ){
@@ -2265,6 +2301,17 @@ module.exports = function(broccoli){
 	}
 
 	/**
+	 * internalIdからモジュールを取得 (同期)
+	 */
+	this.getModuleByInternalId = function( modInternalId, subModName ){
+		var modId = _moduleInternalIdMap[modInternalId];
+		if( typeof(modId) !== typeof('') || !modId.length ){
+			return false;
+		}
+		return this.getModule(modId, subModName);
+	}
+
+	/**
 	 * すべてのモジュールを取得 (同期)
 	 */
 	this.getAllModules = function(){
@@ -2311,6 +2358,7 @@ module.exports = function(broccoli){
 	this.save = function(callback){
 		var _this = this;
 		callback = callback||function(){};
+		// console.log('-------- saving contentsSourceData ---', _contentsSourceData);
 		it79.fnc(
 			{},
 			[
@@ -2319,6 +2367,7 @@ module.exports = function(broccoli){
 						'saveContentsData',
 						{
 							'data': _contentsSourceData
+								// ↑保存するたびに、コンテンツデータの全量が送られる。(ただし画像等のリソースはここに含まない)
 						},
 						function(){
 							it1.next(data);
@@ -2349,7 +2398,7 @@ module.exports = function(broccoli){
 
 }
 
-},{"./history.js":8,"iterate79":116,"path":125,"phpjs":127,"underscore":140}],4:[function(require,module,exports){
+},{"./history.js":8,"iterate79":121,"path":131,"phpjs":133,"underscore":146}],4:[function(require,module,exports){
 /**
  * contextmenu.js
  */
@@ -2494,7 +2543,7 @@ module.exports = function(broccoli){
 	return;
 }
 
-},{"iterate79":116,"jquery":118}],5:[function(require,module,exports){
+},{"iterate79":121,"jquery":123}],5:[function(require,module,exports){
 /**
  * drawModulePalette.js
  */
@@ -2509,9 +2558,7 @@ module.exports = function(broccoli, targetElm, callback){
 	var moduleList = {};
 
 	var it79 = require('iterate79');
-	var path = require('path');
 	var php = require('phpjs');
-	var twig = require('twig');
 	var $ = require('jquery');
 
 	var btIconClosed = '<span class="glyphicon glyphicon-menu-right"></span> ';
@@ -2533,14 +2580,14 @@ module.exports = function(broccoli, targetElm, callback){
 
 				var $liCat = $('<li>');
 				var $ulMod = $('<ul>');
-				$liCat.append( $('<a class="broccoli--module-palette--buttongroups">')
+				$liCat.append( $('<a class="broccoli__module-palette--buttongroups">')
 					.append( btIconOpened )
 					.append( $('<span>').text(category.categoryName)  )
 					.attr({'href':'javascript:;'})
 					.click(function(){
-						$(this).toggleClass('broccoli--module-palette__closed');
+						$(this).toggleClass('broccoli__module-palette__closed');
 						$ulMod.toggle(100)
-						if( $(this).hasClass('broccoli--module-palette__closed') ){
+						if( $(this).hasClass('broccoli__module-palette__closed') ){
 							$(this).find('.glyphicon').get(0).outerHTML = btIconClosed;
 						}else{
 							$(this).find('.glyphicon').get(0).outerHTML = btIconOpened;
@@ -2604,9 +2651,9 @@ module.exports = function(broccoli, targetElm, callback){
 		var isTouchStartHold = false;
 
 		depth = depth || 0;
-		var $button = $('<a class="broccoli--module-palette--draggablebutton">');
+		var $button = $('<a class="broccoli__module-palette--draggablebutton">');
 		if(depth){
-			$button.addClass('broccoli--module-palette--draggablebutton-children');
+			$button.addClass('broccoli__module-palette--draggablebutton-children');
 		}
 		$button
 			.html((function(d){
@@ -2617,11 +2664,11 @@ module.exports = function(broccoli, targetElm, callback){
 					thumb = d.thumb;
 				}
 				if(thumb){
-					rtn += '<span class="broccoli--module-palette--draggablebutton-thumb"><img src="'+php.htmlspecialchars( thumb )+'" alt="'+php.htmlspecialchars( label )+'" /></span>';
+					rtn += '<span class="broccoli__module-palette--draggablebutton-thumb"><img src="'+php.htmlspecialchars( thumb )+'" alt="'+php.htmlspecialchars( label )+'" /></span>';
 				}else{
-					rtn += '<span class="broccoli--module-palette--draggablebutton-thumb"></span>';
+					rtn += '<span class="broccoli__module-palette--draggablebutton-thumb"></span>';
 				}
-				rtn += '<span class="broccoli--module-palette--draggablebutton-label">'+php.htmlspecialchars( label )+'</span>';
+				rtn += '<span class="broccoli__module-palette--draggablebutton-label">'+php.htmlspecialchars( label )+'</span>';
 				return rtn;
 			})(mod))
 			.attr({
@@ -2629,10 +2676,10 @@ module.exports = function(broccoli, targetElm, callback){
 				// 	return (d.moduleName ? d.moduleName+' ('+d.moduleId+')' : d.moduleId);
 				// })(mod),
 				'data-id': mod.moduleId,
+				'data-internal-id': mod.moduleInternalId,
 				'data-name': mod.moduleName,
 				'data-readme': mod.readme,
 				'data-clip': JSON.stringify(mod.clip),
-				'data-pics': JSON.stringify(mod.pics),
 				'draggable': true, //←HTML5のAPI http://www.htmq.com/dnd/
 				'href': 'javascript:;'
 			})
@@ -2643,6 +2690,7 @@ module.exports = function(broccoli, targetElm, callback){
 				var transferData = {
 					'method': 'add',
 					'modId': $(this).attr('data-id'),
+					'modInternalId': $(this).attr('data-internal-id'),
 					'modClip': $(this).attr('data-clip')
 				};
 				event.dataTransfer.setData('text/json', JSON.stringify(transferData) );
@@ -2656,13 +2704,16 @@ module.exports = function(broccoli, targetElm, callback){
 				updateModuleInfoPreview(null, {'elm': this}, function(){});
 			})
 			.on('dblclick', function(e){
+				var $this = $(this);
 				var html = generateModuleInfoHtml(this);
+				var $html = $(html);
+				var moduleId = $this.attr('data-id');
 				broccoli.lightbox(function(elm){
 					$(elm)
 						.css({
 							'max-width': 570
 						})
-						.append(html)
+						.append( $html )
 						.append( $('<button class="px2-btn">')
 							.text('閉じる')
 							.bind('click', function(){
@@ -2670,6 +2721,38 @@ module.exports = function(broccoli, targetElm, callback){
 							})
 						)
 					;
+
+					// モジュールの詳細な情報を取得して補完する
+					broccoli.gpi(
+						'getModule',
+						{
+							'moduleId': moduleId
+						} ,
+						function(result){
+							// console.log('------ moduleInfo --', result);
+							var $pics = $html.find('.broccoli--module-info-content-pics');
+							var pics = result.pics;
+							if( !pics.length ){
+								$pics.remove();
+							}else{
+								var html = '';
+								// html += '<hr />';
+								html += '<p>参考イメージ</p>';
+								html += '<ul>';
+								for( var idx in pics ){
+									// console.log(pics[idx]);
+									html += '<li><img src="'+ pics[idx] +'" /></li>';
+								}
+								html += '</ul>';
+								$pics.append(html);
+							}
+							var $readme = $html.find('.broccoli__module-readme');
+							if( result.readme ){
+								$readme.html(result.readme);
+								$this.attr({'data-readme': result.readme});
+							}
+						}
+					);
 				});
 			})
 			.on('touchstart', function(e){
@@ -2727,28 +2810,24 @@ module.exports = function(broccoli, targetElm, callback){
 		if( $img.length ){
 			html += '<div class="broccoli--module-info-content-thumb"><img src="'+$img.attr('src')+'" /></div>';
 		}
-		html += '<h1>'+$elm.attr('data-name')+'</h1>';
-		html += '<p>'+$elm.attr('data-id')+'</p>';
+		html += '<h1 class="broccoli--module-info-content-h1"></h1>';
+		html += '<p class="broccoli--module-info-content-id"></p>';
 		html += '<hr />';
-		var readme = $elm.attr('data-readme');
-		html += '<div class="broccoli--module-info-content-readme"><article class="broccoli__module-readme">'+ (readme ? readme : '<p style="text-align:center; margin: 100px auto;">-- no readme --</p>' ) +'</article></div>';
+		html += '<div class="broccoli--module-info-content-readme"><article class="broccoli__module-readme"></article></div>';
 
-		var pics = JSON.parse( $elm.attr('data-pics') );
-		if( pics.length ){
-			// html += '<hr />';
-			html += '<div class="broccoli--module-info-content-pics">';
-			html += '<p>参考イメージ</p>';
-			html += '<ul>';
-			for( var idx in pics ){
-				// console.log(pics[idx]);
-				html += '<li><img src="'+ pics[idx] +'" /></li>';
-			}
-			html += '</ul>';
-			html += '</div>';
-		}
-		html += '<hr />';
+		// ↓picsが多くなるとモジュールパレットが重くなるため、
+		// 　必要なときだけ非同期でロードするようにした。 2020-04-23 @tomk79
+		html += '<div class="broccoli--module-info-content-pics"></div>';
 		html += '</article>';
-		return html;
+
+		var $html = $('<div>');
+		$html.html(html);
+		$html.find('h1.broccoli--module-info-content-h1').text($elm.attr('data-name'));
+		$html.find('.broccoli--module-info-content-id').text($elm.attr('data-internal-id'));
+		var readme = $elm.attr('data-readme');
+		$html.find('.broccoli__module-readme').html((readme ? readme : '<p style="text-align:center; margin: 100px auto;">-- no readme --</p>' ));
+
+		return $html.html();
 	}
 
 	/**
@@ -2852,9 +2931,9 @@ module.exports = function(broccoli, targetElm, callback){
 				$(targetElm)
 					.html('loading...')
 					.removeClass('broccoli').addClass('broccoli')
-					.removeClass('broccoli--module-palette').addClass('broccoli--module-palette')
+					.removeClass('broccoli__module-palette').addClass('broccoli__module-palette')
 				;
-				data.$ul = $('<ul class="broccoli--module-palette-list">');
+				data.$ul = $('<ul class="broccoli__module-palette-list">');
 				it1.next(data);
 			} ,
 			function(it1, data){
@@ -2869,14 +2948,14 @@ module.exports = function(broccoli, targetElm, callback){
 
 						var $li = $('<li>');
 						var $ulCat = $('<ul>');
-						$li.append( $('<a class="broccoli--module-palette--buttongroups">')
+						$li.append( $('<a class="broccoli__module-palette--buttongroups">')
 							.append( btIconOpened )
 							.append( $('<span>').text( pkg.packageName ) )
 							.attr({'href':'javascript:;'})
 							.on('click', function(){
-								$(this).toggleClass('broccoli--module-palette__closed');
+								$(this).toggleClass('broccoli__module-palette__closed');
 								$ulCat.toggle(100)
-								if( $(this).hasClass('broccoli--module-palette__closed') ){
+								if( $(this).hasClass('broccoli__module-palette__closed') ){
 									$(this).find('.glyphicon').get(0).outerHTML = btIconClosed;
 								}else{
 									$(this).find('.glyphicon').get(0).outerHTML = btIconOpened;
@@ -2905,8 +2984,8 @@ module.exports = function(broccoli, targetElm, callback){
 				var changeTimer;
 				var lastKeyword = '';
 
-				html += '<div class="broccoli--module-palette-inner">';
-				html += '<div class="broccoli--module-palette-filter"><input type="text" style="width:100%;" placeholder="filter..." /></div>';
+				html += '<div class="broccoli__module-palette-inner">';
+				html += '<div class="broccoli__module-palette-filter"><input type="text" style="width:100%;" placeholder="filter..." /></div>';
 				html += '</div>';
 				$wrap = $(html);
 				$wrap.append(data.$ul);
@@ -2921,28 +3000,28 @@ module.exports = function(broccoli, targetElm, callback){
 					clearTimeout( changeTimer );
 					// console.log( keyword );
 
-					$(targetElm).find('a').removeClass('broccoli--module-palette__closed');
+					$(targetElm).find('a').removeClass('broccoli__module-palette__closed');
 					$(targetElm).find('ul').show();
 
 					changeTimer = setTimeout(function(){
-						$(targetElm).find('a.broccoli--module-palette--draggablebutton').each(function(){
+						$(targetElm).find('a.broccoli__module-palette--draggablebutton').each(function(){
 							var $this = $(this);
 							if( $this.attr('data-id').toLowerCase().match( keyword.toLowerCase() ) ){
-								$this.show().addClass('broccoli--module-palette__shown-module');
+								$this.show().addClass('broccoli__module-palette__shown-module');
 								return;
 							}
 							if( $this.attr('data-name').toLowerCase().match( keyword.toLowerCase() ) ){
-								$this.show().addClass('broccoli--module-palette__shown-module');
+								$this.show().addClass('broccoli__module-palette__shown-module');
 								return;
 							}
 							// if( $this.attr('data-readme') ){
 							// }
-							$this.hide().removeClass('broccoli--module-palette__shown-module');
+							$this.hide().removeClass('broccoli__module-palette__shown-module');
 						});
 
 						$(targetElm).find('li').each(function(){
 							var $this = $(this);
-							var $btns = $this.find('a.broccoli--module-palette--draggablebutton.broccoli--module-palette__shown-module');
+							var $btns = $this.find('a.broccoli__module-palette--draggablebutton.broccoli__module-palette__shown-module');
 							if( !$btns.length ){
 								$this.css({'display':'none'});
 							}else{
@@ -2954,7 +3033,7 @@ module.exports = function(broccoli, targetElm, callback){
 					}, 100);
 
 				}
-				$(targetElm).find('.broccoli--module-palette-filter input')
+				$(targetElm).find('.broccoli__module-palette-filter input')
 					.on( 'change', onChange )
 					.on( 'keyup', onChange )
 				;
@@ -2971,7 +3050,7 @@ module.exports = function(broccoli, targetElm, callback){
 	return;
 }
 
-},{"iterate79":116,"jquery":118,"path":125,"phpjs":127,"twig":139}],6:[function(require,module,exports){
+},{"iterate79":121,"jquery":123,"phpjs":133}],6:[function(require,module,exports){
 /**
  * editWindow.js
  */
@@ -2987,57 +3066,41 @@ module.exports = function(broccoli){
 
 	var $editWindow;
 	var tplFrame = ''
-				+ '<div class="broccoli--edit-window">'
+				+ '<div class="broccoli__edit-window">'
 				+ '	<form action="javascript:;">'
-				+ '		<div class="broccoli--edit-window-logical-path">---</div>'
-				+ '		<h2 class="broccoli--edit-window-module-name">---</h2>'
-				+ '		<div class="broccoli--edit-window-module-readme-switch"><a href="javascript:;"><span class="glyphicon glyphicon-menu-right"></span> Show README</a></div>'
-				+ '		<div class="broccoli--edit-window-module-readme"><div class="broccoli--edit-window-module-readme-inner"><article class="broccoli__module-readme"></article></div></div>'
-				+ '		<div class="broccoli--edit-window-message-field"></div>'
-				+ '		<div class="broccoli--edit-window-fields">'
+				+ '		<div class="broccoli__edit-window-logical-path">---</div>'
+				+ '		<h2 class="broccoli__edit-window-module-name">---</h2>'
+				+ '		<div class="broccoli__edit-window-module-readme-switch"><a href="javascript:;"><span class="glyphicon glyphicon-menu-right"></span> Show README</a></div>'
+				+ '		<div class="broccoli__edit-window-module-readme"><div class="broccoli__edit-window-module-readme-inner"><article class="broccoli__module-readme"></article></div></div>'
+				+ '		<div class="broccoli__edit-window-message-field"></div>'
+				+ '		<div class="broccoli__edit-window-fields">'
 				+ '		</div>'
-				+ '		<div class="broccoli--edit-window-builtin-fields-switch"><a href="javascript:;"><span class="glyphicon glyphicon-menu-right"></span> <%= lb.get(\'ui_label.show_advanced_setting\') %></a></div>'
-				+ '		<div class="broccoli--edit-window-builtin-fields">'
-				+ '			<div class="form-group">'
-				+ '				<label for="broccoli--edit-window-builtin-anchor-field"><%= lb.get(\'ui_label.anchor\') %></label>'
+				+ '		<div class="broccoli__edit-window-builtin-fields-switch"><a href="javascript:;"><span class="glyphicon glyphicon-menu-right"></span> <%= lb.get(\'ui_label.show_advanced_setting\') %></a></div>'
+				+ '		<div class="broccoli__edit-window-builtin-fields">'
+				+ '			<div class="form-group broccoli__edit-window-builtin-anchor-field-wrap">'
+				+ '				<label for="broccoli__edit-window-builtin-anchor-field"><%= lb.get(\'ui_label.anchor\') %></label>'
 				+ '				<div class="input-group">'
 				+ '					<span class="input-group-addon" id="basic-addon1">#</span>'
-				+ '					<input type="text" class="form-control" id="broccoli--edit-window-builtin-anchor-field" placeholder="">'
+				+ '					<input type="text" class="form-control" id="broccoli__edit-window-builtin-anchor-field" placeholder="">'
 				+ '				</div>'
 				+ '			</div>'
-				+ '			<div class="form-group">'
-				+ '				<label for="broccoli--edit-window-builtin-dec-field"><%= lb.get(\'ui_label.embed_comment\') %></label>'
-				+ '				<textarea class="form-control" id="broccoli--edit-window-builtin-dec-field" placeholder=""></textarea>'
+				+ '			<div class="form-group broccoli__edit-window-builtin-dec-field-wrap">'
+				+ '				<label for="broccoli__edit-window-builtin-dec-field"><%= lb.get(\'ui_label.embed_comment\') %></label>'
+				+ '				<textarea class="form-control" id="broccoli__edit-window-builtin-dec-field" placeholder=""></textarea>'
 				+ '			</div>'
 				+ '		</div>'
-				+ '		<div class="broccoli--edit-window-form-buttons">'
-				+ '			<div class="container-fluid">'
-				+ '				<div class="row">'
-				+ '					<div class="col-sm-6 col-sm-offset-3">'
-				+ '						<div class="btn-group btn-group-justified" role="group">'
-				+ '							<div class="btn-group">'
-				+ '								<button disabled="disabled" type="submit" class="px2-btn px2-btn--primary px2-btn--lg px2-btn--block"><span class="glyphicon glyphicon-ok"></span> <%= lb.get(\'ui_label.ok\') %></button>'
-				+ '							</div>'
-				+ '						</div>'
-				+ '					</div>'
+				+ '		<div class="broccoli__edit-window-form-buttons">'
+				+ '			<div class="broccoli__edit-window-form-buttons-fluid">'
+				+ '				<div class="broccoli__edit-window-form-buttons-ok">'
+				+ '					<button disabled="disabled" type="submit" class="px2-btn px2-btn--primary px2-btn--lg"><span class="glyphicon glyphicon-ok"></span> <%= lb.get(\'ui_label.ok\') %></button>'
 				+ '				</div>'
 				+ '			</div>'
-				+ '			<div class="container-fluid">'
-				+ '				<div class="row">'
-				+ '					<div class="col-sm-4">'
-				+ '						<div class="btn-group btn-group-justified" role="group" style="margin-top:20px;">'
-				+ '							<div class="btn-group">'
-				+ '								<button disabled="disabled" type="button" class="px2-btn px2-btn--sm px2-btn--block broccoli--edit-window-btn-cancel"><%= lb.get(\'ui_label.cancel\') %></button>'
-				+ '							</div>'
-				+ '						</div>'
-				+ '					</div>'
-				+ '					<div class="col-sm-4 col-sm-offset-4">'
-				+ '						<div class="btn-group btn-group-justified" role="group" style="margin-top:20px;">'
-				+ '							<div class="btn-group">'
-				+ '								<button disabled="disabled" type="button" class="px2-btn px2-btn--danger px2-btn--sm px2-btn--block broccoli--edit-window-btn-remove"><span class="glyphicon glyphicon-trash"></span> <%= lb.get(\'ui_label.remove_this_module\') %></button>'
-				+ '							</div>'
-				+ '						</div>'
-				+ '					</div>'
+				+ '			<div class="broccoli__edit-window-form-buttons-fluid">'
+				+ '				<div class="broccoli__edit-window-form-buttons-cancel">'
+				+ '					<button disabled="disabled" type="button" class="px2-btn px2-btn--sm broccoli__edit-window-btn-cancel"><%= lb.get(\'ui_label.cancel\') %></button>'
+				+ '				</div>'
+				+ '				<div class="broccoli__edit-window-form-buttons-delete">'
+				+ '					<button disabled="disabled" type="button" class="px2-btn px2-btn--danger px2-btn--sm broccoli__edit-window-btn-remove"><span class="glyphicon glyphicon-trash"></span> <%= lb.get(\'ui_label.remove_this_module\') %></button>'
 				+ '				</div>'
 				+ '			</div>'
 				+ '		</div>'
@@ -3046,19 +3109,19 @@ module.exports = function(broccoli){
 	;
 
 	var tplField = ''
-				+ '<div class="broccoli--edit-window-field">'
+				+ '<div class="broccoli__edit-window-field">'
 				+ '	<h3>---</h3>'
-				+ '	<div class="broccoli--edit-window-field-description">'
+				+ '	<div class="broccoli__edit-window-field-description">'
 				+ '	</div>'
-				+ '	<div class="broccoli--edit-window-field-content">'
+				+ '	<div class="broccoli__edit-window-field-content">'
 				+ '	</div>'
-				+ '	<div class="broccoli--edit-window-field-error-message">'
+				+ '	<div class="broccoli__edit-window-field-error-message">'
 				+ '	</div>'
 				+ '</div>'
 	;
 
 	function initMod(data){
-		var mod = broccoli.contentsSourceData.getModule(data.modId, data.subModName);
+		var mod = broccoli.contentsSourceData.getModuleByInternalId(data.modId, data.subModName);
 		if( mod === false ){
 			mod = {
 				'id': '_sys/unknown',
@@ -3071,9 +3134,9 @@ module.exports = function(broccoli){
 	}
 
 	function formErrorMessage(msgs){
-		var $elm = $editWindow.find('.broccoli--edit-window-message-field');
+		var $elm = $editWindow.find('.broccoli__edit-window-message-field');
 		$editWindow.find('[data-broccoli-edit-window-field-name]').removeClass('has-error');
-		$editWindow.find('.broccoli--edit-window-field-error-message').hide().html('');
+		$editWindow.find('.broccoli__edit-window-field-error-message').hide().html('');
 		$elm.hide().html('');
 		for( var idx in msgs ){
 			var $err = $('<div class="broccoli__inline-error-message">');
@@ -3086,7 +3149,7 @@ module.exports = function(broccoli){
 				);
 			}
 			$editWindow.find('[data-broccoli-edit-window-field-name='+idx+']').addClass('has-error');
-			$editWindow.find('[data-broccoli-edit-window-field-name='+idx+'] .broccoli--edit-window-field-error-message').show().append( $err.append($errUl) );
+			$editWindow.find('[data-broccoli-edit-window-field-name='+idx+'] .broccoli__edit-window-field-error-message').show().append( $err.append($errUl) );
 		}
 		if(errCount){
 			var $err = $('<div class="broccoli__error-message-box">');
@@ -3118,14 +3181,27 @@ module.exports = function(broccoli){
 		var $fields = $('<div>');
 		$editWindow = $(elmEditWindow);
 		$editWindow.html('').append( broccoli.bindEjs(tplFrame, {'lb':broccoli.lb}) );
-		$editWindow.find('.broccoli--edit-window-module-name').text(mod.info.name||mod.id);
-		$editWindow.find('.broccoli--edit-window-fields').append($fields);
+		$editWindow.find('.broccoli__edit-window-module-name').text(mod.info.name||mod.id);
+		$editWindow.find('.broccoli__edit-window-fields').append($fields);
 
-		$editWindow.find('.broccoli--edit-window-logical-path').html('').append(
+		$editWindow.find('.broccoli__edit-window-logical-path').html('').append(
 			drawLogicalPath(instancePath, data)
 		);
 
-		$editWindow.find('.broccoli--edit-window-module-readme').hide();
+		// options
+		if( !broccoli.options.enableModuleAnchor ){
+			$editWindow.find('.broccoli__edit-window-builtin-anchor-field-wrap').css({'display': 'none'});
+		}
+		if( !broccoli.options.enableModuleDec ){
+			$editWindow.find('.broccoli__edit-window-builtin-dec-field-wrap').css({'display': 'none'});
+		}
+		if( !broccoli.options.enableModuleAnchor && !broccoli.options.enableModuleDec ){
+			$editWindow.find('.broccoli__edit-window-builtin-fields-switch').css({'display': 'none'});
+			$editWindow.find('.broccoli__edit-window-builtin-fields').css({'display': 'none'});
+		}
+
+
+		$editWindow.find('.broccoli__edit-window-module-readme').hide();
 		try{
 			// console.log(broccoli.getBootupInfomations().modulePackageList);
 			var modulePackageList = broccoli.getBootupInfomations().modulePackageList;
@@ -3138,11 +3214,11 @@ module.exports = function(broccoli){
 			var readme = modulePackageList[parsedModId.package].categories[parsedModId.category].modules[parsedModId.module].readme;
 			// console.log(readme);
 			if(readme){
-				$editWindow.find('.broccoli--edit-window-module-readme-inner .broccoli__module-readme').html(readme);
-				$editWindow.find('.broccoli--edit-window-module-readme-switch a').click(function(){
+				$editWindow.find('.broccoli__edit-window-module-readme-inner .broccoli__module-readme').html(readme);
+				$editWindow.find('.broccoli__edit-window-module-readme-switch a').click(function(){
 					var $this = $(this);
-					var className = 'broccoli--edit-window-module-readme-switch__on';
-					$editWindow.find('.broccoli--edit-window-module-readme').toggle('fast', function(){
+					var className = 'broccoli__edit-window-module-readme-switch__on';
+					$editWindow.find('.broccoli__edit-window-module-readme').toggle('fast', function(){
 						if($(this).is(':visible')){
 							$this.addClass(className);
 							$this.html('<span class="glyphicon glyphicon-menu-down"></span> '+'Hide README')
@@ -3153,17 +3229,17 @@ module.exports = function(broccoli){
 					});
 				});
 			}else{
-				$editWindow.find('.broccoli--edit-window-module-readme-switch').hide();
+				$editWindow.find('.broccoli__edit-window-module-readme-switch').hide();
 			}
 		}catch(e){
-			$editWindow.find('.broccoli--edit-window-module-readme-switch').hide();
+			$editWindow.find('.broccoli__edit-window-module-readme-switch').hide();
 		}
 
-		$editWindow.find('.broccoli--edit-window-builtin-fields').hide();
-		$editWindow.find('.broccoli--edit-window-builtin-fields-switch a').click(function(){
+		$editWindow.find('.broccoli__edit-window-builtin-fields').hide();
+		$editWindow.find('.broccoli__edit-window-builtin-fields-switch a').click(function(){
 			var $this = $(this);
-			var className = 'broccoli--edit-window-builtin-fields-switch__on';
-			$editWindow.find('.broccoli--edit-window-builtin-fields').toggle('fast', function(){
+			var className = 'broccoli__edit-window-builtin-fields-switch__on';
+			$editWindow.find('.broccoli__edit-window-builtin-fields').toggle('fast', function(){
 				if($(this).is(':visible')){
 					$this.addClass(className);
 					$this.html('<span class="glyphicon glyphicon-menu-down"></span> '+broccoli.lb.get('ui_label.hide_advanced_setting'))
@@ -3196,6 +3272,7 @@ module.exports = function(broccoli){
 							return;
 						}
 
+						field.fieldType = field.fieldType || 'input';
 						switch( field.fieldType ){
 							case 'input':
 								it1.next();
@@ -3206,7 +3283,7 @@ module.exports = function(broccoli){
 								it79.ary(
 									data.fields[field.name],
 									function(it2, childData, idx2){
-										var childMod = broccoli.contentsSourceData.getModule(childData.modId, childData.subModName);
+										var childMod = broccoli.contentsSourceData.getModuleByInternalId(childData.modId, childData.subModName);
 										var childInstancePath = instancePath + '/fields.'+field.name+'@'+idx2+''
 										// console.log(childInstancePath);
 										// console.log(childData);
@@ -3218,9 +3295,10 @@ module.exports = function(broccoli){
 										}
 										var $li = $('<li>');
 										var $a = $('<a>');
+										var $label = $('<span>');
 										$li.append($a);
 										$a
-											.text(label)
+											.append($label.text(label))
 											.attr({
 												'href': 'javascript:;',
 												'data-broccoli-parent-instance-path': instancePath,
@@ -3235,6 +3313,56 @@ module.exports = function(broccoli){
 												.addClass('broccoli--panel-drop-to-insert-here')
 											)
 										;
+
+										if(childMod.fields){
+											// プレビューを表示
+											(function($label, childMod, childData){
+												it79.ary(
+													childMod.fields,
+													function(itMkLabel, field, fieldName){
+														// console.log(field.fieldType);
+														// console.log(field.type);
+														var fieldType = field.fieldType;
+														var type = field.type;
+														if(fieldType == 'input'){
+															if( !broccoli.fieldDefinitions[type] ){
+																itMkLabel.next();
+																return;
+															}
+															broccoli.resourceMgr.getResourceDb(function(resDb){
+																broccoli.fieldDefinitions[type].mkPreviewHtml(childData.fields[fieldName], childMod.fields[fieldName], function(html){
+																	html = (function(src){
+																		for(var resKey in resDb){
+																			try {
+																				src = src.split('{broccoli-html-editor-resource-baser64:{'+resKey+'}}').join(resDb[resKey].base64);
+																			} catch (e) {
+																			}
+																		}
+																		return src;
+																	})(html);
+																	$label.append('<div class="broccoli__edit-window-field-preview"><div>'+html+'</div></div>');
+																	itMkLabel.next();
+																});
+															});
+															return;
+														}else if(fieldType == 'module'){
+															$label.append('<div class="broccoli__edit-window-field-preview"><div>(module field)</div></div>');
+															itMkLabel.next();
+															return;
+														}else if(fieldType == 'loop'){
+															$label.append('<div class="broccoli__edit-window-field-preview"><div>(loop field)</div></div>');
+															itMkLabel.next();
+															return;
+														}
+														itMkLabel.next();
+														return;
+													},
+													function(){
+													}
+												);
+											})($label, childMod, childData);
+										}
+
 										broccoli.panels.setPanelEventHandlers( $a );
 										$a
 											.unbind('drop')
@@ -3317,6 +3445,7 @@ module.exports = function(broccoli){
 												.attr({
 													'data-broccoli-instance-path':appenderInstancePath,
 													'data-broccoli-mod-id': mod.id,
+													'data-broccoli-mod-internal-id': mod.internalId,
 													'data-broccoli-sub-mod-name': field.name,
 													'data-broccoli-is-appender':'yes',
 													// 'data-broccoli-is-instance-tree-view': 'yes',
@@ -3371,16 +3500,16 @@ module.exports = function(broccoli){
 										;
 										$ul.append( $li.append($appender) );
 
-										var $elmFieldContent = $fields.find('.broccoli--edit-window-module-fields[data-broccoli--editwindow-field-name='+field.name+']').eq(0);
-										$elmFieldContent.addClass('broccoli--edit-window-module-fields--fieldtype-'+field.fieldType);
-										$elmFieldContent.find('.broccoli--edit-window-module-fields__instances').html('')
+										var $elmFieldContent = $fields.find('.broccoli__edit-window-module-fields[data-broccoli--editwindow-field-name='+field.name+']').eq(0);
+										$elmFieldContent.addClass('broccoli__edit-window-module-fields--fieldtype-'+field.fieldType);
+										$elmFieldContent.find('.broccoli__edit-window-module-fields__instances').html('')
 											.append(
 												$ul
 											)
 										;
 										if(field.fieldType == 'module'){
 											// moduleフィールドには、モジュールパレットがつきます。
-											broccoli.drawModulePalette( $elmFieldContent.find('.broccoli--edit-window-module-fields__palette').get(0), function(){
+											broccoli.drawModulePalette( $elmFieldContent.find('.broccoli__edit-window-module-fields__palette').get(0), function(){
 												it1.next();
 											} );
 										}else{
@@ -3407,6 +3536,7 @@ module.exports = function(broccoli){
 		} // updateModuleAndLoopField()
 
 		var focusDone = false;
+		var fieldCount = 0;
 		it79.ary(
 			mod.fields,
 			function(it1, field, fieldName){
@@ -3415,8 +3545,10 @@ module.exports = function(broccoli){
 					it1.next();
 					return;
 				}
+				fieldCount ++;
 				// console.log(fieldName);
 				// console.log(field);
+				field.fieldType = field.fieldType || 'input';
 				var $field = $(tplField)
 					.attr({
 						'data-broccoli-edit-window-field-name': field.name ,
@@ -3433,25 +3565,26 @@ module.exports = function(broccoli){
 				if( field.validate ){
 					for(var valiNum in field.validate){
 						if( field.validate[valiNum] == 'required' ){
-							$field.addClass('broccoli--edit-window-field-required');
+							$field.addClass('broccoli__edit-window-field-required');
 							break;
 						}
 					}
 				}
 
 				if( field.description ){
-					$field.find('>.broccoli--edit-window-field-description')
+					$field.find('>.broccoli__edit-window-field-description')
 						.html( field.description )
 					;
 				}else{
-					$field.find('>.broccoli--edit-window-field-description')
+					$field.find('>.broccoli__edit-window-field-description')
 						.remove()
 					;
 				}
 				$fields.append($field);
 
 				// console.log( broccoli.fieldDefinitions );
-				var elmFieldContent = $field.find('.broccoli--edit-window-field-content').get(0);
+				var elmFieldContent = $field.find('.broccoli__edit-window-field-content').get(0);
+				field.fieldType = field.fieldType || 'input';
 				switch( field.fieldType ){
 					case 'input':
 						var fieldDefinition = broccoli.getFieldDefinition(field.type);
@@ -3472,15 +3605,15 @@ module.exports = function(broccoli){
 						$(elmFieldContent)
 							.append(
 								$('<div>')
-									.addClass('broccoli--edit-window-module-fields')
+									.addClass('broccoli__edit-window-module-fields')
 									.attr({
 										"data-broccoli--editwindow-field-name": field.name
 									})
 									.append( $('<div>')
-										.addClass('broccoli--edit-window-module-fields__instances')
+										.addClass('broccoli__edit-window-module-fields__instances')
 									)
 									.append( $('<div>')
-										.addClass('broccoli--edit-window-module-fields__palette')
+										.addClass('broccoli__edit-window-module-fields__palette')
 									)
 							)
 						;
@@ -3499,19 +3632,27 @@ module.exports = function(broccoli){
 			},
 			function(){
 
+				if(!fieldCount){
+					$fields
+						.append(
+							'<p style="text-align: center; margin: 7em 1em;">このモジュールにはオプションが定義されていません。</p>'
+						)
+					;
+				}
+
 				updateModuleAndLoopField(instancePath, function(){
-					$editWindow.find('#broccoli--edit-window-builtin-anchor-field')
+					$editWindow.find('#broccoli__edit-window-builtin-anchor-field')
 						.val(data.anchor)
 					;
-					$editWindow.find('#broccoli--edit-window-builtin-dec-field')
+					$editWindow.find('#broccoli__edit-window-builtin-dec-field')
 						.val(data.dec)
 					;
-					$editWindow.find('.broccoli--edit-window-form-buttons button')
+					$editWindow.find('.broccoli__edit-window-form-buttons button')
 						.removeAttr('disabled')
 					;
 					$editWindow.find('form')
 						.removeAttr('disabled')
-						.bind('submit', function(){
+						.on('submit', function(){
 							// 編集内容を保存する
 							// console.log( data );
 							// console.log( mod );
@@ -3535,14 +3676,14 @@ module.exports = function(broccoli){
 
 						})
 					;
-					$editWindow.find('button.broccoli--edit-window-btn-cancel')
-						.bind('click', function(){
+					$editWindow.find('button.broccoli__edit-window-btn-cancel')
+						.on('click', function(){
 							_this.lock();
 							callback(false);
 						})
 					;
-					$editWindow.find('button.broccoli--edit-window-btn-remove')
-						.bind('click', function(){
+					$editWindow.find('button.broccoli__edit-window-btn-remove')
+						.on('click', function(){
 							_this.lock();
 							if( !confirm('このモジュールを削除します。よろしいですか？') ){
 								_this.unlock();
@@ -3560,6 +3701,32 @@ module.exports = function(broccoli){
 							});
 						})
 					;
+					(function($target){
+						// タブキーの制御
+						var $tabTargets = $target.find('a, input, textarea, select, button');
+						var $start = $tabTargets.eq(0);
+						var $end = $tabTargets.eq(-1);
+						$start
+							.on('keydown', function(e){
+								if (e.keyCode == 9 && e.originalEvent.shiftKey) {
+									$end.focus();
+									e.preventDefault();
+									e.stopPropagation();
+									return false;
+								}
+							})
+						;
+						$end
+							.on('keydown', function(e){
+								if (e.keyCode == 9 && !e.originalEvent.shiftKey) {
+									$start.focus();
+									e.preventDefault();
+									e.stopPropagation();
+									return false;
+								}
+							})
+						;
+					})($editWindow);
 				});
 
 			}
@@ -3590,7 +3757,7 @@ module.exports = function(broccoli){
 				// 処理できないので、スキップする。
 				continue;
 			}
-			var mod = broccoli.contentsSourceData.getModule(contData.modId, contData.subModName);
+			var mod = broccoli.contentsSourceData.getModuleByInternalId(contData.modId, contData.subModName);
 			var label = mod && mod.info.name||mod.id;
 			if(instPathMemo.length==2){
 				// bowl自体だったら
@@ -3678,7 +3845,11 @@ module.exports = function(broccoli){
 	 * インスタンスの編集を保存する
 	 */
 	function saveInstance( instancePath, mod, data, callback ){
+		// console.log('=-=-=-= saveInstance:', data, mod, instancePath);
 		callback = callback || function(){};
+		if( data.fields && data.fields.length === 0 ){
+			data.fields = {};
+		}
 		it79.ary(
 			mod.fields,
 			function(it2, field2, fieldName2){
@@ -3703,8 +3874,8 @@ module.exports = function(broccoli){
 				it79.fnc({},
 					[
 						function(it2, arg){
-							data.anchor = $editWindow.find('#broccoli--edit-window-builtin-anchor-field').val();
-							data.dec = $editWindow.find('#broccoli--edit-window-builtin-dec-field').val();
+							data.anchor = $editWindow.find('#broccoli__edit-window-builtin-anchor-field').val();
+							data.dec = $editWindow.find('#broccoli__edit-window-builtin-dec-field').val();
 
 							it2.next(arg);
 						} ,
@@ -3735,8 +3906,8 @@ module.exports = function(broccoli){
 	 */
 	this.lock = function(callback){
 		callback = callback || function(){};
-		$editWindow.find('.broccoli--edit-window-builtin-fields').find('input, textarea').attr({'disabled': true});
-		$editWindow.find('.broccoli--edit-window-form-buttons').find('button').attr({'disabled': true});
+		$editWindow.find('.broccoli__edit-window-builtin-fields').find('input, textarea').attr({'disabled': true});
+		$editWindow.find('.broccoli__edit-window-form-buttons').find('button').attr({'disabled': true});
 		callback();
 		return this;
 	}
@@ -3746,8 +3917,8 @@ module.exports = function(broccoli){
 	 */
 	this.unlock = function(callback){
 		callback = callback || function(){};
-		$editWindow.find('.broccoli--edit-window-builtin-fields').find('input, textarea').attr({'disabled': false});
-		$editWindow.find('.broccoli--edit-window-form-buttons').find('button').attr({'disabled': false});
+		$editWindow.find('.broccoli__edit-window-builtin-fields').find('input, textarea').attr({'disabled': false});
+		$editWindow.find('.broccoli__edit-window-form-buttons').find('button').attr({'disabled': false});
 		callback();
 		return this;
 	}
@@ -3755,7 +3926,7 @@ module.exports = function(broccoli){
 	return;
 }
 
-},{"iterate79":116,"jquery":118,"phpjs":127}],7:[function(require,module,exports){
+},{"iterate79":121,"jquery":123,"phpjs":133}],7:[function(require,module,exports){
 /**
  * fieldBase.js
  */
@@ -4009,7 +4180,7 @@ module.exports = function(broccoli){
 
 }
 
-},{"es6-promise":90,"iterate79":116,"jquery":118,"utils79":162}],8:[function(require,module,exports){
+},{"es6-promise":94,"iterate79":121,"jquery":123,"utils79":168}],8:[function(require,module,exports){
 /**
  * history.js
  */
@@ -4136,7 +4307,7 @@ module.exports = function(broccoli){
 				// 処理できないので、スキップする。
 				continue;
 			}
-			var mod = broccoli.contentsSourceData.getModule(contData.modId, contData.subModName);
+			var mod = broccoli.contentsSourceData.getModuleByInternalId(contData.modId, contData.subModName);
 			var label = mod && mod.info.name||mod.id;
 			if(instPathMemo.length==2){
 				// bowl自体だったら
@@ -4174,7 +4345,7 @@ module.exports = function(broccoli){
 				var $ulChildren = $('<ul class="broccoli--instance-path-view-children">');
 				for(var child in children){
 					var contData = broccoli.contentsSourceData.get(children[child]);
-					var mod = broccoli.contentsSourceData.getModule(contData.modId, contData.subModName);
+					var mod = broccoli.contentsSourceData.getModuleByInternalId(contData.modId, contData.subModName);
 					var label = mod && mod.info.name||mod.id;
 					$ulChildren.append( $('<li>')
 						.append( $('<a href="javascript:;">')
@@ -4264,7 +4435,7 @@ module.exports = function(broccoli){
 	return;
 }
 
-},{"iterate79":116,"jquery":118}],10:[function(require,module,exports){
+},{"iterate79":121,"jquery":123}],10:[function(require,module,exports){
 /**
  * instanceTreeView.js
  */
@@ -4302,7 +4473,7 @@ module.exports = function(broccoli){
 		function buildInstance(data, parentInstancePath, subModName, callback){
 			callback = callback||function(){};
 			// console.log(data);
-			var mod = broccoli.contentsSourceData.getModule(data.modId, subModName);
+			var mod = broccoli.contentsSourceData.getModuleByInternalId(data.modId, subModName);
 			if( mod === false ){
 				mod = {
 					'id': '_sys/unknown',
@@ -4427,6 +4598,7 @@ module.exports = function(broccoli){
 									.attr({
 										'data-broccoli-instance-path':instancePath,
 										'data-broccoli-mod-id': mod.id,
+										'data-broccoli-mod-internal-id': mod.internalId,
 										'data-broccoli-sub-mod-name': row.name,
 										'data-broccoli-is-appender':'yes',
 										'data-broccoli-is-instance-tree-view': 'yes',
@@ -4621,7 +4793,7 @@ module.exports = function(broccoli){
 	return;
 }
 
-},{"iterate79":116,"jquery":118,"path":125,"phpjs":127,"twig":139}],11:[function(require,module,exports){
+},{"iterate79":121,"jquery":123,"path":131,"phpjs":133,"twig":145}],11:[function(require,module,exports){
 /**
  * panels.js
  */
@@ -4681,6 +4853,9 @@ module.exports = function(broccoli){
 		// 	return;
 		// }
 
+		var modInfo = broccoli.contentsSourceData.getModuleByInternalId($this.modId);
+			//postMessageから得られるモジュールのidは、実際にはinternalIdを格納するため、ここで翻訳する。
+
 		$panels.append($panel);
 		$panel
 			.css({
@@ -4694,9 +4869,10 @@ module.exports = function(broccoli){
 			.attr({
 				'data-broccoli-instance-path': $this.instancePath,
 				'data-broccoli-is-appender': 'no',
-				'data-broccoli-mod-id': $this.modId,
+				'data-broccoli-mod-id': modInfo.id,
+				'data-broccoli-mod-internal-id': modInfo.internalId,
 				'data-broccoli-sub-mod-name': $this.subModName,
-				'draggable': (isAppender ? false : true) // <- HTML5のAPI http://www.htmq.com/dnd/
+				'draggable': (isAppender ? false : true) // <- HTML5のAPI https://developer.mozilla.org/ja/docs/Web/API/HTML_Drag_and_Drop_API
 			})
 			.append( $('<div>')
 				.addClass('broccoli--panel-drop-to-insert-here')
@@ -4913,6 +5089,7 @@ module.exports = function(broccoli){
 				transferData = JSON.parse(transferData);
 			} catch (e) {}
 			var modId = transferData["modId"];
+			var modInternalId = transferData["modInternalId"];
 			var modClip = transferData["modClip"];
 			try {
 				modClip = JSON.parse(modClip);
@@ -4928,40 +5105,70 @@ module.exports = function(broccoli){
 				var parsedModId = broccoli.parseModuleId(modId);
 				// console.log(parsedModId.package);
 
-				it79.ary(
-					modClip.data ,
-					function(it1, row1, idx1){
-						broccoli.contentsSourceData.duplicateInstance(modClip.data[idx1], modClip.resources, {'supplementModPackage': parsedModId.package}, function(newData){
-							// console.log(newData);
-
-							broccoli.contentsSourceData.addInstance( newData, moveTo, function(result){
-								// 上から順番に挿入していくので、
-								// moveTo を1つインクリメントしなければいけない。
-								// (そうしないと、天地逆さまに積み上げられることになる。)
-								moveTo = broccoli.incrementInstancePath(moveTo);
-								it1.next();
-							} );
-
-						});
+				broccoli.gpi(
+					'getClipModuleContents',
+					{
+						'moduleId': modId,
+						'resourceMode': 'temporaryHash'
 					} ,
-					function(){
-						broccoli.unselectInstance(function(){
-							broccoli.saveContents(function(){
-								broccoli.message('クリップを挿入しました。');
-								broccoli.redraw(function(){
-									broccoli.closeProgress(function(){
-										broccoli.selectInstance(newInstancePath, function(){
-											callback();
-										});
-									});
+					function(clipContents){
+						// console.log('------ clipModuleContents --', clipContents);
+
+						it79.ary(
+							clipContents.data ,
+							function(it1, row1, idx1){
+								broccoli.contentsSourceData.duplicateInstance(clipContents.data[idx1], clipContents.resources, {'supplementModPackage': parsedModId.package}, function(newData){
+									// console.log(newData);
+
+									broccoli.contentsSourceData.addInstance( newData, moveTo, function(result){
+										// 上から順番に挿入していくので、
+										// moveTo を1つインクリメントしなければいけない。
+										// (そうしないと、天地逆さまに積み上げられることになる。)
+										moveTo = broccoli.incrementInstancePath(moveTo);
+										it1.next();
+									} );
+
 								});
-							});
-						});
+							} ,
+							function(){
+								broccoli.gpi(
+									'replaceClipModuleResources',
+									{
+										'moduleId': modId
+									} ,
+									function(affectedResources){
+										// console.log(affectedResources);
+										broccoli.resourceMgr.getResourceDb(function(tmpResourceDb){
+											for( var resKey in affectedResources ){
+												tmpResourceDb[resKey] = affectedResources[resKey];
+											}
+											broccoli.resourceMgr.setResourceDb(tmpResourceDb, function(result){
+												broccoli.unselectInstance(function(){
+													broccoli.saveContents(function(){
+														broccoli.message('クリップを挿入しました。');
+														broccoli.redraw(function(){
+															broccoli.closeProgress(function(){
+																broccoli.selectInstance(newInstancePath, function(){
+																	callback();
+																});
+															});
+														});
+													});
+												});
+											});
+										});
+
+									}
+								);
+							}
+						);
+
 					}
 				);
 
+
 			}else{
-				broccoli.contentsSourceData.addInstance( modId, moveTo, function(result){
+				broccoli.contentsSourceData.addInstance( modInternalId, moveTo, function(result){
 					if(!result){
 						broccoli.closeProgress(function(){
 							callback();
@@ -5004,9 +5211,9 @@ module.exports = function(broccoli){
 
 		if( $this.attr('data-broccoli-sub-mod-name') && $this.attr('data-broccoli-is-appender') == 'yes' ){
 			// loopモジュールの繰り返し要素を増やします。
-			var modId = $this.attr("data-broccoli-mod-id");
+			var modInternalId = $this.attr("data-broccoli-mod-internal-id");
 			var subModName = $this.attr("data-broccoli-sub-mod-name");
-			broccoli.contentsSourceData.addInstance( modId, instancePath, function(result){
+			broccoli.contentsSourceData.addInstance( modInternalId, instancePath, function(result){
 				if(!result){
 					callback();
 					return;
@@ -5377,7 +5584,7 @@ module.exports = function(broccoli){
 	return;
 }
 
-},{"iterate79":116,"jquery":118,"path":125,"phpjs":127,"twig":139}],12:[function(require,module,exports){
+},{"iterate79":121,"jquery":123,"path":131,"phpjs":133,"twig":145}],12:[function(require,module,exports){
 (function (Buffer){
 /**
  * postMessenger.js
@@ -5493,7 +5700,7 @@ module.exports = function(broccoli, iframe){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":32,"jquery":118}],13:[function(require,module,exports){
+},{"buffer":34,"jquery":123}],13:[function(require,module,exports){
 /**
  * resourceMgr.js
  */
@@ -5508,17 +5715,7 @@ module.exports = function(broccoli){
 	 * initialize resource Manager
 	 */
 	this.init = function( callback ){
-		loadResourceDb( function(){
-			callback();
-		} );
-		return this;
-	}
-
-	/**
-	 * Loading resource DB
-	 */
-	function loadResourceDb( callback ){
-		console.log('broccoli: Loading all resources...');
+		// console.log('broccoli: Initializing resourceDb...');
 		_resourceDb = {};
 		it79.fnc({},
 			[
@@ -5527,7 +5724,7 @@ module.exports = function(broccoli){
 					it1.next(data);
 				},
 				function(it1, data){
-					console.log('broccoli: Loading all resources: Done.');
+					// console.log('broccoli: Loading all resources: Done.');
 					// console.log(_resourceDb);
 					callback();
 				}
@@ -5538,11 +5735,15 @@ module.exports = function(broccoli){
 
 	/**
 	 * Save resources DB
+	 * 
+	 * このメソッドは、現在は使われていません。
+	 * パフォーマンス改善の一環で、リソース全体の送受信を廃止したためです。
+	 * 
 	 * @param  {Function} cb Callback function.
 	 * @return {boolean}     Always true.
 	 */
 	this.save = function( callback ){
-		// console.log('resourceDb save method: called.');
+		console.error('resourceDb save method: called.');
 		callback = callback || function(){};
 		it79.fnc({}, [
 			function(it1, data){
@@ -5550,15 +5751,59 @@ module.exports = function(broccoli){
 					'resourceMgr.save',
 					{'resourceDb': _resourceDb} ,
 					function(rtn){
-						// console.log('resourceDb save method: done.');
-						loadResourceDb(function(){
-							callback(rtn);
-						});
+						console.error('resourceDb save method: done.');
+						callback(rtn);
 					}
 				);
 			}
 		]);
-		return this;
+		return;
+	}
+
+	/**
+	 * get resource DB
+	 */
+	this.getResourceDb = function( callback ){
+		callback = callback || function(){};
+		callback(_resourceDb);
+		return;
+	}
+
+	/**
+	 * get resource DB
+	 */
+	this.setResourceDb = function( newResourceDb, callback ){
+		callback = callback || function(){};
+		if( typeof(newResourceDb) !== typeof({}) ){
+			callback(false);
+			return;
+		}
+		_resourceDb = newResourceDb;
+		callback(true);
+		return;
+	}
+
+	/**
+	 * Reload resources DB
+	 * 
+	 * @param  {Function} cb Callback function.
+	 * @return {boolean}     Always true.
+	 */
+	this.reload = function( callback ){
+		callback = callback || function(){};
+		it79.fnc({}, [
+			function(it1, data){
+				broccoli.gpi(
+					'resourceMgr.getResourceDb',
+					{} ,
+					function(rtn){
+						_resourceDb = rtn;
+						callback(rtn);
+					}
+				);
+			}
+		]);
+		return;
 	}
 
 	/**
@@ -5580,16 +5825,32 @@ module.exports = function(broccoli){
 				);
 			}
 		]);
-		return this;
+		return;
 	}
 
 	/**
-	 * get resource DB
+	 * add new resource
+	 * リソースの登録を行い、リソースを保存し、新しい ResourceKey と publicPath 等を生成して返す。
 	 */
-	this.getResourceDb = function( callback ){
+	this.addNewResource = function(resInfo, callback){
 		callback = callback || function(){};
-		callback(_resourceDb);
-		return this;
+		it79.fnc({}, [
+			function(it1, data){
+				broccoli.gpi(
+					'resourceMgr.addNewResource',
+					{
+						'resInfo': resInfo
+					} ,
+					function(result){
+						if( result && result.newResourceKey.length && result.updateResult && result.publicPath ){
+							_resourceDb[result.newResourceKey] = resInfo;
+						}
+						callback(result);
+					}
+				);
+			}
+		]);
+		return;
 	}
 
 	/**
@@ -5616,7 +5877,7 @@ module.exports = function(broccoli){
 				);
 			}
 		]);
-		return this;
+		return;
 	}
 
 	/**
@@ -5635,7 +5896,7 @@ module.exports = function(broccoli){
 				);
 			}
 		]);
-		return this;
+		return;
 	}
 
 	/**
@@ -5677,7 +5938,7 @@ module.exports = function(broccoli){
 				}
 			]
 		);
-		return this;
+		return;
 	}
 
 	/**
@@ -5699,7 +5960,7 @@ module.exports = function(broccoli){
 				}
 			]
 		);
-		return this;
+		return;
 	}
 
 	/**
@@ -5727,7 +5988,7 @@ module.exports = function(broccoli){
 				}
 			]
 		);
-		return this;
+		return;
 	}
 
 	/**
@@ -5748,7 +6009,7 @@ module.exports = function(broccoli){
 				}
 			]
 		);
-		return this;
+		return;
 	}
 
 	/**
@@ -5769,7 +6030,7 @@ module.exports = function(broccoli){
 				}
 			]
 		);
-		return this;
+		return;
 	}
 
 	/**
@@ -5790,12 +6051,12 @@ module.exports = function(broccoli){
 				}
 			]
 		);
-		return this;
+		return;
 	}
 
 }
 
-},{"iterate79":116}],14:[function(require,module,exports){
+},{"iterate79":121}],14:[function(require,module,exports){
 /**
  * validate.js
  */
@@ -5856,12 +6117,145 @@ module.exports = function(broccoli){
 	}
 }
 
-},{"../../../node_modules/validatorjs/src/lang/en.js":231,"../../../node_modules/validatorjs/src/lang/ja.js":232,"validatorjs":235}],15:[function(require,module,exports){
+},{"../../../node_modules/validatorjs/src/lang/en.js":237,"../../../node_modules/validatorjs/src/lang/ja.js":238,"validatorjs":241}],15:[function(require,module,exports){
 (function(window){
 	window.Broccoli = require('./apis/broccoli-client.js');
 })(window);
 
 },{"./apis/broccoli-client.js":1}],16:[function(require,module,exports){
+module.exports = function(broccoli){
+
+	/**
+	 * エディタUIを生成 (Client Side)
+	 */
+	this.mkEditor = function( mod, data, elm, callback ){
+		var rows = 12;
+		if( mod.rows ){
+			rows = mod.rows;
+		}
+		var $rtn = $('<div>'),
+			$formElm
+		;
+
+		$formElm = $('<input type="color" class="form-control">')
+			.attr({
+				"name": mod.name
+			})
+			.val(data)
+			.css({'width':'160px', 'max-width': '100%'})
+		;
+		$rtn.append( $formElm );
+
+		$(elm).html($rtn);
+
+		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
+			callback();
+		}); });
+		return this;
+	}
+
+	/**
+	 * エディタUIで編集した内容を保存 (Client Side)
+	 */
+	this.saveEditorContent = function( elm, data, mod, callback, options ){
+		options = options || {};
+		options.message = options.message || function(msg){};//ユーザーへのメッセージテキストを送信
+		var $dom = $(elm);
+		var src = $dom.find('input[type=color]').val();
+		src = JSON.parse( JSON.stringify(src) );
+
+		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
+			callback(src);
+		}); });
+		return this;
+	}
+
+}
+
+},{}],17:[function(require,module,exports){
+module.exports = function(broccoli){
+
+	/**
+	 * エディタUIを生成 (Client Side)
+	 */
+	this.mkEditor = function( mod, data, elm, callback ){
+		mod.step = mod.step || "min";
+		var $rtn = $('<div>');
+		$rtn.css({'display': 'flex'});
+
+		var valDate, valTime;
+		if( data ){
+			valDate = dateFormat('Y-m-d', data);
+			valTime = dateFormat('H:i', data);
+			valTimeSec = dateFormat('H:i:s', data);
+		}
+
+		var $date = $('<input type="date" class="form-control">')
+			.attr({ "name": mod.name + "__date" })
+			.val(valDate)
+			.css({'width':'180px', 'max-width': '100%'});
+		var $time = $('<input type="time" class="form-control">')
+			.attr({ "name": mod.name + "__time" })
+			.val(valTime)
+			.css({'width':'130px', 'max-width': '100%'});
+
+		if( mod.step == "date" ){
+			$time.css({"display": "none"});
+		}else if( mod.step == "sec" ){
+			$time.val(valTimeSec);
+			$time.attr({"step": 1});
+		}
+
+		$rtn
+			.append( $date )
+			.append( $time )
+		;
+
+		$(elm).html($rtn);
+
+		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
+			callback();
+		}); });
+		return this;
+	}
+
+	/**
+	 * エディタUIで編集した内容を保存 (Client Side)
+	 */
+	this.saveEditorContent = function( elm, data, mod, callback, options ){
+		options = options || {};
+		options.message = options.message || function(msg){};//ユーザーへのメッセージテキストを送信
+		var $dom = $(elm);
+		var valDate = $dom.find('input[type=date]').val();
+		var valTime = $dom.find('input[type=time]').val();
+		var src = '';
+		if( valDate && valTime ){
+			src = valDate + ' ' + valTime;
+		}else if( valDate ){
+			src = valDate + ' 00:00:00';
+		}
+		src = JSON.parse( JSON.stringify(src) );
+
+		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
+			callback(src);
+		}); });
+		return this;
+	}
+
+
+	function dateFormat(format, date){
+		var tmpDate = new Date(date);
+		format = format.replace(/Y/g, tmpDate.getFullYear());
+		format = format.replace(/m/g, ('0' + (tmpDate.getMonth() + 1)).slice(-2));
+		format = format.replace(/d/g, ('0' + tmpDate.getDate()).slice(-2));
+		format = format.replace(/H/g, ('0' + tmpDate.getHours()).slice(-2));
+		format = format.replace(/i/g, ('0' + tmpDate.getMinutes()).slice(-2));
+		format = format.replace(/s/g, ('0' + tmpDate.getSeconds()).slice(-2));
+		return format;
+	}
+}
+
+},{}],18:[function(require,module,exports){
 module.exports = function(broccoli){
 
 	/**
@@ -5902,22 +6296,22 @@ module.exports = function(broccoli){
 
 }
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function(broccoli){
 }
 
-},{}],18:[function(require,module,exports){
-module.exports=require(17)
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+module.exports=require(19)
+},{}],21:[function(require,module,exports){
 module.exports = function(broccoli){
 
 	var Promise = require('es6-promise').Promise;
 	var it79 = require('iterate79');
 	var utils79 = require('utils79');
 	var urlParse = require('url-parse');
-	var php = require('phpjs');
 	var _resMgr = broccoli.resourceMgr;
 	var _imgDummy = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA3hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiZTdmZmNiZS1lMTgwLTQwZGUtOTA3My1lNjk2MDk5YmYyNDkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MzlGNUUyODQ5NzU4MTFFNTg0MTBGRkY3MEQzOTdDQTQiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzlGNUUyODM5NzU4MTFFNTg0MTBGRkY3MEQzOTdDQTQiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDphMDI5NWE5YS05YzRkLTQzNjYtYjhjOS05NWQ1MjM0ZThhNDgiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6YmU3ZmZjYmUtZTE4MC00MGRlLTkwNzMtZTY5NjA5OWJmMjQ5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+5350UAAAD49JREFUeNrs3dty00gCgGHlAAmHZDI1sy8W3oULaoYLdouLvAsPNdfL1GY45EBOq4ZuaBTHlh3bkbq/v6rLJLaVkAt91ZLV2jg8PPyrkSRpzjb9CSRJAJEkAUSSNOy2Z73g3bt3RxO+fdqOs3ZctOOyHTdxSJKG30YcwYBH7dhtx5Pui168ePFy6kb6nETvIBLQ+NSOkwyR63ZcxedBIknDhSO01Xw7ApXweNqO5/HrXnj0BqSDyHk7PsRxEr++iIBcA0SSBg3IZgQkYLET8diPY6cvHnMBkiESwDiO42NnJpIQMRORpOHNPHI80sxjrx0Hcez0xSO0PQmJuzYQvt8+/zab/jQRjYtsJnJpJiJJg5x5pHMeTfaYUNmahsckG7b7vjBD5FX7/OuoV5h5nMZf7joDpHs4CyaS9DCzjvyw1U18TCfQd+K+fDfs26fh0WsG0hORN+3zryIWFxkc+Qzk++GsjY0NgEjSGru5uckPWzVpltGOxxGNZ823E+d7YZ8+Lx75hud+Y/sDw6GsX+M4iL/IsyjaoyY7zJX9RyRJ68UjP2Ge0DhI+++4L5/bgGmApHMa5/GcB0QkqS483iYHogm9AAnnNMJ1HuFjul8/bRXPeUBEkurA43Xz49O2H6IJp30ACSfGTzJA/hdGPOcBEUkqG49Xab+fAZIu15gJyEWGSLjO458ECUQkqQo8juO+v3ut30xA0qepzjNEzEQkqa6ZR8Ijv8ZvJiDhI7fXE2YiEJGkuvDI1zu86QvIVfPzFeZhQ58gIknF4/Gpub3O4VVfQFLXGSJBoc8QkaTi8fjcTF7fsOkLSLq/R3jjZRznEJGk4vE4z/b7182U+z31uSNhPhOBiCSVjcfMmUdfQPKZCEQkqR48Zt5ptu890SEiSXXhMbPNOf8fEJGksvHoXe8ZSLYkO0QkqVA84r5++TMQiEhS8XgsfQYCEUmCx/0AgYgkwWNhQCAiSXXjcS9AICJJ9eJxb0AgIkl14rEUQCAiSfXhsTRAICJJdeGxVEAgIkn14LF0QCAiSXXgsRJAICJJ5eOxMkAgIkll47FSQCAiSeXisXJAICJJZeKxFkAgIgke5eGxNkAgIgkeZeGxVkAgIgke5eCxdkAgIgkeZeDxIIBARBI8xo/HgwECEUnwGDceDwoIRCTBY7x4PDggEJEEj3HiMQhAICIJHuPDYzCAQEQSPMaFx6AAgYgkeIwHj8EBAhFJ8BgHHoMEBCKS4DF8PAYLCEQkwWPYeAwaEIhIgsdw8Rg8IBCRBA+AQEQSPArCYzSAQEQSPAACEUnwKACP0QECEUnwAAhEJMFjxHiMFhCISIIHQCAiCR4AgYgkeNSCRxGAQEQSPAACEUnwAAhEJMGjZDyKAwQikuABEIhIggdAICIJHgCBCEQkeMCjBkAgIgkeAIGIJHgABCKS4AEQiEBEgkeVeFQHCEQkeMADIBCRBA+AQEQSPAACEYhI8AAIRCAiwQMeAIGIBA94AAQikuABEIhARIIHQCACEQkeABFEJHjAAyAQkeABD4BARIIHPAACEYhI8AAIRCAiwQMggogED3gABCISPOABEIhARPCAB0AgAhEJHgCBCEQkeABEEJHgIYBARIIHPAACEYgIHvAACEQgIsEDIIKIBA8BBCISPAQQiEBE8IAHQCACEcEDHgCBCEQkeABEEJHgIYBARIKHAAIRiAge8AAIRCAieMADIIKI4AEPgAgiEjwEEIhI8BBAIAIRwQMeAIEIRAQPeABEEBE84AEQQUSChwACEYgIHgIIRCAieAgggojgAQ+ACCKCBzwAIohI8BBAIAIRwUMAgQhEBA8BRBARPOABEEFE8IAHQAQRiAgeAghEICJ4CCCCiOAhgAgiggc8ACKICB7wAIggAhF4wEMAgQhEBA8BRBARPAQQQUTwEEAEEYjAAx4A8SeACETgAQ8BRBARPAQQQUTwEEAEEcFDABFEIAIPeAggEIEIPOAhgAgigocAIogIHgKIIAIReAgggghE4AEPAUQQgQc8BBBBBB7wEEAEEcFDABFEIAIPAUQQgQg84CGACCLwgIcAIojAAx4CiCACEXgIIIIIROAhgEgQgYcEEEEEHvAQQAQReMBDABFEIAIPAUQQgQg8BBAJIvCQACKIwAMeAoggUi4i8BBABBGIwEMAkSACDwkgggg84CGACCIlIAIPAUSCCDwEEAki8JAAIojAAx4CiCBSAiLwEEAkiMBDAoggAg8JIILIABGBhwAiQQQeEkAEEXhIABFEBogIPAQQCSLwkAAiiKweEXgIIBJE4CEBRBBZPSLwEEAkiMBDAoggsnpE4CEBRBCZGxF4SAARROZGBB4SQASRuRGBhwQQQWRuROAhAUQQmRsReEgAEUTmRgQeEkAEkXkR2cresgUPCSCCyDyIbMcBDwkggkgvRHbb8TgD5HH8HjwkgAgiExEJYy9C8aQznsXnfoWHBBBBpIvIQRy/RCyex7EXv5eeh4cEEEHkFiK/NT8f1jrIvv4NHhJABJFZiPzejn/F8Ts8JIAIIrMQ+XcHj++IxOfgIQFEELkTkT/ah/046whjP34PHhJAVDkixz0QeTnp31PwOIaHamvbn0AlIhKXILm+6yXxcasF4M+7Dk1NgyPi8Wf78AEeMgOR6piJnMQd/cd2/BMeWwj+M+/243u+byNu8wQeAohUHiJhXLbjSzvO4s4+jNPwdQvC0Rx4HMVtnGbbOYvbvsx+HjwEEKkARK4yRC7jLOFLfLzIYOiDR5O9L23jMsPjCh4CiCRJAFGNZffzSPf5SAskhtV1H8fHMGaeNO+85lFnG2m76b4hve6xLgFEGjYemxkeaWXdp3GEhRJ3++DRQWQ3vjdtJ1/BN/08iAgg0sjxyO/nEXb2+QKJe9MuEpyCyB/5NuI2nzY977EuAUQaFx75/TzC2J+xPMnRtBPr8b372fZ63WNdAog0bjxmLYx4NOnfExDpLgUPEQFEKhSPPjeDChcJhivM/47jw7SLDXveHhciAohUOB5heZL37fhvZ7yPz0FEAojgcQuPtDDi3x1E3sfvLXqPdYgIIFIleORLsx9nX0NEAojgMRGPBEa+QGK+8GLfpeAhIoBIFeGRRsAiLMl+2hmf43PfXwsRAUSCR/dOgvnKuvkKvoveYx0iAohUAR75/TwSIPe5PS5EBBCpMjyusrdcQUQCiODRB4/vN4PqeY91iAggEjxu30kQIhJABI+58YCIBBDBY2E8ICIBRPBYGA+ISAARPBbGAyISQASPhfGAiAQQwWNhPCAiAUTwuLnv7w0RAUSCB0QkgAge68MDIgKIBA+ISAARPNaPB0QEEAkeEJEAInisHw+ICCASPCAiAUTweLggIoBI8ICIBBDBAyISQASPEeABEQFEggdEJIAIHhCRACJ4jAgPiAggEjwgIoD4EwgeEJEAInhABCICiOBRAx4QEUAED3hARACR4AERCSCCB0QgIoAIHjUFEQFE8IAHRAQQwQMeEJEAInhABCICiOABEYgIIIIHPCAigAge8ICIACJ4wAMiEBFABA+IQEQAETwgAhEBRPAQRAQQwQMeEBFABA94QAQiAojgARGICCCChyAigAgegogAInjAAyL+8gARPOABEYgIIIIHRCAigAgegogAIngIIgKI4AEPiEAEIIIHPCACEQEEHvAQRAQQwUMQEUAED0FEABE84AERiABE8IAHRCAigMADHoKIACJ4CCICiOAhiEAEIIKHIAIRAQQe8BBEBBB4wEMQEUAED0FEABE8BBGIAETwEEQgIoDAAx6CiAACD3gIIgKI4CGIQAQggocgAhGACB4SRAQQeMBDEBFA4AEPQUQAgQc8BBGIAETwEEQgAhDBQ4KIAAIPCSICCDzgIYhABCDwgIcgAhGACB4SRAAieEgQEUDgIUFEAIEHPAQRiAAEHvAQRCACEMFDgghABA8JIgIIPCSIQAQg8ICHIAIRgMADHhJEACJ4SBABiOAhQUQAgYcEEYgABB7wEEQgAhB4wEOCCEDgAQ8JIgARPCSIQAQg8JAgAhGAwEMSRAACD3hIEAEIPOAhQUQAgYcEEYgABB4SRCACEHhIgghA4AEPCSIAgQc8JIhABCDwkCACEYDAQxJEAAIPSRABCDzgIUEEIPCAhwQRiFQOCDwkiEAEIPCQBBGAwEMSRAACD3hIEKkGkaIBgYckiAAEHpIgAhB4SIIIQOABDwki1SJSFCDwkAQRgMBDEkQAAg9JECkRkdEDAg9JEAEIPCRBBCDwkASR0hEZJSDwkAQRgMBDEkRGisioAIGHJIgABB6SIDJyREYBCDwkQQQg8JAEkUIQGTQg8JAEEYDAQxJECkNkkIDAQxJEho/I4ACBhySIjAORQQECD0kQGQ8igwEEHpIgMi5EBgEIPCRBZHyIPDgg8JAEkXEi8qCAwEMSRMaLyIMBAg9JEBk3Ig8CCDwkQWT8iKwdEHhIgkgZiKwVEHhIgkg5iKwNEHhIgkhZiKwFEHhIgkh5iKwcEHhIgkiZiKwUEHhIUrmIrAwQeEhS2YisBBB4SFL5iCwdEHhIUh2ILBUQeEhSPYgsDRB4SFJdiCwFEHhIUn2I3BsQeEhSnYjcCxB4SFK9iCwMCDwkqW5EFgIEHpIEkbkBgYckQWRuQOAhSRCZF5ANeEhSNYj0gmTeQ1jwkKTCEVn6DAQeklQNIkuZgWzAQ5KqRWTjvjMQeEhSnYgsNAPJZx7bccBDkupAJO33p85ENnvOPHbhIUnVILLbZyayecfsY6v5+bDVU3hIUjWIPG1+Ppy1NWkWchcgm9nMI2xoDx6SVA0ie3Hfn2Yim30B2e7MPOAhSfUikmYi230A6c48fkmAwEOSqkDkIO77uzORmYAkPPbNPCSp+pnIfobITECeNN9OoiRADtoNvoGHJFWDyJu0/48WPI82zASkaX6cA9lpN/QKHpJUHSKvkgPNhMNX0wBJG3gJD0mqFpGX037O9oJ4vG4fPmZonLXjS/xFc5jS8sAAkaQ1O5I9pn3yVdxXn8V999dPV4V9+l2nKoIF7fNHvQGZgcfb+MPPomiXwYjmx7Uj6UJEaEjScDBJS1Ntxv3zZdyHf92fh337Xacs7kJk4/Dw8K++v0HcwHmc/hzHWchJ/AV+OmwFEEka3Gyku0RVfq1fGDuzDlstBEimTwDkQxwnze1zHuCQpGHPRLpLVe3HsZNmHEsDpDN1CVh86sw80okaMw9JGv5MJC2SmM9EnjfZp636IDITkDtOnpxmeKRzIOCQpPFAEsZ2hsit6zxmITLXORBJklKb/gSSJIBIkgAiSRp2/xdgAI8kbBM3p8L5AAAAAElFTkSuQmCC';
+	var md5 = require('md5');
 	var _this = this;
 
 	/**
@@ -6027,8 +6421,10 @@ module.exports = function(broccoli){
 		}
 		// if( typeof(data.original) !== typeof({}) ){ data.original = {}; }
 		var $img = $('<img>');
-		var $inputImageName = $('<input class="form-control" style="width:12em;">');
+		var $inputImageName = $('<input class="form-control" style="margin: 0 5px;">');
+		var $displayExtension = $('<span>');
 		var $inputWebUrl = $('<input class="form-control">');
+		var confFilenameAutoSetter = mod.filenameAutoSetter || 'ifEmpty';
 
 		function selectResourceType(){
 			var val = rtn.find('[name='+mod.name+'-resourceType]:checked').val();
@@ -6045,6 +6441,31 @@ module.exports = function(broccoli){
 		}
 
 		/**
+		 * ランダムなファイル名を自動生成する
+		 */
+		function generateRandomFileName(){
+			// Dateオブジェクトを作成
+			var date = new Date();
+
+			// UNIXタイムスタンプを取得する (ミリ秒単位)
+			var a = date.getTime();
+
+			var S = "abcdefghijklmnopqrstuvwxyz0123456789";
+			var N = 16;
+			var randomFileName = Array.from(
+				crypto
+					.getRandomValues(new Uint16Array(N)))
+					.map(function(n){
+						return S[n%S.length];
+					})
+					.join('')
+			;
+			randomFileName += '-' + md5(a);
+			return randomFileName;
+		}
+
+
+		/**
 		 * fileAPIからファイルを取り出して反映する
 		 */
 		function applyFile(fileInfo){
@@ -6055,14 +6476,27 @@ module.exports = function(broccoli){
 				}
 				reader.readAsDataURL(fileInfo);
 			}
-			if( !$inputImageName.val() ){
-				// アップした画像名をプリセット
-				// ただし、既に名前がセットされている場合は変更しない
-				var fname = fileInfo.name;
-				fname = fname.replace(new RegExp('\\.[a-zA-Z0-9]*$'), '');
+
+			// 画像名をセット
+			if( confFilenameAutoSetter == 'random' ){
+				// 自動的に生成したファイル名を適用する
+				var fname = generateRandomFileName();
 				$inputImageName.val(fname);
+			}else{
+				// アップした画像名から取得する
+				// ただし、 `mod.filenameAutoSetter` オプションが `ifEmpty` で、
+				// かつ既に名前がセットされている場合は更新しない。
+				// `mod.filenameAutoSetter` オプションが `always` の場合、画像を選択し直すたびに更新する。
+				if( !$inputImageName.val() || confFilenameAutoSetter == 'always' ){
+					var fname = fileInfo.name;
+					fname = fname.replace(/\.[a-zA-Z0-9]*$/, '');
+					fname = fname.split(/[^0-9a-zA-Z\-\_\.]/).join('_');
+					$inputImageName.val(fname);
+				}
 			}
+			// mod.filename
 			readSelectedLocalFile(fileInfo, function(dataUri){
+				$displayExtension.text('.'+getExtension( fileInfo.name ));
 				$img
 					.attr({
 						"src": dataUri ,
@@ -6082,6 +6516,9 @@ module.exports = function(broccoli){
 
 		_resMgr.getResource( data.resKey, function(res){
 			// console.log(res);
+			if(res.ext){
+				$displayExtension.text( '.'+res.ext );
+			}
 			var path = 'data:'+res.type+';base64,' + res.base64;
 			if( !res.base64 ){
 				// ↓ ダミーの Sample Image
@@ -6321,25 +6758,29 @@ module.exports = function(broccoli){
 						})
 					)
 			);
-			$uiImageResource.append(
-				$('<div>')
-					.append( $('<span>')
-						.text('出力ファイル名(拡張子を含まない):')
-					)
-					.append( $inputImageName
-						.attr({
-							"name":mod.name+'-publicFilename' ,
-							"type":"text",
-							"placeholder": "output file name"
-						})
-						.css({
-							'display': 'inline-block',
-							'width': 500,
-							'max-width': '90%'
-						})
-						.val( (typeof(res.publicFilename)==typeof('') ? res.publicFilename : '') )
-					)
-			);
+			var $fileNameDisplay = $('<div>')
+				.append( $('<span>')
+					.text('出力ファイル名:')
+				)
+				.append( $inputImageName
+					.attr({
+						"name":mod.name+'-publicFilename' ,
+						"type":"text",
+						"placeholder": "output file name"
+					})
+					.css({
+						'display': 'inline-block',
+						'width': 210,
+						'max-width': '70%'
+					})
+					.val( (typeof(res.publicFilename)==typeof('') ? res.publicFilename : '') )
+				)
+				.append( $displayExtension )
+			;
+			$uiImageResource.append( $fileNameDisplay );
+			if( confFilenameAutoSetter == 'random' ){
+				$fileNameDisplay.css({'display': 'none'});
+			}
 			$uiWebResource.append(
 				$('<p>').text('このモードでは、画像リソースを URL で指定します。画像は取得して保存されることはありません。指定したURLが直接参照されます。')
 			);
@@ -6386,17 +6827,9 @@ module.exports = function(broccoli){
 			data,
 			[
 				function(it1, data){
-					_resMgr.addResource( function(newResKey){
-						_resMgr.updateResource( newResKey, resources[data.resKey], function(result){
-							// console.log(newResKey);
-							data.resKey = newResKey;
-							it1.next(data);
-						} );
-					} );
-				} ,
-				function(it1, data){
-					_resMgr.getResourcePublicPath( data.resKey, function(publicPath){
-						data.path = publicPath;
+					_resMgr.addNewResource( resources[data.resKey], function(result){
+						data.resKey = result.newResourceKey;
+						data.path = result.publicPath;
 						it1.next(data);
 					} );
 				} ,
@@ -6611,7 +7044,7 @@ module.exports = function(broccoli){
 					if( $img.attr('data-is-updated') == 'yes' ){
 						resInfo.ext = $img.attr('data-extension');
 						resInfo.type = $img.attr('data-mime-type');
-						resInfo.size = $img.attr('data-size');
+						resInfo.size = parseInt($img.attr('data-size'));
 						resInfo.base64 = $img.attr('data-base64');
 						resInfo.field = mod.type;
 						resInfo.fieldNote = {}; // <= フィールド記録欄をクリア
@@ -6642,9 +7075,9 @@ module.exports = function(broccoli){
 
 }
 
-},{"cheerio":33,"es6-promise":90,"iterate79":116,"phpjs":127,"url-parse":141,"utils79":162}],20:[function(require,module,exports){
-module.exports=require(17)
-},{}],21:[function(require,module,exports){
+},{"cheerio":36,"es6-promise":94,"iterate79":121,"md5":127,"url-parse":147,"utils79":168}],22:[function(require,module,exports){
+module.exports=require(19)
+},{}],23:[function(require,module,exports){
 module.exports = function(broccoli){
 	var $ = require('jquery');
 	var php = require('phpjs');
@@ -6842,7 +7275,7 @@ module.exports = function(broccoli){
 
 }
 
-},{"iterate79":116,"jquery":118,"phpjs":127,"utils79":162}],22:[function(require,module,exports){
+},{"iterate79":121,"jquery":123,"phpjs":133,"utils79":168}],24:[function(require,module,exports){
 module.exports = function(broccoli){
 	var php = require('phpjs');
 	var utils79 = require('utils79');
@@ -7030,7 +7463,7 @@ module.exports = function(broccoli){
 
 }
 
-},{"phpjs":127,"utils79":162}],23:[function(require,module,exports){
+},{"phpjs":133,"utils79":168}],25:[function(require,module,exports){
 module.exports = function(broccoli){
 	var utils79 = require('utils79');
 
@@ -7072,8 +7505,12 @@ module.exports = function(broccoli){
 					$select.append( $option );
 				}
 				// 選択されていなかったら default を選択。
-				if( !$select.find('input[type=radio]:checked').length && mod.default ){
-					$select.find('input[type=radio][value='+mod.default+']').attr({'checked':'checked'});
+				if( !$select.find('input[type=radio]:checked').length ){
+					var defaultValue = mod.default;
+					if( defaultValue === undefined ){
+						defaultValue = '';
+					}
+				   $select.find('input[type=radio][value="'+defaultValue+'"]').attr({'checked':'checked'});
 				}
 				// それでも選択されていなかったら、最初の選択肢を選択。
 				if( !$select.find('input[type=radio]:checked').length ){
@@ -7147,9 +7584,9 @@ module.exports = function(broccoli){
 
 }
 
-},{"utils79":162}],24:[function(require,module,exports){
-module.exports=require(17)
-},{}],25:[function(require,module,exports){
+},{"utils79":168}],26:[function(require,module,exports){
+module.exports=require(19)
+},{}],27:[function(require,module,exports){
 /**
  * インスタンスパスの末尾の連番を1つ進める
  */
@@ -7165,7 +7602,7 @@ module.exports = function(instancePath){
 	return instancePath;
 }
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * モジュールIDをパースする
  */
@@ -7179,7 +7616,7 @@ module.exports = function(moduleId){
 	if(typeof(moduleId) != typeof('')){
 		return false;
 	}
-	if( !moduleId.match( new RegExp('^(?:([0-9a-zA-Z\\_\\-\\.]*?)\\:)?([^\\/\\:\\s]+)\\/([^\\/\\:\\s]+)$') ) ){
+	if( !moduleId.match( new RegExp('^(?:([0-9a-zA-Z\\_\\-\\.]*?)\\:)?([^\\/\\:\\s]*)\\/([^\\/\\:\\s]*)$') ) ){
 		return false;
 	}
 	rtn.package = RegExp.$1;
@@ -7189,10 +7626,16 @@ module.exports = function(moduleId){
 	if( !rtn.package.length ){
 		rtn.package = null;
 	}
+	if( !rtn.category.length ){
+		rtn.category = null;
+	}
+	if( !rtn.module.length ){
+		rtn.module = null;
+	}
 	return rtn;
 }
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -7318,7 +7761,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = {
 	trueFunc: function trueFunc(){
 		return true;
@@ -7327,11 +7770,11 @@ module.exports = {
 		return false;
 	}
 };
-},{}],29:[function(require,module,exports){
-
-},{}],30:[function(require,module,exports){
-module.exports=require(29)
 },{}],31:[function(require,module,exports){
+
+},{}],32:[function(require,module,exports){
+module.exports=require(31)
+},{}],33:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -7524,7 +7967,7 @@ function base64DetectIncompleteChar(buffer) {
   return incomplete;
 }
 
-},{"buffer":32}],32:[function(require,module,exports){
+},{"buffer":34}],34:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -8635,7 +9078,42 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":27,"ieee754":112}],33:[function(require,module,exports){
+},{"base64-js":29,"ieee754":116}],35:[function(require,module,exports){
+var charenc = {
+  // UTF-8 encoding
+  utf8: {
+    // Convert a string to a byte array
+    stringToBytes: function(str) {
+      return charenc.bin.stringToBytes(unescape(encodeURIComponent(str)));
+    },
+
+    // Convert a byte array to a string
+    bytesToString: function(bytes) {
+      return decodeURIComponent(escape(charenc.bin.bytesToString(bytes)));
+    }
+  },
+
+  // Binary encoding
+  bin: {
+    // Convert a string to a byte array
+    stringToBytes: function(str) {
+      for (var bytes = [], i = 0; i < str.length; i++)
+        bytes.push(str.charCodeAt(i) & 0xFF);
+      return bytes;
+    },
+
+    // Convert a byte array to a string
+    bytesToString: function(bytes) {
+      for (var str = [], i = 0; i < bytes.length; i++)
+        str.push(String.fromCharCode(bytes[i]));
+      return str.join('');
+    }
+  }
+};
+
+module.exports = charenc;
+
+},{}],36:[function(require,module,exports){
 /**
  * Export cheerio (with )
  */
@@ -8648,7 +9126,7 @@ exports = module.exports = require('./lib/cheerio');
 
 exports.version = require('./package').version;
 
-},{"./lib/cheerio":39,"./package":43}],34:[function(require,module,exports){
+},{"./lib/cheerio":42,"./package":46}],37:[function(require,module,exports){
 var _ = require('lodash'),
   utils = require('../utils'),
   isTag = utils.isTag,
@@ -9057,7 +9535,7 @@ exports.is = function (selector) {
 };
 
 
-},{"../utils":42,"lodash":121}],35:[function(require,module,exports){
+},{"../utils":45,"lodash":126}],38:[function(require,module,exports){
 var _ = require('lodash'),
     domEach = require('../utils').domEach;
 var toString = Object.prototype.toString;
@@ -9177,7 +9655,7 @@ function parse(styles) {
     }, {});
 }
 
-},{"../utils":42,"lodash":121}],36:[function(require,module,exports){
+},{"../utils":45,"lodash":126}],39:[function(require,module,exports){
 // https://github.com/jquery/jquery/blob/2.1.3/src/manipulation/var/rcheckableType.js
 // https://github.com/jquery/jquery/blob/2.1.3/src/serialize.js
 var _ = require('lodash'),
@@ -9233,7 +9711,7 @@ exports.serializeArray = function() {
     }).get();
 };
 
-},{"lodash":121}],37:[function(require,module,exports){
+},{"lodash":126}],40:[function(require,module,exports){
 var _ = require('lodash'),
     parse = require('../parse'),
     $ = require('../static'),
@@ -9601,7 +10079,7 @@ exports.clone = function() {
   return this._make(cloneDom(this.get(), this.options));
 };
 
-},{"../parse":40,"../static":41,"../utils":42,"lodash":121}],38:[function(require,module,exports){
+},{"../parse":43,"../static":44,"../utils":45,"lodash":126}],41:[function(require,module,exports){
 var _ = require('lodash'),
     select = require('css-select'),
     utils = require('../utils'),
@@ -10025,7 +10503,7 @@ exports.addBack = function(selector) {
   );
 };
 
-},{"../utils":42,"css-select":50,"htmlparser2":99,"lodash":121}],39:[function(require,module,exports){
+},{"../utils":45,"css-select":54,"htmlparser2":103,"lodash":126}],42:[function(require,module,exports){
 /*
   Module dependencies
 */
@@ -10189,7 +10667,7 @@ var isNode = function(obj) {
   return obj.name || obj.type === 'text' || obj.type === 'comment';
 };
 
-},{"./api/attributes":34,"./api/css":35,"./api/forms":36,"./api/manipulation":37,"./api/traversing":38,"./parse":40,"./static":41,"lodash":121}],40:[function(require,module,exports){
+},{"./api/attributes":37,"./api/css":38,"./api/forms":39,"./api/manipulation":40,"./api/traversing":41,"./parse":43,"./static":44,"lodash":126}],43:[function(require,module,exports){
 (function (Buffer){
 /*
   Module Dependencies
@@ -10279,7 +10757,7 @@ exports.update = function(arr, parent) {
 // module.exports = $.extend(exports);
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":32,"htmlparser2":99}],41:[function(require,module,exports){
+},{"buffer":34,"htmlparser2":103}],44:[function(require,module,exports){
 /**
  * Module dependencies
  */
@@ -10463,7 +10941,7 @@ exports.contains = function(container, contained) {
   return false;
 };
 
-},{"./cheerio":39,"./parse":40,"css-select":50,"dom-serializer":67,"lodash":121}],42:[function(require,module,exports){
+},{"./cheerio":42,"./parse":43,"css-select":54,"dom-serializer":71,"lodash":126}],45:[function(require,module,exports){
 var parse = require('./parse'),
     render = require('dom-serializer');
 
@@ -10530,30 +11008,35 @@ exports.cloneDom = function(dom, options) {
   return parse(render(dom, options), options).children;
 };
 
-},{"./parse":40,"dom-serializer":67}],43:[function(require,module,exports){
+},{"./parse":43,"dom-serializer":71}],46:[function(require,module,exports){
 module.exports={
-  "_from": "cheerio@^0.19.0",
+  "_args": [
+    [
+      "cheerio@0.19.0",
+      "/Users/tomk79/mydoc_TomK/projs/broccoli-html-editor/broccoli-html-editor/broccoli-html-editor"
+    ]
+  ],
+  "_from": "cheerio@0.19.0",
   "_id": "cheerio@0.19.0",
   "_inBundle": false,
   "_integrity": "sha1-dy5wFfLuKZZQltcepBdbdas1SSU=",
   "_location": "/cheerio",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "cheerio@^0.19.0",
+    "raw": "cheerio@0.19.0",
     "name": "cheerio",
     "escapedName": "cheerio",
-    "rawSpec": "^0.19.0",
+    "rawSpec": "0.19.0",
     "saveSpec": null,
-    "fetchSpec": "^0.19.0"
+    "fetchSpec": "0.19.0"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/cheerio/-/cheerio-0.19.0.tgz",
-  "_shasum": "772e7015f2ee29965096d71ea4175b75ab354925",
-  "_spec": "cheerio@^0.19.0",
+  "_spec": "0.19.0",
   "_where": "/Users/tomk79/mydoc_TomK/projs/broccoli-html-editor/broccoli-html-editor/broccoli-html-editor",
   "author": {
     "name": "Matt Mueller",
@@ -10563,7 +11046,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/cheeriojs/cheerio/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "css-select": "~1.0.0",
     "dom-serializer": "~0.1.0",
@@ -10571,7 +11053,6 @@ module.exports={
     "htmlparser2": "~3.8.1",
     "lodash": "^3.2.0"
   },
-  "deprecated": false,
   "description": "Tiny, fast, and elegant implementation of core jQuery designed specifically for the server",
   "devDependencies": {
     "benchmark": "~1.0.0",
@@ -10608,7 +11089,105 @@ module.exports={
   "version": "0.19.0"
 }
 
-},{}],44:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
+(function() {
+  var base64map
+      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+
+  crypt = {
+    // Bit-wise rotation left
+    rotl: function(n, b) {
+      return (n << b) | (n >>> (32 - b));
+    },
+
+    // Bit-wise rotation right
+    rotr: function(n, b) {
+      return (n << (32 - b)) | (n >>> b);
+    },
+
+    // Swap big-endian to little-endian and vice versa
+    endian: function(n) {
+      // If number given, swap endian
+      if (n.constructor == Number) {
+        return crypt.rotl(n, 8) & 0x00FF00FF | crypt.rotl(n, 24) & 0xFF00FF00;
+      }
+
+      // Else, assume array and swap all items
+      for (var i = 0; i < n.length; i++)
+        n[i] = crypt.endian(n[i]);
+      return n;
+    },
+
+    // Generate an array of any length of random bytes
+    randomBytes: function(n) {
+      for (var bytes = []; n > 0; n--)
+        bytes.push(Math.floor(Math.random() * 256));
+      return bytes;
+    },
+
+    // Convert a byte array to big-endian 32-bit words
+    bytesToWords: function(bytes) {
+      for (var words = [], i = 0, b = 0; i < bytes.length; i++, b += 8)
+        words[b >>> 5] |= bytes[i] << (24 - b % 32);
+      return words;
+    },
+
+    // Convert big-endian 32-bit words to a byte array
+    wordsToBytes: function(words) {
+      for (var bytes = [], b = 0; b < words.length * 32; b += 8)
+        bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
+      return bytes;
+    },
+
+    // Convert a byte array to a hex string
+    bytesToHex: function(bytes) {
+      for (var hex = [], i = 0; i < bytes.length; i++) {
+        hex.push((bytes[i] >>> 4).toString(16));
+        hex.push((bytes[i] & 0xF).toString(16));
+      }
+      return hex.join('');
+    },
+
+    // Convert a hex string to a byte array
+    hexToBytes: function(hex) {
+      for (var bytes = [], c = 0; c < hex.length; c += 2)
+        bytes.push(parseInt(hex.substr(c, 2), 16));
+      return bytes;
+    },
+
+    // Convert a byte array to a base-64 string
+    bytesToBase64: function(bytes) {
+      for (var base64 = [], i = 0; i < bytes.length; i += 3) {
+        var triplet = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+        for (var j = 0; j < 4; j++)
+          if (i * 8 + j * 6 <= bytes.length * 8)
+            base64.push(base64map.charAt((triplet >>> 6 * (3 - j)) & 0x3F));
+          else
+            base64.push('=');
+      }
+      return base64.join('');
+    },
+
+    // Convert a base-64 string to a byte array
+    base64ToBytes: function(base64) {
+      // Remove non-base-64 characters
+      base64 = base64.replace(/[^A-Z0-9+\/]/ig, '');
+
+      for (var bytes = [], i = 0, imod4 = 0; i < base64.length;
+          imod4 = ++i % 4) {
+        if (imod4 == 0) continue;
+        bytes.push(((base64map.indexOf(base64.charAt(i - 1))
+            & (Math.pow(2, -2 * imod4 + 8) - 1)) << (imod4 * 2))
+            | (base64map.indexOf(base64.charAt(i)) >>> (6 - imod4 * 2)));
+      }
+      return bytes;
+    }
+  };
+
+  module.exports = crypt;
+})();
+
+},{}],48:[function(require,module,exports){
 var Buffer = require('buffer').Buffer;
 var intSize = 4;
 var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
@@ -10645,7 +11224,7 @@ function hash(buf, fn, hashSize, bigEndian) {
 
 module.exports = { hash: hash };
 
-},{"buffer":32}],45:[function(require,module,exports){
+},{"buffer":34}],49:[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 var sha = require('./sha')
 var sha256 = require('./sha256')
@@ -10744,7 +11323,7 @@ each(['createCredentials'
   }
 })
 
-},{"./md5":46,"./rng":47,"./sha":48,"./sha256":49,"buffer":32}],46:[function(require,module,exports){
+},{"./md5":50,"./rng":51,"./sha":52,"./sha256":53,"buffer":34}],50:[function(require,module,exports){
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -10909,7 +11488,7 @@ module.exports = function md5(buf) {
   return helpers.hash(buf, core_md5, 16);
 };
 
-},{"./helpers":44}],47:[function(require,module,exports){
+},{"./helpers":48}],51:[function(require,module,exports){
 // Original code adapted from Robert Kieffer.
 // details at https://github.com/broofa/node-uuid
 (function() {
@@ -10942,7 +11521,7 @@ module.exports = function md5(buf) {
 
 }())
 
-},{}],48:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -11045,7 +11624,7 @@ module.exports = function sha1(buf) {
   return helpers.hash(buf, core_sha1, 20, true);
 };
 
-},{"./helpers":44}],49:[function(require,module,exports){
+},{"./helpers":48}],53:[function(require,module,exports){
 
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -11126,7 +11705,7 @@ module.exports = function sha256(buf) {
   return helpers.hash(buf, core_sha256, 32, true);
 };
 
-},{"./helpers":44}],50:[function(require,module,exports){
+},{"./helpers":48}],54:[function(require,module,exports){
 "use strict";
 
 module.exports = CSSselect;
@@ -11185,7 +11764,7 @@ CSSselect.iterate = selectAll;
 //useful for debugging
 CSSselect._compileUnsafe = compileUnsafe;
 
-},{"./lib/compile.js":52,"./lib/pseudos.js":55,"boolbase":28,"domutils":72}],51:[function(require,module,exports){
+},{"./lib/compile.js":56,"./lib/pseudos.js":59,"boolbase":30,"domutils":76}],55:[function(require,module,exports){
 var DomUtils  = require("domutils"),
     hasAttrib = DomUtils.hasAttrib,
     getAttributeValue = DomUtils.getAttributeValue,
@@ -11368,7 +11947,7 @@ module.exports = {
 	rules: attributeRules
 };
 
-},{"boolbase":28,"domutils":72}],52:[function(require,module,exports){
+},{"boolbase":30,"domutils":76}],56:[function(require,module,exports){
 /*
 	compiles a selector to an executable function
 */
@@ -11551,7 +12130,7 @@ filters.matches = function(next, selector, options){
 	return compileUnsafe(selector, opts);
 };
 
-},{"./general.js":53,"./procedure.json":54,"./pseudos.js":55,"./sort.js":56,"boolbase":28,"css-what":57,"domutils":72}],53:[function(require,module,exports){
+},{"./general.js":57,"./procedure.json":58,"./pseudos.js":59,"./sort.js":60,"boolbase":30,"css-what":61,"domutils":76}],57:[function(require,module,exports){
 var DomUtils    = require("domutils"),
     isTag       = DomUtils.isTag,
     getParent   = DomUtils.getParent,
@@ -11638,7 +12217,7 @@ module.exports = {
 		return next;
 	}
 };
-},{"./attributes.js":51,"./pseudos.js":55,"domutils":72}],54:[function(require,module,exports){
+},{"./attributes.js":55,"./pseudos.js":59,"domutils":76}],58:[function(require,module,exports){
 module.exports={
   "universal": 5,
   "tag": 3,
@@ -11651,7 +12230,7 @@ module.exports={
   "adjacent": -1
 }
 
-},{}],55:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /*
 	pseudo selectors
 	
@@ -11995,7 +12574,7 @@ module.exports = {
 	pseudos: pseudos
 };
 
-},{"./attributes.js":51,"boolbase":28,"domutils":72,"nth-check":123}],56:[function(require,module,exports){
+},{"./attributes.js":55,"boolbase":30,"domutils":76,"nth-check":129}],60:[function(require,module,exports){
 module.exports = sortByProcedure;
 
 /*
@@ -12041,7 +12620,7 @@ function sortByProcedure(arr){
 		}
 	}
 }
-},{"./procedure.json":54}],57:[function(require,module,exports){
+},{"./procedure.json":58}],61:[function(require,module,exports){
 "use strict";
 
 module.exports = parse;
@@ -12224,7 +12803,7 @@ function parse(selector, options){
 	subselects.push(tokens);
 	return subselects;
 }
-},{}],58:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 // Generated by CoffeeScript 1.12.7
 var Generator, stream, util,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -12418,7 +12997,7 @@ Generator.bool = function(gen) {
   return Math.floor(gen.random() * 2);
 };
 
-},{"stream":132,"util":144}],59:[function(require,module,exports){
+},{"stream":138,"util":150}],63:[function(require,module,exports){
 (function (process,Buffer){
 // Generated by CoffeeScript 1.12.7
 var Parser, StringDecoder, isObjLiteral, stream, util;
@@ -12990,7 +13569,7 @@ isObjLiteral = function(_obj) {
 };
 
 }).call(this,require("rH1JPG"),require("buffer").Buffer)
-},{"buffer":32,"rH1JPG":128,"stream":132,"string_decoder":31,"util":144}],60:[function(require,module,exports){
+},{"buffer":34,"rH1JPG":134,"stream":138,"string_decoder":33,"util":150}],64:[function(require,module,exports){
 (function (process){
 // Generated by CoffeeScript 1.12.7
 var Stringifier, get, stream, util;
@@ -13306,7 +13885,7 @@ Stringifier.prototype.stringify = function(line) {
 };
 
 }).call(this,require("rH1JPG"))
-},{"lodash.get":120,"rH1JPG":128,"stream":132,"util":144}],61:[function(require,module,exports){
+},{"lodash.get":125,"rH1JPG":134,"stream":138,"util":150}],65:[function(require,module,exports){
 // Generated by CoffeeScript 1.12.3
 var generate, parse, stringify, transform;
 
@@ -13326,7 +13905,7 @@ module.exports.transform = transform;
 
 module.exports.stringify = stringify;
 
-},{"csv-generate":58,"csv-parse":59,"csv-stringify":60,"stream-transform":138}],62:[function(require,module,exports){
+},{"csv-generate":62,"csv-parse":63,"csv-stringify":64,"stream-transform":144}],66:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13355,7 +13934,7 @@ function getTimezoneOffsetInMilliseconds(dirtyDate) {
 }
 
 module.exports = exports.default;
-},{}],63:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13378,7 +13957,7 @@ function toInteger(dirtyNumber) {
 }
 
 module.exports = exports.default;
-},{}],64:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13457,7 +14036,7 @@ function isValid(dirtyDate) {
 }
 
 module.exports = exports.default;
-},{"../toDate/index.js":66}],65:[function(require,module,exports){
+},{"../toDate/index.js":70}],69:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13761,7 +14340,7 @@ function validateTimezone(_hours, minutes) {
 }
 
 module.exports = exports.default;
-},{"../_lib/getTimezoneOffsetInMilliseconds/index.js":62,"../_lib/toInteger/index.js":63}],66:[function(require,module,exports){
+},{"../_lib/getTimezoneOffsetInMilliseconds/index.js":66,"../_lib/toInteger/index.js":67}],70:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13824,7 +14403,7 @@ function toDate(argument) {
 }
 
 module.exports = exports.default;
-},{}],67:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*
   Module dependencies
 */
@@ -13974,7 +14553,7 @@ function renderComment(elem) {
   return '<!--' + elem.data + '-->';
 }
 
-},{"domelementtype":68,"entities":82}],68:[function(require,module,exports){
+},{"domelementtype":72,"entities":86}],72:[function(require,module,exports){
 //Types of elements found in the DOM
 module.exports = {
 	Text: "text", //Text
@@ -13991,7 +14570,7 @@ module.exports = {
 	}
 };
 
-},{}],69:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 var ElementType = require("domelementtype");
 
 var re_whitespace = /\s+/g;
@@ -14175,7 +14754,7 @@ DomHandler.prototype.onprocessinginstruction = function(name, data){
 
 module.exports = DomHandler;
 
-},{"./lib/element":70,"./lib/node":71,"domelementtype":68}],70:[function(require,module,exports){
+},{"./lib/element":74,"./lib/node":75,"domelementtype":72}],74:[function(require,module,exports){
 // DOM-Level-1-compliant structure
 var NodePrototype = require('./node');
 var ElementPrototype = module.exports = Object.create(NodePrototype);
@@ -14197,7 +14776,7 @@ Object.keys(domLvl1).forEach(function(key) {
 	});
 });
 
-},{"./node":71}],71:[function(require,module,exports){
+},{"./node":75}],75:[function(require,module,exports){
 // This object will be used as the prototype for Nodes when creating a
 // DOM-Level-1-compliant structure.
 var NodePrototype = module.exports = {
@@ -14243,7 +14822,7 @@ Object.keys(domLvl1).forEach(function(key) {
 	});
 });
 
-},{}],72:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 var DomUtils = module.exports;
 
 [
@@ -14259,7 +14838,7 @@ var DomUtils = module.exports;
 	});
 });
 
-},{"./lib/helpers":73,"./lib/legacy":74,"./lib/manipulation":75,"./lib/querying":76,"./lib/stringify":77,"./lib/traversal":78}],73:[function(require,module,exports){
+},{"./lib/helpers":77,"./lib/legacy":78,"./lib/manipulation":79,"./lib/querying":80,"./lib/stringify":81,"./lib/traversal":82}],77:[function(require,module,exports){
 // removeSubsets
 // Given an array of nodes, remove any member that is contained by another.
 exports.removeSubsets = function(nodes) {
@@ -14292,7 +14871,7 @@ exports.removeSubsets = function(nodes) {
 	return nodes;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 var ElementType = require("domelementtype");
 var isTag = exports.isTag = ElementType.isTag;
 
@@ -14381,7 +14960,7 @@ exports.getElementsByTagType = function(type, element, recurse, limit){
 	return this.filter(Checks.tag_type(type), element, recurse, limit);
 };
 
-},{"domelementtype":68}],75:[function(require,module,exports){
+},{"domelementtype":72}],79:[function(require,module,exports){
 exports.removeElement = function(elem){
 	if(elem.prev) elem.prev.next = elem.next;
 	if(elem.next) elem.next.prev = elem.prev;
@@ -14460,7 +15039,7 @@ exports.prepend = function(elem, prev){
 
 
 
-},{}],76:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 var isTag = require("domelementtype").isTag;
 
 module.exports = {
@@ -14556,7 +15135,7 @@ function findAll(test, elems){
 	return result;
 }
 
-},{"domelementtype":68}],77:[function(require,module,exports){
+},{"domelementtype":72}],81:[function(require,module,exports){
 var ElementType = require("domelementtype"),
     isTag = ElementType.isTag;
 
@@ -14650,7 +15229,7 @@ function getText(elem){
 	if(elem.type === ElementType.Text) return elem.data;
 	return "";
 }
-},{"domelementtype":68}],78:[function(require,module,exports){
+},{"domelementtype":72}],82:[function(require,module,exports){
 var getChildren = exports.getChildren = function(elem){
 	return elem.children;
 };
@@ -14676,7 +15255,7 @@ exports.getName = function(elem){
 	return elem.name;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /*
  * EJS Embedded JavaScript templates
  * Copyright 2112 Matthew Eernisse (mde@fleegix.org)
@@ -15658,7 +16237,7 @@ if (typeof window != 'undefined') {
   window.ejs = exports;
 }
 
-},{"../package.json":81,"./utils":80,"fs":30,"path":125}],80:[function(require,module,exports){
+},{"../package.json":85,"./utils":84,"fs":32,"path":131}],84:[function(require,module,exports){
 /*
  * EJS Embedded JavaScript templates
  * Copyright 2112 Matthew Eernisse (mde@fleegix.org)
@@ -15827,31 +16406,36 @@ exports.cache = {
   }
 };
 
-},{}],81:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 module.exports={
-  "_from": "ejs@^2.6.2",
+  "_args": [
+    [
+      "ejs@2.7.2",
+      "/Users/tomk79/mydoc_TomK/projs/broccoli-html-editor/broccoli-html-editor/broccoli-html-editor"
+    ]
+  ],
+  "_from": "ejs@2.7.2",
   "_id": "ejs@2.7.2",
   "_inBundle": false,
   "_integrity": "sha512-rHGwtpl67oih3xAHbZlpw5rQAt+YV1mSCu2fUZ9XNrfaGEhom7E+AUiMci+ByP4aSfuAWx7hE0BPuJLMrpXwOw==",
   "_location": "/ejs",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "ejs@^2.6.2",
+    "raw": "ejs@2.7.2",
     "name": "ejs",
     "escapedName": "ejs",
-    "rawSpec": "^2.6.2",
+    "rawSpec": "2.7.2",
     "saveSpec": null,
-    "fetchSpec": "^2.6.2"
+    "fetchSpec": "2.7.2"
   },
   "_requiredBy": [
     "/",
     "/langbank"
   ],
   "_resolved": "https://registry.npmjs.org/ejs/-/ejs-2.7.2.tgz",
-  "_shasum": "749037c4c09bd57626a6140afbe6b7e650661614",
-  "_spec": "ejs@^2.6.2",
+  "_spec": "2.7.2",
   "_where": "/Users/tomk79/mydoc_TomK/projs/broccoli-html-editor/broccoli-html-editor/broccoli-html-editor",
   "author": {
     "name": "Matthew Eernisse",
@@ -15861,9 +16445,7 @@ module.exports={
   "bugs": {
     "url": "https://github.com/mde/ejs/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {},
-  "deprecated": false,
   "description": "Embedded JavaScript templates",
   "devDependencies": {
     "browserify": "^13.1.1",
@@ -15898,7 +16480,7 @@ module.exports={
   "version": "2.7.2"
 }
 
-},{}],82:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 var encode = require("./lib/encode.js"),
     decode = require("./lib/decode.js");
 
@@ -15926,7 +16508,7 @@ exports.decodeHTML4Strict = exports.decodeHTML5Strict = exports.decodeHTMLStrict
 
 exports.escape = encode.escape;
 
-},{"./lib/decode.js":83,"./lib/encode.js":85}],83:[function(require,module,exports){
+},{"./lib/decode.js":87,"./lib/encode.js":89}],87:[function(require,module,exports){
 var entityMap = require("../maps/entities.json"),
     legacyMap = require("../maps/legacy.json"),
     xmlMap = require("../maps/xml.json"),
@@ -15998,7 +16580,7 @@ module.exports = {
     HTMLStrict: decodeHTMLStrict
 };
 
-},{"../maps/entities.json":87,"../maps/legacy.json":88,"../maps/xml.json":89,"./decode_codepoint.js":84}],84:[function(require,module,exports){
+},{"../maps/entities.json":91,"../maps/legacy.json":92,"../maps/xml.json":93,"./decode_codepoint.js":88}],88:[function(require,module,exports){
 var decodeMap = require("../maps/decode.json");
 
 module.exports = decodeCodePoint;
@@ -16025,7 +16607,7 @@ function decodeCodePoint(codePoint) {
     return output;
 }
 
-},{"../maps/decode.json":86}],85:[function(require,module,exports){
+},{"../maps/decode.json":90}],89:[function(require,module,exports){
 var inverseXML = getInverseObj(require("../maps/xml.json")),
     xmlReplacer = getInverseReplacer(inverseXML);
 
@@ -16109,16 +16691,16 @@ function escapeXML(data) {
 
 exports.escape = escapeXML;
 
-},{"../maps/entities.json":87,"../maps/xml.json":89}],86:[function(require,module,exports){
+},{"../maps/entities.json":91,"../maps/xml.json":93}],90:[function(require,module,exports){
 module.exports={"0":65533,"128":8364,"130":8218,"131":402,"132":8222,"133":8230,"134":8224,"135":8225,"136":710,"137":8240,"138":352,"139":8249,"140":338,"142":381,"145":8216,"146":8217,"147":8220,"148":8221,"149":8226,"150":8211,"151":8212,"152":732,"153":8482,"154":353,"155":8250,"156":339,"158":382,"159":376}
-},{}],87:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 module.exports={"Aacute":"\u00C1","aacute":"\u00E1","Abreve":"\u0102","abreve":"\u0103","ac":"\u223E","acd":"\u223F","acE":"\u223E\u0333","Acirc":"\u00C2","acirc":"\u00E2","acute":"\u00B4","Acy":"\u0410","acy":"\u0430","AElig":"\u00C6","aelig":"\u00E6","af":"\u2061","Afr":"\uD835\uDD04","afr":"\uD835\uDD1E","Agrave":"\u00C0","agrave":"\u00E0","alefsym":"\u2135","aleph":"\u2135","Alpha":"\u0391","alpha":"\u03B1","Amacr":"\u0100","amacr":"\u0101","amalg":"\u2A3F","amp":"&","AMP":"&","andand":"\u2A55","And":"\u2A53","and":"\u2227","andd":"\u2A5C","andslope":"\u2A58","andv":"\u2A5A","ang":"\u2220","ange":"\u29A4","angle":"\u2220","angmsdaa":"\u29A8","angmsdab":"\u29A9","angmsdac":"\u29AA","angmsdad":"\u29AB","angmsdae":"\u29AC","angmsdaf":"\u29AD","angmsdag":"\u29AE","angmsdah":"\u29AF","angmsd":"\u2221","angrt":"\u221F","angrtvb":"\u22BE","angrtvbd":"\u299D","angsph":"\u2222","angst":"\u00C5","angzarr":"\u237C","Aogon":"\u0104","aogon":"\u0105","Aopf":"\uD835\uDD38","aopf":"\uD835\uDD52","apacir":"\u2A6F","ap":"\u2248","apE":"\u2A70","ape":"\u224A","apid":"\u224B","apos":"'","ApplyFunction":"\u2061","approx":"\u2248","approxeq":"\u224A","Aring":"\u00C5","aring":"\u00E5","Ascr":"\uD835\uDC9C","ascr":"\uD835\uDCB6","Assign":"\u2254","ast":"*","asymp":"\u2248","asympeq":"\u224D","Atilde":"\u00C3","atilde":"\u00E3","Auml":"\u00C4","auml":"\u00E4","awconint":"\u2233","awint":"\u2A11","backcong":"\u224C","backepsilon":"\u03F6","backprime":"\u2035","backsim":"\u223D","backsimeq":"\u22CD","Backslash":"\u2216","Barv":"\u2AE7","barvee":"\u22BD","barwed":"\u2305","Barwed":"\u2306","barwedge":"\u2305","bbrk":"\u23B5","bbrktbrk":"\u23B6","bcong":"\u224C","Bcy":"\u0411","bcy":"\u0431","bdquo":"\u201E","becaus":"\u2235","because":"\u2235","Because":"\u2235","bemptyv":"\u29B0","bepsi":"\u03F6","bernou":"\u212C","Bernoullis":"\u212C","Beta":"\u0392","beta":"\u03B2","beth":"\u2136","between":"\u226C","Bfr":"\uD835\uDD05","bfr":"\uD835\uDD1F","bigcap":"\u22C2","bigcirc":"\u25EF","bigcup":"\u22C3","bigodot":"\u2A00","bigoplus":"\u2A01","bigotimes":"\u2A02","bigsqcup":"\u2A06","bigstar":"\u2605","bigtriangledown":"\u25BD","bigtriangleup":"\u25B3","biguplus":"\u2A04","bigvee":"\u22C1","bigwedge":"\u22C0","bkarow":"\u290D","blacklozenge":"\u29EB","blacksquare":"\u25AA","blacktriangle":"\u25B4","blacktriangledown":"\u25BE","blacktriangleleft":"\u25C2","blacktriangleright":"\u25B8","blank":"\u2423","blk12":"\u2592","blk14":"\u2591","blk34":"\u2593","block":"\u2588","bne":"=\u20E5","bnequiv":"\u2261\u20E5","bNot":"\u2AED","bnot":"\u2310","Bopf":"\uD835\uDD39","bopf":"\uD835\uDD53","bot":"\u22A5","bottom":"\u22A5","bowtie":"\u22C8","boxbox":"\u29C9","boxdl":"\u2510","boxdL":"\u2555","boxDl":"\u2556","boxDL":"\u2557","boxdr":"\u250C","boxdR":"\u2552","boxDr":"\u2553","boxDR":"\u2554","boxh":"\u2500","boxH":"\u2550","boxhd":"\u252C","boxHd":"\u2564","boxhD":"\u2565","boxHD":"\u2566","boxhu":"\u2534","boxHu":"\u2567","boxhU":"\u2568","boxHU":"\u2569","boxminus":"\u229F","boxplus":"\u229E","boxtimes":"\u22A0","boxul":"\u2518","boxuL":"\u255B","boxUl":"\u255C","boxUL":"\u255D","boxur":"\u2514","boxuR":"\u2558","boxUr":"\u2559","boxUR":"\u255A","boxv":"\u2502","boxV":"\u2551","boxvh":"\u253C","boxvH":"\u256A","boxVh":"\u256B","boxVH":"\u256C","boxvl":"\u2524","boxvL":"\u2561","boxVl":"\u2562","boxVL":"\u2563","boxvr":"\u251C","boxvR":"\u255E","boxVr":"\u255F","boxVR":"\u2560","bprime":"\u2035","breve":"\u02D8","Breve":"\u02D8","brvbar":"\u00A6","bscr":"\uD835\uDCB7","Bscr":"\u212C","bsemi":"\u204F","bsim":"\u223D","bsime":"\u22CD","bsolb":"\u29C5","bsol":"\\","bsolhsub":"\u27C8","bull":"\u2022","bullet":"\u2022","bump":"\u224E","bumpE":"\u2AAE","bumpe":"\u224F","Bumpeq":"\u224E","bumpeq":"\u224F","Cacute":"\u0106","cacute":"\u0107","capand":"\u2A44","capbrcup":"\u2A49","capcap":"\u2A4B","cap":"\u2229","Cap":"\u22D2","capcup":"\u2A47","capdot":"\u2A40","CapitalDifferentialD":"\u2145","caps":"\u2229\uFE00","caret":"\u2041","caron":"\u02C7","Cayleys":"\u212D","ccaps":"\u2A4D","Ccaron":"\u010C","ccaron":"\u010D","Ccedil":"\u00C7","ccedil":"\u00E7","Ccirc":"\u0108","ccirc":"\u0109","Cconint":"\u2230","ccups":"\u2A4C","ccupssm":"\u2A50","Cdot":"\u010A","cdot":"\u010B","cedil":"\u00B8","Cedilla":"\u00B8","cemptyv":"\u29B2","cent":"\u00A2","centerdot":"\u00B7","CenterDot":"\u00B7","cfr":"\uD835\uDD20","Cfr":"\u212D","CHcy":"\u0427","chcy":"\u0447","check":"\u2713","checkmark":"\u2713","Chi":"\u03A7","chi":"\u03C7","circ":"\u02C6","circeq":"\u2257","circlearrowleft":"\u21BA","circlearrowright":"\u21BB","circledast":"\u229B","circledcirc":"\u229A","circleddash":"\u229D","CircleDot":"\u2299","circledR":"\u00AE","circledS":"\u24C8","CircleMinus":"\u2296","CirclePlus":"\u2295","CircleTimes":"\u2297","cir":"\u25CB","cirE":"\u29C3","cire":"\u2257","cirfnint":"\u2A10","cirmid":"\u2AEF","cirscir":"\u29C2","ClockwiseContourIntegral":"\u2232","CloseCurlyDoubleQuote":"\u201D","CloseCurlyQuote":"\u2019","clubs":"\u2663","clubsuit":"\u2663","colon":":","Colon":"\u2237","Colone":"\u2A74","colone":"\u2254","coloneq":"\u2254","comma":",","commat":"@","comp":"\u2201","compfn":"\u2218","complement":"\u2201","complexes":"\u2102","cong":"\u2245","congdot":"\u2A6D","Congruent":"\u2261","conint":"\u222E","Conint":"\u222F","ContourIntegral":"\u222E","copf":"\uD835\uDD54","Copf":"\u2102","coprod":"\u2210","Coproduct":"\u2210","copy":"\u00A9","COPY":"\u00A9","copysr":"\u2117","CounterClockwiseContourIntegral":"\u2233","crarr":"\u21B5","cross":"\u2717","Cross":"\u2A2F","Cscr":"\uD835\uDC9E","cscr":"\uD835\uDCB8","csub":"\u2ACF","csube":"\u2AD1","csup":"\u2AD0","csupe":"\u2AD2","ctdot":"\u22EF","cudarrl":"\u2938","cudarrr":"\u2935","cuepr":"\u22DE","cuesc":"\u22DF","cularr":"\u21B6","cularrp":"\u293D","cupbrcap":"\u2A48","cupcap":"\u2A46","CupCap":"\u224D","cup":"\u222A","Cup":"\u22D3","cupcup":"\u2A4A","cupdot":"\u228D","cupor":"\u2A45","cups":"\u222A\uFE00","curarr":"\u21B7","curarrm":"\u293C","curlyeqprec":"\u22DE","curlyeqsucc":"\u22DF","curlyvee":"\u22CE","curlywedge":"\u22CF","curren":"\u00A4","curvearrowleft":"\u21B6","curvearrowright":"\u21B7","cuvee":"\u22CE","cuwed":"\u22CF","cwconint":"\u2232","cwint":"\u2231","cylcty":"\u232D","dagger":"\u2020","Dagger":"\u2021","daleth":"\u2138","darr":"\u2193","Darr":"\u21A1","dArr":"\u21D3","dash":"\u2010","Dashv":"\u2AE4","dashv":"\u22A3","dbkarow":"\u290F","dblac":"\u02DD","Dcaron":"\u010E","dcaron":"\u010F","Dcy":"\u0414","dcy":"\u0434","ddagger":"\u2021","ddarr":"\u21CA","DD":"\u2145","dd":"\u2146","DDotrahd":"\u2911","ddotseq":"\u2A77","deg":"\u00B0","Del":"\u2207","Delta":"\u0394","delta":"\u03B4","demptyv":"\u29B1","dfisht":"\u297F","Dfr":"\uD835\uDD07","dfr":"\uD835\uDD21","dHar":"\u2965","dharl":"\u21C3","dharr":"\u21C2","DiacriticalAcute":"\u00B4","DiacriticalDot":"\u02D9","DiacriticalDoubleAcute":"\u02DD","DiacriticalGrave":"`","DiacriticalTilde":"\u02DC","diam":"\u22C4","diamond":"\u22C4","Diamond":"\u22C4","diamondsuit":"\u2666","diams":"\u2666","die":"\u00A8","DifferentialD":"\u2146","digamma":"\u03DD","disin":"\u22F2","div":"\u00F7","divide":"\u00F7","divideontimes":"\u22C7","divonx":"\u22C7","DJcy":"\u0402","djcy":"\u0452","dlcorn":"\u231E","dlcrop":"\u230D","dollar":"$","Dopf":"\uD835\uDD3B","dopf":"\uD835\uDD55","Dot":"\u00A8","dot":"\u02D9","DotDot":"\u20DC","doteq":"\u2250","doteqdot":"\u2251","DotEqual":"\u2250","dotminus":"\u2238","dotplus":"\u2214","dotsquare":"\u22A1","doublebarwedge":"\u2306","DoubleContourIntegral":"\u222F","DoubleDot":"\u00A8","DoubleDownArrow":"\u21D3","DoubleLeftArrow":"\u21D0","DoubleLeftRightArrow":"\u21D4","DoubleLeftTee":"\u2AE4","DoubleLongLeftArrow":"\u27F8","DoubleLongLeftRightArrow":"\u27FA","DoubleLongRightArrow":"\u27F9","DoubleRightArrow":"\u21D2","DoubleRightTee":"\u22A8","DoubleUpArrow":"\u21D1","DoubleUpDownArrow":"\u21D5","DoubleVerticalBar":"\u2225","DownArrowBar":"\u2913","downarrow":"\u2193","DownArrow":"\u2193","Downarrow":"\u21D3","DownArrowUpArrow":"\u21F5","DownBreve":"\u0311","downdownarrows":"\u21CA","downharpoonleft":"\u21C3","downharpoonright":"\u21C2","DownLeftRightVector":"\u2950","DownLeftTeeVector":"\u295E","DownLeftVectorBar":"\u2956","DownLeftVector":"\u21BD","DownRightTeeVector":"\u295F","DownRightVectorBar":"\u2957","DownRightVector":"\u21C1","DownTeeArrow":"\u21A7","DownTee":"\u22A4","drbkarow":"\u2910","drcorn":"\u231F","drcrop":"\u230C","Dscr":"\uD835\uDC9F","dscr":"\uD835\uDCB9","DScy":"\u0405","dscy":"\u0455","dsol":"\u29F6","Dstrok":"\u0110","dstrok":"\u0111","dtdot":"\u22F1","dtri":"\u25BF","dtrif":"\u25BE","duarr":"\u21F5","duhar":"\u296F","dwangle":"\u29A6","DZcy":"\u040F","dzcy":"\u045F","dzigrarr":"\u27FF","Eacute":"\u00C9","eacute":"\u00E9","easter":"\u2A6E","Ecaron":"\u011A","ecaron":"\u011B","Ecirc":"\u00CA","ecirc":"\u00EA","ecir":"\u2256","ecolon":"\u2255","Ecy":"\u042D","ecy":"\u044D","eDDot":"\u2A77","Edot":"\u0116","edot":"\u0117","eDot":"\u2251","ee":"\u2147","efDot":"\u2252","Efr":"\uD835\uDD08","efr":"\uD835\uDD22","eg":"\u2A9A","Egrave":"\u00C8","egrave":"\u00E8","egs":"\u2A96","egsdot":"\u2A98","el":"\u2A99","Element":"\u2208","elinters":"\u23E7","ell":"\u2113","els":"\u2A95","elsdot":"\u2A97","Emacr":"\u0112","emacr":"\u0113","empty":"\u2205","emptyset":"\u2205","EmptySmallSquare":"\u25FB","emptyv":"\u2205","EmptyVerySmallSquare":"\u25AB","emsp13":"\u2004","emsp14":"\u2005","emsp":"\u2003","ENG":"\u014A","eng":"\u014B","ensp":"\u2002","Eogon":"\u0118","eogon":"\u0119","Eopf":"\uD835\uDD3C","eopf":"\uD835\uDD56","epar":"\u22D5","eparsl":"\u29E3","eplus":"\u2A71","epsi":"\u03B5","Epsilon":"\u0395","epsilon":"\u03B5","epsiv":"\u03F5","eqcirc":"\u2256","eqcolon":"\u2255","eqsim":"\u2242","eqslantgtr":"\u2A96","eqslantless":"\u2A95","Equal":"\u2A75","equals":"=","EqualTilde":"\u2242","equest":"\u225F","Equilibrium":"\u21CC","equiv":"\u2261","equivDD":"\u2A78","eqvparsl":"\u29E5","erarr":"\u2971","erDot":"\u2253","escr":"\u212F","Escr":"\u2130","esdot":"\u2250","Esim":"\u2A73","esim":"\u2242","Eta":"\u0397","eta":"\u03B7","ETH":"\u00D0","eth":"\u00F0","Euml":"\u00CB","euml":"\u00EB","euro":"\u20AC","excl":"!","exist":"\u2203","Exists":"\u2203","expectation":"\u2130","exponentiale":"\u2147","ExponentialE":"\u2147","fallingdotseq":"\u2252","Fcy":"\u0424","fcy":"\u0444","female":"\u2640","ffilig":"\uFB03","fflig":"\uFB00","ffllig":"\uFB04","Ffr":"\uD835\uDD09","ffr":"\uD835\uDD23","filig":"\uFB01","FilledSmallSquare":"\u25FC","FilledVerySmallSquare":"\u25AA","fjlig":"fj","flat":"\u266D","fllig":"\uFB02","fltns":"\u25B1","fnof":"\u0192","Fopf":"\uD835\uDD3D","fopf":"\uD835\uDD57","forall":"\u2200","ForAll":"\u2200","fork":"\u22D4","forkv":"\u2AD9","Fouriertrf":"\u2131","fpartint":"\u2A0D","frac12":"\u00BD","frac13":"\u2153","frac14":"\u00BC","frac15":"\u2155","frac16":"\u2159","frac18":"\u215B","frac23":"\u2154","frac25":"\u2156","frac34":"\u00BE","frac35":"\u2157","frac38":"\u215C","frac45":"\u2158","frac56":"\u215A","frac58":"\u215D","frac78":"\u215E","frasl":"\u2044","frown":"\u2322","fscr":"\uD835\uDCBB","Fscr":"\u2131","gacute":"\u01F5","Gamma":"\u0393","gamma":"\u03B3","Gammad":"\u03DC","gammad":"\u03DD","gap":"\u2A86","Gbreve":"\u011E","gbreve":"\u011F","Gcedil":"\u0122","Gcirc":"\u011C","gcirc":"\u011D","Gcy":"\u0413","gcy":"\u0433","Gdot":"\u0120","gdot":"\u0121","ge":"\u2265","gE":"\u2267","gEl":"\u2A8C","gel":"\u22DB","geq":"\u2265","geqq":"\u2267","geqslant":"\u2A7E","gescc":"\u2AA9","ges":"\u2A7E","gesdot":"\u2A80","gesdoto":"\u2A82","gesdotol":"\u2A84","gesl":"\u22DB\uFE00","gesles":"\u2A94","Gfr":"\uD835\uDD0A","gfr":"\uD835\uDD24","gg":"\u226B","Gg":"\u22D9","ggg":"\u22D9","gimel":"\u2137","GJcy":"\u0403","gjcy":"\u0453","gla":"\u2AA5","gl":"\u2277","glE":"\u2A92","glj":"\u2AA4","gnap":"\u2A8A","gnapprox":"\u2A8A","gne":"\u2A88","gnE":"\u2269","gneq":"\u2A88","gneqq":"\u2269","gnsim":"\u22E7","Gopf":"\uD835\uDD3E","gopf":"\uD835\uDD58","grave":"`","GreaterEqual":"\u2265","GreaterEqualLess":"\u22DB","GreaterFullEqual":"\u2267","GreaterGreater":"\u2AA2","GreaterLess":"\u2277","GreaterSlantEqual":"\u2A7E","GreaterTilde":"\u2273","Gscr":"\uD835\uDCA2","gscr":"\u210A","gsim":"\u2273","gsime":"\u2A8E","gsiml":"\u2A90","gtcc":"\u2AA7","gtcir":"\u2A7A","gt":">","GT":">","Gt":"\u226B","gtdot":"\u22D7","gtlPar":"\u2995","gtquest":"\u2A7C","gtrapprox":"\u2A86","gtrarr":"\u2978","gtrdot":"\u22D7","gtreqless":"\u22DB","gtreqqless":"\u2A8C","gtrless":"\u2277","gtrsim":"\u2273","gvertneqq":"\u2269\uFE00","gvnE":"\u2269\uFE00","Hacek":"\u02C7","hairsp":"\u200A","half":"\u00BD","hamilt":"\u210B","HARDcy":"\u042A","hardcy":"\u044A","harrcir":"\u2948","harr":"\u2194","hArr":"\u21D4","harrw":"\u21AD","Hat":"^","hbar":"\u210F","Hcirc":"\u0124","hcirc":"\u0125","hearts":"\u2665","heartsuit":"\u2665","hellip":"\u2026","hercon":"\u22B9","hfr":"\uD835\uDD25","Hfr":"\u210C","HilbertSpace":"\u210B","hksearow":"\u2925","hkswarow":"\u2926","hoarr":"\u21FF","homtht":"\u223B","hookleftarrow":"\u21A9","hookrightarrow":"\u21AA","hopf":"\uD835\uDD59","Hopf":"\u210D","horbar":"\u2015","HorizontalLine":"\u2500","hscr":"\uD835\uDCBD","Hscr":"\u210B","hslash":"\u210F","Hstrok":"\u0126","hstrok":"\u0127","HumpDownHump":"\u224E","HumpEqual":"\u224F","hybull":"\u2043","hyphen":"\u2010","Iacute":"\u00CD","iacute":"\u00ED","ic":"\u2063","Icirc":"\u00CE","icirc":"\u00EE","Icy":"\u0418","icy":"\u0438","Idot":"\u0130","IEcy":"\u0415","iecy":"\u0435","iexcl":"\u00A1","iff":"\u21D4","ifr":"\uD835\uDD26","Ifr":"\u2111","Igrave":"\u00CC","igrave":"\u00EC","ii":"\u2148","iiiint":"\u2A0C","iiint":"\u222D","iinfin":"\u29DC","iiota":"\u2129","IJlig":"\u0132","ijlig":"\u0133","Imacr":"\u012A","imacr":"\u012B","image":"\u2111","ImaginaryI":"\u2148","imagline":"\u2110","imagpart":"\u2111","imath":"\u0131","Im":"\u2111","imof":"\u22B7","imped":"\u01B5","Implies":"\u21D2","incare":"\u2105","in":"\u2208","infin":"\u221E","infintie":"\u29DD","inodot":"\u0131","intcal":"\u22BA","int":"\u222B","Int":"\u222C","integers":"\u2124","Integral":"\u222B","intercal":"\u22BA","Intersection":"\u22C2","intlarhk":"\u2A17","intprod":"\u2A3C","InvisibleComma":"\u2063","InvisibleTimes":"\u2062","IOcy":"\u0401","iocy":"\u0451","Iogon":"\u012E","iogon":"\u012F","Iopf":"\uD835\uDD40","iopf":"\uD835\uDD5A","Iota":"\u0399","iota":"\u03B9","iprod":"\u2A3C","iquest":"\u00BF","iscr":"\uD835\uDCBE","Iscr":"\u2110","isin":"\u2208","isindot":"\u22F5","isinE":"\u22F9","isins":"\u22F4","isinsv":"\u22F3","isinv":"\u2208","it":"\u2062","Itilde":"\u0128","itilde":"\u0129","Iukcy":"\u0406","iukcy":"\u0456","Iuml":"\u00CF","iuml":"\u00EF","Jcirc":"\u0134","jcirc":"\u0135","Jcy":"\u0419","jcy":"\u0439","Jfr":"\uD835\uDD0D","jfr":"\uD835\uDD27","jmath":"\u0237","Jopf":"\uD835\uDD41","jopf":"\uD835\uDD5B","Jscr":"\uD835\uDCA5","jscr":"\uD835\uDCBF","Jsercy":"\u0408","jsercy":"\u0458","Jukcy":"\u0404","jukcy":"\u0454","Kappa":"\u039A","kappa":"\u03BA","kappav":"\u03F0","Kcedil":"\u0136","kcedil":"\u0137","Kcy":"\u041A","kcy":"\u043A","Kfr":"\uD835\uDD0E","kfr":"\uD835\uDD28","kgreen":"\u0138","KHcy":"\u0425","khcy":"\u0445","KJcy":"\u040C","kjcy":"\u045C","Kopf":"\uD835\uDD42","kopf":"\uD835\uDD5C","Kscr":"\uD835\uDCA6","kscr":"\uD835\uDCC0","lAarr":"\u21DA","Lacute":"\u0139","lacute":"\u013A","laemptyv":"\u29B4","lagran":"\u2112","Lambda":"\u039B","lambda":"\u03BB","lang":"\u27E8","Lang":"\u27EA","langd":"\u2991","langle":"\u27E8","lap":"\u2A85","Laplacetrf":"\u2112","laquo":"\u00AB","larrb":"\u21E4","larrbfs":"\u291F","larr":"\u2190","Larr":"\u219E","lArr":"\u21D0","larrfs":"\u291D","larrhk":"\u21A9","larrlp":"\u21AB","larrpl":"\u2939","larrsim":"\u2973","larrtl":"\u21A2","latail":"\u2919","lAtail":"\u291B","lat":"\u2AAB","late":"\u2AAD","lates":"\u2AAD\uFE00","lbarr":"\u290C","lBarr":"\u290E","lbbrk":"\u2772","lbrace":"{","lbrack":"[","lbrke":"\u298B","lbrksld":"\u298F","lbrkslu":"\u298D","Lcaron":"\u013D","lcaron":"\u013E","Lcedil":"\u013B","lcedil":"\u013C","lceil":"\u2308","lcub":"{","Lcy":"\u041B","lcy":"\u043B","ldca":"\u2936","ldquo":"\u201C","ldquor":"\u201E","ldrdhar":"\u2967","ldrushar":"\u294B","ldsh":"\u21B2","le":"\u2264","lE":"\u2266","LeftAngleBracket":"\u27E8","LeftArrowBar":"\u21E4","leftarrow":"\u2190","LeftArrow":"\u2190","Leftarrow":"\u21D0","LeftArrowRightArrow":"\u21C6","leftarrowtail":"\u21A2","LeftCeiling":"\u2308","LeftDoubleBracket":"\u27E6","LeftDownTeeVector":"\u2961","LeftDownVectorBar":"\u2959","LeftDownVector":"\u21C3","LeftFloor":"\u230A","leftharpoondown":"\u21BD","leftharpoonup":"\u21BC","leftleftarrows":"\u21C7","leftrightarrow":"\u2194","LeftRightArrow":"\u2194","Leftrightarrow":"\u21D4","leftrightarrows":"\u21C6","leftrightharpoons":"\u21CB","leftrightsquigarrow":"\u21AD","LeftRightVector":"\u294E","LeftTeeArrow":"\u21A4","LeftTee":"\u22A3","LeftTeeVector":"\u295A","leftthreetimes":"\u22CB","LeftTriangleBar":"\u29CF","LeftTriangle":"\u22B2","LeftTriangleEqual":"\u22B4","LeftUpDownVector":"\u2951","LeftUpTeeVector":"\u2960","LeftUpVectorBar":"\u2958","LeftUpVector":"\u21BF","LeftVectorBar":"\u2952","LeftVector":"\u21BC","lEg":"\u2A8B","leg":"\u22DA","leq":"\u2264","leqq":"\u2266","leqslant":"\u2A7D","lescc":"\u2AA8","les":"\u2A7D","lesdot":"\u2A7F","lesdoto":"\u2A81","lesdotor":"\u2A83","lesg":"\u22DA\uFE00","lesges":"\u2A93","lessapprox":"\u2A85","lessdot":"\u22D6","lesseqgtr":"\u22DA","lesseqqgtr":"\u2A8B","LessEqualGreater":"\u22DA","LessFullEqual":"\u2266","LessGreater":"\u2276","lessgtr":"\u2276","LessLess":"\u2AA1","lesssim":"\u2272","LessSlantEqual":"\u2A7D","LessTilde":"\u2272","lfisht":"\u297C","lfloor":"\u230A","Lfr":"\uD835\uDD0F","lfr":"\uD835\uDD29","lg":"\u2276","lgE":"\u2A91","lHar":"\u2962","lhard":"\u21BD","lharu":"\u21BC","lharul":"\u296A","lhblk":"\u2584","LJcy":"\u0409","ljcy":"\u0459","llarr":"\u21C7","ll":"\u226A","Ll":"\u22D8","llcorner":"\u231E","Lleftarrow":"\u21DA","llhard":"\u296B","lltri":"\u25FA","Lmidot":"\u013F","lmidot":"\u0140","lmoustache":"\u23B0","lmoust":"\u23B0","lnap":"\u2A89","lnapprox":"\u2A89","lne":"\u2A87","lnE":"\u2268","lneq":"\u2A87","lneqq":"\u2268","lnsim":"\u22E6","loang":"\u27EC","loarr":"\u21FD","lobrk":"\u27E6","longleftarrow":"\u27F5","LongLeftArrow":"\u27F5","Longleftarrow":"\u27F8","longleftrightarrow":"\u27F7","LongLeftRightArrow":"\u27F7","Longleftrightarrow":"\u27FA","longmapsto":"\u27FC","longrightarrow":"\u27F6","LongRightArrow":"\u27F6","Longrightarrow":"\u27F9","looparrowleft":"\u21AB","looparrowright":"\u21AC","lopar":"\u2985","Lopf":"\uD835\uDD43","lopf":"\uD835\uDD5D","loplus":"\u2A2D","lotimes":"\u2A34","lowast":"\u2217","lowbar":"_","LowerLeftArrow":"\u2199","LowerRightArrow":"\u2198","loz":"\u25CA","lozenge":"\u25CA","lozf":"\u29EB","lpar":"(","lparlt":"\u2993","lrarr":"\u21C6","lrcorner":"\u231F","lrhar":"\u21CB","lrhard":"\u296D","lrm":"\u200E","lrtri":"\u22BF","lsaquo":"\u2039","lscr":"\uD835\uDCC1","Lscr":"\u2112","lsh":"\u21B0","Lsh":"\u21B0","lsim":"\u2272","lsime":"\u2A8D","lsimg":"\u2A8F","lsqb":"[","lsquo":"\u2018","lsquor":"\u201A","Lstrok":"\u0141","lstrok":"\u0142","ltcc":"\u2AA6","ltcir":"\u2A79","lt":"<","LT":"<","Lt":"\u226A","ltdot":"\u22D6","lthree":"\u22CB","ltimes":"\u22C9","ltlarr":"\u2976","ltquest":"\u2A7B","ltri":"\u25C3","ltrie":"\u22B4","ltrif":"\u25C2","ltrPar":"\u2996","lurdshar":"\u294A","luruhar":"\u2966","lvertneqq":"\u2268\uFE00","lvnE":"\u2268\uFE00","macr":"\u00AF","male":"\u2642","malt":"\u2720","maltese":"\u2720","Map":"\u2905","map":"\u21A6","mapsto":"\u21A6","mapstodown":"\u21A7","mapstoleft":"\u21A4","mapstoup":"\u21A5","marker":"\u25AE","mcomma":"\u2A29","Mcy":"\u041C","mcy":"\u043C","mdash":"\u2014","mDDot":"\u223A","measuredangle":"\u2221","MediumSpace":"\u205F","Mellintrf":"\u2133","Mfr":"\uD835\uDD10","mfr":"\uD835\uDD2A","mho":"\u2127","micro":"\u00B5","midast":"*","midcir":"\u2AF0","mid":"\u2223","middot":"\u00B7","minusb":"\u229F","minus":"\u2212","minusd":"\u2238","minusdu":"\u2A2A","MinusPlus":"\u2213","mlcp":"\u2ADB","mldr":"\u2026","mnplus":"\u2213","models":"\u22A7","Mopf":"\uD835\uDD44","mopf":"\uD835\uDD5E","mp":"\u2213","mscr":"\uD835\uDCC2","Mscr":"\u2133","mstpos":"\u223E","Mu":"\u039C","mu":"\u03BC","multimap":"\u22B8","mumap":"\u22B8","nabla":"\u2207","Nacute":"\u0143","nacute":"\u0144","nang":"\u2220\u20D2","nap":"\u2249","napE":"\u2A70\u0338","napid":"\u224B\u0338","napos":"\u0149","napprox":"\u2249","natural":"\u266E","naturals":"\u2115","natur":"\u266E","nbsp":"\u00A0","nbump":"\u224E\u0338","nbumpe":"\u224F\u0338","ncap":"\u2A43","Ncaron":"\u0147","ncaron":"\u0148","Ncedil":"\u0145","ncedil":"\u0146","ncong":"\u2247","ncongdot":"\u2A6D\u0338","ncup":"\u2A42","Ncy":"\u041D","ncy":"\u043D","ndash":"\u2013","nearhk":"\u2924","nearr":"\u2197","neArr":"\u21D7","nearrow":"\u2197","ne":"\u2260","nedot":"\u2250\u0338","NegativeMediumSpace":"\u200B","NegativeThickSpace":"\u200B","NegativeThinSpace":"\u200B","NegativeVeryThinSpace":"\u200B","nequiv":"\u2262","nesear":"\u2928","nesim":"\u2242\u0338","NestedGreaterGreater":"\u226B","NestedLessLess":"\u226A","NewLine":"\n","nexist":"\u2204","nexists":"\u2204","Nfr":"\uD835\uDD11","nfr":"\uD835\uDD2B","ngE":"\u2267\u0338","nge":"\u2271","ngeq":"\u2271","ngeqq":"\u2267\u0338","ngeqslant":"\u2A7E\u0338","nges":"\u2A7E\u0338","nGg":"\u22D9\u0338","ngsim":"\u2275","nGt":"\u226B\u20D2","ngt":"\u226F","ngtr":"\u226F","nGtv":"\u226B\u0338","nharr":"\u21AE","nhArr":"\u21CE","nhpar":"\u2AF2","ni":"\u220B","nis":"\u22FC","nisd":"\u22FA","niv":"\u220B","NJcy":"\u040A","njcy":"\u045A","nlarr":"\u219A","nlArr":"\u21CD","nldr":"\u2025","nlE":"\u2266\u0338","nle":"\u2270","nleftarrow":"\u219A","nLeftarrow":"\u21CD","nleftrightarrow":"\u21AE","nLeftrightarrow":"\u21CE","nleq":"\u2270","nleqq":"\u2266\u0338","nleqslant":"\u2A7D\u0338","nles":"\u2A7D\u0338","nless":"\u226E","nLl":"\u22D8\u0338","nlsim":"\u2274","nLt":"\u226A\u20D2","nlt":"\u226E","nltri":"\u22EA","nltrie":"\u22EC","nLtv":"\u226A\u0338","nmid":"\u2224","NoBreak":"\u2060","NonBreakingSpace":"\u00A0","nopf":"\uD835\uDD5F","Nopf":"\u2115","Not":"\u2AEC","not":"\u00AC","NotCongruent":"\u2262","NotCupCap":"\u226D","NotDoubleVerticalBar":"\u2226","NotElement":"\u2209","NotEqual":"\u2260","NotEqualTilde":"\u2242\u0338","NotExists":"\u2204","NotGreater":"\u226F","NotGreaterEqual":"\u2271","NotGreaterFullEqual":"\u2267\u0338","NotGreaterGreater":"\u226B\u0338","NotGreaterLess":"\u2279","NotGreaterSlantEqual":"\u2A7E\u0338","NotGreaterTilde":"\u2275","NotHumpDownHump":"\u224E\u0338","NotHumpEqual":"\u224F\u0338","notin":"\u2209","notindot":"\u22F5\u0338","notinE":"\u22F9\u0338","notinva":"\u2209","notinvb":"\u22F7","notinvc":"\u22F6","NotLeftTriangleBar":"\u29CF\u0338","NotLeftTriangle":"\u22EA","NotLeftTriangleEqual":"\u22EC","NotLess":"\u226E","NotLessEqual":"\u2270","NotLessGreater":"\u2278","NotLessLess":"\u226A\u0338","NotLessSlantEqual":"\u2A7D\u0338","NotLessTilde":"\u2274","NotNestedGreaterGreater":"\u2AA2\u0338","NotNestedLessLess":"\u2AA1\u0338","notni":"\u220C","notniva":"\u220C","notnivb":"\u22FE","notnivc":"\u22FD","NotPrecedes":"\u2280","NotPrecedesEqual":"\u2AAF\u0338","NotPrecedesSlantEqual":"\u22E0","NotReverseElement":"\u220C","NotRightTriangleBar":"\u29D0\u0338","NotRightTriangle":"\u22EB","NotRightTriangleEqual":"\u22ED","NotSquareSubset":"\u228F\u0338","NotSquareSubsetEqual":"\u22E2","NotSquareSuperset":"\u2290\u0338","NotSquareSupersetEqual":"\u22E3","NotSubset":"\u2282\u20D2","NotSubsetEqual":"\u2288","NotSucceeds":"\u2281","NotSucceedsEqual":"\u2AB0\u0338","NotSucceedsSlantEqual":"\u22E1","NotSucceedsTilde":"\u227F\u0338","NotSuperset":"\u2283\u20D2","NotSupersetEqual":"\u2289","NotTilde":"\u2241","NotTildeEqual":"\u2244","NotTildeFullEqual":"\u2247","NotTildeTilde":"\u2249","NotVerticalBar":"\u2224","nparallel":"\u2226","npar":"\u2226","nparsl":"\u2AFD\u20E5","npart":"\u2202\u0338","npolint":"\u2A14","npr":"\u2280","nprcue":"\u22E0","nprec":"\u2280","npreceq":"\u2AAF\u0338","npre":"\u2AAF\u0338","nrarrc":"\u2933\u0338","nrarr":"\u219B","nrArr":"\u21CF","nrarrw":"\u219D\u0338","nrightarrow":"\u219B","nRightarrow":"\u21CF","nrtri":"\u22EB","nrtrie":"\u22ED","nsc":"\u2281","nsccue":"\u22E1","nsce":"\u2AB0\u0338","Nscr":"\uD835\uDCA9","nscr":"\uD835\uDCC3","nshortmid":"\u2224","nshortparallel":"\u2226","nsim":"\u2241","nsime":"\u2244","nsimeq":"\u2244","nsmid":"\u2224","nspar":"\u2226","nsqsube":"\u22E2","nsqsupe":"\u22E3","nsub":"\u2284","nsubE":"\u2AC5\u0338","nsube":"\u2288","nsubset":"\u2282\u20D2","nsubseteq":"\u2288","nsubseteqq":"\u2AC5\u0338","nsucc":"\u2281","nsucceq":"\u2AB0\u0338","nsup":"\u2285","nsupE":"\u2AC6\u0338","nsupe":"\u2289","nsupset":"\u2283\u20D2","nsupseteq":"\u2289","nsupseteqq":"\u2AC6\u0338","ntgl":"\u2279","Ntilde":"\u00D1","ntilde":"\u00F1","ntlg":"\u2278","ntriangleleft":"\u22EA","ntrianglelefteq":"\u22EC","ntriangleright":"\u22EB","ntrianglerighteq":"\u22ED","Nu":"\u039D","nu":"\u03BD","num":"#","numero":"\u2116","numsp":"\u2007","nvap":"\u224D\u20D2","nvdash":"\u22AC","nvDash":"\u22AD","nVdash":"\u22AE","nVDash":"\u22AF","nvge":"\u2265\u20D2","nvgt":">\u20D2","nvHarr":"\u2904","nvinfin":"\u29DE","nvlArr":"\u2902","nvle":"\u2264\u20D2","nvlt":"<\u20D2","nvltrie":"\u22B4\u20D2","nvrArr":"\u2903","nvrtrie":"\u22B5\u20D2","nvsim":"\u223C\u20D2","nwarhk":"\u2923","nwarr":"\u2196","nwArr":"\u21D6","nwarrow":"\u2196","nwnear":"\u2927","Oacute":"\u00D3","oacute":"\u00F3","oast":"\u229B","Ocirc":"\u00D4","ocirc":"\u00F4","ocir":"\u229A","Ocy":"\u041E","ocy":"\u043E","odash":"\u229D","Odblac":"\u0150","odblac":"\u0151","odiv":"\u2A38","odot":"\u2299","odsold":"\u29BC","OElig":"\u0152","oelig":"\u0153","ofcir":"\u29BF","Ofr":"\uD835\uDD12","ofr":"\uD835\uDD2C","ogon":"\u02DB","Ograve":"\u00D2","ograve":"\u00F2","ogt":"\u29C1","ohbar":"\u29B5","ohm":"\u03A9","oint":"\u222E","olarr":"\u21BA","olcir":"\u29BE","olcross":"\u29BB","oline":"\u203E","olt":"\u29C0","Omacr":"\u014C","omacr":"\u014D","Omega":"\u03A9","omega":"\u03C9","Omicron":"\u039F","omicron":"\u03BF","omid":"\u29B6","ominus":"\u2296","Oopf":"\uD835\uDD46","oopf":"\uD835\uDD60","opar":"\u29B7","OpenCurlyDoubleQuote":"\u201C","OpenCurlyQuote":"\u2018","operp":"\u29B9","oplus":"\u2295","orarr":"\u21BB","Or":"\u2A54","or":"\u2228","ord":"\u2A5D","order":"\u2134","orderof":"\u2134","ordf":"\u00AA","ordm":"\u00BA","origof":"\u22B6","oror":"\u2A56","orslope":"\u2A57","orv":"\u2A5B","oS":"\u24C8","Oscr":"\uD835\uDCAA","oscr":"\u2134","Oslash":"\u00D8","oslash":"\u00F8","osol":"\u2298","Otilde":"\u00D5","otilde":"\u00F5","otimesas":"\u2A36","Otimes":"\u2A37","otimes":"\u2297","Ouml":"\u00D6","ouml":"\u00F6","ovbar":"\u233D","OverBar":"\u203E","OverBrace":"\u23DE","OverBracket":"\u23B4","OverParenthesis":"\u23DC","para":"\u00B6","parallel":"\u2225","par":"\u2225","parsim":"\u2AF3","parsl":"\u2AFD","part":"\u2202","PartialD":"\u2202","Pcy":"\u041F","pcy":"\u043F","percnt":"%","period":".","permil":"\u2030","perp":"\u22A5","pertenk":"\u2031","Pfr":"\uD835\uDD13","pfr":"\uD835\uDD2D","Phi":"\u03A6","phi":"\u03C6","phiv":"\u03D5","phmmat":"\u2133","phone":"\u260E","Pi":"\u03A0","pi":"\u03C0","pitchfork":"\u22D4","piv":"\u03D6","planck":"\u210F","planckh":"\u210E","plankv":"\u210F","plusacir":"\u2A23","plusb":"\u229E","pluscir":"\u2A22","plus":"+","plusdo":"\u2214","plusdu":"\u2A25","pluse":"\u2A72","PlusMinus":"\u00B1","plusmn":"\u00B1","plussim":"\u2A26","plustwo":"\u2A27","pm":"\u00B1","Poincareplane":"\u210C","pointint":"\u2A15","popf":"\uD835\uDD61","Popf":"\u2119","pound":"\u00A3","prap":"\u2AB7","Pr":"\u2ABB","pr":"\u227A","prcue":"\u227C","precapprox":"\u2AB7","prec":"\u227A","preccurlyeq":"\u227C","Precedes":"\u227A","PrecedesEqual":"\u2AAF","PrecedesSlantEqual":"\u227C","PrecedesTilde":"\u227E","preceq":"\u2AAF","precnapprox":"\u2AB9","precneqq":"\u2AB5","precnsim":"\u22E8","pre":"\u2AAF","prE":"\u2AB3","precsim":"\u227E","prime":"\u2032","Prime":"\u2033","primes":"\u2119","prnap":"\u2AB9","prnE":"\u2AB5","prnsim":"\u22E8","prod":"\u220F","Product":"\u220F","profalar":"\u232E","profline":"\u2312","profsurf":"\u2313","prop":"\u221D","Proportional":"\u221D","Proportion":"\u2237","propto":"\u221D","prsim":"\u227E","prurel":"\u22B0","Pscr":"\uD835\uDCAB","pscr":"\uD835\uDCC5","Psi":"\u03A8","psi":"\u03C8","puncsp":"\u2008","Qfr":"\uD835\uDD14","qfr":"\uD835\uDD2E","qint":"\u2A0C","qopf":"\uD835\uDD62","Qopf":"\u211A","qprime":"\u2057","Qscr":"\uD835\uDCAC","qscr":"\uD835\uDCC6","quaternions":"\u210D","quatint":"\u2A16","quest":"?","questeq":"\u225F","quot":"\"","QUOT":"\"","rAarr":"\u21DB","race":"\u223D\u0331","Racute":"\u0154","racute":"\u0155","radic":"\u221A","raemptyv":"\u29B3","rang":"\u27E9","Rang":"\u27EB","rangd":"\u2992","range":"\u29A5","rangle":"\u27E9","raquo":"\u00BB","rarrap":"\u2975","rarrb":"\u21E5","rarrbfs":"\u2920","rarrc":"\u2933","rarr":"\u2192","Rarr":"\u21A0","rArr":"\u21D2","rarrfs":"\u291E","rarrhk":"\u21AA","rarrlp":"\u21AC","rarrpl":"\u2945","rarrsim":"\u2974","Rarrtl":"\u2916","rarrtl":"\u21A3","rarrw":"\u219D","ratail":"\u291A","rAtail":"\u291C","ratio":"\u2236","rationals":"\u211A","rbarr":"\u290D","rBarr":"\u290F","RBarr":"\u2910","rbbrk":"\u2773","rbrace":"}","rbrack":"]","rbrke":"\u298C","rbrksld":"\u298E","rbrkslu":"\u2990","Rcaron":"\u0158","rcaron":"\u0159","Rcedil":"\u0156","rcedil":"\u0157","rceil":"\u2309","rcub":"}","Rcy":"\u0420","rcy":"\u0440","rdca":"\u2937","rdldhar":"\u2969","rdquo":"\u201D","rdquor":"\u201D","rdsh":"\u21B3","real":"\u211C","realine":"\u211B","realpart":"\u211C","reals":"\u211D","Re":"\u211C","rect":"\u25AD","reg":"\u00AE","REG":"\u00AE","ReverseElement":"\u220B","ReverseEquilibrium":"\u21CB","ReverseUpEquilibrium":"\u296F","rfisht":"\u297D","rfloor":"\u230B","rfr":"\uD835\uDD2F","Rfr":"\u211C","rHar":"\u2964","rhard":"\u21C1","rharu":"\u21C0","rharul":"\u296C","Rho":"\u03A1","rho":"\u03C1","rhov":"\u03F1","RightAngleBracket":"\u27E9","RightArrowBar":"\u21E5","rightarrow":"\u2192","RightArrow":"\u2192","Rightarrow":"\u21D2","RightArrowLeftArrow":"\u21C4","rightarrowtail":"\u21A3","RightCeiling":"\u2309","RightDoubleBracket":"\u27E7","RightDownTeeVector":"\u295D","RightDownVectorBar":"\u2955","RightDownVector":"\u21C2","RightFloor":"\u230B","rightharpoondown":"\u21C1","rightharpoonup":"\u21C0","rightleftarrows":"\u21C4","rightleftharpoons":"\u21CC","rightrightarrows":"\u21C9","rightsquigarrow":"\u219D","RightTeeArrow":"\u21A6","RightTee":"\u22A2","RightTeeVector":"\u295B","rightthreetimes":"\u22CC","RightTriangleBar":"\u29D0","RightTriangle":"\u22B3","RightTriangleEqual":"\u22B5","RightUpDownVector":"\u294F","RightUpTeeVector":"\u295C","RightUpVectorBar":"\u2954","RightUpVector":"\u21BE","RightVectorBar":"\u2953","RightVector":"\u21C0","ring":"\u02DA","risingdotseq":"\u2253","rlarr":"\u21C4","rlhar":"\u21CC","rlm":"\u200F","rmoustache":"\u23B1","rmoust":"\u23B1","rnmid":"\u2AEE","roang":"\u27ED","roarr":"\u21FE","robrk":"\u27E7","ropar":"\u2986","ropf":"\uD835\uDD63","Ropf":"\u211D","roplus":"\u2A2E","rotimes":"\u2A35","RoundImplies":"\u2970","rpar":")","rpargt":"\u2994","rppolint":"\u2A12","rrarr":"\u21C9","Rrightarrow":"\u21DB","rsaquo":"\u203A","rscr":"\uD835\uDCC7","Rscr":"\u211B","rsh":"\u21B1","Rsh":"\u21B1","rsqb":"]","rsquo":"\u2019","rsquor":"\u2019","rthree":"\u22CC","rtimes":"\u22CA","rtri":"\u25B9","rtrie":"\u22B5","rtrif":"\u25B8","rtriltri":"\u29CE","RuleDelayed":"\u29F4","ruluhar":"\u2968","rx":"\u211E","Sacute":"\u015A","sacute":"\u015B","sbquo":"\u201A","scap":"\u2AB8","Scaron":"\u0160","scaron":"\u0161","Sc":"\u2ABC","sc":"\u227B","sccue":"\u227D","sce":"\u2AB0","scE":"\u2AB4","Scedil":"\u015E","scedil":"\u015F","Scirc":"\u015C","scirc":"\u015D","scnap":"\u2ABA","scnE":"\u2AB6","scnsim":"\u22E9","scpolint":"\u2A13","scsim":"\u227F","Scy":"\u0421","scy":"\u0441","sdotb":"\u22A1","sdot":"\u22C5","sdote":"\u2A66","searhk":"\u2925","searr":"\u2198","seArr":"\u21D8","searrow":"\u2198","sect":"\u00A7","semi":";","seswar":"\u2929","setminus":"\u2216","setmn":"\u2216","sext":"\u2736","Sfr":"\uD835\uDD16","sfr":"\uD835\uDD30","sfrown":"\u2322","sharp":"\u266F","SHCHcy":"\u0429","shchcy":"\u0449","SHcy":"\u0428","shcy":"\u0448","ShortDownArrow":"\u2193","ShortLeftArrow":"\u2190","shortmid":"\u2223","shortparallel":"\u2225","ShortRightArrow":"\u2192","ShortUpArrow":"\u2191","shy":"\u00AD","Sigma":"\u03A3","sigma":"\u03C3","sigmaf":"\u03C2","sigmav":"\u03C2","sim":"\u223C","simdot":"\u2A6A","sime":"\u2243","simeq":"\u2243","simg":"\u2A9E","simgE":"\u2AA0","siml":"\u2A9D","simlE":"\u2A9F","simne":"\u2246","simplus":"\u2A24","simrarr":"\u2972","slarr":"\u2190","SmallCircle":"\u2218","smallsetminus":"\u2216","smashp":"\u2A33","smeparsl":"\u29E4","smid":"\u2223","smile":"\u2323","smt":"\u2AAA","smte":"\u2AAC","smtes":"\u2AAC\uFE00","SOFTcy":"\u042C","softcy":"\u044C","solbar":"\u233F","solb":"\u29C4","sol":"/","Sopf":"\uD835\uDD4A","sopf":"\uD835\uDD64","spades":"\u2660","spadesuit":"\u2660","spar":"\u2225","sqcap":"\u2293","sqcaps":"\u2293\uFE00","sqcup":"\u2294","sqcups":"\u2294\uFE00","Sqrt":"\u221A","sqsub":"\u228F","sqsube":"\u2291","sqsubset":"\u228F","sqsubseteq":"\u2291","sqsup":"\u2290","sqsupe":"\u2292","sqsupset":"\u2290","sqsupseteq":"\u2292","square":"\u25A1","Square":"\u25A1","SquareIntersection":"\u2293","SquareSubset":"\u228F","SquareSubsetEqual":"\u2291","SquareSuperset":"\u2290","SquareSupersetEqual":"\u2292","SquareUnion":"\u2294","squarf":"\u25AA","squ":"\u25A1","squf":"\u25AA","srarr":"\u2192","Sscr":"\uD835\uDCAE","sscr":"\uD835\uDCC8","ssetmn":"\u2216","ssmile":"\u2323","sstarf":"\u22C6","Star":"\u22C6","star":"\u2606","starf":"\u2605","straightepsilon":"\u03F5","straightphi":"\u03D5","strns":"\u00AF","sub":"\u2282","Sub":"\u22D0","subdot":"\u2ABD","subE":"\u2AC5","sube":"\u2286","subedot":"\u2AC3","submult":"\u2AC1","subnE":"\u2ACB","subne":"\u228A","subplus":"\u2ABF","subrarr":"\u2979","subset":"\u2282","Subset":"\u22D0","subseteq":"\u2286","subseteqq":"\u2AC5","SubsetEqual":"\u2286","subsetneq":"\u228A","subsetneqq":"\u2ACB","subsim":"\u2AC7","subsub":"\u2AD5","subsup":"\u2AD3","succapprox":"\u2AB8","succ":"\u227B","succcurlyeq":"\u227D","Succeeds":"\u227B","SucceedsEqual":"\u2AB0","SucceedsSlantEqual":"\u227D","SucceedsTilde":"\u227F","succeq":"\u2AB0","succnapprox":"\u2ABA","succneqq":"\u2AB6","succnsim":"\u22E9","succsim":"\u227F","SuchThat":"\u220B","sum":"\u2211","Sum":"\u2211","sung":"\u266A","sup1":"\u00B9","sup2":"\u00B2","sup3":"\u00B3","sup":"\u2283","Sup":"\u22D1","supdot":"\u2ABE","supdsub":"\u2AD8","supE":"\u2AC6","supe":"\u2287","supedot":"\u2AC4","Superset":"\u2283","SupersetEqual":"\u2287","suphsol":"\u27C9","suphsub":"\u2AD7","suplarr":"\u297B","supmult":"\u2AC2","supnE":"\u2ACC","supne":"\u228B","supplus":"\u2AC0","supset":"\u2283","Supset":"\u22D1","supseteq":"\u2287","supseteqq":"\u2AC6","supsetneq":"\u228B","supsetneqq":"\u2ACC","supsim":"\u2AC8","supsub":"\u2AD4","supsup":"\u2AD6","swarhk":"\u2926","swarr":"\u2199","swArr":"\u21D9","swarrow":"\u2199","swnwar":"\u292A","szlig":"\u00DF","Tab":"\t","target":"\u2316","Tau":"\u03A4","tau":"\u03C4","tbrk":"\u23B4","Tcaron":"\u0164","tcaron":"\u0165","Tcedil":"\u0162","tcedil":"\u0163","Tcy":"\u0422","tcy":"\u0442","tdot":"\u20DB","telrec":"\u2315","Tfr":"\uD835\uDD17","tfr":"\uD835\uDD31","there4":"\u2234","therefore":"\u2234","Therefore":"\u2234","Theta":"\u0398","theta":"\u03B8","thetasym":"\u03D1","thetav":"\u03D1","thickapprox":"\u2248","thicksim":"\u223C","ThickSpace":"\u205F\u200A","ThinSpace":"\u2009","thinsp":"\u2009","thkap":"\u2248","thksim":"\u223C","THORN":"\u00DE","thorn":"\u00FE","tilde":"\u02DC","Tilde":"\u223C","TildeEqual":"\u2243","TildeFullEqual":"\u2245","TildeTilde":"\u2248","timesbar":"\u2A31","timesb":"\u22A0","times":"\u00D7","timesd":"\u2A30","tint":"\u222D","toea":"\u2928","topbot":"\u2336","topcir":"\u2AF1","top":"\u22A4","Topf":"\uD835\uDD4B","topf":"\uD835\uDD65","topfork":"\u2ADA","tosa":"\u2929","tprime":"\u2034","trade":"\u2122","TRADE":"\u2122","triangle":"\u25B5","triangledown":"\u25BF","triangleleft":"\u25C3","trianglelefteq":"\u22B4","triangleq":"\u225C","triangleright":"\u25B9","trianglerighteq":"\u22B5","tridot":"\u25EC","trie":"\u225C","triminus":"\u2A3A","TripleDot":"\u20DB","triplus":"\u2A39","trisb":"\u29CD","tritime":"\u2A3B","trpezium":"\u23E2","Tscr":"\uD835\uDCAF","tscr":"\uD835\uDCC9","TScy":"\u0426","tscy":"\u0446","TSHcy":"\u040B","tshcy":"\u045B","Tstrok":"\u0166","tstrok":"\u0167","twixt":"\u226C","twoheadleftarrow":"\u219E","twoheadrightarrow":"\u21A0","Uacute":"\u00DA","uacute":"\u00FA","uarr":"\u2191","Uarr":"\u219F","uArr":"\u21D1","Uarrocir":"\u2949","Ubrcy":"\u040E","ubrcy":"\u045E","Ubreve":"\u016C","ubreve":"\u016D","Ucirc":"\u00DB","ucirc":"\u00FB","Ucy":"\u0423","ucy":"\u0443","udarr":"\u21C5","Udblac":"\u0170","udblac":"\u0171","udhar":"\u296E","ufisht":"\u297E","Ufr":"\uD835\uDD18","ufr":"\uD835\uDD32","Ugrave":"\u00D9","ugrave":"\u00F9","uHar":"\u2963","uharl":"\u21BF","uharr":"\u21BE","uhblk":"\u2580","ulcorn":"\u231C","ulcorner":"\u231C","ulcrop":"\u230F","ultri":"\u25F8","Umacr":"\u016A","umacr":"\u016B","uml":"\u00A8","UnderBar":"_","UnderBrace":"\u23DF","UnderBracket":"\u23B5","UnderParenthesis":"\u23DD","Union":"\u22C3","UnionPlus":"\u228E","Uogon":"\u0172","uogon":"\u0173","Uopf":"\uD835\uDD4C","uopf":"\uD835\uDD66","UpArrowBar":"\u2912","uparrow":"\u2191","UpArrow":"\u2191","Uparrow":"\u21D1","UpArrowDownArrow":"\u21C5","updownarrow":"\u2195","UpDownArrow":"\u2195","Updownarrow":"\u21D5","UpEquilibrium":"\u296E","upharpoonleft":"\u21BF","upharpoonright":"\u21BE","uplus":"\u228E","UpperLeftArrow":"\u2196","UpperRightArrow":"\u2197","upsi":"\u03C5","Upsi":"\u03D2","upsih":"\u03D2","Upsilon":"\u03A5","upsilon":"\u03C5","UpTeeArrow":"\u21A5","UpTee":"\u22A5","upuparrows":"\u21C8","urcorn":"\u231D","urcorner":"\u231D","urcrop":"\u230E","Uring":"\u016E","uring":"\u016F","urtri":"\u25F9","Uscr":"\uD835\uDCB0","uscr":"\uD835\uDCCA","utdot":"\u22F0","Utilde":"\u0168","utilde":"\u0169","utri":"\u25B5","utrif":"\u25B4","uuarr":"\u21C8","Uuml":"\u00DC","uuml":"\u00FC","uwangle":"\u29A7","vangrt":"\u299C","varepsilon":"\u03F5","varkappa":"\u03F0","varnothing":"\u2205","varphi":"\u03D5","varpi":"\u03D6","varpropto":"\u221D","varr":"\u2195","vArr":"\u21D5","varrho":"\u03F1","varsigma":"\u03C2","varsubsetneq":"\u228A\uFE00","varsubsetneqq":"\u2ACB\uFE00","varsupsetneq":"\u228B\uFE00","varsupsetneqq":"\u2ACC\uFE00","vartheta":"\u03D1","vartriangleleft":"\u22B2","vartriangleright":"\u22B3","vBar":"\u2AE8","Vbar":"\u2AEB","vBarv":"\u2AE9","Vcy":"\u0412","vcy":"\u0432","vdash":"\u22A2","vDash":"\u22A8","Vdash":"\u22A9","VDash":"\u22AB","Vdashl":"\u2AE6","veebar":"\u22BB","vee":"\u2228","Vee":"\u22C1","veeeq":"\u225A","vellip":"\u22EE","verbar":"|","Verbar":"\u2016","vert":"|","Vert":"\u2016","VerticalBar":"\u2223","VerticalLine":"|","VerticalSeparator":"\u2758","VerticalTilde":"\u2240","VeryThinSpace":"\u200A","Vfr":"\uD835\uDD19","vfr":"\uD835\uDD33","vltri":"\u22B2","vnsub":"\u2282\u20D2","vnsup":"\u2283\u20D2","Vopf":"\uD835\uDD4D","vopf":"\uD835\uDD67","vprop":"\u221D","vrtri":"\u22B3","Vscr":"\uD835\uDCB1","vscr":"\uD835\uDCCB","vsubnE":"\u2ACB\uFE00","vsubne":"\u228A\uFE00","vsupnE":"\u2ACC\uFE00","vsupne":"\u228B\uFE00","Vvdash":"\u22AA","vzigzag":"\u299A","Wcirc":"\u0174","wcirc":"\u0175","wedbar":"\u2A5F","wedge":"\u2227","Wedge":"\u22C0","wedgeq":"\u2259","weierp":"\u2118","Wfr":"\uD835\uDD1A","wfr":"\uD835\uDD34","Wopf":"\uD835\uDD4E","wopf":"\uD835\uDD68","wp":"\u2118","wr":"\u2240","wreath":"\u2240","Wscr":"\uD835\uDCB2","wscr":"\uD835\uDCCC","xcap":"\u22C2","xcirc":"\u25EF","xcup":"\u22C3","xdtri":"\u25BD","Xfr":"\uD835\uDD1B","xfr":"\uD835\uDD35","xharr":"\u27F7","xhArr":"\u27FA","Xi":"\u039E","xi":"\u03BE","xlarr":"\u27F5","xlArr":"\u27F8","xmap":"\u27FC","xnis":"\u22FB","xodot":"\u2A00","Xopf":"\uD835\uDD4F","xopf":"\uD835\uDD69","xoplus":"\u2A01","xotime":"\u2A02","xrarr":"\u27F6","xrArr":"\u27F9","Xscr":"\uD835\uDCB3","xscr":"\uD835\uDCCD","xsqcup":"\u2A06","xuplus":"\u2A04","xutri":"\u25B3","xvee":"\u22C1","xwedge":"\u22C0","Yacute":"\u00DD","yacute":"\u00FD","YAcy":"\u042F","yacy":"\u044F","Ycirc":"\u0176","ycirc":"\u0177","Ycy":"\u042B","ycy":"\u044B","yen":"\u00A5","Yfr":"\uD835\uDD1C","yfr":"\uD835\uDD36","YIcy":"\u0407","yicy":"\u0457","Yopf":"\uD835\uDD50","yopf":"\uD835\uDD6A","Yscr":"\uD835\uDCB4","yscr":"\uD835\uDCCE","YUcy":"\u042E","yucy":"\u044E","yuml":"\u00FF","Yuml":"\u0178","Zacute":"\u0179","zacute":"\u017A","Zcaron":"\u017D","zcaron":"\u017E","Zcy":"\u0417","zcy":"\u0437","Zdot":"\u017B","zdot":"\u017C","zeetrf":"\u2128","ZeroWidthSpace":"\u200B","Zeta":"\u0396","zeta":"\u03B6","zfr":"\uD835\uDD37","Zfr":"\u2128","ZHcy":"\u0416","zhcy":"\u0436","zigrarr":"\u21DD","zopf":"\uD835\uDD6B","Zopf":"\u2124","Zscr":"\uD835\uDCB5","zscr":"\uD835\uDCCF","zwj":"\u200D","zwnj":"\u200C"}
-},{}],88:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports={"Aacute":"\u00C1","aacute":"\u00E1","Acirc":"\u00C2","acirc":"\u00E2","acute":"\u00B4","AElig":"\u00C6","aelig":"\u00E6","Agrave":"\u00C0","agrave":"\u00E0","amp":"&","AMP":"&","Aring":"\u00C5","aring":"\u00E5","Atilde":"\u00C3","atilde":"\u00E3","Auml":"\u00C4","auml":"\u00E4","brvbar":"\u00A6","Ccedil":"\u00C7","ccedil":"\u00E7","cedil":"\u00B8","cent":"\u00A2","copy":"\u00A9","COPY":"\u00A9","curren":"\u00A4","deg":"\u00B0","divide":"\u00F7","Eacute":"\u00C9","eacute":"\u00E9","Ecirc":"\u00CA","ecirc":"\u00EA","Egrave":"\u00C8","egrave":"\u00E8","ETH":"\u00D0","eth":"\u00F0","Euml":"\u00CB","euml":"\u00EB","frac12":"\u00BD","frac14":"\u00BC","frac34":"\u00BE","gt":">","GT":">","Iacute":"\u00CD","iacute":"\u00ED","Icirc":"\u00CE","icirc":"\u00EE","iexcl":"\u00A1","Igrave":"\u00CC","igrave":"\u00EC","iquest":"\u00BF","Iuml":"\u00CF","iuml":"\u00EF","laquo":"\u00AB","lt":"<","LT":"<","macr":"\u00AF","micro":"\u00B5","middot":"\u00B7","nbsp":"\u00A0","not":"\u00AC","Ntilde":"\u00D1","ntilde":"\u00F1","Oacute":"\u00D3","oacute":"\u00F3","Ocirc":"\u00D4","ocirc":"\u00F4","Ograve":"\u00D2","ograve":"\u00F2","ordf":"\u00AA","ordm":"\u00BA","Oslash":"\u00D8","oslash":"\u00F8","Otilde":"\u00D5","otilde":"\u00F5","Ouml":"\u00D6","ouml":"\u00F6","para":"\u00B6","plusmn":"\u00B1","pound":"\u00A3","quot":"\"","QUOT":"\"","raquo":"\u00BB","reg":"\u00AE","REG":"\u00AE","sect":"\u00A7","shy":"\u00AD","sup1":"\u00B9","sup2":"\u00B2","sup3":"\u00B3","szlig":"\u00DF","THORN":"\u00DE","thorn":"\u00FE","times":"\u00D7","Uacute":"\u00DA","uacute":"\u00FA","Ucirc":"\u00DB","ucirc":"\u00FB","Ugrave":"\u00D9","ugrave":"\u00F9","uml":"\u00A8","Uuml":"\u00DC","uuml":"\u00FC","Yacute":"\u00DD","yacute":"\u00FD","yen":"\u00A5","yuml":"\u00FF"}
-},{}],89:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports={"amp":"&","apos":"'","gt":">","lt":"<","quot":"\""}
 
-},{}],90:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -17275,7 +17857,7 @@ return Promise;
 })));
 //# sourceMappingURL=es6-promise.map
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"rH1JPG":128}],91:[function(require,module,exports){
+},{"rH1JPG":134}],95:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -17578,7 +18160,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],92:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 module.exports = CollectingHandler;
 
 function CollectingHandler(cbs){
@@ -17635,7 +18217,7 @@ CollectingHandler.prototype.restart = function(){
 	}
 };
 
-},{"./":99}],93:[function(require,module,exports){
+},{"./":103}],97:[function(require,module,exports){
 var index = require("./index.js"),
     DomHandler = index.DomHandler,
 	DomUtils = index.DomUtils;
@@ -17732,7 +18314,7 @@ FeedHandler.prototype.onend = function(){
 
 module.exports = FeedHandler;
 
-},{"./index.js":99,"util":144}],94:[function(require,module,exports){
+},{"./index.js":103,"util":150}],98:[function(require,module,exports){
 var Tokenizer = require("./Tokenizer.js");
 
 /*
@@ -18084,7 +18666,7 @@ Parser.prototype.done = Parser.prototype.end;
 
 module.exports = Parser;
 
-},{"./Tokenizer.js":97,"events":91,"util":144}],95:[function(require,module,exports){
+},{"./Tokenizer.js":101,"events":95,"util":150}],99:[function(require,module,exports){
 module.exports = ProxyHandler;
 
 function ProxyHandler(cbs){
@@ -18112,7 +18694,7 @@ Object.keys(EVENTS).forEach(function(name){
 		throw Error("wrong number of arguments");
 	}
 });
-},{"./":99}],96:[function(require,module,exports){
+},{"./":103}],100:[function(require,module,exports){
 module.exports = Stream;
 
 var Parser = require("./WritableStream.js");
@@ -18148,7 +18730,7 @@ Object.keys(EVENTS).forEach(function(name){
 		throw Error("wrong number of arguments!");
 	}
 });
-},{"../":99,"./WritableStream.js":98,"util":144}],97:[function(require,module,exports){
+},{"../":103,"./WritableStream.js":102,"util":150}],101:[function(require,module,exports){
 module.exports = Tokenizer;
 
 var decodeCodePoint = require("entities/lib/decode_codepoint.js"),
@@ -19056,7 +19638,7 @@ Tokenizer.prototype._emitPartial = function(value){
 	}
 };
 
-},{"entities/lib/decode_codepoint.js":107,"entities/maps/entities.json":109,"entities/maps/legacy.json":110,"entities/maps/xml.json":111}],98:[function(require,module,exports){
+},{"entities/lib/decode_codepoint.js":111,"entities/maps/entities.json":113,"entities/maps/legacy.json":114,"entities/maps/xml.json":115}],102:[function(require,module,exports){
 module.exports = Stream;
 
 var Parser = require("./Parser.js"),
@@ -19078,7 +19660,7 @@ WritableStream.prototype._write = function(chunk, encoding, cb){
 	this._parser.write(chunk);
 	cb();
 };
-},{"./Parser.js":94,"readable-stream":29,"stream":132,"util":144}],99:[function(require,module,exports){
+},{"./Parser.js":98,"readable-stream":31,"stream":138,"util":150}],103:[function(require,module,exports){
 var Parser = require("./Parser.js"),
     DomHandler = require("domhandler");
 
@@ -19148,9 +19730,9 @@ module.exports = {
 	}
 };
 
-},{"./CollectingHandler.js":92,"./FeedHandler.js":93,"./Parser.js":94,"./ProxyHandler.js":95,"./Stream.js":96,"./Tokenizer.js":97,"./WritableStream.js":98,"domelementtype":68,"domhandler":69,"domutils":100}],100:[function(require,module,exports){
-arguments[4][72][0].apply(exports,arguments)
-},{"./lib/helpers":101,"./lib/legacy":102,"./lib/manipulation":103,"./lib/querying":104,"./lib/stringify":105,"./lib/traversal":106}],101:[function(require,module,exports){
+},{"./CollectingHandler.js":96,"./FeedHandler.js":97,"./Parser.js":98,"./ProxyHandler.js":99,"./Stream.js":100,"./Tokenizer.js":101,"./WritableStream.js":102,"domelementtype":72,"domhandler":73,"domutils":104}],104:[function(require,module,exports){
+arguments[4][76][0].apply(exports,arguments)
+},{"./lib/helpers":105,"./lib/legacy":106,"./lib/manipulation":107,"./lib/querying":108,"./lib/stringify":109,"./lib/traversal":110}],105:[function(require,module,exports){
 // removeSubsets
 // Given an array of nodes, remove any member that is contained by another.
 exports.removeSubsets = function(nodes) {
@@ -19293,13 +19875,13 @@ exports.uniqueSort = function(nodes) {
 	return nodes;
 };
 
-},{}],102:[function(require,module,exports){
-module.exports=require(74)
-},{"domelementtype":68}],103:[function(require,module,exports){
-module.exports=require(75)
-},{}],104:[function(require,module,exports){
-module.exports=require(76)
-},{"domelementtype":68}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
+module.exports=require(78)
+},{"domelementtype":72}],107:[function(require,module,exports){
+module.exports=require(79)
+},{}],108:[function(require,module,exports){
+module.exports=require(80)
+},{"domelementtype":72}],109:[function(require,module,exports){
 var ElementType = require("domelementtype"),
     getOuterHTML = require("dom-serializer"),
     isTag = ElementType.isTag;
@@ -19323,7 +19905,7 @@ function getText(elem){
 	return "";
 }
 
-},{"dom-serializer":67,"domelementtype":68}],106:[function(require,module,exports){
+},{"dom-serializer":71,"domelementtype":72}],110:[function(require,module,exports){
 var getChildren = exports.getChildren = function(elem){
 	return elem.children;
 };
@@ -19349,7 +19931,7 @@ exports.getName = function(elem){
 	return elem.name;
 };
 
-},{}],107:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 var decodeMap = require("../maps/decode.json");
 
 module.exports = decodeCodePoint;
@@ -19377,15 +19959,15 @@ function decodeCodePoint(codePoint){
 	return output;
 }
 
-},{"../maps/decode.json":108}],108:[function(require,module,exports){
-module.exports=require(86)
-},{}],109:[function(require,module,exports){
-module.exports=require(87)
-},{}],110:[function(require,module,exports){
-module.exports=require(88)
-},{}],111:[function(require,module,exports){
-module.exports=require(89)
-},{}],112:[function(require,module,exports){
+},{"../maps/decode.json":112}],112:[function(require,module,exports){
+module.exports=require(90)
+},{}],113:[function(require,module,exports){
+module.exports=require(91)
+},{}],114:[function(require,module,exports){
+module.exports=require(92)
+},{}],115:[function(require,module,exports){
+module.exports=require(93)
+},{}],116:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -19471,7 +20053,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],113:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -19500,7 +20082,30 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],114:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+module.exports = function (obj) {
+  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+}
+
+function isBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+}
+
+},{}],119:[function(require,module,exports){
 /**
  * node-iterate79/ary.js
  */
@@ -19582,7 +20187,7 @@ if (typeof Object.create === 'function') {
 
 })(module);
 
-},{"es6-promise":90}],115:[function(require,module,exports){
+},{"es6-promise":94}],120:[function(require,module,exports){
 /**
  * node-iterate79/fnc.js
  */
@@ -19666,7 +20271,7 @@ if (typeof Object.create === 'function') {
 
 })(module);
 
-},{"es6-promise":90}],116:[function(require,module,exports){
+},{"es6-promise":94}],121:[function(require,module,exports){
 /**
  * node-iterate79
  */
@@ -19690,7 +20295,7 @@ if (typeof Object.create === 'function') {
 
 })(module);
 
-},{"./ary.js":114,"./fnc.js":115,"./queue.js":117}],117:[function(require,module,exports){
+},{"./ary.js":119,"./fnc.js":120,"./queue.js":122}],122:[function(require,module,exports){
 /**
  * node-iterate79/queue.js
  */
@@ -19876,9 +20481,9 @@ module.exports = function(_options){
 
 }
 
-},{"crypto":45,"es6-promise":90}],118:[function(require,module,exports){
+},{"crypto":49,"es6-promise":94}],123:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v3.4.1
+ * jQuery JavaScript Library v3.5.0
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -19888,7 +20493,7 @@ module.exports = function(_options){
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2019-05-01T21:04Z
+ * Date: 2020-04-10T15:07Z
  */
 ( function( global, factory ) {
 
@@ -19926,13 +20531,16 @@ module.exports = function(_options){
 
 var arr = [];
 
-var document = window.document;
-
 var getProto = Object.getPrototypeOf;
 
 var slice = arr.slice;
 
-var concat = arr.concat;
+var flat = arr.flat ? function( array ) {
+	return arr.flat.call( array );
+} : function( array ) {
+	return arr.concat.apply( [], array );
+};
+
 
 var push = arr.push;
 
@@ -19964,6 +20572,8 @@ var isWindow = function isWindow( obj ) {
 		return obj != null && obj === obj.window;
 	};
 
+
+var document = window.document;
 
 
 
@@ -20021,7 +20631,7 @@ function toType( obj ) {
 
 
 var
-	version = "3.4.1",
+	version = "3.5.0",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -20029,11 +20639,7 @@ var
 		// The jQuery object is actually just the init constructor 'enhanced'
 		// Need init if jQuery is called (just allow error to be thrown if not included)
 		return new jQuery.fn.init( selector, context );
-	},
-
-	// Support: Android <=4.0 only
-	// Make sure we trim BOM and NBSP
-	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+	};
 
 jQuery.fn = jQuery.prototype = {
 
@@ -20097,6 +20703,18 @@ jQuery.fn = jQuery.prototype = {
 
 	last: function() {
 		return this.eq( -1 );
+	},
+
+	even: function() {
+		return this.pushStack( jQuery.grep( this, function( _elem, i ) {
+			return ( i + 1 ) % 2;
+		} ) );
+	},
+
+	odd: function() {
+		return this.pushStack( jQuery.grep( this, function( _elem, i ) {
+			return i % 2;
+		} ) );
 	},
 
 	eq: function( i ) {
@@ -20232,9 +20850,10 @@ jQuery.extend( {
 		return true;
 	},
 
-	// Evaluates a script in a global context
-	globalEval: function( code, options ) {
-		DOMEval( code, { nonce: options && options.nonce } );
+	// Evaluates a script in a provided context; falls back to the global one
+	// if not specified.
+	globalEval: function( code, options, doc ) {
+		DOMEval( code, { nonce: options && options.nonce }, doc );
 	},
 
 	each: function( obj, callback ) {
@@ -20256,13 +20875,6 @@ jQuery.extend( {
 		}
 
 		return obj;
-	},
-
-	// Support: Android <=4.0 only
-	trim: function( text ) {
-		return text == null ?
-			"" :
-			( text + "" ).replace( rtrim, "" );
 	},
 
 	// results is for internal usage only
@@ -20351,7 +20963,7 @@ jQuery.extend( {
 		}
 
 		// Flatten any nested arrays
-		return concat.apply( [], ret );
+		return flat( ret );
 	},
 
 	// A global GUID counter for objects
@@ -20368,7 +20980,7 @@ if ( typeof Symbol === "function" ) {
 
 // Populate the class2type map
 jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
-function( i, name ) {
+function( _i, name ) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 } );
 
@@ -20390,17 +21002,16 @@ function isArrayLike( obj ) {
 }
 var Sizzle =
 /*!
- * Sizzle CSS Selector Engine v2.3.4
+ * Sizzle CSS Selector Engine v2.3.5
  * https://sizzlejs.com/
  *
  * Copyright JS Foundation and other contributors
  * Released under the MIT license
  * https://js.foundation/
  *
- * Date: 2019-04-08
+ * Date: 2020-03-14
  */
-(function( window ) {
-
+( function( window ) {
 var i,
 	support,
 	Expr,
@@ -20440,59 +21051,70 @@ var i,
 	},
 
 	// Instance methods
-	hasOwn = ({}).hasOwnProperty,
+	hasOwn = ( {} ).hasOwnProperty,
 	arr = [],
 	pop = arr.pop,
-	push_native = arr.push,
+	pushNative = arr.push,
 	push = arr.push,
 	slice = arr.slice,
+
 	// Use a stripped-down indexOf as it's faster than native
 	// https://jsperf.com/thor-indexof-vs-for/5
 	indexOf = function( list, elem ) {
 		var i = 0,
 			len = list.length;
 		for ( ; i < len; i++ ) {
-			if ( list[i] === elem ) {
+			if ( list[ i ] === elem ) {
 				return i;
 			}
 		}
 		return -1;
 	},
 
-	booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
+	booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|" +
+		"ismap|loop|multiple|open|readonly|required|scoped",
 
 	// Regular expressions
 
 	// http://www.w3.org/TR/css3-selectors/#whitespace
 	whitespace = "[\\x20\\t\\r\\n\\f]",
 
-	// http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
-	identifier = "(?:\\\\.|[\\w-]|[^\0-\\xa0])+",
+	// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
+	identifier = "(?:\\\\[\\da-fA-F]{1,6}" + whitespace +
+		"?|\\\\[^\\r\\n\\f]|[\\w-]|[^\0-\\x7f])+",
 
 	// Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
 	attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
+
 		// Operator (capture 2)
 		"*([*^$|!~]?=)" + whitespace +
-		// "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
-		"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" + whitespace +
-		"*\\]",
+
+		// "Attribute values must be CSS identifiers [capture 5]
+		// or strings [capture 3 or capture 4]"
+		"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" +
+		whitespace + "*\\]",
 
 	pseudos = ":(" + identifier + ")(?:\\((" +
+
 		// To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
 		// 1. quoted (capture 3; capture 4 or capture 5)
 		"('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
+
 		// 2. simple (capture 6)
 		"((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
+
 		// 3. anything else (capture 2)
 		".*" +
 		")\\)|)",
 
 	// Leading and non-escaped trailing whitespace, capturing some non-whitespace characters preceding the latter
 	rwhitespace = new RegExp( whitespace + "+", "g" ),
-	rtrim = new RegExp( "^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g" ),
+	rtrim = new RegExp( "^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" +
+		whitespace + "+$", "g" ),
 
 	rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
-	rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*" ),
+	rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace +
+		"*" ),
 	rdescend = new RegExp( whitespace + "|>" ),
 
 	rpseudo = new RegExp( pseudos ),
@@ -20504,14 +21126,16 @@ var i,
 		"TAG": new RegExp( "^(" + identifier + "|[*])" ),
 		"ATTR": new RegExp( "^" + attributes ),
 		"PSEUDO": new RegExp( "^" + pseudos ),
-		"CHILD": new RegExp( "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace +
-			"*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" + whitespace +
-			"*(\\d+)|))" + whitespace + "*\\)|)", "i" ),
+		"CHILD": new RegExp( "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" +
+			whitespace + "*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" +
+			whitespace + "*(\\d+)|))" + whitespace + "*\\)|)", "i" ),
 		"bool": new RegExp( "^(?:" + booleans + ")$", "i" ),
+
 		// For use in libraries implementing .is()
 		// We use this for POS matching in `select`
-		"needsContext": new RegExp( "^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
-			whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
+		"needsContext": new RegExp( "^" + whitespace +
+			"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" + whitespace +
+			"*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
 	},
 
 	rhtml = /HTML$/i,
@@ -20527,18 +21151,21 @@ var i,
 
 	// CSS escapes
 	// http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
-	runescape = new RegExp( "\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig" ),
-	funescape = function( _, escaped, escapedWhitespace ) {
-		var high = "0x" + escaped - 0x10000;
-		// NaN means non-codepoint
-		// Support: Firefox<24
-		// Workaround erroneous numeric interpretation of +"0x"
-		return high !== high || escapedWhitespace ?
-			escaped :
+	runescape = new RegExp( "\\\\[\\da-fA-F]{1,6}" + whitespace + "?|\\\\([^\\r\\n\\f])", "g" ),
+	funescape = function( escape, nonHex ) {
+		var high = "0x" + escape.slice( 1 ) - 0x10000;
+
+		return nonHex ?
+
+			// Strip the backslash prefix from a non-hex escape sequence
+			nonHex :
+
+			// Replace a hexadecimal escape sequence with the encoded Unicode code point
+			// Support: IE <=11+
+			// For values outside the Basic Multilingual Plane (BMP), manually construct a
+			// surrogate pair
 			high < 0 ?
-				// BMP codepoint
 				String.fromCharCode( high + 0x10000 ) :
-				// Supplemental Plane codepoint (surrogate pair)
 				String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );
 	},
 
@@ -20554,7 +21181,8 @@ var i,
 			}
 
 			// Control characters and (dependent upon position) numbers get escaped as code points
-			return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
+			return ch.slice( 0, -1 ) + "\\" +
+				ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
 		}
 
 		// Other potentially-special ASCII characters get backslash-escaped
@@ -20579,18 +21207,20 @@ var i,
 // Optimize for push.apply( _, NodeList )
 try {
 	push.apply(
-		(arr = slice.call( preferredDoc.childNodes )),
+		( arr = slice.call( preferredDoc.childNodes ) ),
 		preferredDoc.childNodes
 	);
+
 	// Support: Android<4.0
 	// Detect silently failing push.apply
+	// eslint-disable-next-line no-unused-expressions
 	arr[ preferredDoc.childNodes.length ].nodeType;
 } catch ( e ) {
 	push = { apply: arr.length ?
 
 		// Leverage slice if possible
 		function( target, els ) {
-			push_native.apply( target, slice.call(els) );
+			pushNative.apply( target, slice.call( els ) );
 		} :
 
 		// Support: IE<9
@@ -20598,8 +21228,9 @@ try {
 		function( target, els ) {
 			var j = target.length,
 				i = 0;
+
 			// Can't trust NodeList.length
-			while ( (target[j++] = els[i++]) ) {}
+			while ( ( target[ j++ ] = els[ i++ ] ) ) {}
 			target.length = j - 1;
 		}
 	};
@@ -20623,24 +21254,21 @@ function Sizzle( selector, context, results, seed ) {
 
 	// Try to shortcut find operations (as opposed to filters) in HTML documents
 	if ( !seed ) {
-
-		if ( ( context ? context.ownerDocument || context : preferredDoc ) !== document ) {
-			setDocument( context );
-		}
+		setDocument( context );
 		context = context || document;
 
 		if ( documentIsHTML ) {
 
 			// If the selector is sufficiently simple, try using a "get*By*" DOM method
 			// (excepting DocumentFragment context, where the methods don't exist)
-			if ( nodeType !== 11 && (match = rquickExpr.exec( selector )) ) {
+			if ( nodeType !== 11 && ( match = rquickExpr.exec( selector ) ) ) {
 
 				// ID selector
-				if ( (m = match[1]) ) {
+				if ( ( m = match[ 1 ] ) ) {
 
 					// Document context
 					if ( nodeType === 9 ) {
-						if ( (elem = context.getElementById( m )) ) {
+						if ( ( elem = context.getElementById( m ) ) ) {
 
 							// Support: IE, Opera, Webkit
 							// TODO: identify versions
@@ -20659,7 +21287,7 @@ function Sizzle( selector, context, results, seed ) {
 						// Support: IE, Opera, Webkit
 						// TODO: identify versions
 						// getElementById can match elements by name instead of ID
-						if ( newContext && (elem = newContext.getElementById( m )) &&
+						if ( newContext && ( elem = newContext.getElementById( m ) ) &&
 							contains( context, elem ) &&
 							elem.id === m ) {
 
@@ -20669,12 +21297,12 @@ function Sizzle( selector, context, results, seed ) {
 					}
 
 				// Type selector
-				} else if ( match[2] ) {
+				} else if ( match[ 2 ] ) {
 					push.apply( results, context.getElementsByTagName( selector ) );
 					return results;
 
 				// Class selector
-				} else if ( (m = match[3]) && support.getElementsByClassName &&
+				} else if ( ( m = match[ 3 ] ) && support.getElementsByClassName &&
 					context.getElementsByClassName ) {
 
 					push.apply( results, context.getElementsByClassName( m ) );
@@ -20685,11 +21313,11 @@ function Sizzle( selector, context, results, seed ) {
 			// Take advantage of querySelectorAll
 			if ( support.qsa &&
 				!nonnativeSelectorCache[ selector + " " ] &&
-				(!rbuggyQSA || !rbuggyQSA.test( selector )) &&
+				( !rbuggyQSA || !rbuggyQSA.test( selector ) ) &&
 
 				// Support: IE 8 only
 				// Exclude object elements
-				(nodeType !== 1 || context.nodeName.toLowerCase() !== "object") ) {
+				( nodeType !== 1 || context.nodeName.toLowerCase() !== "object" ) ) {
 
 				newSelector = selector;
 				newContext = context;
@@ -20698,27 +21326,36 @@ function Sizzle( selector, context, results, seed ) {
 				// descendant combinators, which is not what we want.
 				// In such cases, we work around the behavior by prefixing every selector in the
 				// list with an ID selector referencing the scope context.
+				// The technique has to be used as well when a leading combinator is used
+				// as such selectors are not recognized by querySelectorAll.
 				// Thanks to Andrew Dupont for this technique.
-				if ( nodeType === 1 && rdescend.test( selector ) ) {
+				if ( nodeType === 1 &&
+					( rdescend.test( selector ) || rcombinators.test( selector ) ) ) {
 
-					// Capture the context ID, setting it first if necessary
-					if ( (nid = context.getAttribute( "id" )) ) {
-						nid = nid.replace( rcssescape, fcssescape );
-					} else {
-						context.setAttribute( "id", (nid = expando) );
+					// Expand context for sibling selectors
+					newContext = rsibling.test( selector ) && testContext( context.parentNode ) ||
+						context;
+
+					// We can use :scope instead of the ID hack if the browser
+					// supports it & if we're not changing the context.
+					if ( newContext !== context || !support.scope ) {
+
+						// Capture the context ID, setting it first if necessary
+						if ( ( nid = context.getAttribute( "id" ) ) ) {
+							nid = nid.replace( rcssescape, fcssescape );
+						} else {
+							context.setAttribute( "id", ( nid = expando ) );
+						}
 					}
 
 					// Prefix every selector in the list
 					groups = tokenize( selector );
 					i = groups.length;
 					while ( i-- ) {
-						groups[i] = "#" + nid + " " + toSelector( groups[i] );
+						groups[ i ] = ( nid ? "#" + nid : ":scope" ) + " " +
+							toSelector( groups[ i ] );
 					}
 					newSelector = groups.join( "," );
-
-					// Expand context for sibling selectors
-					newContext = rsibling.test( selector ) && testContext( context.parentNode ) ||
-						context;
 				}
 
 				try {
@@ -20751,12 +21388,14 @@ function createCache() {
 	var keys = [];
 
 	function cache( key, value ) {
+
 		// Use (key + " ") to avoid collision with native prototype properties (see Issue #157)
 		if ( keys.push( key + " " ) > Expr.cacheLength ) {
+
 			// Only keep the most recent entries
 			delete cache[ keys.shift() ];
 		}
-		return (cache[ key + " " ] = value);
+		return ( cache[ key + " " ] = value );
 	}
 	return cache;
 }
@@ -20775,17 +21414,19 @@ function markFunction( fn ) {
  * @param {Function} fn Passed the created element and returns a boolean result
  */
 function assert( fn ) {
-	var el = document.createElement("fieldset");
+	var el = document.createElement( "fieldset" );
 
 	try {
 		return !!fn( el );
-	} catch (e) {
+	} catch ( e ) {
 		return false;
 	} finally {
+
 		// Remove from its parent by default
 		if ( el.parentNode ) {
 			el.parentNode.removeChild( el );
 		}
+
 		// release memory in IE
 		el = null;
 	}
@@ -20797,11 +21438,11 @@ function assert( fn ) {
  * @param {Function} handler The method that will be applied
  */
 function addHandle( attrs, handler ) {
-	var arr = attrs.split("|"),
+	var arr = attrs.split( "|" ),
 		i = arr.length;
 
 	while ( i-- ) {
-		Expr.attrHandle[ arr[i] ] = handler;
+		Expr.attrHandle[ arr[ i ] ] = handler;
 	}
 }
 
@@ -20823,7 +21464,7 @@ function siblingCheck( a, b ) {
 
 	// Check if b follows a
 	if ( cur ) {
-		while ( (cur = cur.nextSibling) ) {
+		while ( ( cur = cur.nextSibling ) ) {
 			if ( cur === b ) {
 				return -1;
 			}
@@ -20851,7 +21492,7 @@ function createInputPseudo( type ) {
 function createButtonPseudo( type ) {
 	return function( elem ) {
 		var name = elem.nodeName.toLowerCase();
-		return (name === "input" || name === "button") && elem.type === type;
+		return ( name === "input" || name === "button" ) && elem.type === type;
 	};
 }
 
@@ -20894,7 +21535,7 @@ function createDisabledPseudo( disabled ) {
 					// Where there is no isDisabled, check manually
 					/* jshint -W018 */
 					elem.isDisabled !== !disabled &&
-						inDisabledFieldset( elem ) === disabled;
+					inDisabledFieldset( elem ) === disabled;
 			}
 
 			return elem.disabled === disabled;
@@ -20916,21 +21557,21 @@ function createDisabledPseudo( disabled ) {
  * @param {Function} fn
  */
 function createPositionalPseudo( fn ) {
-	return markFunction(function( argument ) {
+	return markFunction( function( argument ) {
 		argument = +argument;
-		return markFunction(function( seed, matches ) {
+		return markFunction( function( seed, matches ) {
 			var j,
 				matchIndexes = fn( [], seed.length, argument ),
 				i = matchIndexes.length;
 
 			// Match elements found at the specified indexes
 			while ( i-- ) {
-				if ( seed[ (j = matchIndexes[i]) ] ) {
-					seed[j] = !(matches[j] = seed[j]);
+				if ( seed[ ( j = matchIndexes[ i ] ) ] ) {
+					seed[ j ] = !( matches[ j ] = seed[ j ] );
 				}
 			}
-		});
-	});
+		} );
+	} );
 }
 
 /**
@@ -20952,7 +21593,7 @@ support = Sizzle.support = {};
  */
 isXML = Sizzle.isXML = function( elem ) {
 	var namespace = elem.namespaceURI,
-		docElem = (elem.ownerDocument || elem).documentElement;
+		docElem = ( elem.ownerDocument || elem ).documentElement;
 
 	// Support: IE <=8
 	// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
@@ -20970,7 +21611,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 		doc = node ? node.ownerDocument || node : preferredDoc;
 
 	// Return early if doc is invalid or already selected
-	if ( doc === document || doc.nodeType !== 9 || !doc.documentElement ) {
+	// Support: IE 11+, Edge 17 - 18+
+	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// two documents; shallow comparisons work.
+	// eslint-disable-next-line eqeqeq
+	if ( doc == document || doc.nodeType !== 9 || !doc.documentElement ) {
 		return document;
 	}
 
@@ -20979,10 +21624,14 @@ setDocument = Sizzle.setDocument = function( node ) {
 	docElem = document.documentElement;
 	documentIsHTML = !isXML( document );
 
-	// Support: IE 9-11, Edge
+	// Support: IE 9 - 11+, Edge 12 - 18+
 	// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
-	if ( preferredDoc !== document &&
-		(subWindow = document.defaultView) && subWindow.top !== subWindow ) {
+	// Support: IE 11+, Edge 17 - 18+
+	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// two documents; shallow comparisons work.
+	// eslint-disable-next-line eqeqeq
+	if ( preferredDoc != document &&
+		( subWindow = document.defaultView ) && subWindow.top !== subWindow ) {
 
 		// Support: IE 11, Edge
 		if ( subWindow.addEventListener ) {
@@ -20994,25 +21643,36 @@ setDocument = Sizzle.setDocument = function( node ) {
 		}
 	}
 
+	// Support: IE 8 - 11+, Edge 12 - 18+, Chrome <=16 - 25 only, Firefox <=3.6 - 31 only,
+	// Safari 4 - 5 only, Opera <=11.6 - 12.x only
+	// IE/Edge & older browsers don't support the :scope pseudo-class.
+	// Support: Safari 6.0 only
+	// Safari 6.0 supports :scope but it's an alias of :root there.
+	support.scope = assert( function( el ) {
+		docElem.appendChild( el ).appendChild( document.createElement( "div" ) );
+		return typeof el.querySelectorAll !== "undefined" &&
+			!el.querySelectorAll( ":scope fieldset div" ).length;
+	} );
+
 	/* Attributes
 	---------------------------------------------------------------------- */
 
 	// Support: IE<8
 	// Verify that getAttribute really returns attributes and not properties
 	// (excepting IE8 booleans)
-	support.attributes = assert(function( el ) {
+	support.attributes = assert( function( el ) {
 		el.className = "i";
-		return !el.getAttribute("className");
-	});
+		return !el.getAttribute( "className" );
+	} );
 
 	/* getElement(s)By*
 	---------------------------------------------------------------------- */
 
 	// Check if getElementsByTagName("*") returns only elements
-	support.getElementsByTagName = assert(function( el ) {
-		el.appendChild( document.createComment("") );
-		return !el.getElementsByTagName("*").length;
-	});
+	support.getElementsByTagName = assert( function( el ) {
+		el.appendChild( document.createComment( "" ) );
+		return !el.getElementsByTagName( "*" ).length;
+	} );
 
 	// Support: IE<9
 	support.getElementsByClassName = rnative.test( document.getElementsByClassName );
@@ -21021,38 +21681,38 @@ setDocument = Sizzle.setDocument = function( node ) {
 	// Check if getElementById returns elements by name
 	// The broken getElementById methods don't pick up programmatically-set names,
 	// so use a roundabout getElementsByName test
-	support.getById = assert(function( el ) {
+	support.getById = assert( function( el ) {
 		docElem.appendChild( el ).id = expando;
 		return !document.getElementsByName || !document.getElementsByName( expando ).length;
-	});
+	} );
 
 	// ID filter and find
 	if ( support.getById ) {
-		Expr.filter["ID"] = function( id ) {
+		Expr.filter[ "ID" ] = function( id ) {
 			var attrId = id.replace( runescape, funescape );
 			return function( elem ) {
-				return elem.getAttribute("id") === attrId;
+				return elem.getAttribute( "id" ) === attrId;
 			};
 		};
-		Expr.find["ID"] = function( id, context ) {
+		Expr.find[ "ID" ] = function( id, context ) {
 			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
 				var elem = context.getElementById( id );
 				return elem ? [ elem ] : [];
 			}
 		};
 	} else {
-		Expr.filter["ID"] =  function( id ) {
+		Expr.filter[ "ID" ] =  function( id ) {
 			var attrId = id.replace( runescape, funescape );
 			return function( elem ) {
 				var node = typeof elem.getAttributeNode !== "undefined" &&
-					elem.getAttributeNode("id");
+					elem.getAttributeNode( "id" );
 				return node && node.value === attrId;
 			};
 		};
 
 		// Support: IE 6 - 7 only
 		// getElementById is not reliable as a find shortcut
-		Expr.find["ID"] = function( id, context ) {
+		Expr.find[ "ID" ] = function( id, context ) {
 			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
 				var node, i, elems,
 					elem = context.getElementById( id );
@@ -21060,7 +21720,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 				if ( elem ) {
 
 					// Verify the id attribute
-					node = elem.getAttributeNode("id");
+					node = elem.getAttributeNode( "id" );
 					if ( node && node.value === id ) {
 						return [ elem ];
 					}
@@ -21068,8 +21728,8 @@ setDocument = Sizzle.setDocument = function( node ) {
 					// Fall back on getElementsByName
 					elems = context.getElementsByName( id );
 					i = 0;
-					while ( (elem = elems[i++]) ) {
-						node = elem.getAttributeNode("id");
+					while ( ( elem = elems[ i++ ] ) ) {
+						node = elem.getAttributeNode( "id" );
 						if ( node && node.value === id ) {
 							return [ elem ];
 						}
@@ -21082,7 +21742,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	}
 
 	// Tag
-	Expr.find["TAG"] = support.getElementsByTagName ?
+	Expr.find[ "TAG" ] = support.getElementsByTagName ?
 		function( tag, context ) {
 			if ( typeof context.getElementsByTagName !== "undefined" ) {
 				return context.getElementsByTagName( tag );
@@ -21097,12 +21757,13 @@ setDocument = Sizzle.setDocument = function( node ) {
 			var elem,
 				tmp = [],
 				i = 0,
+
 				// By happy coincidence, a (broken) gEBTN appears on DocumentFragment nodes too
 				results = context.getElementsByTagName( tag );
 
 			// Filter out possible comments
 			if ( tag === "*" ) {
-				while ( (elem = results[i++]) ) {
+				while ( ( elem = results[ i++ ] ) ) {
 					if ( elem.nodeType === 1 ) {
 						tmp.push( elem );
 					}
@@ -21114,7 +21775,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		};
 
 	// Class
-	Expr.find["CLASS"] = support.getElementsByClassName && function( className, context ) {
+	Expr.find[ "CLASS" ] = support.getElementsByClassName && function( className, context ) {
 		if ( typeof context.getElementsByClassName !== "undefined" && documentIsHTML ) {
 			return context.getElementsByClassName( className );
 		}
@@ -21135,10 +21796,14 @@ setDocument = Sizzle.setDocument = function( node ) {
 	// See https://bugs.jquery.com/ticket/13378
 	rbuggyQSA = [];
 
-	if ( (support.qsa = rnative.test( document.querySelectorAll )) ) {
+	if ( ( support.qsa = rnative.test( document.querySelectorAll ) ) ) {
+
 		// Build QSA regex
 		// Regex strategy adopted from Diego Perini
-		assert(function( el ) {
+		assert( function( el ) {
+
+			var input;
+
 			// Select is set to empty string on purpose
 			// This is to test IE's treatment of not explicitly
 			// setting a boolean content attribute,
@@ -21152,78 +21817,98 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// Nothing should be selected when empty strings follow ^= or $= or *=
 			// The test attribute must be unknown in Opera but "safe" for WinRT
 			// https://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
-			if ( el.querySelectorAll("[msallowcapture^='']").length ) {
+			if ( el.querySelectorAll( "[msallowcapture^='']" ).length ) {
 				rbuggyQSA.push( "[*^$]=" + whitespace + "*(?:''|\"\")" );
 			}
 
 			// Support: IE8
 			// Boolean attributes and "value" are not treated correctly
-			if ( !el.querySelectorAll("[selected]").length ) {
+			if ( !el.querySelectorAll( "[selected]" ).length ) {
 				rbuggyQSA.push( "\\[" + whitespace + "*(?:value|" + booleans + ")" );
 			}
 
 			// Support: Chrome<29, Android<4.4, Safari<7.0+, iOS<7.0+, PhantomJS<1.9.8+
 			if ( !el.querySelectorAll( "[id~=" + expando + "-]" ).length ) {
-				rbuggyQSA.push("~=");
+				rbuggyQSA.push( "~=" );
+			}
+
+			// Support: IE 11+, Edge 15 - 18+
+			// IE 11/Edge don't find elements on a `[name='']` query in some cases.
+			// Adding a temporary attribute to the document before the selection works
+			// around the issue.
+			// Interestingly, IE 10 & older don't seem to have the issue.
+			input = document.createElement( "input" );
+			input.setAttribute( "name", "" );
+			el.appendChild( input );
+			if ( !el.querySelectorAll( "[name='']" ).length ) {
+				rbuggyQSA.push( "\\[" + whitespace + "*name" + whitespace + "*=" +
+					whitespace + "*(?:''|\"\")" );
 			}
 
 			// Webkit/Opera - :checked should return selected option elements
 			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
 			// IE8 throws error here and will not see later tests
-			if ( !el.querySelectorAll(":checked").length ) {
-				rbuggyQSA.push(":checked");
+			if ( !el.querySelectorAll( ":checked" ).length ) {
+				rbuggyQSA.push( ":checked" );
 			}
 
 			// Support: Safari 8+, iOS 8+
 			// https://bugs.webkit.org/show_bug.cgi?id=136851
 			// In-page `selector#id sibling-combinator selector` fails
 			if ( !el.querySelectorAll( "a#" + expando + "+*" ).length ) {
-				rbuggyQSA.push(".#.+[+~]");
+				rbuggyQSA.push( ".#.+[+~]" );
 			}
-		});
 
-		assert(function( el ) {
+			// Support: Firefox <=3.6 - 5 only
+			// Old Firefox doesn't throw on a badly-escaped identifier.
+			el.querySelectorAll( "\\\f" );
+			rbuggyQSA.push( "[\\r\\n\\f]" );
+		} );
+
+		assert( function( el ) {
 			el.innerHTML = "<a href='' disabled='disabled'></a>" +
 				"<select disabled='disabled'><option/></select>";
 
 			// Support: Windows 8 Native Apps
 			// The type and name attributes are restricted during .innerHTML assignment
-			var input = document.createElement("input");
+			var input = document.createElement( "input" );
 			input.setAttribute( "type", "hidden" );
 			el.appendChild( input ).setAttribute( "name", "D" );
 
 			// Support: IE8
 			// Enforce case-sensitivity of name attribute
-			if ( el.querySelectorAll("[name=d]").length ) {
+			if ( el.querySelectorAll( "[name=d]" ).length ) {
 				rbuggyQSA.push( "name" + whitespace + "*[*^$|!~]?=" );
 			}
 
 			// FF 3.5 - :enabled/:disabled and hidden elements (hidden elements are still enabled)
 			// IE8 throws error here and will not see later tests
-			if ( el.querySelectorAll(":enabled").length !== 2 ) {
+			if ( el.querySelectorAll( ":enabled" ).length !== 2 ) {
 				rbuggyQSA.push( ":enabled", ":disabled" );
 			}
 
 			// Support: IE9-11+
 			// IE's :disabled selector does not pick up the children of disabled fieldsets
 			docElem.appendChild( el ).disabled = true;
-			if ( el.querySelectorAll(":disabled").length !== 2 ) {
+			if ( el.querySelectorAll( ":disabled" ).length !== 2 ) {
 				rbuggyQSA.push( ":enabled", ":disabled" );
 			}
 
+			// Support: Opera 10 - 11 only
 			// Opera 10-11 does not throw on post-comma invalid pseudos
-			el.querySelectorAll("*,:x");
-			rbuggyQSA.push(",.*:");
-		});
+			el.querySelectorAll( "*,:x" );
+			rbuggyQSA.push( ",.*:" );
+		} );
 	}
 
-	if ( (support.matchesSelector = rnative.test( (matches = docElem.matches ||
+	if ( ( support.matchesSelector = rnative.test( ( matches = docElem.matches ||
 		docElem.webkitMatchesSelector ||
 		docElem.mozMatchesSelector ||
 		docElem.oMatchesSelector ||
-		docElem.msMatchesSelector) )) ) {
+		docElem.msMatchesSelector ) ) ) ) {
 
-		assert(function( el ) {
+		assert( function( el ) {
+
 			// Check to see if it's possible to do matchesSelector
 			// on a disconnected node (IE 9)
 			support.disconnectedMatch = matches.call( el, "*" );
@@ -21232,11 +21917,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// Gecko does not error, returns false instead
 			matches.call( el, "[s!='']:x" );
 			rbuggyMatches.push( "!=", pseudos );
-		});
+		} );
 	}
 
-	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join("|") );
-	rbuggyMatches = rbuggyMatches.length && new RegExp( rbuggyMatches.join("|") );
+	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join( "|" ) );
+	rbuggyMatches = rbuggyMatches.length && new RegExp( rbuggyMatches.join( "|" ) );
 
 	/* Contains
 	---------------------------------------------------------------------- */
@@ -21253,11 +21938,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 				adown.contains ?
 					adown.contains( bup ) :
 					a.compareDocumentPosition && a.compareDocumentPosition( bup ) & 16
-			));
+			) );
 		} :
 		function( a, b ) {
 			if ( b ) {
-				while ( (b = b.parentNode) ) {
+				while ( ( b = b.parentNode ) ) {
 					if ( b === a ) {
 						return true;
 					}
@@ -21286,7 +21971,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 		}
 
 		// Calculate position if both inputs belong to the same document
-		compare = ( a.ownerDocument || a ) === ( b.ownerDocument || b ) ?
+		// Support: IE 11+, Edge 17 - 18+
+		// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+		// two documents; shallow comparisons work.
+		// eslint-disable-next-line eqeqeq
+		compare = ( a.ownerDocument || a ) == ( b.ownerDocument || b ) ?
 			a.compareDocumentPosition( b ) :
 
 			// Otherwise we know they are disconnected
@@ -21294,13 +21983,24 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 		// Disconnected nodes
 		if ( compare & 1 ||
-			(!support.sortDetached && b.compareDocumentPosition( a ) === compare) ) {
+			( !support.sortDetached && b.compareDocumentPosition( a ) === compare ) ) {
 
 			// Choose the first element that is related to our preferred document
-			if ( a === document || a.ownerDocument === preferredDoc && contains(preferredDoc, a) ) {
+			// Support: IE 11+, Edge 17 - 18+
+			// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+			// two documents; shallow comparisons work.
+			// eslint-disable-next-line eqeqeq
+			if ( a == document || a.ownerDocument == preferredDoc &&
+				contains( preferredDoc, a ) ) {
 				return -1;
 			}
-			if ( b === document || b.ownerDocument === preferredDoc && contains(preferredDoc, b) ) {
+
+			// Support: IE 11+, Edge 17 - 18+
+			// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+			// two documents; shallow comparisons work.
+			// eslint-disable-next-line eqeqeq
+			if ( b == document || b.ownerDocument == preferredDoc &&
+				contains( preferredDoc, b ) ) {
 				return 1;
 			}
 
@@ -21313,6 +22013,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		return compare & 4 ? -1 : 1;
 	} :
 	function( a, b ) {
+
 		// Exit early if the nodes are identical
 		if ( a === b ) {
 			hasDuplicate = true;
@@ -21328,8 +22029,14 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 		// Parentless nodes are either documents or disconnected
 		if ( !aup || !bup ) {
-			return a === document ? -1 :
-				b === document ? 1 :
+
+			// Support: IE 11+, Edge 17 - 18+
+			// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+			// two documents; shallow comparisons work.
+			/* eslint-disable eqeqeq */
+			return a == document ? -1 :
+				b == document ? 1 :
+				/* eslint-enable eqeqeq */
 				aup ? -1 :
 				bup ? 1 :
 				sortInput ?
@@ -21343,26 +22050,32 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 		// Otherwise we need full lists of their ancestors for comparison
 		cur = a;
-		while ( (cur = cur.parentNode) ) {
+		while ( ( cur = cur.parentNode ) ) {
 			ap.unshift( cur );
 		}
 		cur = b;
-		while ( (cur = cur.parentNode) ) {
+		while ( ( cur = cur.parentNode ) ) {
 			bp.unshift( cur );
 		}
 
 		// Walk down the tree looking for a discrepancy
-		while ( ap[i] === bp[i] ) {
+		while ( ap[ i ] === bp[ i ] ) {
 			i++;
 		}
 
 		return i ?
+
 			// Do a sibling check if the nodes have a common ancestor
-			siblingCheck( ap[i], bp[i] ) :
+			siblingCheck( ap[ i ], bp[ i ] ) :
 
 			// Otherwise nodes in our document sort first
-			ap[i] === preferredDoc ? -1 :
-			bp[i] === preferredDoc ? 1 :
+			// Support: IE 11+, Edge 17 - 18+
+			// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+			// two documents; shallow comparisons work.
+			/* eslint-disable eqeqeq */
+			ap[ i ] == preferredDoc ? -1 :
+			bp[ i ] == preferredDoc ? 1 :
+			/* eslint-enable eqeqeq */
 			0;
 	};
 
@@ -21374,10 +22087,7 @@ Sizzle.matches = function( expr, elements ) {
 };
 
 Sizzle.matchesSelector = function( elem, expr ) {
-	// Set document vars if needed
-	if ( ( elem.ownerDocument || elem ) !== document ) {
-		setDocument( elem );
-	}
+	setDocument( elem );
 
 	if ( support.matchesSelector && documentIsHTML &&
 		!nonnativeSelectorCache[ expr + " " ] &&
@@ -21389,12 +22099,13 @@ Sizzle.matchesSelector = function( elem, expr ) {
 
 			// IE 9's matchesSelector returns false on disconnected nodes
 			if ( ret || support.disconnectedMatch ||
-					// As well, disconnected nodes are said to be in a document
-					// fragment in IE 9
-					elem.document && elem.document.nodeType !== 11 ) {
+
+				// As well, disconnected nodes are said to be in a document
+				// fragment in IE 9
+				elem.document && elem.document.nodeType !== 11 ) {
 				return ret;
 			}
-		} catch (e) {
+		} catch ( e ) {
 			nonnativeSelectorCache( expr, true );
 		}
 	}
@@ -21403,20 +22114,31 @@ Sizzle.matchesSelector = function( elem, expr ) {
 };
 
 Sizzle.contains = function( context, elem ) {
+
 	// Set document vars if needed
-	if ( ( context.ownerDocument || context ) !== document ) {
+	// Support: IE 11+, Edge 17 - 18+
+	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// two documents; shallow comparisons work.
+	// eslint-disable-next-line eqeqeq
+	if ( ( context.ownerDocument || context ) != document ) {
 		setDocument( context );
 	}
 	return contains( context, elem );
 };
 
 Sizzle.attr = function( elem, name ) {
+
 	// Set document vars if needed
-	if ( ( elem.ownerDocument || elem ) !== document ) {
+	// Support: IE 11+, Edge 17 - 18+
+	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// two documents; shallow comparisons work.
+	// eslint-disable-next-line eqeqeq
+	if ( ( elem.ownerDocument || elem ) != document ) {
 		setDocument( elem );
 	}
 
 	var fn = Expr.attrHandle[ name.toLowerCase() ],
+
 		// Don't get fooled by Object.prototype properties (jQuery #13807)
 		val = fn && hasOwn.call( Expr.attrHandle, name.toLowerCase() ) ?
 			fn( elem, name, !documentIsHTML ) :
@@ -21426,13 +22148,13 @@ Sizzle.attr = function( elem, name ) {
 		val :
 		support.attributes || !documentIsHTML ?
 			elem.getAttribute( name ) :
-			(val = elem.getAttributeNode(name)) && val.specified ?
+			( val = elem.getAttributeNode( name ) ) && val.specified ?
 				val.value :
 				null;
 };
 
 Sizzle.escape = function( sel ) {
-	return (sel + "").replace( rcssescape, fcssescape );
+	return ( sel + "" ).replace( rcssescape, fcssescape );
 };
 
 Sizzle.error = function( msg ) {
@@ -21455,7 +22177,7 @@ Sizzle.uniqueSort = function( results ) {
 	results.sort( sortOrder );
 
 	if ( hasDuplicate ) {
-		while ( (elem = results[i++]) ) {
+		while ( ( elem = results[ i++ ] ) ) {
 			if ( elem === results[ i ] ) {
 				j = duplicates.push( i );
 			}
@@ -21483,17 +22205,21 @@ getText = Sizzle.getText = function( elem ) {
 		nodeType = elem.nodeType;
 
 	if ( !nodeType ) {
+
 		// If no nodeType, this is expected to be an array
-		while ( (node = elem[i++]) ) {
+		while ( ( node = elem[ i++ ] ) ) {
+
 			// Do not traverse comment nodes
 			ret += getText( node );
 		}
 	} else if ( nodeType === 1 || nodeType === 9 || nodeType === 11 ) {
+
 		// Use textContent for elements
 		// innerText usage removed for consistency of new lines (jQuery #11153)
 		if ( typeof elem.textContent === "string" ) {
 			return elem.textContent;
 		} else {
+
 			// Traverse its children
 			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
 				ret += getText( elem );
@@ -21502,6 +22228,7 @@ getText = Sizzle.getText = function( elem ) {
 	} else if ( nodeType === 3 || nodeType === 4 ) {
 		return elem.nodeValue;
 	}
+
 	// Do not include comment or processing instruction nodes
 
 	return ret;
@@ -21529,19 +22256,21 @@ Expr = Sizzle.selectors = {
 
 	preFilter: {
 		"ATTR": function( match ) {
-			match[1] = match[1].replace( runescape, funescape );
+			match[ 1 ] = match[ 1 ].replace( runescape, funescape );
 
 			// Move the given value to match[3] whether quoted or unquoted
-			match[3] = ( match[3] || match[4] || match[5] || "" ).replace( runescape, funescape );
+			match[ 3 ] = ( match[ 3 ] || match[ 4 ] ||
+				match[ 5 ] || "" ).replace( runescape, funescape );
 
-			if ( match[2] === "~=" ) {
-				match[3] = " " + match[3] + " ";
+			if ( match[ 2 ] === "~=" ) {
+				match[ 3 ] = " " + match[ 3 ] + " ";
 			}
 
 			return match.slice( 0, 4 );
 		},
 
 		"CHILD": function( match ) {
+
 			/* matches from matchExpr["CHILD"]
 				1 type (only|nth|...)
 				2 what (child|of-type)
@@ -21552,22 +22281,25 @@ Expr = Sizzle.selectors = {
 				7 sign of y-component
 				8 y of y-component
 			*/
-			match[1] = match[1].toLowerCase();
+			match[ 1 ] = match[ 1 ].toLowerCase();
 
-			if ( match[1].slice( 0, 3 ) === "nth" ) {
+			if ( match[ 1 ].slice( 0, 3 ) === "nth" ) {
+
 				// nth-* requires argument
-				if ( !match[3] ) {
-					Sizzle.error( match[0] );
+				if ( !match[ 3 ] ) {
+					Sizzle.error( match[ 0 ] );
 				}
 
 				// numeric x and y parameters for Expr.filter.CHILD
 				// remember that false/true cast respectively to 0/1
-				match[4] = +( match[4] ? match[5] + (match[6] || 1) : 2 * ( match[3] === "even" || match[3] === "odd" ) );
-				match[5] = +( ( match[7] + match[8] ) || match[3] === "odd" );
+				match[ 4 ] = +( match[ 4 ] ?
+					match[ 5 ] + ( match[ 6 ] || 1 ) :
+					2 * ( match[ 3 ] === "even" || match[ 3 ] === "odd" ) );
+				match[ 5 ] = +( ( match[ 7 ] + match[ 8 ] ) || match[ 3 ] === "odd" );
 
-			// other types prohibit arguments
-			} else if ( match[3] ) {
-				Sizzle.error( match[0] );
+				// other types prohibit arguments
+			} else if ( match[ 3 ] ) {
+				Sizzle.error( match[ 0 ] );
 			}
 
 			return match;
@@ -21575,26 +22307,28 @@ Expr = Sizzle.selectors = {
 
 		"PSEUDO": function( match ) {
 			var excess,
-				unquoted = !match[6] && match[2];
+				unquoted = !match[ 6 ] && match[ 2 ];
 
-			if ( matchExpr["CHILD"].test( match[0] ) ) {
+			if ( matchExpr[ "CHILD" ].test( match[ 0 ] ) ) {
 				return null;
 			}
 
 			// Accept quoted arguments as-is
-			if ( match[3] ) {
-				match[2] = match[4] || match[5] || "";
+			if ( match[ 3 ] ) {
+				match[ 2 ] = match[ 4 ] || match[ 5 ] || "";
 
 			// Strip excess characters from unquoted arguments
 			} else if ( unquoted && rpseudo.test( unquoted ) &&
+
 				// Get excess from tokenize (recursively)
-				(excess = tokenize( unquoted, true )) &&
+				( excess = tokenize( unquoted, true ) ) &&
+
 				// advance to the next closing parenthesis
-				(excess = unquoted.indexOf( ")", unquoted.length - excess ) - unquoted.length) ) {
+				( excess = unquoted.indexOf( ")", unquoted.length - excess ) - unquoted.length ) ) {
 
 				// excess is a negative index
-				match[0] = match[0].slice( 0, excess );
-				match[2] = unquoted.slice( 0, excess );
+				match[ 0 ] = match[ 0 ].slice( 0, excess );
+				match[ 2 ] = unquoted.slice( 0, excess );
 			}
 
 			// Return only captures needed by the pseudo filter method (type and argument)
@@ -21607,7 +22341,9 @@ Expr = Sizzle.selectors = {
 		"TAG": function( nodeNameSelector ) {
 			var nodeName = nodeNameSelector.replace( runescape, funescape ).toLowerCase();
 			return nodeNameSelector === "*" ?
-				function() { return true; } :
+				function() {
+					return true;
+				} :
 				function( elem ) {
 					return elem.nodeName && elem.nodeName.toLowerCase() === nodeName;
 				};
@@ -21617,10 +22353,16 @@ Expr = Sizzle.selectors = {
 			var pattern = classCache[ className + " " ];
 
 			return pattern ||
-				(pattern = new RegExp( "(^|" + whitespace + ")" + className + "(" + whitespace + "|$)" )) &&
-				classCache( className, function( elem ) {
-					return pattern.test( typeof elem.className === "string" && elem.className || typeof elem.getAttribute !== "undefined" && elem.getAttribute("class") || "" );
-				});
+				( pattern = new RegExp( "(^|" + whitespace +
+					")" + className + "(" + whitespace + "|$)" ) ) && classCache(
+						className, function( elem ) {
+							return pattern.test(
+								typeof elem.className === "string" && elem.className ||
+								typeof elem.getAttribute !== "undefined" &&
+									elem.getAttribute( "class" ) ||
+								""
+							);
+				} );
 		},
 
 		"ATTR": function( name, operator, check ) {
@@ -21636,6 +22378,8 @@ Expr = Sizzle.selectors = {
 
 				result += "";
 
+				/* eslint-disable max-len */
+
 				return operator === "=" ? result === check :
 					operator === "!=" ? result !== check :
 					operator === "^=" ? check && result.indexOf( check ) === 0 :
@@ -21644,10 +22388,12 @@ Expr = Sizzle.selectors = {
 					operator === "~=" ? ( " " + result.replace( rwhitespace, " " ) + " " ).indexOf( check ) > -1 :
 					operator === "|=" ? result === check || result.slice( 0, check.length + 1 ) === check + "-" :
 					false;
+				/* eslint-enable max-len */
+
 			};
 		},
 
-		"CHILD": function( type, what, argument, first, last ) {
+		"CHILD": function( type, what, _argument, first, last ) {
 			var simple = type.slice( 0, 3 ) !== "nth",
 				forward = type.slice( -4 ) !== "last",
 				ofType = what === "of-type";
@@ -21659,7 +22405,7 @@ Expr = Sizzle.selectors = {
 					return !!elem.parentNode;
 				} :
 
-				function( elem, context, xml ) {
+				function( elem, _context, xml ) {
 					var cache, uniqueCache, outerCache, node, nodeIndex, start,
 						dir = simple !== forward ? "nextSibling" : "previousSibling",
 						parent = elem.parentNode,
@@ -21673,7 +22419,7 @@ Expr = Sizzle.selectors = {
 						if ( simple ) {
 							while ( dir ) {
 								node = elem;
-								while ( (node = node[ dir ]) ) {
+								while ( ( node = node[ dir ] ) ) {
 									if ( ofType ?
 										node.nodeName.toLowerCase() === name :
 										node.nodeType === 1 ) {
@@ -21681,6 +22427,7 @@ Expr = Sizzle.selectors = {
 										return false;
 									}
 								}
+
 								// Reverse direction for :only-* (if we haven't yet done so)
 								start = dir = type === "only" && !start && "nextSibling";
 							}
@@ -21696,22 +22443,22 @@ Expr = Sizzle.selectors = {
 
 							// ...in a gzip-friendly way
 							node = parent;
-							outerCache = node[ expando ] || (node[ expando ] = {});
+							outerCache = node[ expando ] || ( node[ expando ] = {} );
 
 							// Support: IE <9 only
 							// Defend against cloned attroperties (jQuery gh-1709)
 							uniqueCache = outerCache[ node.uniqueID ] ||
-								(outerCache[ node.uniqueID ] = {});
+								( outerCache[ node.uniqueID ] = {} );
 
 							cache = uniqueCache[ type ] || [];
 							nodeIndex = cache[ 0 ] === dirruns && cache[ 1 ];
 							diff = nodeIndex && cache[ 2 ];
 							node = nodeIndex && parent.childNodes[ nodeIndex ];
 
-							while ( (node = ++nodeIndex && node && node[ dir ] ||
+							while ( ( node = ++nodeIndex && node && node[ dir ] ||
 
 								// Fallback to seeking `elem` from the start
-								(diff = nodeIndex = 0) || start.pop()) ) {
+								( diff = nodeIndex = 0 ) || start.pop() ) ) {
 
 								// When found, cache indexes on `parent` and break
 								if ( node.nodeType === 1 && ++diff && node === elem ) {
@@ -21721,16 +22468,18 @@ Expr = Sizzle.selectors = {
 							}
 
 						} else {
+
 							// Use previously-cached element index if available
 							if ( useCache ) {
+
 								// ...in a gzip-friendly way
 								node = elem;
-								outerCache = node[ expando ] || (node[ expando ] = {});
+								outerCache = node[ expando ] || ( node[ expando ] = {} );
 
 								// Support: IE <9 only
 								// Defend against cloned attroperties (jQuery gh-1709)
 								uniqueCache = outerCache[ node.uniqueID ] ||
-									(outerCache[ node.uniqueID ] = {});
+									( outerCache[ node.uniqueID ] = {} );
 
 								cache = uniqueCache[ type ] || [];
 								nodeIndex = cache[ 0 ] === dirruns && cache[ 1 ];
@@ -21740,9 +22489,10 @@ Expr = Sizzle.selectors = {
 							// xml :nth-child(...)
 							// or :nth-last-child(...) or :nth(-last)?-of-type(...)
 							if ( diff === false ) {
+
 								// Use the same loop as above to seek `elem` from the start
-								while ( (node = ++nodeIndex && node && node[ dir ] ||
-									(diff = nodeIndex = 0) || start.pop()) ) {
+								while ( ( node = ++nodeIndex && node && node[ dir ] ||
+									( diff = nodeIndex = 0 ) || start.pop() ) ) {
 
 									if ( ( ofType ?
 										node.nodeName.toLowerCase() === name :
@@ -21751,12 +22501,13 @@ Expr = Sizzle.selectors = {
 
 										// Cache the index of each encountered element
 										if ( useCache ) {
-											outerCache = node[ expando ] || (node[ expando ] = {});
+											outerCache = node[ expando ] ||
+												( node[ expando ] = {} );
 
 											// Support: IE <9 only
 											// Defend against cloned attroperties (jQuery gh-1709)
 											uniqueCache = outerCache[ node.uniqueID ] ||
-												(outerCache[ node.uniqueID ] = {});
+												( outerCache[ node.uniqueID ] = {} );
 
 											uniqueCache[ type ] = [ dirruns, diff ];
 										}
@@ -21777,6 +22528,7 @@ Expr = Sizzle.selectors = {
 		},
 
 		"PSEUDO": function( pseudo, argument ) {
+
 			// pseudo-class names are case-insensitive
 			// http://www.w3.org/TR/selectors/#pseudo-classes
 			// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
@@ -21796,15 +22548,15 @@ Expr = Sizzle.selectors = {
 			if ( fn.length > 1 ) {
 				args = [ pseudo, pseudo, "", argument ];
 				return Expr.setFilters.hasOwnProperty( pseudo.toLowerCase() ) ?
-					markFunction(function( seed, matches ) {
+					markFunction( function( seed, matches ) {
 						var idx,
 							matched = fn( seed, argument ),
 							i = matched.length;
 						while ( i-- ) {
-							idx = indexOf( seed, matched[i] );
-							seed[ idx ] = !( matches[ idx ] = matched[i] );
+							idx = indexOf( seed, matched[ i ] );
+							seed[ idx ] = !( matches[ idx ] = matched[ i ] );
 						}
-					}) :
+					} ) :
 					function( elem ) {
 						return fn( elem, 0, args );
 					};
@@ -21815,8 +22567,10 @@ Expr = Sizzle.selectors = {
 	},
 
 	pseudos: {
+
 		// Potentially complex pseudos
-		"not": markFunction(function( selector ) {
+		"not": markFunction( function( selector ) {
+
 			// Trim the selector passed to compile
 			// to avoid treating leading and trailing
 			// spaces as combinators
@@ -21825,39 +22579,40 @@ Expr = Sizzle.selectors = {
 				matcher = compile( selector.replace( rtrim, "$1" ) );
 
 			return matcher[ expando ] ?
-				markFunction(function( seed, matches, context, xml ) {
+				markFunction( function( seed, matches, _context, xml ) {
 					var elem,
 						unmatched = matcher( seed, null, xml, [] ),
 						i = seed.length;
 
 					// Match elements unmatched by `matcher`
 					while ( i-- ) {
-						if ( (elem = unmatched[i]) ) {
-							seed[i] = !(matches[i] = elem);
+						if ( ( elem = unmatched[ i ] ) ) {
+							seed[ i ] = !( matches[ i ] = elem );
 						}
 					}
-				}) :
-				function( elem, context, xml ) {
-					input[0] = elem;
+				} ) :
+				function( elem, _context, xml ) {
+					input[ 0 ] = elem;
 					matcher( input, null, xml, results );
+
 					// Don't keep the element (issue #299)
-					input[0] = null;
+					input[ 0 ] = null;
 					return !results.pop();
 				};
-		}),
+		} ),
 
-		"has": markFunction(function( selector ) {
+		"has": markFunction( function( selector ) {
 			return function( elem ) {
 				return Sizzle( selector, elem ).length > 0;
 			};
-		}),
+		} ),
 
-		"contains": markFunction(function( text ) {
+		"contains": markFunction( function( text ) {
 			text = text.replace( runescape, funescape );
 			return function( elem ) {
 				return ( elem.textContent || getText( elem ) ).indexOf( text ) > -1;
 			};
-		}),
+		} ),
 
 		// "Whether an element is represented by a :lang() selector
 		// is based solely on the element's language value
@@ -21867,25 +22622,26 @@ Expr = Sizzle.selectors = {
 		// The identifier C does not have to be a valid language name."
 		// http://www.w3.org/TR/selectors/#lang-pseudo
 		"lang": markFunction( function( lang ) {
+
 			// lang value must be a valid identifier
-			if ( !ridentifier.test(lang || "") ) {
+			if ( !ridentifier.test( lang || "" ) ) {
 				Sizzle.error( "unsupported lang: " + lang );
 			}
 			lang = lang.replace( runescape, funescape ).toLowerCase();
 			return function( elem ) {
 				var elemLang;
 				do {
-					if ( (elemLang = documentIsHTML ?
+					if ( ( elemLang = documentIsHTML ?
 						elem.lang :
-						elem.getAttribute("xml:lang") || elem.getAttribute("lang")) ) {
+						elem.getAttribute( "xml:lang" ) || elem.getAttribute( "lang" ) ) ) {
 
 						elemLang = elemLang.toLowerCase();
 						return elemLang === lang || elemLang.indexOf( lang + "-" ) === 0;
 					}
-				} while ( (elem = elem.parentNode) && elem.nodeType === 1 );
+				} while ( ( elem = elem.parentNode ) && elem.nodeType === 1 );
 				return false;
 			};
-		}),
+		} ),
 
 		// Miscellaneous
 		"target": function( elem ) {
@@ -21898,7 +22654,9 @@ Expr = Sizzle.selectors = {
 		},
 
 		"focus": function( elem ) {
-			return elem === document.activeElement && (!document.hasFocus || document.hasFocus()) && !!(elem.type || elem.href || ~elem.tabIndex);
+			return elem === document.activeElement &&
+				( !document.hasFocus || document.hasFocus() ) &&
+				!!( elem.type || elem.href || ~elem.tabIndex );
 		},
 
 		// Boolean properties
@@ -21906,16 +22664,20 @@ Expr = Sizzle.selectors = {
 		"disabled": createDisabledPseudo( true ),
 
 		"checked": function( elem ) {
+
 			// In CSS3, :checked should return both checked and selected elements
 			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
 			var nodeName = elem.nodeName.toLowerCase();
-			return (nodeName === "input" && !!elem.checked) || (nodeName === "option" && !!elem.selected);
+			return ( nodeName === "input" && !!elem.checked ) ||
+				( nodeName === "option" && !!elem.selected );
 		},
 
 		"selected": function( elem ) {
+
 			// Accessing this property makes selected-by-default
 			// options in Safari work properly
 			if ( elem.parentNode ) {
+				// eslint-disable-next-line no-unused-expressions
 				elem.parentNode.selectedIndex;
 			}
 
@@ -21924,6 +22686,7 @@ Expr = Sizzle.selectors = {
 
 		// Contents
 		"empty": function( elem ) {
+
 			// http://www.w3.org/TR/selectors/#empty-pseudo
 			// :empty is negated by element (1) or content nodes (text: 3; cdata: 4; entity ref: 5),
 			//   but not by others (comment: 8; processing instruction: 7; etc.)
@@ -21937,7 +22700,7 @@ Expr = Sizzle.selectors = {
 		},
 
 		"parent": function( elem ) {
-			return !Expr.pseudos["empty"]( elem );
+			return !Expr.pseudos[ "empty" ]( elem );
 		},
 
 		// Element/input types
@@ -21961,39 +22724,40 @@ Expr = Sizzle.selectors = {
 
 				// Support: IE<8
 				// New HTML5 attribute values (e.g., "search") appear with elem.type === "text"
-				( (attr = elem.getAttribute("type")) == null || attr.toLowerCase() === "text" );
+				( ( attr = elem.getAttribute( "type" ) ) == null ||
+					attr.toLowerCase() === "text" );
 		},
 
 		// Position-in-collection
-		"first": createPositionalPseudo(function() {
+		"first": createPositionalPseudo( function() {
 			return [ 0 ];
-		}),
+		} ),
 
-		"last": createPositionalPseudo(function( matchIndexes, length ) {
+		"last": createPositionalPseudo( function( _matchIndexes, length ) {
 			return [ length - 1 ];
-		}),
+		} ),
 
-		"eq": createPositionalPseudo(function( matchIndexes, length, argument ) {
+		"eq": createPositionalPseudo( function( _matchIndexes, length, argument ) {
 			return [ argument < 0 ? argument + length : argument ];
-		}),
+		} ),
 
-		"even": createPositionalPseudo(function( matchIndexes, length ) {
+		"even": createPositionalPseudo( function( matchIndexes, length ) {
 			var i = 0;
 			for ( ; i < length; i += 2 ) {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
-		}),
+		} ),
 
-		"odd": createPositionalPseudo(function( matchIndexes, length ) {
+		"odd": createPositionalPseudo( function( matchIndexes, length ) {
 			var i = 1;
 			for ( ; i < length; i += 2 ) {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
-		}),
+		} ),
 
-		"lt": createPositionalPseudo(function( matchIndexes, length, argument ) {
+		"lt": createPositionalPseudo( function( matchIndexes, length, argument ) {
 			var i = argument < 0 ?
 				argument + length :
 				argument > length ?
@@ -22003,19 +22767,19 @@ Expr = Sizzle.selectors = {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
-		}),
+		} ),
 
-		"gt": createPositionalPseudo(function( matchIndexes, length, argument ) {
+		"gt": createPositionalPseudo( function( matchIndexes, length, argument ) {
 			var i = argument < 0 ? argument + length : argument;
 			for ( ; ++i < length; ) {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
-		})
+		} )
 	}
 };
 
-Expr.pseudos["nth"] = Expr.pseudos["eq"];
+Expr.pseudos[ "nth" ] = Expr.pseudos[ "eq" ];
 
 // Add button/input type pseudos
 for ( i in { radio: true, checkbox: true, file: true, password: true, image: true } ) {
@@ -22046,37 +22810,39 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 	while ( soFar ) {
 
 		// Comma and first run
-		if ( !matched || (match = rcomma.exec( soFar )) ) {
+		if ( !matched || ( match = rcomma.exec( soFar ) ) ) {
 			if ( match ) {
+
 				// Don't consume trailing commas as valid
-				soFar = soFar.slice( match[0].length ) || soFar;
+				soFar = soFar.slice( match[ 0 ].length ) || soFar;
 			}
-			groups.push( (tokens = []) );
+			groups.push( ( tokens = [] ) );
 		}
 
 		matched = false;
 
 		// Combinators
-		if ( (match = rcombinators.exec( soFar )) ) {
+		if ( ( match = rcombinators.exec( soFar ) ) ) {
 			matched = match.shift();
-			tokens.push({
+			tokens.push( {
 				value: matched,
+
 				// Cast descendant combinators to space
-				type: match[0].replace( rtrim, " " )
-			});
+				type: match[ 0 ].replace( rtrim, " " )
+			} );
 			soFar = soFar.slice( matched.length );
 		}
 
 		// Filters
 		for ( type in Expr.filter ) {
-			if ( (match = matchExpr[ type ].exec( soFar )) && (!preFilters[ type ] ||
-				(match = preFilters[ type ]( match ))) ) {
+			if ( ( match = matchExpr[ type ].exec( soFar ) ) && ( !preFilters[ type ] ||
+				( match = preFilters[ type ]( match ) ) ) ) {
 				matched = match.shift();
-				tokens.push({
+				tokens.push( {
 					value: matched,
 					type: type,
 					matches: match
-				});
+				} );
 				soFar = soFar.slice( matched.length );
 			}
 		}
@@ -22093,6 +22859,7 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 		soFar.length :
 		soFar ?
 			Sizzle.error( selector ) :
+
 			// Cache the tokens
 			tokenCache( selector, groups ).slice( 0 );
 };
@@ -22102,7 +22869,7 @@ function toSelector( tokens ) {
 		len = tokens.length,
 		selector = "";
 	for ( ; i < len; i++ ) {
-		selector += tokens[i].value;
+		selector += tokens[ i ].value;
 	}
 	return selector;
 }
@@ -22115,9 +22882,10 @@ function addCombinator( matcher, combinator, base ) {
 		doneName = done++;
 
 	return combinator.first ?
+
 		// Check against closest ancestor/preceding element
 		function( elem, context, xml ) {
-			while ( (elem = elem[ dir ]) ) {
+			while ( ( elem = elem[ dir ] ) ) {
 				if ( elem.nodeType === 1 || checkNonElements ) {
 					return matcher( elem, context, xml );
 				}
@@ -22132,7 +22900,7 @@ function addCombinator( matcher, combinator, base ) {
 
 			// We can't set arbitrary data on XML nodes, so they don't benefit from combinator caching
 			if ( xml ) {
-				while ( (elem = elem[ dir ]) ) {
+				while ( ( elem = elem[ dir ] ) ) {
 					if ( elem.nodeType === 1 || checkNonElements ) {
 						if ( matcher( elem, context, xml ) ) {
 							return true;
@@ -22140,27 +22908,29 @@ function addCombinator( matcher, combinator, base ) {
 					}
 				}
 			} else {
-				while ( (elem = elem[ dir ]) ) {
+				while ( ( elem = elem[ dir ] ) ) {
 					if ( elem.nodeType === 1 || checkNonElements ) {
-						outerCache = elem[ expando ] || (elem[ expando ] = {});
+						outerCache = elem[ expando ] || ( elem[ expando ] = {} );
 
 						// Support: IE <9 only
 						// Defend against cloned attroperties (jQuery gh-1709)
-						uniqueCache = outerCache[ elem.uniqueID ] || (outerCache[ elem.uniqueID ] = {});
+						uniqueCache = outerCache[ elem.uniqueID ] ||
+							( outerCache[ elem.uniqueID ] = {} );
 
 						if ( skip && skip === elem.nodeName.toLowerCase() ) {
 							elem = elem[ dir ] || elem;
-						} else if ( (oldCache = uniqueCache[ key ]) &&
+						} else if ( ( oldCache = uniqueCache[ key ] ) &&
 							oldCache[ 0 ] === dirruns && oldCache[ 1 ] === doneName ) {
 
 							// Assign to newCache so results back-propagate to previous elements
-							return (newCache[ 2 ] = oldCache[ 2 ]);
+							return ( newCache[ 2 ] = oldCache[ 2 ] );
 						} else {
+
 							// Reuse newcache so results back-propagate to previous elements
 							uniqueCache[ key ] = newCache;
 
 							// A match means we're done; a fail means we have to keep checking
-							if ( (newCache[ 2 ] = matcher( elem, context, xml )) ) {
+							if ( ( newCache[ 2 ] = matcher( elem, context, xml ) ) ) {
 								return true;
 							}
 						}
@@ -22176,20 +22946,20 @@ function elementMatcher( matchers ) {
 		function( elem, context, xml ) {
 			var i = matchers.length;
 			while ( i-- ) {
-				if ( !matchers[i]( elem, context, xml ) ) {
+				if ( !matchers[ i ]( elem, context, xml ) ) {
 					return false;
 				}
 			}
 			return true;
 		} :
-		matchers[0];
+		matchers[ 0 ];
 }
 
 function multipleContexts( selector, contexts, results ) {
 	var i = 0,
 		len = contexts.length;
 	for ( ; i < len; i++ ) {
-		Sizzle( selector, contexts[i], results );
+		Sizzle( selector, contexts[ i ], results );
 	}
 	return results;
 }
@@ -22202,7 +22972,7 @@ function condense( unmatched, map, filter, context, xml ) {
 		mapped = map != null;
 
 	for ( ; i < len; i++ ) {
-		if ( (elem = unmatched[i]) ) {
+		if ( ( elem = unmatched[ i ] ) ) {
 			if ( !filter || filter( elem, context, xml ) ) {
 				newUnmatched.push( elem );
 				if ( mapped ) {
@@ -22222,14 +22992,18 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 	if ( postFinder && !postFinder[ expando ] ) {
 		postFinder = setMatcher( postFinder, postSelector );
 	}
-	return markFunction(function( seed, results, context, xml ) {
+	return markFunction( function( seed, results, context, xml ) {
 		var temp, i, elem,
 			preMap = [],
 			postMap = [],
 			preexisting = results.length,
 
 			// Get initial elements from seed or context
-			elems = seed || multipleContexts( selector || "*", context.nodeType ? [ context ] : context, [] ),
+			elems = seed || multipleContexts(
+				selector || "*",
+				context.nodeType ? [ context ] : context,
+				[]
+			),
 
 			// Prefilter to get matcher input, preserving a map for seed-results synchronization
 			matcherIn = preFilter && ( seed || !selector ) ?
@@ -22237,6 +23011,7 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 				elems,
 
 			matcherOut = matcher ?
+
 				// If we have a postFinder, or filtered seed, or non-seed postFilter or preexisting results,
 				postFinder || ( seed ? preFilter : preexisting || postFilter ) ?
 
@@ -22260,8 +23035,8 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 			// Un-match failing elements by moving them back to matcherIn
 			i = temp.length;
 			while ( i-- ) {
-				if ( (elem = temp[i]) ) {
-					matcherOut[ postMap[i] ] = !(matcherIn[ postMap[i] ] = elem);
+				if ( ( elem = temp[ i ] ) ) {
+					matcherOut[ postMap[ i ] ] = !( matcherIn[ postMap[ i ] ] = elem );
 				}
 			}
 		}
@@ -22269,25 +23044,27 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 		if ( seed ) {
 			if ( postFinder || preFilter ) {
 				if ( postFinder ) {
+
 					// Get the final matcherOut by condensing this intermediate into postFinder contexts
 					temp = [];
 					i = matcherOut.length;
 					while ( i-- ) {
-						if ( (elem = matcherOut[i]) ) {
+						if ( ( elem = matcherOut[ i ] ) ) {
+
 							// Restore matcherIn since elem is not yet a final match
-							temp.push( (matcherIn[i] = elem) );
+							temp.push( ( matcherIn[ i ] = elem ) );
 						}
 					}
-					postFinder( null, (matcherOut = []), temp, xml );
+					postFinder( null, ( matcherOut = [] ), temp, xml );
 				}
 
 				// Move matched elements from seed to results to keep them synchronized
 				i = matcherOut.length;
 				while ( i-- ) {
-					if ( (elem = matcherOut[i]) &&
-						(temp = postFinder ? indexOf( seed, elem ) : preMap[i]) > -1 ) {
+					if ( ( elem = matcherOut[ i ] ) &&
+						( temp = postFinder ? indexOf( seed, elem ) : preMap[ i ] ) > -1 ) {
 
-						seed[temp] = !(results[temp] = elem);
+						seed[ temp ] = !( results[ temp ] = elem );
 					}
 				}
 			}
@@ -22305,14 +23082,14 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 				push.apply( results, matcherOut );
 			}
 		}
-	});
+	} );
 }
 
 function matcherFromTokens( tokens ) {
 	var checkContext, matcher, j,
 		len = tokens.length,
-		leadingRelative = Expr.relative[ tokens[0].type ],
-		implicitRelative = leadingRelative || Expr.relative[" "],
+		leadingRelative = Expr.relative[ tokens[ 0 ].type ],
+		implicitRelative = leadingRelative || Expr.relative[ " " ],
 		i = leadingRelative ? 1 : 0,
 
 		// The foundational matcher ensures that elements are reachable from top-level context(s)
@@ -22324,38 +23101,43 @@ function matcherFromTokens( tokens ) {
 		}, implicitRelative, true ),
 		matchers = [ function( elem, context, xml ) {
 			var ret = ( !leadingRelative && ( xml || context !== outermostContext ) ) || (
-				(checkContext = context).nodeType ?
+				( checkContext = context ).nodeType ?
 					matchContext( elem, context, xml ) :
 					matchAnyContext( elem, context, xml ) );
+
 			// Avoid hanging onto element (issue #299)
 			checkContext = null;
 			return ret;
 		} ];
 
 	for ( ; i < len; i++ ) {
-		if ( (matcher = Expr.relative[ tokens[i].type ]) ) {
-			matchers = [ addCombinator(elementMatcher( matchers ), matcher) ];
+		if ( ( matcher = Expr.relative[ tokens[ i ].type ] ) ) {
+			matchers = [ addCombinator( elementMatcher( matchers ), matcher ) ];
 		} else {
-			matcher = Expr.filter[ tokens[i].type ].apply( null, tokens[i].matches );
+			matcher = Expr.filter[ tokens[ i ].type ].apply( null, tokens[ i ].matches );
 
 			// Return special upon seeing a positional matcher
 			if ( matcher[ expando ] ) {
+
 				// Find the next relative operator (if any) for proper handling
 				j = ++i;
 				for ( ; j < len; j++ ) {
-					if ( Expr.relative[ tokens[j].type ] ) {
+					if ( Expr.relative[ tokens[ j ].type ] ) {
 						break;
 					}
 				}
 				return setMatcher(
 					i > 1 && elementMatcher( matchers ),
 					i > 1 && toSelector(
-						// If the preceding token was a descendant combinator, insert an implicit any-element `*`
-						tokens.slice( 0, i - 1 ).concat({ value: tokens[ i - 2 ].type === " " ? "*" : "" })
+
+					// If the preceding token was a descendant combinator, insert an implicit any-element `*`
+					tokens
+						.slice( 0, i - 1 )
+						.concat( { value: tokens[ i - 2 ].type === " " ? "*" : "" } )
 					).replace( rtrim, "$1" ),
 					matcher,
 					i < j && matcherFromTokens( tokens.slice( i, j ) ),
-					j < len && matcherFromTokens( (tokens = tokens.slice( j )) ),
+					j < len && matcherFromTokens( ( tokens = tokens.slice( j ) ) ),
 					j < len && toSelector( tokens )
 				);
 			}
@@ -22376,28 +23158,40 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				unmatched = seed && [],
 				setMatched = [],
 				contextBackup = outermostContext,
+
 				// We must always have either seed elements or outermost context
-				elems = seed || byElement && Expr.find["TAG"]( "*", outermost ),
+				elems = seed || byElement && Expr.find[ "TAG" ]( "*", outermost ),
+
 				// Use integer dirruns iff this is the outermost matcher
-				dirrunsUnique = (dirruns += contextBackup == null ? 1 : Math.random() || 0.1),
+				dirrunsUnique = ( dirruns += contextBackup == null ? 1 : Math.random() || 0.1 ),
 				len = elems.length;
 
 			if ( outermost ) {
-				outermostContext = context === document || context || outermost;
+
+				// Support: IE 11+, Edge 17 - 18+
+				// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+				// two documents; shallow comparisons work.
+				// eslint-disable-next-line eqeqeq
+				outermostContext = context == document || context || outermost;
 			}
 
 			// Add elements passing elementMatchers directly to results
 			// Support: IE<9, Safari
 			// Tolerate NodeList properties (IE: "length"; Safari: <number>) matching elements by id
-			for ( ; i !== len && (elem = elems[i]) != null; i++ ) {
+			for ( ; i !== len && ( elem = elems[ i ] ) != null; i++ ) {
 				if ( byElement && elem ) {
 					j = 0;
-					if ( !context && elem.ownerDocument !== document ) {
+
+					// Support: IE 11+, Edge 17 - 18+
+					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+					// two documents; shallow comparisons work.
+					// eslint-disable-next-line eqeqeq
+					if ( !context && elem.ownerDocument != document ) {
 						setDocument( elem );
 						xml = !documentIsHTML;
 					}
-					while ( (matcher = elementMatchers[j++]) ) {
-						if ( matcher( elem, context || document, xml) ) {
+					while ( ( matcher = elementMatchers[ j++ ] ) ) {
+						if ( matcher( elem, context || document, xml ) ) {
 							results.push( elem );
 							break;
 						}
@@ -22409,8 +23203,9 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 
 				// Track unmatched elements for set filters
 				if ( bySet ) {
+
 					// They will have gone through all possible matchers
-					if ( (elem = !matcher && elem) ) {
+					if ( ( elem = !matcher && elem ) ) {
 						matchedCount--;
 					}
 
@@ -22434,16 +23229,17 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 			// numerically zero.
 			if ( bySet && i !== matchedCount ) {
 				j = 0;
-				while ( (matcher = setMatchers[j++]) ) {
+				while ( ( matcher = setMatchers[ j++ ] ) ) {
 					matcher( unmatched, setMatched, context, xml );
 				}
 
 				if ( seed ) {
+
 					// Reintegrate element matches to eliminate the need for sorting
 					if ( matchedCount > 0 ) {
 						while ( i-- ) {
-							if ( !(unmatched[i] || setMatched[i]) ) {
-								setMatched[i] = pop.call( results );
+							if ( !( unmatched[ i ] || setMatched[ i ] ) ) {
+								setMatched[ i ] = pop.call( results );
 							}
 						}
 					}
@@ -22484,13 +23280,14 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 		cached = compilerCache[ selector + " " ];
 
 	if ( !cached ) {
+
 		// Generate a function of recursive functions that can be used to check each element
 		if ( !match ) {
 			match = tokenize( selector );
 		}
 		i = match.length;
 		while ( i-- ) {
-			cached = matcherFromTokens( match[i] );
+			cached = matcherFromTokens( match[ i ] );
 			if ( cached[ expando ] ) {
 				setMatchers.push( cached );
 			} else {
@@ -22499,7 +23296,10 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 		}
 
 		// Cache the compiled function
-		cached = compilerCache( selector, matcherFromGroupMatchers( elementMatchers, setMatchers ) );
+		cached = compilerCache(
+			selector,
+			matcherFromGroupMatchers( elementMatchers, setMatchers )
+		);
 
 		// Save selector and tokenization
 		cached.selector = selector;
@@ -22519,7 +23319,7 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 select = Sizzle.select = function( selector, context, results, seed ) {
 	var i, tokens, token, type, find,
 		compiled = typeof selector === "function" && selector,
-		match = !seed && tokenize( (selector = compiled.selector || selector) );
+		match = !seed && tokenize( ( selector = compiled.selector || selector ) );
 
 	results = results || [];
 
@@ -22528,11 +23328,12 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 	if ( match.length === 1 ) {
 
 		// Reduce context if the leading compound selector is an ID
-		tokens = match[0] = match[0].slice( 0 );
-		if ( tokens.length > 2 && (token = tokens[0]).type === "ID" &&
-				context.nodeType === 9 && documentIsHTML && Expr.relative[ tokens[1].type ] ) {
+		tokens = match[ 0 ] = match[ 0 ].slice( 0 );
+		if ( tokens.length > 2 && ( token = tokens[ 0 ] ).type === "ID" &&
+			context.nodeType === 9 && documentIsHTML && Expr.relative[ tokens[ 1 ].type ] ) {
 
-			context = ( Expr.find["ID"]( token.matches[0].replace(runescape, funescape), context ) || [] )[0];
+			context = ( Expr.find[ "ID" ]( token.matches[ 0 ]
+				.replace( runescape, funescape ), context ) || [] )[ 0 ];
 			if ( !context ) {
 				return results;
 
@@ -22545,20 +23346,22 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 		}
 
 		// Fetch a seed set for right-to-left matching
-		i = matchExpr["needsContext"].test( selector ) ? 0 : tokens.length;
+		i = matchExpr[ "needsContext" ].test( selector ) ? 0 : tokens.length;
 		while ( i-- ) {
-			token = tokens[i];
+			token = tokens[ i ];
 
 			// Abort if we hit a combinator
-			if ( Expr.relative[ (type = token.type) ] ) {
+			if ( Expr.relative[ ( type = token.type ) ] ) {
 				break;
 			}
-			if ( (find = Expr.find[ type ]) ) {
+			if ( ( find = Expr.find[ type ] ) ) {
+
 				// Search, expanding context for leading sibling combinators
-				if ( (seed = find(
-					token.matches[0].replace( runescape, funescape ),
-					rsibling.test( tokens[0].type ) && testContext( context.parentNode ) || context
-				)) ) {
+				if ( ( seed = find(
+					token.matches[ 0 ].replace( runescape, funescape ),
+					rsibling.test( tokens[ 0 ].type ) && testContext( context.parentNode ) ||
+						context
+				) ) ) {
 
 					// If seed is empty or no tokens remain, we can return early
 					tokens.splice( i, 1 );
@@ -22589,7 +23392,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 // One-time assignments
 
 // Sort stability
-support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
+support.sortStable = expando.split( "" ).sort( sortOrder ).join( "" ) === expando;
 
 // Support: Chrome 14-35+
 // Always assume duplicates if they aren't passed to the comparison function
@@ -22600,58 +23403,59 @@ setDocument();
 
 // Support: Webkit<537.32 - Safari 6.0.3/Chrome 25 (fixed in Chrome 27)
 // Detached nodes confoundingly follow *each other*
-support.sortDetached = assert(function( el ) {
+support.sortDetached = assert( function( el ) {
+
 	// Should return 1, but returns 4 (following)
-	return el.compareDocumentPosition( document.createElement("fieldset") ) & 1;
-});
+	return el.compareDocumentPosition( document.createElement( "fieldset" ) ) & 1;
+} );
 
 // Support: IE<8
 // Prevent attribute/property "interpolation"
 // https://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
-if ( !assert(function( el ) {
+if ( !assert( function( el ) {
 	el.innerHTML = "<a href='#'></a>";
-	return el.firstChild.getAttribute("href") === "#" ;
-}) ) {
+	return el.firstChild.getAttribute( "href" ) === "#";
+} ) ) {
 	addHandle( "type|href|height|width", function( elem, name, isXML ) {
 		if ( !isXML ) {
 			return elem.getAttribute( name, name.toLowerCase() === "type" ? 1 : 2 );
 		}
-	});
+	} );
 }
 
 // Support: IE<9
 // Use defaultValue in place of getAttribute("value")
-if ( !support.attributes || !assert(function( el ) {
+if ( !support.attributes || !assert( function( el ) {
 	el.innerHTML = "<input/>";
 	el.firstChild.setAttribute( "value", "" );
 	return el.firstChild.getAttribute( "value" ) === "";
-}) ) {
-	addHandle( "value", function( elem, name, isXML ) {
+} ) ) {
+	addHandle( "value", function( elem, _name, isXML ) {
 		if ( !isXML && elem.nodeName.toLowerCase() === "input" ) {
 			return elem.defaultValue;
 		}
-	});
+	} );
 }
 
 // Support: IE<9
 // Use getAttributeNode to fetch booleans when getAttribute lies
-if ( !assert(function( el ) {
-	return el.getAttribute("disabled") == null;
-}) ) {
+if ( !assert( function( el ) {
+	return el.getAttribute( "disabled" ) == null;
+} ) ) {
 	addHandle( booleans, function( elem, name, isXML ) {
 		var val;
 		if ( !isXML ) {
 			return elem[ name ] === true ? name.toLowerCase() :
-					(val = elem.getAttributeNode( name )) && val.specified ?
+				( val = elem.getAttributeNode( name ) ) && val.specified ?
 					val.value :
-				null;
+					null;
 		}
-	});
+	} );
 }
 
 return Sizzle;
 
-})( window );
+} )( window );
 
 
 
@@ -23020,7 +23824,7 @@ jQuery.each( {
 	parents: function( elem ) {
 		return dir( elem, "parentNode" );
 	},
-	parentsUntil: function( elem, i, until ) {
+	parentsUntil: function( elem, _i, until ) {
 		return dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
@@ -23035,10 +23839,10 @@ jQuery.each( {
 	prevAll: function( elem ) {
 		return dir( elem, "previousSibling" );
 	},
-	nextUntil: function( elem, i, until ) {
+	nextUntil: function( elem, _i, until ) {
 		return dir( elem, "nextSibling", until );
 	},
-	prevUntil: function( elem, i, until ) {
+	prevUntil: function( elem, _i, until ) {
 		return dir( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {
@@ -23048,7 +23852,13 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-		if ( typeof elem.contentDocument !== "undefined" ) {
+		if ( elem.contentDocument != null &&
+
+			// Support: IE 11+
+			// <object> elements with no `data` attribute has an object
+			// `contentDocument` with a `null` prototype.
+			getProto( elem.contentDocument ) ) {
+
 			return elem.contentDocument;
 		}
 
@@ -23391,7 +24201,7 @@ jQuery.extend( {
 					var fns = arguments;
 
 					return jQuery.Deferred( function( newDefer ) {
-						jQuery.each( tuples, function( i, tuple ) {
+						jQuery.each( tuples, function( _i, tuple ) {
 
 							// Map tuples (progress, done, fail) to arguments (done, fail, progress)
 							var fn = isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
@@ -23844,7 +24654,7 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 			// ...except when executing function values
 			} else {
 				bulk = fn;
-				fn = function( elem, key, value ) {
+				fn = function( elem, _key, value ) {
 					return bulk.call( jQuery( elem ), value );
 				};
 			}
@@ -23879,7 +24689,7 @@ var rmsPrefix = /^-ms-/,
 	rdashAlpha = /-([a-z])/g;
 
 // Used by camelCase as callback to replace()
-function fcamelCase( all, letter ) {
+function fcamelCase( _all, letter ) {
 	return letter.toUpperCase();
 }
 
@@ -23918,7 +24728,7 @@ Data.prototype = {
 
 		// If not, create one
 		if ( !value ) {
-			value = {};
+			value = Object.create( null );
 
 			// We can accept data for non-element nodes in modern browsers,
 			// but we should not, see #8335.
@@ -24407,27 +25217,6 @@ var isHiddenWithinTree = function( elem, el ) {
 			jQuery.css( elem, "display" ) === "none";
 	};
 
-var swap = function( elem, options, callback, args ) {
-	var ret, name,
-		old = {};
-
-	// Remember the old values, and insert the new ones
-	for ( name in options ) {
-		old[ name ] = elem.style[ name ];
-		elem.style[ name ] = options[ name ];
-	}
-
-	ret = callback.apply( elem, args || [] );
-
-	// Revert the old values
-	for ( name in options ) {
-		elem.style[ name ] = old[ name ];
-	}
-
-	return ret;
-};
-
-
 
 
 function adjustCSS( elem, prop, valueParts, tween ) {
@@ -24598,11 +25387,40 @@ var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
 
 
 
-// We have to close these tags to support XHTML (#13200)
-var wrapMap = {
+( function() {
+	var fragment = document.createDocumentFragment(),
+		div = fragment.appendChild( document.createElement( "div" ) ),
+		input = document.createElement( "input" );
+
+	// Support: Android 4.0 - 4.3 only
+	// Check state lost if the name is set (#11217)
+	// Support: Windows Web Apps (WWA)
+	// `name` and `type` must use .setAttribute for WWA (#14901)
+	input.setAttribute( "type", "radio" );
+	input.setAttribute( "checked", "checked" );
+	input.setAttribute( "name", "t" );
+
+	div.appendChild( input );
+
+	// Support: Android <=4.1 only
+	// Older WebKit doesn't clone checked state correctly in fragments
+	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
+
+	// Support: IE <=11 only
+	// Make sure textarea (and checkbox) defaultValue is properly cloned
+	div.innerHTML = "<textarea>x</textarea>";
+	support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
 
 	// Support: IE <=9 only
-	option: [ 1, "<select multiple='multiple'>", "</select>" ],
+	// IE <=9 replaces <option> tags with their contents when inserted outside of
+	// the select element.
+	div.innerHTML = "<option></option>";
+	support.option = !!div.lastChild;
+} )();
+
+
+// We have to close these tags to support XHTML (#13200)
+var wrapMap = {
 
 	// XHTML parsers do not magically insert elements in the
 	// same way that tag soup parsers do. So we cannot shorten
@@ -24615,11 +25433,13 @@ var wrapMap = {
 	_default: [ 0, "", "" ]
 };
 
-// Support: IE <=9 only
-wrapMap.optgroup = wrapMap.option;
-
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
+
+// Support: IE <=9 only
+if ( !support.option ) {
+	wrapMap.optgroup = wrapMap.option = [ 1, "<select multiple='multiple'>", "</select>" ];
+}
 
 
 function getAll( context, tag ) {
@@ -24753,32 +25573,6 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 }
 
 
-( function() {
-	var fragment = document.createDocumentFragment(),
-		div = fragment.appendChild( document.createElement( "div" ) ),
-		input = document.createElement( "input" );
-
-	// Support: Android 4.0 - 4.3 only
-	// Check state lost if the name is set (#11217)
-	// Support: Windows Web Apps (WWA)
-	// `name` and `type` must use .setAttribute for WWA (#14901)
-	input.setAttribute( "type", "radio" );
-	input.setAttribute( "checked", "checked" );
-	input.setAttribute( "name", "t" );
-
-	div.appendChild( input );
-
-	// Support: Android <=4.1 only
-	// Older WebKit doesn't clone checked state correctly in fragments
-	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
-
-	// Support: IE <=11 only
-	// Make sure textarea (and checkbox) defaultValue is properly cloned
-	div.innerHTML = "<textarea>x</textarea>";
-	support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
-} )();
-
-
 var
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
@@ -24887,8 +25681,8 @@ jQuery.event = {
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.get( elem );
 
-		// Don't attach events to noData or text/comment nodes (but allow plain objects)
-		if ( !elemData ) {
+		// Only attach events to objects that accept data
+		if ( !acceptData( elem ) ) {
 			return;
 		}
 
@@ -24912,7 +25706,7 @@ jQuery.event = {
 
 		// Init the element's event structure and main handler, if this is the first
 		if ( !( events = elemData.events ) ) {
-			events = elemData.events = {};
+			events = elemData.events = Object.create( null );
 		}
 		if ( !( eventHandle = elemData.handle ) ) {
 			eventHandle = elemData.handle = function( e ) {
@@ -25070,12 +25864,15 @@ jQuery.event = {
 
 	dispatch: function( nativeEvent ) {
 
-		// Make a writable jQuery.Event from the native event object
-		var event = jQuery.event.fix( nativeEvent );
-
 		var i, j, ret, matched, handleObj, handlerQueue,
 			args = new Array( arguments.length ),
-			handlers = ( dataPriv.get( this, "events" ) || {} )[ event.type ] || [],
+
+			// Make a writable jQuery.Event from the native event object
+			event = jQuery.event.fix( nativeEvent ),
+
+			handlers = (
+					dataPriv.get( this, "events" ) || Object.create( null )
+				)[ event.type ] || [],
 			special = jQuery.event.special[ event.type ] || {};
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
@@ -25650,13 +26447,6 @@ jQuery.fn.extend( {
 
 var
 
-	/* eslint-disable max-len */
-
-	// See https://github.com/eslint/eslint/issues/3229
-	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([a-z][^\/\0>\x20\t\r\n\f]*)[^>]*)\/>/gi,
-
-	/* eslint-enable */
-
 	// Support: IE <=10 - 11, Edge 12 - 13 only
 	// In IE/Edge using regex groups here causes severe slowdowns.
 	// See https://connect.microsoft.com/IE/feedback/details/1736512/
@@ -25693,7 +26483,7 @@ function restoreScript( elem ) {
 }
 
 function cloneCopyEvent( src, dest ) {
-	var i, l, type, pdataOld, pdataCur, udataOld, udataCur, events;
+	var i, l, type, pdataOld, udataOld, udataCur, events;
 
 	if ( dest.nodeType !== 1 ) {
 		return;
@@ -25701,13 +26491,11 @@ function cloneCopyEvent( src, dest ) {
 
 	// 1. Copy private data: events, handlers, etc.
 	if ( dataPriv.hasData( src ) ) {
-		pdataOld = dataPriv.access( src );
-		pdataCur = dataPriv.set( dest, pdataOld );
+		pdataOld = dataPriv.get( src );
 		events = pdataOld.events;
 
 		if ( events ) {
-			delete pdataCur.handle;
-			pdataCur.events = {};
+			dataPriv.remove( dest, "handle events" );
 
 			for ( type in events ) {
 				for ( i = 0, l = events[ type ].length; i < l; i++ ) {
@@ -25743,7 +26531,7 @@ function fixInput( src, dest ) {
 function domManip( collection, args, callback, ignored ) {
 
 	// Flatten any nested arrays
-	args = concat.apply( [], args );
+	args = flat( args );
 
 	var fragment, first, scripts, hasScripts, node, doc,
 		i = 0,
@@ -25818,7 +26606,7 @@ function domManip( collection, args, callback, ignored ) {
 							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src, {
 									nonce: node.nonce || node.getAttribute( "nonce" )
-								} );
+								}, doc );
 							}
 						} else {
 							DOMEval( node.textContent.replace( rcleanScript, "" ), node, doc );
@@ -25855,7 +26643,7 @@ function remove( elem, selector, keepData ) {
 
 jQuery.extend( {
 	htmlPrefilter: function( html ) {
-		return html.replace( rxhtmlTag, "<$1></$2>" );
+		return html;
 	},
 
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
@@ -26117,6 +26905,27 @@ var getStyles = function( elem ) {
 		return view.getComputedStyle( elem );
 	};
 
+var swap = function( elem, options, callback ) {
+	var ret, name,
+		old = {};
+
+	// Remember the old values, and insert the new ones
+	for ( name in options ) {
+		old[ name ] = elem.style[ name ];
+		elem.style[ name ] = options[ name ];
+	}
+
+	ret = callback.call( elem );
+
+	// Revert the old values
+	for ( name in options ) {
+		elem.style[ name ] = old[ name ];
+	}
+
+	return ret;
+};
+
+
 var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 
 
@@ -26174,7 +26983,7 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 	}
 
 	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
-		reliableMarginLeftVal,
+		reliableTrDimensionsVal, reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -26209,6 +27018,35 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 		scrollboxSize: function() {
 			computeStyleTests();
 			return scrollboxSizeVal;
+		},
+
+		// Support: IE 9 - 11+, Edge 15 - 18+
+		// IE/Edge misreport `getComputedStyle` of table rows with width/height
+		// set in CSS while `offset*` properties report correct values.
+		// Behavior in IE 9 is more subtle than in newer versions & it passes
+		// some versions of this test; make sure not to make it pass there!
+		reliableTrDimensions: function() {
+			var table, tr, trChild, trStyle;
+			if ( reliableTrDimensionsVal == null ) {
+				table = document.createElement( "table" );
+				tr = document.createElement( "tr" );
+				trChild = document.createElement( "div" );
+
+				table.style.cssText = "position:absolute;left:-11111px";
+				tr.style.height = "1px";
+				trChild.style.height = "9px";
+
+				documentElement
+					.appendChild( table )
+					.appendChild( tr )
+					.appendChild( trChild );
+
+				trStyle = window.getComputedStyle( tr );
+				reliableTrDimensionsVal = parseInt( trStyle.height ) > 3;
+
+				documentElement.removeChild( table );
+			}
+			return reliableTrDimensionsVal;
 		}
 	} );
 } )();
@@ -26333,7 +27171,7 @@ var
 		fontWeight: "400"
 	};
 
-function setPositiveNumber( elem, value, subtract ) {
+function setPositiveNumber( _elem, value, subtract ) {
 
 	// Any relative (+/-) values have already been
 	// normalized at this point
@@ -26438,17 +27276,26 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	}
 
 
-	// Fall back to offsetWidth/offsetHeight when value is "auto"
-	// This happens for inline elements with no explicit setting (gh-3571)
-	// Support: Android <=4.1 - 4.3 only
-	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
-	// Support: IE 9-11 only
-	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
-	// We use getClientRects() to check for hidden/disconnected.
-	// In those cases, the computed value can be trusted to be border-box
+	// Support: IE 9 - 11 only
+	// Use offsetWidth/offsetHeight for when box sizing is unreliable.
+	// In those cases, the computed value can be trusted to be border-box.
 	if ( ( !support.boxSizingReliable() && isBorderBox ||
+
+		// Support: IE 10 - 11+, Edge 15 - 18+
+		// IE/Edge misreport `getComputedStyle` of table rows with width/height
+		// set in CSS while `offset*` properties report correct values.
+		// Interestingly, in some cases IE 9 doesn't suffer from this issue.
+		!support.reliableTrDimensions() && nodeName( elem, "tr" ) ||
+
+		// Fall back to offsetWidth/offsetHeight when value is "auto"
+		// This happens for inline elements with no explicit setting (gh-3571)
 		val === "auto" ||
+
+		// Support: Android <=4.1 - 4.3 only
+		// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
 		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
+
+		// Make sure the element is visible & connected
 		elem.getClientRects().length ) {
 
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
@@ -26643,7 +27490,7 @@ jQuery.extend( {
 	}
 } );
 
-jQuery.each( [ "height", "width" ], function( i, dimension ) {
+jQuery.each( [ "height", "width" ], function( _i, dimension ) {
 	jQuery.cssHooks[ dimension ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
@@ -27416,7 +28263,7 @@ jQuery.fn.extend( {
 			clearQueue = type;
 			type = undefined;
 		}
-		if ( clearQueue && type !== false ) {
+		if ( clearQueue ) {
 			this.queue( type || "fx", [] );
 		}
 
@@ -27499,7 +28346,7 @@ jQuery.fn.extend( {
 	}
 } );
 
-jQuery.each( [ "toggle", "show", "hide" ], function( i, name ) {
+jQuery.each( [ "toggle", "show", "hide" ], function( _i, name ) {
 	var cssFn = jQuery.fn[ name ];
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return speed == null || typeof speed === "boolean" ?
@@ -27720,7 +28567,7 @@ boolHook = {
 	}
 };
 
-jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
+jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name ) {
 	var getter = attrHandle[ name ] || jQuery.find.attr;
 
 	attrHandle[ name ] = function( elem, name, isXML ) {
@@ -28344,7 +29191,9 @@ jQuery.extend( jQuery.event, {
 				special.bindType || type;
 
 			// jQuery handler
-			handle = ( dataPriv.get( cur, "events" ) || {} )[ event.type ] &&
+			handle = (
+					dataPriv.get( cur, "events" ) || Object.create( null )
+				)[ event.type ] &&
 				dataPriv.get( cur, "handle" );
 			if ( handle ) {
 				handle.apply( cur, data );
@@ -28455,7 +29304,10 @@ if ( !support.focusin ) {
 
 		jQuery.event.special[ fix ] = {
 			setup: function() {
-				var doc = this.ownerDocument || this,
+
+				// Handle: regular nodes (via `this.ownerDocument`), window
+				// (via `this.document`) & document (via `this`).
+				var doc = this.ownerDocument || this.document || this,
 					attaches = dataPriv.access( doc, fix );
 
 				if ( !attaches ) {
@@ -28464,7 +29316,7 @@ if ( !support.focusin ) {
 				dataPriv.access( doc, fix, ( attaches || 0 ) + 1 );
 			},
 			teardown: function() {
-				var doc = this.ownerDocument || this,
+				var doc = this.ownerDocument || this.document || this,
 					attaches = dataPriv.access( doc, fix ) - 1;
 
 				if ( !attaches ) {
@@ -28480,7 +29332,7 @@ if ( !support.focusin ) {
 }
 var location = window.location;
 
-var nonce = Date.now();
+var nonce = { guid: Date.now() };
 
 var rquery = ( /\?/ );
 
@@ -28612,7 +29464,7 @@ jQuery.fn.extend( {
 				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
 				( this.checked || !rcheckableType.test( type ) );
 		} )
-		.map( function( i, elem ) {
+		.map( function( _i, elem ) {
 			var val = jQuery( this ).val();
 
 			if ( val == null ) {
@@ -29225,7 +30077,8 @@ jQuery.extend( {
 			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
 				cacheURL = cacheURL.replace( rantiCache, "$1" );
-				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
+				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce.guid++ ) +
+					uncached;
 			}
 
 			// Put hash and anti-cache on the URL that will be requested (gh-1732)
@@ -29358,6 +30211,11 @@ jQuery.extend( {
 				response = ajaxHandleResponses( s, jqXHR, responses );
 			}
 
+			// Use a noop converter for missing script
+			if ( !isSuccess && jQuery.inArray( "script", s.dataTypes ) > -1 ) {
+				s.converters[ "text script" ] = function() {};
+			}
+
 			// Convert no matter what (that way responseXXX fields are always set)
 			response = ajaxConvert( s, response, jqXHR, isSuccess );
 
@@ -29448,7 +30306,7 @@ jQuery.extend( {
 	}
 } );
 
-jQuery.each( [ "get", "post" ], function( i, method ) {
+jQuery.each( [ "get", "post" ], function( _i, method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
 
 		// Shift arguments if data argument was omitted
@@ -29469,8 +30327,17 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 	};
 } );
 
+jQuery.ajaxPrefilter( function( s ) {
+	var i;
+	for ( i in s.headers ) {
+		if ( i.toLowerCase() === "content-type" ) {
+			s.contentType = s.headers[ i ] || "";
+		}
+	}
+} );
 
-jQuery._evalUrl = function( url, options ) {
+
+jQuery._evalUrl = function( url, options, doc ) {
 	return jQuery.ajax( {
 		url: url,
 
@@ -29488,7 +30355,7 @@ jQuery._evalUrl = function( url, options ) {
 			"text script": function() {}
 		},
 		dataFilter: function( response ) {
-			jQuery.globalEval( response, options );
+			jQuery.globalEval( response, options, doc );
 		}
 	} );
 };
@@ -29810,7 +30677,7 @@ var oldCallbacks = [],
 jQuery.ajaxSetup( {
 	jsonp: "callback",
 	jsonpCallback: function() {
-		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce++ ) );
+		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce.guid++ ) );
 		this[ callback ] = true;
 		return callback;
 	}
@@ -30027,23 +30894,6 @@ jQuery.fn.load = function( url, params, callback ) {
 
 
 
-// Attach a bunch of functions for handling common AJAX events
-jQuery.each( [
-	"ajaxStart",
-	"ajaxStop",
-	"ajaxComplete",
-	"ajaxError",
-	"ajaxSuccess",
-	"ajaxSend"
-], function( i, type ) {
-	jQuery.fn[ type ] = function( fn ) {
-		return this.on( type, fn );
-	};
-} );
-
-
-
-
 jQuery.expr.pseudos.animated = function( elem ) {
 	return jQuery.grep( jQuery.timers, function( fn ) {
 		return elem === fn.elem;
@@ -30100,6 +30950,12 @@ jQuery.offset = {
 			options.using.call( elem, props );
 
 		} else {
+			if ( typeof props.top === "number" ) {
+				props.top += "px";
+			}
+			if ( typeof props.left === "number" ) {
+				props.left += "px";
+			}
 			curElem.css( props );
 		}
 	}
@@ -30250,7 +31106,7 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 // Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
 // getComputedStyle returns percent when specified for top/left/bottom/right;
 // rather than make the css module depend on the offset module, just check for it here
-jQuery.each( [ "top", "left" ], function( i, prop ) {
+jQuery.each( [ "top", "left" ], function( _i, prop ) {
 	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
 		function( elem, computed ) {
 			if ( computed ) {
@@ -30313,23 +31169,17 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 } );
 
 
-jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
-	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
-	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
-	function( i, name ) {
-
-	// Handle event binding
-	jQuery.fn[ name ] = function( data, fn ) {
-		return arguments.length > 0 ?
-			this.on( name, null, data, fn ) :
-			this.trigger( name );
+jQuery.each( [
+	"ajaxStart",
+	"ajaxStop",
+	"ajaxComplete",
+	"ajaxError",
+	"ajaxSuccess",
+	"ajaxSend"
+], function( _i, type ) {
+	jQuery.fn[ type ] = function( fn ) {
+		return this.on( type, fn );
 	};
-} );
-
-jQuery.fn.extend( {
-	hover: function( fnOver, fnOut ) {
-		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
-	}
 } );
 
 
@@ -30353,8 +31203,32 @@ jQuery.fn.extend( {
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
+	},
+
+	hover: function( fnOver, fnOut ) {
+		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	}
 } );
+
+jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
+	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
+	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
+	function( _i, name ) {
+
+		// Handle event binding
+		jQuery.fn[ name ] = function( data, fn ) {
+			return arguments.length > 0 ?
+				this.on( name, null, data, fn ) :
+				this.trigger( name );
+		};
+	} );
+
+
+
+
+// Support: Android <=4.0 only
+// Make sure we trim BOM and NBSP
+var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 // Bind a function to a context, optionally partially applying any
 // arguments.
@@ -30418,6 +31292,11 @@ jQuery.isNumeric = function( obj ) {
 		!isNaN( obj - parseFloat( obj ) );
 };
 
+jQuery.trim = function( text ) {
+	return text == null ?
+		"" :
+		( text + "" ).replace( rtrim, "" );
+};
 
 
 
@@ -30466,7 +31345,7 @@ jQuery.noConflict = function( deep ) {
 // Expose jQuery and $ identifiers, even in AMD
 // (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 // and CommonJS for browser emulators (#13566)
-if ( !noGlobal ) {
+if ( typeof noGlobal === "undefined" ) {
 	window.jQuery = window.$ = jQuery;
 }
 
@@ -30476,7 +31355,7 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}],119:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 /**
  * langbank.js
  */
@@ -30578,7 +31457,7 @@ module.exports = function(){
 	);
 }
 
-},{"csv":61,"ejs":79,"es6-promise":90,"fs":30}],120:[function(require,module,exports){
+},{"csv":65,"ejs":83,"es6-promise":94,"fs":32}],125:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -31513,7 +32392,7 @@ function get(object, path, defaultValue) {
 module.exports = get;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],121:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -43868,7 +44747,169 @@ module.exports = get;
 }.call(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],122:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
+(function(){
+  var crypt = require('crypt'),
+      utf8 = require('charenc').utf8,
+      isBuffer = require('is-buffer'),
+      bin = require('charenc').bin,
+
+  // The core
+  md5 = function (message, options) {
+    // Convert to byte array
+    if (message.constructor == String)
+      if (options && options.encoding === 'binary')
+        message = bin.stringToBytes(message);
+      else
+        message = utf8.stringToBytes(message);
+    else if (isBuffer(message))
+      message = Array.prototype.slice.call(message, 0);
+    else if (!Array.isArray(message))
+      message = message.toString();
+    // else, assume byte array already
+
+    var m = crypt.bytesToWords(message),
+        l = message.length * 8,
+        a =  1732584193,
+        b = -271733879,
+        c = -1732584194,
+        d =  271733878;
+
+    // Swap endian
+    for (var i = 0; i < m.length; i++) {
+      m[i] = ((m[i] <<  8) | (m[i] >>> 24)) & 0x00FF00FF |
+             ((m[i] << 24) | (m[i] >>>  8)) & 0xFF00FF00;
+    }
+
+    // Padding
+    m[l >>> 5] |= 0x80 << (l % 32);
+    m[(((l + 64) >>> 9) << 4) + 14] = l;
+
+    // Method shortcuts
+    var FF = md5._ff,
+        GG = md5._gg,
+        HH = md5._hh,
+        II = md5._ii;
+
+    for (var i = 0; i < m.length; i += 16) {
+
+      var aa = a,
+          bb = b,
+          cc = c,
+          dd = d;
+
+      a = FF(a, b, c, d, m[i+ 0],  7, -680876936);
+      d = FF(d, a, b, c, m[i+ 1], 12, -389564586);
+      c = FF(c, d, a, b, m[i+ 2], 17,  606105819);
+      b = FF(b, c, d, a, m[i+ 3], 22, -1044525330);
+      a = FF(a, b, c, d, m[i+ 4],  7, -176418897);
+      d = FF(d, a, b, c, m[i+ 5], 12,  1200080426);
+      c = FF(c, d, a, b, m[i+ 6], 17, -1473231341);
+      b = FF(b, c, d, a, m[i+ 7], 22, -45705983);
+      a = FF(a, b, c, d, m[i+ 8],  7,  1770035416);
+      d = FF(d, a, b, c, m[i+ 9], 12, -1958414417);
+      c = FF(c, d, a, b, m[i+10], 17, -42063);
+      b = FF(b, c, d, a, m[i+11], 22, -1990404162);
+      a = FF(a, b, c, d, m[i+12],  7,  1804603682);
+      d = FF(d, a, b, c, m[i+13], 12, -40341101);
+      c = FF(c, d, a, b, m[i+14], 17, -1502002290);
+      b = FF(b, c, d, a, m[i+15], 22,  1236535329);
+
+      a = GG(a, b, c, d, m[i+ 1],  5, -165796510);
+      d = GG(d, a, b, c, m[i+ 6],  9, -1069501632);
+      c = GG(c, d, a, b, m[i+11], 14,  643717713);
+      b = GG(b, c, d, a, m[i+ 0], 20, -373897302);
+      a = GG(a, b, c, d, m[i+ 5],  5, -701558691);
+      d = GG(d, a, b, c, m[i+10],  9,  38016083);
+      c = GG(c, d, a, b, m[i+15], 14, -660478335);
+      b = GG(b, c, d, a, m[i+ 4], 20, -405537848);
+      a = GG(a, b, c, d, m[i+ 9],  5,  568446438);
+      d = GG(d, a, b, c, m[i+14],  9, -1019803690);
+      c = GG(c, d, a, b, m[i+ 3], 14, -187363961);
+      b = GG(b, c, d, a, m[i+ 8], 20,  1163531501);
+      a = GG(a, b, c, d, m[i+13],  5, -1444681467);
+      d = GG(d, a, b, c, m[i+ 2],  9, -51403784);
+      c = GG(c, d, a, b, m[i+ 7], 14,  1735328473);
+      b = GG(b, c, d, a, m[i+12], 20, -1926607734);
+
+      a = HH(a, b, c, d, m[i+ 5],  4, -378558);
+      d = HH(d, a, b, c, m[i+ 8], 11, -2022574463);
+      c = HH(c, d, a, b, m[i+11], 16,  1839030562);
+      b = HH(b, c, d, a, m[i+14], 23, -35309556);
+      a = HH(a, b, c, d, m[i+ 1],  4, -1530992060);
+      d = HH(d, a, b, c, m[i+ 4], 11,  1272893353);
+      c = HH(c, d, a, b, m[i+ 7], 16, -155497632);
+      b = HH(b, c, d, a, m[i+10], 23, -1094730640);
+      a = HH(a, b, c, d, m[i+13],  4,  681279174);
+      d = HH(d, a, b, c, m[i+ 0], 11, -358537222);
+      c = HH(c, d, a, b, m[i+ 3], 16, -722521979);
+      b = HH(b, c, d, a, m[i+ 6], 23,  76029189);
+      a = HH(a, b, c, d, m[i+ 9],  4, -640364487);
+      d = HH(d, a, b, c, m[i+12], 11, -421815835);
+      c = HH(c, d, a, b, m[i+15], 16,  530742520);
+      b = HH(b, c, d, a, m[i+ 2], 23, -995338651);
+
+      a = II(a, b, c, d, m[i+ 0],  6, -198630844);
+      d = II(d, a, b, c, m[i+ 7], 10,  1126891415);
+      c = II(c, d, a, b, m[i+14], 15, -1416354905);
+      b = II(b, c, d, a, m[i+ 5], 21, -57434055);
+      a = II(a, b, c, d, m[i+12],  6,  1700485571);
+      d = II(d, a, b, c, m[i+ 3], 10, -1894986606);
+      c = II(c, d, a, b, m[i+10], 15, -1051523);
+      b = II(b, c, d, a, m[i+ 1], 21, -2054922799);
+      a = II(a, b, c, d, m[i+ 8],  6,  1873313359);
+      d = II(d, a, b, c, m[i+15], 10, -30611744);
+      c = II(c, d, a, b, m[i+ 6], 15, -1560198380);
+      b = II(b, c, d, a, m[i+13], 21,  1309151649);
+      a = II(a, b, c, d, m[i+ 4],  6, -145523070);
+      d = II(d, a, b, c, m[i+11], 10, -1120210379);
+      c = II(c, d, a, b, m[i+ 2], 15,  718787259);
+      b = II(b, c, d, a, m[i+ 9], 21, -343485551);
+
+      a = (a + aa) >>> 0;
+      b = (b + bb) >>> 0;
+      c = (c + cc) >>> 0;
+      d = (d + dd) >>> 0;
+    }
+
+    return crypt.endian([a, b, c, d]);
+  };
+
+  // Auxiliary functions
+  md5._ff  = function (a, b, c, d, x, s, t) {
+    var n = a + (b & c | ~b & d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._gg  = function (a, b, c, d, x, s, t) {
+    var n = a + (b & d | c & ~d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._hh  = function (a, b, c, d, x, s, t) {
+    var n = a + (b ^ c ^ d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._ii  = function (a, b, c, d, x, s, t) {
+    var n = a + (c ^ (b | ~d)) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+
+  // Package private blocksize
+  md5._blocksize = 16;
+  md5._digestsize = 16;
+
+  module.exports = function (message, options) {
+    if (message === undefined || message === null)
+      throw new Error('Illegal argument ' + message);
+
+    var digestbytes = crypt.wordsToBytes(md5(message, options));
+    return options && options.asBytes ? digestbytes :
+        options && options.asString ? bin.bytesToString(digestbytes) :
+        crypt.bytesToHex(digestbytes);
+  };
+
+})();
+
+},{"charenc":35,"crypt":47,"is-buffer":118}],128:[function(require,module,exports){
 module.exports = compile;
 
 var BaseFuncs = require("boolbase"),
@@ -43909,7 +44950,7 @@ function compile(parsed){
 		return pos <= b && pos % a === bMod;
 	};
 }
-},{"boolbase":28}],123:[function(require,module,exports){
+},{"boolbase":30}],129:[function(require,module,exports){
 var parse = require("./parse.js"),
     compile = require("./compile.js");
 
@@ -43919,7 +44960,7 @@ module.exports = function nthCheck(formula){
 
 module.exports.parse = parse;
 module.exports.compile = compile;
-},{"./compile.js":122,"./parse.js":124}],124:[function(require,module,exports){
+},{"./compile.js":128,"./parse.js":130}],130:[function(require,module,exports){
 module.exports = parse;
 
 //following http://www.w3.org/TR/css3-selectors/#nth-child-pseudo
@@ -43961,7 +45002,7 @@ function parse(formula){
 	}
 }
 
-},{}],125:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 (function (process){
 // .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
 // backported and transplited with Babel, with backwards-compat fixes
@@ -44267,7 +45308,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require("rH1JPG"))
-},{"rH1JPG":128}],126:[function(require,module,exports){
+},{"rH1JPG":134}],132:[function(require,module,exports){
 (function (global){
 // This file is generated by `make build`. 
 // Do NOT edit by hand. 
@@ -57525,7 +58566,7 @@ exports.strtr = function (str, from, to) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],127:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 (function (global){
 phpjs = require('./build/npm');
 
@@ -57538,7 +58579,7 @@ phpjs.registerGlobals = function() {
 module.exports = phpjs;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./build/npm":126}],128:[function(require,module,exports){
+},{"./build/npm":132}],134:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -57603,7 +58644,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],129:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -57723,7 +58764,7 @@ function querystringify(obj, prefix) {
 exports.stringify = querystringify;
 exports.parse = querystring;
 
-},{}],130:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 'use strict';
 
 /**
@@ -57763,7 +58804,7 @@ module.exports = function required(port, protocol) {
   return port !== 0;
 };
 
-},{}],131:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -57837,7 +58878,7 @@ function onend() {
   });
 }
 
-},{"./readable.js":135,"./writable.js":137,"inherits":113,"process/browser.js":133}],132:[function(require,module,exports){
+},{"./readable.js":141,"./writable.js":143,"inherits":117,"process/browser.js":139}],138:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -57966,7 +59007,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"./duplex.js":131,"./passthrough.js":134,"./readable.js":135,"./transform.js":136,"./writable.js":137,"events":91,"inherits":113}],133:[function(require,module,exports){
+},{"./duplex.js":137,"./passthrough.js":140,"./readable.js":141,"./transform.js":142,"./writable.js":143,"events":95,"inherits":117}],139:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -58021,7 +59062,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],134:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -58064,7 +59105,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./transform.js":136,"inherits":113}],135:[function(require,module,exports){
+},{"./transform.js":142,"inherits":117}],141:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -59001,7 +60042,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require("rH1JPG"))
-},{"./index.js":132,"buffer":32,"events":91,"inherits":113,"process/browser.js":133,"rH1JPG":128,"string_decoder":31}],136:[function(require,module,exports){
+},{"./index.js":138,"buffer":34,"events":95,"inherits":117,"process/browser.js":139,"rH1JPG":134,"string_decoder":33}],142:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -59207,7 +60248,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./duplex.js":131,"inherits":113}],137:[function(require,module,exports){
+},{"./duplex.js":137,"inherits":117}],143:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -59595,7 +60636,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./index.js":132,"buffer":32,"inherits":113,"process/browser.js":133}],138:[function(require,module,exports){
+},{"./index.js":138,"buffer":34,"inherits":117,"process/browser.js":139}],144:[function(require,module,exports){
 (function (process){
 // Generated by CoffeeScript 1.12.7
 var Transformer, stream, util,
@@ -59770,7 +60811,7 @@ Transformer.prototype._done = function(err, chunks, cb) {
 };
 
 }).call(this,require("rH1JPG"))
-},{"rH1JPG":128,"stream":132,"util":144}],139:[function(require,module,exports){
+},{"rH1JPG":134,"stream":138,"util":150}],145:[function(require,module,exports){
 (function (__dirname){
 /**
  * Twig.js 0.8.9
@@ -59786,7 +60827,7 @@ token.value=token.match[1];output.push(token)},parse:function(token,stack,contex
 //# sourceMappingURL=twig.min.js.map
 
 }).call(this,"/../../node_modules/twig")
-},{"fs":30,"path":125}],140:[function(require,module,exports){
+},{"fs":32,"path":131}],146:[function(require,module,exports){
 (function (global){
 //     Underscore.js 1.9.1
 //     http://underscorejs.org
@@ -61482,7 +62523,7 @@ token.value=token.match[1];output.push(token)},parse:function(token,stack,contex
 }());
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],141:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -61936,7 +62977,7 @@ Url.qs = qs;
 module.exports = Url;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"querystringify":129,"requires-port":130}],142:[function(require,module,exports){
+},{"querystringify":135,"requires-port":136}],148:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -61961,14 +63002,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],143:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],144:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -62558,7 +63599,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":143,"inherits":142,"rH1JPG":128}],145:[function(require,module,exports){
+},{"./support/isBuffer":149,"inherits":148,"rH1JPG":134}],151:[function(require,module,exports){
 /**
  * 配列(または連想配列)のキーの配列を取得する
  */
@@ -62570,7 +63611,7 @@ module.exports = function(ary){
     return rtn;
 }
 
-},{}],146:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 (function (Buffer){
 /**
  * base64デコードする
@@ -62582,7 +63623,7 @@ module.exports = function( base64 ){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":32}],147:[function(require,module,exports){
+},{"buffer":34}],153:[function(require,module,exports){
 (function (Buffer){
 /**
  * base64エンコードする
@@ -62594,7 +63635,7 @@ module.exports = function( bin ){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":32}],148:[function(require,module,exports){
+},{"buffer":34}],154:[function(require,module,exports){
 /**
  * パス文字列から、ファイル名を取り出す
  */
@@ -62604,7 +63645,7 @@ module.exports = function( path ){
     return rtn;
 }
 
-},{}],149:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 /**
  * 配列(または連想配列)の要素数を数える
  */
@@ -62612,7 +63653,7 @@ module.exports = function(ary){
     return this.array_keys(ary).length;
 }
 
-},{}],150:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 /**
  * ディレクトリ名を得る
  */
@@ -62620,7 +63661,7 @@ module.exports = function(path){
     return path.replace(/(?:\/|\\)[^\/\\]*(?:\/|\\)?$/, '');
 }
 
-},{}],151:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 /**
  * 文字列をn文字ずつ分割する
  */
@@ -62639,7 +63680,7 @@ module.exports = function(str, n){
 	return rtn;
 }
 
-},{}],152:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 /**
  * HTML特殊文字をエスケープする
  */
@@ -62652,7 +63693,7 @@ module.exports = function(str){
 	return str;
 }
 
-},{}],153:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 /**
  * ディレクトリが存在するか調べる
  */
@@ -62664,7 +63705,7 @@ module.exports = function( path ){
     return true;
 }
 
-},{"fs":30}],154:[function(require,module,exports){
+},{"fs":32}],160:[function(require,module,exports){
 /**
  * ファイルが存在するか調べる
  */
@@ -62676,7 +63717,7 @@ module.exports = function( path ){
     return true;
 }
 
-},{"fs":30}],155:[function(require,module,exports){
+},{"fs":32}],161:[function(require,module,exports){
 /**
  * md5ハッシュを求める
  */
@@ -62688,7 +63729,7 @@ module.exports = function( str ){
 	return md5.digest('hex');
 }
 
-},{"crypto":45}],156:[function(require,module,exports){
+},{"crypto":49}],162:[function(require,module,exports){
 /**
  * パスを正規化する。
  *
@@ -62719,7 +63760,7 @@ module.exports = function($path){
     return $prefix+$path;
 }
 
-},{}],157:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 /**
  * 正規表現で使えるようにエスケープ処理を施す
  */
@@ -62728,7 +63769,7 @@ module.exports = function(str) {
     return str.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
 }
 
-},{}],158:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 /**
  * sha1ハッシュを求める
  */
@@ -62740,7 +63781,7 @@ module.exports = function( str ){
 	return sha1.digest('hex');
 }
 
-},{"crypto":45}],159:[function(require,module,exports){
+},{"crypto":49}],165:[function(require,module,exports){
 /**
  * 文字列型に置き換える
  */
@@ -62765,7 +63806,7 @@ module.exports = function(val){
     return ''+val;
 }
 
-},{}],160:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 /**
  * 文字列の前後から空白文字列を削除する
  */
@@ -62776,7 +63817,7 @@ module.exports = function(str){
 	return str;
 }
 
-},{}],161:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 /**
  * 入力値のセットを確認する
  * 内部で validator を使用します。
@@ -62823,7 +63864,7 @@ module.exports = function(values, rules, callback){
     callback(err);
 }
 
-},{"validator":163}],162:[function(require,module,exports){
+},{"validator":169}],168:[function(require,module,exports){
 /**
  * node-iterate79
  */
@@ -62916,7 +63957,7 @@ module.exports = function(values, rules, callback){
 
 })(exports);
 
-},{"./apis/array_keys.js":145,"./apis/base64_decode.js":146,"./apis/base64_encode.js":147,"./apis/basename.js":148,"./apis/count.js":149,"./apis/dirname.js":150,"./apis/divide.js":151,"./apis/h.js":152,"./apis/is_dir.js":153,"./apis/is_file.js":154,"./apis/md5.js":155,"./apis/normalize_path.js":156,"./apis/regexp_quote.js":157,"./apis/sha1.js":158,"./apis/toStr.js":159,"./apis/trim.js":160,"./apis/validate.js":161}],163:[function(require,module,exports){
+},{"./apis/array_keys.js":151,"./apis/base64_decode.js":152,"./apis/base64_encode.js":153,"./apis/basename.js":154,"./apis/count.js":155,"./apis/dirname.js":156,"./apis/divide.js":157,"./apis/h.js":158,"./apis/is_dir.js":159,"./apis/is_file.js":160,"./apis/md5.js":161,"./apis/normalize_path.js":162,"./apis/regexp_quote.js":163,"./apis/sha1.js":164,"./apis/toStr.js":165,"./apis/trim.js":166,"./apis/validate.js":167}],169:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63203,7 +64244,7 @@ var validator = {
 
 exports.default = validator;
 module.exports = exports['default'];
-},{"./lib/blacklist":165,"./lib/contains":166,"./lib/equals":167,"./lib/escape":168,"./lib/isAfter":169,"./lib/isAlpha":170,"./lib/isAlphanumeric":171,"./lib/isAscii":172,"./lib/isBase64":173,"./lib/isBefore":174,"./lib/isBoolean":175,"./lib/isByteLength":176,"./lib/isCreditCard":177,"./lib/isCurrency":178,"./lib/isDataURI":179,"./lib/isDate":180,"./lib/isDecimal":181,"./lib/isDivisibleBy":182,"./lib/isEmail":183,"./lib/isFQDN":184,"./lib/isFloat":185,"./lib/isFullWidth":186,"./lib/isHalfWidth":187,"./lib/isHexColor":188,"./lib/isHexadecimal":189,"./lib/isIP":190,"./lib/isISBN":191,"./lib/isISIN":192,"./lib/isISO8601":193,"./lib/isIn":194,"./lib/isInt":195,"./lib/isJSON":196,"./lib/isLength":197,"./lib/isLowercase":198,"./lib/isMACAddress":199,"./lib/isMD5":200,"./lib/isMobilePhone":201,"./lib/isMongoId":202,"./lib/isMultibyte":203,"./lib/isNull":204,"./lib/isNumeric":205,"./lib/isSurrogatePair":206,"./lib/isURL":207,"./lib/isUUID":208,"./lib/isUppercase":209,"./lib/isVariableWidth":210,"./lib/isWhitelisted":211,"./lib/ltrim":212,"./lib/matches":213,"./lib/normalizeEmail":214,"./lib/rtrim":215,"./lib/stripLow":216,"./lib/toBoolean":217,"./lib/toDate":218,"./lib/toFloat":219,"./lib/toInt":220,"./lib/trim":221,"./lib/unescape":222,"./lib/util/toString":225,"./lib/whitelist":226}],164:[function(require,module,exports){
+},{"./lib/blacklist":171,"./lib/contains":172,"./lib/equals":173,"./lib/escape":174,"./lib/isAfter":175,"./lib/isAlpha":176,"./lib/isAlphanumeric":177,"./lib/isAscii":178,"./lib/isBase64":179,"./lib/isBefore":180,"./lib/isBoolean":181,"./lib/isByteLength":182,"./lib/isCreditCard":183,"./lib/isCurrency":184,"./lib/isDataURI":185,"./lib/isDate":186,"./lib/isDecimal":187,"./lib/isDivisibleBy":188,"./lib/isEmail":189,"./lib/isFQDN":190,"./lib/isFloat":191,"./lib/isFullWidth":192,"./lib/isHalfWidth":193,"./lib/isHexColor":194,"./lib/isHexadecimal":195,"./lib/isIP":196,"./lib/isISBN":197,"./lib/isISIN":198,"./lib/isISO8601":199,"./lib/isIn":200,"./lib/isInt":201,"./lib/isJSON":202,"./lib/isLength":203,"./lib/isLowercase":204,"./lib/isMACAddress":205,"./lib/isMD5":206,"./lib/isMobilePhone":207,"./lib/isMongoId":208,"./lib/isMultibyte":209,"./lib/isNull":210,"./lib/isNumeric":211,"./lib/isSurrogatePair":212,"./lib/isURL":213,"./lib/isUUID":214,"./lib/isUppercase":215,"./lib/isVariableWidth":216,"./lib/isWhitelisted":217,"./lib/ltrim":218,"./lib/matches":219,"./lib/normalizeEmail":220,"./lib/rtrim":221,"./lib/stripLow":222,"./lib/toBoolean":223,"./lib/toDate":224,"./lib/toFloat":225,"./lib/toInt":226,"./lib/trim":227,"./lib/unescape":228,"./lib/util/toString":231,"./lib/whitelist":232}],170:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63262,7 +64303,7 @@ for (var _locale, _i = 0; _i < arabicLocales.length; _i++) {
   alpha[_locale] = alpha.ar;
   alphanumeric[_locale] = alphanumeric.ar;
 }
-},{}],165:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63281,7 +64322,7 @@ function blacklist(str, chars) {
   return str.replace(new RegExp('[' + chars + ']+', 'g'), '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],166:[function(require,module,exports){
+},{"./util/assertString":229}],172:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63304,7 +64345,7 @@ function contains(str, elem) {
   return str.indexOf((0, _toString2.default)(elem)) >= 0;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223,"./util/toString":225}],167:[function(require,module,exports){
+},{"./util/assertString":229,"./util/toString":231}],173:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63323,7 +64364,7 @@ function equals(str, comparison) {
   return str === comparison;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],168:[function(require,module,exports){
+},{"./util/assertString":229}],174:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63342,7 +64383,7 @@ function escape(str) {
       return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\//g, '&#x2F;').replace(/`/g, '&#96;');
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],169:[function(require,module,exports){
+},{"./util/assertString":229}],175:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63369,7 +64410,7 @@ function isAfter(str) {
   return !!(original && comparison && original > comparison);
 }
 module.exports = exports['default'];
-},{"./toDate":218,"./util/assertString":223}],170:[function(require,module,exports){
+},{"./toDate":224,"./util/assertString":229}],176:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63395,7 +64436,7 @@ function isAlpha(str) {
   throw new Error('Invalid locale \'' + locale + '\'');
 }
 module.exports = exports['default'];
-},{"./alpha":164,"./util/assertString":223}],171:[function(require,module,exports){
+},{"./alpha":170,"./util/assertString":229}],177:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63421,7 +64462,7 @@ function isAlphanumeric(str) {
   throw new Error('Invalid locale \'' + locale + '\'');
 }
 module.exports = exports['default'];
-},{"./alpha":164,"./util/assertString":223}],172:[function(require,module,exports){
+},{"./alpha":170,"./util/assertString":229}],178:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63444,7 +64485,7 @@ function isAscii(str) {
   return ascii.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],173:[function(require,module,exports){
+},{"./util/assertString":229}],179:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63470,7 +64511,7 @@ function isBase64(str) {
   return firstPaddingChar === -1 || firstPaddingChar === len - 1 || firstPaddingChar === len - 2 && str[len - 1] === '=';
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],174:[function(require,module,exports){
+},{"./util/assertString":229}],180:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63497,7 +64538,7 @@ function isBefore(str) {
   return !!(original && comparison && original < comparison);
 }
 module.exports = exports['default'];
-},{"./toDate":218,"./util/assertString":223}],175:[function(require,module,exports){
+},{"./toDate":224,"./util/assertString":229}],181:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63516,7 +64557,7 @@ function isBoolean(str) {
   return ['true', 'false', '1', '0'].indexOf(str) >= 0;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],176:[function(require,module,exports){
+},{"./util/assertString":229}],182:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63550,7 +64591,7 @@ function isByteLength(str, options) {
   return len >= min && (typeof max === 'undefined' || len <= max);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],177:[function(require,module,exports){
+},{"./util/assertString":229}],183:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63596,7 +64637,7 @@ function isCreditCard(str) {
   return !!(sum % 10 === 0 ? sanitized : false);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],178:[function(require,module,exports){
+},{"./util/assertString":229}],184:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63685,7 +64726,7 @@ function isCurrency(str, options) {
   return currencyRegex(options).test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223,"./util/merge":224}],179:[function(require,module,exports){
+},{"./util/assertString":229,"./util/merge":230}],185:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63706,7 +64747,7 @@ function isDataURI(str) {
   return dataURI.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],180:[function(require,module,exports){
+},{"./util/assertString":229}],186:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63807,7 +64848,7 @@ function isDate(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./isISO8601":193,"./util/assertString":223}],181:[function(require,module,exports){
+},{"./isISO8601":199,"./util/assertString":229}],187:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63828,7 +64869,7 @@ function isDecimal(str) {
   return str !== '' && decimal.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],182:[function(require,module,exports){
+},{"./util/assertString":229}],188:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63851,7 +64892,7 @@ function isDivisibleBy(str, num) {
   return (0, _toFloat2.default)(str) % parseInt(num, 10) === 0;
 }
 module.exports = exports['default'];
-},{"./toFloat":219,"./util/assertString":223}],183:[function(require,module,exports){
+},{"./toFloat":225,"./util/assertString":229}],189:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63938,7 +64979,7 @@ function isEmail(str, options) {
   return true;
 }
 module.exports = exports['default'];
-},{"./isByteLength":176,"./isFQDN":184,"./util/assertString":223,"./util/merge":224}],184:[function(require,module,exports){
+},{"./isByteLength":182,"./isFQDN":190,"./util/assertString":229,"./util/merge":230}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -63996,7 +65037,7 @@ function isFDQN(str, options) {
   return true;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223,"./util/merge":224}],185:[function(require,module,exports){
+},{"./util/assertString":229,"./util/merge":230}],191:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64021,7 +65062,7 @@ function isFloat(str, options) {
   return float.test(str) && (!options.hasOwnProperty('min') || str >= options.min) && (!options.hasOwnProperty('max') || str <= options.max);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],186:[function(require,module,exports){
+},{"./util/assertString":229}],192:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64042,7 +65083,7 @@ function isFullWidth(str) {
   (0, _assertString2.default)(str);
   return fullWidth.test(str);
 }
-},{"./util/assertString":223}],187:[function(require,module,exports){
+},{"./util/assertString":229}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64063,7 +65104,7 @@ function isHalfWidth(str) {
   (0, _assertString2.default)(str);
   return halfWidth.test(str);
 }
-},{"./util/assertString":223}],188:[function(require,module,exports){
+},{"./util/assertString":229}],194:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64084,7 +65125,7 @@ function isHexColor(str) {
   return hexcolor.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],189:[function(require,module,exports){
+},{"./util/assertString":229}],195:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64105,7 +65146,7 @@ function isHexadecimal(str) {
   return hexadecimal.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],190:[function(require,module,exports){
+},{"./util/assertString":229}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64187,7 +65228,7 @@ function isIP(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],191:[function(require,module,exports){
+},{"./util/assertString":229}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64245,7 +65286,7 @@ function isISBN(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],192:[function(require,module,exports){
+},{"./util/assertString":229}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64294,7 +65335,7 @@ function isISIN(str) {
   return parseInt(str.substr(str.length - 1), 10) === (10000 - sum) % 10;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],193:[function(require,module,exports){
+},{"./util/assertString":229}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64317,7 +65358,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // from http://goo.gl/0ejHHW
 var iso8601 = exports.iso8601 = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
 /* eslint-enable max-len */
-},{"./util/assertString":223}],194:[function(require,module,exports){
+},{"./util/assertString":229}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64357,7 +65398,7 @@ function isIn(str, options) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223,"./util/toString":225}],195:[function(require,module,exports){
+},{"./util/assertString":229,"./util/toString":231}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64389,7 +65430,7 @@ function isInt(str, options) {
   return regex.test(str) && minCheckPassed && maxCheckPassed;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],196:[function(require,module,exports){
+},{"./util/assertString":229}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64415,7 +65456,7 @@ function isJSON(str) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],197:[function(require,module,exports){
+},{"./util/assertString":229}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64450,7 +65491,7 @@ function isLength(str, options) {
   return len >= min && (typeof max === 'undefined' || len <= max);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],198:[function(require,module,exports){
+},{"./util/assertString":229}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64469,7 +65510,7 @@ function isLowercase(str) {
   return str === str.toLowerCase();
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],199:[function(require,module,exports){
+},{"./util/assertString":229}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64490,7 +65531,7 @@ function isMACAddress(str) {
   return macAddress.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],200:[function(require,module,exports){
+},{"./util/assertString":229}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64511,7 +65552,7 @@ function isMD5(str) {
   return md5.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],201:[function(require,module,exports){
+},{"./util/assertString":229}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64576,7 +65617,7 @@ function isMobilePhone(str, locale) {
   return false;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],202:[function(require,module,exports){
+},{"./util/assertString":229}],208:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64599,7 +65640,7 @@ function isMongoId(str) {
   return (0, _isHexadecimal2.default)(str) && str.length === 24;
 }
 module.exports = exports['default'];
-},{"./isHexadecimal":189,"./util/assertString":223}],203:[function(require,module,exports){
+},{"./isHexadecimal":195,"./util/assertString":229}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64622,7 +65663,7 @@ function isMultibyte(str) {
   return multibyte.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],204:[function(require,module,exports){
+},{"./util/assertString":229}],210:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64641,7 +65682,7 @@ function isNull(str) {
   return str.length === 0;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],205:[function(require,module,exports){
+},{"./util/assertString":229}],211:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64662,7 +65703,7 @@ function isNumeric(str) {
   return numeric.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],206:[function(require,module,exports){
+},{"./util/assertString":229}],212:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64683,7 +65724,7 @@ function isSurrogatePair(str) {
   return surrogatePair.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],207:[function(require,module,exports){
+},{"./util/assertString":229}],213:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64826,7 +65867,7 @@ function isURL(url, options) {
   return true;
 }
 module.exports = exports['default'];
-},{"./isFQDN":184,"./isIP":190,"./util/assertString":223,"./util/merge":224}],208:[function(require,module,exports){
+},{"./isFQDN":190,"./isIP":196,"./util/assertString":229,"./util/merge":230}],214:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64855,7 +65896,7 @@ function isUUID(str) {
   return pattern && pattern.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],209:[function(require,module,exports){
+},{"./util/assertString":229}],215:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64874,7 +65915,7 @@ function isUppercase(str) {
   return str === str.toUpperCase();
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],210:[function(require,module,exports){
+},{"./util/assertString":229}],216:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64897,7 +65938,7 @@ function isVariableWidth(str) {
   return _isFullWidth.fullWidth.test(str) && _isHalfWidth.halfWidth.test(str);
 }
 module.exports = exports['default'];
-},{"./isFullWidth":186,"./isHalfWidth":187,"./util/assertString":223}],211:[function(require,module,exports){
+},{"./isFullWidth":192,"./isHalfWidth":193,"./util/assertString":229}],217:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64921,7 +65962,7 @@ function isWhitelisted(str, chars) {
   return true;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],212:[function(require,module,exports){
+},{"./util/assertString":229}],218:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64941,7 +65982,7 @@ function ltrim(str, chars) {
   return str.replace(pattern, '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],213:[function(require,module,exports){
+},{"./util/assertString":229}],219:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64963,7 +66004,7 @@ function matches(str, pattern, modifiers) {
   return pattern.test(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],214:[function(require,module,exports){
+},{"./util/assertString":229}],220:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65012,7 +66053,7 @@ function normalizeEmail(email, options) {
   return parts.join('@');
 }
 module.exports = exports['default'];
-},{"./isEmail":183,"./util/merge":224}],215:[function(require,module,exports){
+},{"./isEmail":189,"./util/merge":230}],221:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65038,7 +66079,7 @@ function rtrim(str, chars) {
   return idx < str.length ? str.substr(0, idx + 1) : str;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],216:[function(require,module,exports){
+},{"./util/assertString":229}],222:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65062,7 +66103,7 @@ function stripLow(str, keep_new_lines) {
   return (0, _blacklist2.default)(str, chars);
 }
 module.exports = exports['default'];
-},{"./blacklist":165,"./util/assertString":223}],217:[function(require,module,exports){
+},{"./blacklist":171,"./util/assertString":229}],223:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65084,7 +66125,7 @@ function toBoolean(str, strict) {
   return str !== '0' && str !== 'false' && str !== '';
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],218:[function(require,module,exports){
+},{"./util/assertString":229}],224:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65104,7 +66145,7 @@ function toDate(date) {
   return !isNaN(date) ? new Date(date) : null;
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],219:[function(require,module,exports){
+},{"./util/assertString":229}],225:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65123,7 +66164,7 @@ function toFloat(str) {
   return parseFloat(str);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],220:[function(require,module,exports){
+},{"./util/assertString":229}],226:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65142,7 +66183,7 @@ function toInt(str, radix) {
   return parseInt(str, radix || 10);
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],221:[function(require,module,exports){
+},{"./util/assertString":229}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65164,7 +66205,7 @@ function trim(str, chars) {
   return (0, _rtrim2.default)((0, _ltrim2.default)(str, chars), chars);
 }
 module.exports = exports['default'];
-},{"./ltrim":212,"./rtrim":215}],222:[function(require,module,exports){
+},{"./ltrim":218,"./rtrim":221}],228:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65183,7 +66224,7 @@ function unescape(str) {
       return str.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#x2F;/g, '/').replace(/&#96;/g, '`');
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],223:[function(require,module,exports){
+},{"./util/assertString":229}],229:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65196,7 +66237,7 @@ function assertString(input) {
   }
 }
 module.exports = exports['default'];
-},{}],224:[function(require,module,exports){
+},{}],230:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65215,7 +66256,7 @@ function merge() {
   return obj;
 }
 module.exports = exports['default'];
-},{}],225:[function(require,module,exports){
+},{}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65238,7 +66279,7 @@ function toString(input) {
   return String(input);
 }
 module.exports = exports['default'];
-},{}],226:[function(require,module,exports){
+},{}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65257,7 +66298,7 @@ function whitelist(str, chars) {
   return str.replace(new RegExp('[^' + chars + ']+', 'g'), '');
 }
 module.exports = exports['default'];
-},{"./util/assertString":223}],227:[function(require,module,exports){
+},{"./util/assertString":229}],233:[function(require,module,exports){
 function AsyncResolvers(onFailedOne, onResolvedAll) {
   this.onResolvedAll = onResolvedAll;
   this.onFailedOne = onFailedOne;
@@ -65340,7 +66381,7 @@ AsyncResolvers.prototype = {
 
 module.exports = AsyncResolvers;
 
-},{}],228:[function(require,module,exports){
+},{}],234:[function(require,module,exports){
 var replacements = {
 
   /**
@@ -65541,7 +66582,7 @@ module.exports = {
   formatter: formatter
 };
 
-},{}],229:[function(require,module,exports){
+},{}],235:[function(require,module,exports){
 var Errors = function() {
   this.errors = {};
 };
@@ -65620,7 +66661,7 @@ Errors.prototype = {
 
 module.exports = Errors;
 
-},{}],230:[function(require,module,exports){
+},{}],236:[function(require,module,exports){
 var Messages = require('./messages');
 
 require('./lang/en');
@@ -65700,7 +66741,7 @@ var container = {
 
 module.exports = container;
 
-},{"./lang/en":231,"./messages":233}],231:[function(require,module,exports){
+},{"./lang/en":237,"./messages":239}],237:[function(require,module,exports){
 module.exports = {
   accepted: 'The :attribute must be accepted.',
   after: 'The :attribute must be after :after.',
@@ -65750,7 +66791,7 @@ module.exports = {
   attributes: {}
 };
 
-},{}],232:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 module.exports = {
   accepted: ':attributeを確認してください。',
   after: ':attributeは:afterより後の日付を入力してください。',
@@ -65800,7 +66841,7 @@ module.exports = {
   attributes: {}
 };
 
-},{}],233:[function(require,module,exports){
+},{}],239:[function(require,module,exports){
 var Attributes = require('./attributes');
 
 var Messages = function(lang, messages) {
@@ -65954,7 +66995,7 @@ Messages.prototype = {
 
 module.exports = Messages;
 
-},{"./attributes":228}],234:[function(require,module,exports){
+},{"./attributes":234}],240:[function(require,module,exports){
 var isValid = require('date-fns/isValid');
 var parseISO = require('date-fns/parseISO');
 
@@ -66673,7 +67714,7 @@ var manager = {
 
 module.exports = manager;
 
-},{"date-fns/isValid":64,"date-fns/parseISO":65}],235:[function(require,module,exports){
+},{"date-fns/isValid":68,"date-fns/parseISO":69}],241:[function(require,module,exports){
 var Rules = require('./rules');
 var Lang = require('./lang');
 var Errors = require('./errors');
@@ -67333,4 +68374,4 @@ Validator.registerMissedRuleValidator = function(fn, message) {
 
 module.exports = Validator;
 
-},{"./async":227,"./attributes":228,"./errors":229,"./lang":230,"./rules":234}]},{},[15])
+},{"./async":233,"./attributes":234,"./errors":235,"./lang":236,"./rules":240}]},{},[15])
