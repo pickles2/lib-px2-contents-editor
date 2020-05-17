@@ -23697,16 +23697,20 @@ module.exports = function(px2ce){
 	 */
 	this.addButton = function(btn){
 		btn = btn || {};
-		var $btn = $('<button class="px2-btn px2-btn--sm">');
-		$btns.append( $btn
-			.text( btn.label )
-			.on('click', btn.click )
-		);
-		if( typeof(btn.cssClass) == typeof('') ){
-			$btn.addClass(btn.cssClass);
-		}else if( btn.cssClass ){
-			for( var idx in btn.cssClass ){
-				$btn.addClass(btn.cssClass[idx]);
+		if( btn.type == 'element' ){
+			$btns.append( $(btn.elm) );
+		}else{
+			var $btn = $('<button class="px2-btn px2-btn--sm">');
+			$btns.append( $btn
+				.text( btn.label )
+				.on('click', btn.click )
+			);
+			if( typeof(btn.cssClass) == typeof('') ){
+				$btn.addClass(btn.cssClass);
+			}else if( btn.cssClass ){
+				for( var idx in btn.cssClass ){
+					$btn.addClass(btn.cssClass[idx]);
+				}
 			}
 		}
 		return;
@@ -23749,11 +23753,13 @@ module.exports = function(px2ce){
 	if(window.ace){
 		editorLib = 'ace';
 	}
+	var canvasWidth = 'auto';
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
 	var broccoli;
-	var $elmCanvas,
+	var $elmCanvasFrame,
+		$elmCanvas,
 		$elmModulePalette,
 		$elmInstanceTreeView,
 		$elmInstancePathView;
@@ -23861,6 +23867,21 @@ module.exports = function(px2ce){
 					});
 				}
 
+				btns.push({
+					"type": 'element',
+					"elm": $('<select>')
+						.append( $('<option value="auto">ビューポート: ウィンドウサイズにフィット</option>') )
+						.append( $('<option value="1400">ビューポート: PCサイズ (1400px)</option>') )
+						.append( $('<option value="900">ビューポート: タブレットサイズ (900px)</option>') )
+						.append( $('<option value="460">ビューポート: スマートフォンサイズ (460px)</option>') )
+						.on('change', function(e){
+							var val = $(this).find('option:selected').val();
+							canvasWidth = val;
+							$elmCanvas.css({"width": (canvasWidth=='auto' ? '100%' : canvasWidth)});
+							_this.redraw();
+						})
+				});
+
 				toolbar.init({
 					"btns":btns,
 					"onFinish": function(){
@@ -23875,7 +23896,10 @@ module.exports = function(px2ce){
 				$canvas.append((function(){
 					var fin = '';
 					fin += '<div class="pickles2-contents-editor--broccoli">';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-canvas-frame">';
+					fin += 		'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview="">';
+					fin += 		'</div>';
+					fin += 	'</div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
@@ -23884,6 +23908,7 @@ module.exports = function(px2ce){
 				})());
 
 
+				$elmCanvasFrame = $canvas.find('.pickles2-contents-editor--broccoli-canvas-frame');
 				$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
 				$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
 				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
@@ -24213,7 +24238,7 @@ module.exports = function(px2ce){
 		});
 		var pathViewHeight = $elmInstancePathView.outerHeight();
 		if(!show_instanceTreeView){
-			$elmCanvas.css({
+			$elmCanvasFrame.css({
 				'position': 'absolute',
 				'top': tbHeight,
 				'left': 0,
@@ -24230,7 +24255,7 @@ module.exports = function(px2ce){
 				'width': '20%',
 				'height': $canvas.height() - pathViewHeight - tbHeight
 			});
-			$elmCanvas.css({
+			$elmCanvasFrame.css({
 				'position': 'absolute',
 				'top': tbHeight,
 				'left': '20%',
@@ -24246,11 +24271,16 @@ module.exports = function(px2ce){
 			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
 
+console.log('0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0');
+
 		if(broccoli){
+console.log('broccoli redraw');
 			broccoli.redraw(function(){
+console.log('broccoli redraw done');
 				callback();
 			});
 		}else{
+console.log('no broccoli');
 			callback();
 		}
 		return;

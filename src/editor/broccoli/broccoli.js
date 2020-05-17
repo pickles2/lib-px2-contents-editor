@@ -17,11 +17,13 @@ module.exports = function(px2ce){
 	if(window.ace){
 		editorLib = 'ace';
 	}
+	var canvasWidth = 'auto';
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
 	var broccoli;
-	var $elmCanvas,
+	var $elmCanvasFrame,
+		$elmCanvas,
 		$elmModulePalette,
 		$elmInstanceTreeView,
 		$elmInstancePathView;
@@ -129,6 +131,21 @@ module.exports = function(px2ce){
 					});
 				}
 
+				btns.push({
+					"type": 'element',
+					"elm": $('<select>')
+						.append( $('<option value="auto">ビューポート: ウィンドウサイズにフィット</option>') )
+						.append( $('<option value="1400">ビューポート: PCサイズ (1400px)</option>') )
+						.append( $('<option value="900">ビューポート: タブレットサイズ (900px)</option>') )
+						.append( $('<option value="460">ビューポート: スマートフォンサイズ (460px)</option>') )
+						.on('change', function(e){
+							var val = $(this).find('option:selected').val();
+							canvasWidth = val;
+							$elmCanvas.css({"width": (canvasWidth=='auto' ? '100%' : canvasWidth)});
+							_this.redraw();
+						})
+				});
+
 				toolbar.init({
 					"btns":btns,
 					"onFinish": function(){
@@ -143,7 +160,10 @@ module.exports = function(px2ce){
 				$canvas.append((function(){
 					var fin = '';
 					fin += '<div class="pickles2-contents-editor--broccoli">';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview=""></div>';
+					fin += 	'<div class="pickles2-contents-editor--broccoli-canvas-frame">';
+					fin += 		'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview="">';
+					fin += 		'</div>';
+					fin += 	'</div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
 					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
@@ -152,6 +172,7 @@ module.exports = function(px2ce){
 				})());
 
 
+				$elmCanvasFrame = $canvas.find('.pickles2-contents-editor--broccoli-canvas-frame');
 				$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
 				$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
 				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
@@ -481,7 +502,7 @@ module.exports = function(px2ce){
 		});
 		var pathViewHeight = $elmInstancePathView.outerHeight();
 		if(!show_instanceTreeView){
-			$elmCanvas.css({
+			$elmCanvasFrame.css({
 				'position': 'absolute',
 				'top': tbHeight,
 				'left': 0,
@@ -498,7 +519,7 @@ module.exports = function(px2ce){
 				'width': '20%',
 				'height': $canvas.height() - pathViewHeight - tbHeight
 			});
-			$elmCanvas.css({
+			$elmCanvasFrame.css({
 				'position': 'absolute',
 				'top': tbHeight,
 				'left': '20%',
@@ -513,6 +534,7 @@ module.exports = function(px2ce){
 			'width': '20%',
 			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
+
 
 		if(broccoli){
 			broccoli.redraw(function(){

@@ -53,16 +53,20 @@ module.exports = function(px2ce){
 	 */
 	this.addButton = function(btn){
 		btn = btn || {};
-		var $btn = $('<button class="px2-btn px2-btn--sm">');
-		$btns.append( $btn
-			.text( btn.label )
-			.on('click', btn.click )
-		);
-		if( typeof(btn.cssClass) == typeof('') ){
-			$btn.addClass(btn.cssClass);
-		}else if( btn.cssClass ){
-			for( var idx in btn.cssClass ){
-				$btn.addClass(btn.cssClass[idx]);
+		if( btn.type == 'element' ){
+			$btns.append( $(btn.elm) );
+		}else{
+			var $btn = $('<button class="px2-btn px2-btn--sm">');
+			$btns.append( $btn
+				.text( btn.label )
+				.on('click', btn.click )
+			);
+			if( typeof(btn.cssClass) == typeof('') ){
+				$btn.addClass(btn.cssClass);
+			}else if( btn.cssClass ){
+				for( var idx in btn.cssClass ){
+					$btn.addClass(btn.cssClass[idx]);
+				}
 			}
 		}
 		return;

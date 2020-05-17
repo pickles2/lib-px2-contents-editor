@@ -186,6 +186,7 @@ $ npm run test
 ### pickles2-contents-editor v2.0.11 (リリース日未定)
 
 - defaultエディタで、行の折り返しのモードを切り替えられるようになった。
+- Broccoliエディタで、ビューポートサイズを変更できるようになった。
 
 ### pickles2-contents-editor v2.0.10 (2020年1月2日)
 
