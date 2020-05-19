@@ -3579,6 +3579,8 @@ function Template(text, opts) {
   options.localsName = opts.localsName || exports.localsName || _DEFAULT_LOCALS_NAME;
   options.views = opts.views;
   options.async = opts.async;
+  options.destructuredLocals = opts.destructuredLocals;
+  options.legacyInclude = typeof opts.legacyInclude != 'undefined' ? !!opts.legacyInclude : true;
 
   if (options.strict) {
     options._with = false;
@@ -3623,15 +3625,28 @@ Template.prototype = {
 
     if (!this.source) {
       this.generateSource();
-      prepended += '  var __output = [], __append = __output.push.bind(__output);' + '\n';
+      prepended +=
+        '  var __output = "";\n' +
+        '  function __append(s) { if (s !== undefined && s !== null) __output += s }\n';
       if (opts.outputFunctionName) {
         prepended += '  var ' + opts.outputFunctionName + ' = __append;' + '\n';
+      }
+      if (opts.destructuredLocals && opts.destructuredLocals.length) {
+        var destructuring = '  var __locals = (' + opts.localsName + ' || {}),\n';
+        for (var i = 0; i < opts.destructuredLocals.length; i++) {
+          var name = opts.destructuredLocals[i];
+          if (i > 0) {
+            destructuring += ',\n  ';
+          }
+          destructuring += name + ' = __locals.' + name;
+        }
+        prepended += destructuring + ';\n';
       }
       if (opts._with !== false) {
         prepended +=  '  with (' + opts.localsName + ' || {}) {' + '\n';
         appended += '  }' + '\n';
       }
-      appended += '  return __output.join("");' + '\n';
+      appended += '  return __output;' + '\n';
       this.source = prepended + this.source + appended;
     }
 
@@ -3662,6 +3677,10 @@ Template.prototype = {
     }
     if (opts.debug) {
       console.log(src);
+    }
+    if (opts.compileDebug && opts.filename) {
+      src = src + '\n'
+        + '//# sourceURL=' + opts.filename + '\n';
     }
 
     try {
@@ -3694,23 +3713,18 @@ Template.prototype = {
         e.message += ' while compiling ejs\n\n';
         e.message += 'If the above error is not helpful, you may want to try EJS-Lint:\n';
         e.message += 'https://github.com/RyanZim/EJS-Lint';
-        if (!e.async) {
+        if (!opts.async) {
           e.message += '\n';
-          e.message += 'Or, if you meant to create an async function, pass async: true as an option.';
+          e.message += 'Or, if you meant to create an async function, pass `async: true` as an option.';
         }
       }
       throw e;
     }
 
-    if (opts.client) {
-      fn.dependencies = this.dependencies;
-      return fn;
-    }
-
     // Return a callable function which will execute the function
     // created by the source-code, with the passed data as locals
     // Adds a local `include` function which allows full recursive include
-    var returnedFn = function (data) {
+    var returnedFn = opts.client ? fn : function anonymous(data) {
       var include = function (path, includeData) {
         var d = utils.shallowCopy({}, data);
         if (includeData) {
@@ -3721,6 +3735,18 @@ Template.prototype = {
       return fn.apply(opts.context, [data || {}, escapeFn, include, rethrow]);
     };
     returnedFn.dependencies = this.dependencies;
+    if (opts.filename && typeof Object.defineProperty === 'function') {
+      var filename = opts.filename;
+      var basename = path.basename(filename, path.extname(filename));
+      try {
+        Object.defineProperty(returnedFn, 'name', {
+          value: basename,
+          writable: false,
+          enumerable: false,
+          configurable: true
+        });
+      } catch (e) {/* ignore */}
+    }
     return returnedFn;
   },
 
@@ -3764,7 +3790,7 @@ Template.prototype = {
           }
         }
         // HACK: backward-compat `include` preprocessor directives
-        if ((include = line.match(/^\s*include\s+(\S+)/))) {
+        if (opts.legacyInclude && (include = line.match(/^\s*include\s+(\S+)/))) {
           opening = matches[index - 1];
           // Must be in EVAL or RAW mode
           if (opening && (opening == o + d || opening == o + d + '-' || opening == o + d + '_')) {
@@ -3969,6 +3995,7 @@ exports.__express = exports.renderFile;
 /* istanbul ignore else */
 if (require.extensions) {
   require.extensions['.ejs'] = function (module, flnm) {
+    console.log('Deprecated: this API will go away in EJS v2.8');
     var filename = flnm || /* istanbul ignore next */ module.filename;
     var options = {
       filename: filename,
@@ -4176,35 +4203,30 @@ exports.cache = {
 
 },{}],17:[function(require,module,exports){
 module.exports={
-  "_args": [
-    [
-      "ejs@2.6.2",
-      "/Users/tomk79/mydoc_TomK/projs/pickles2/pickles2/node-pickles2-contents-editor"
-    ]
-  ],
-  "_from": "ejs@2.6.2",
-  "_id": "ejs@2.6.2",
+  "_from": "ejs@^2.6.2",
+  "_id": "ejs@2.7.4",
   "_inBundle": false,
-  "_integrity": "sha512-PcW2a0tyTuPHz3tWyYqtK6r1fZ3gp+3Sop8Ph+ZYN81Ob5rwmbHEzaqs10N3BEsaGTkh/ooniXK+WwszGlc2+Q==",
+  "_integrity": "sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==",
   "_location": "/ejs",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "ejs@2.6.2",
+    "raw": "ejs@^2.6.2",
     "name": "ejs",
     "escapedName": "ejs",
-    "rawSpec": "2.6.2",
+    "rawSpec": "^2.6.2",
     "saveSpec": null,
-    "fetchSpec": "2.6.2"
+    "fetchSpec": "^2.6.2"
   },
   "_requiredBy": [
     "/",
     "/broccoli-html-editor",
     "/langbank"
   ],
-  "_resolved": "https://registry.npmjs.org/ejs/-/ejs-2.6.2.tgz",
-  "_spec": "2.6.2",
+  "_resolved": "https://registry.npmjs.org/ejs/-/ejs-2.7.4.tgz",
+  "_shasum": "48661287573dcc53e366c7a1ae52c3a120eec9ba",
+  "_spec": "ejs@^2.6.2",
   "_where": "/Users/tomk79/mydoc_TomK/projs/pickles2/pickles2/node-pickles2-contents-editor",
   "author": {
     "name": "Matthew Eernisse",
@@ -4214,21 +4236,15 @@ module.exports={
   "bugs": {
     "url": "https://github.com/mde/ejs/issues"
   },
-  "contributors": [
-    {
-      "name": "Timothy Gu",
-      "email": "timothygu99@gmail.com",
-      "url": "https://timothygu.github.io"
-    }
-  ],
+  "bundleDependencies": false,
   "dependencies": {},
+  "deprecated": false,
   "description": "Embedded JavaScript templates",
   "devDependencies": {
     "browserify": "^13.1.1",
     "eslint": "^4.14.0",
     "git-directory-deploy": "^1.5.1",
-    "istanbul": "~0.4.3",
-    "jake": "^8.0.16",
+    "jake": "^10.3.1",
     "jsdoc": "^3.4.0",
     "lru-cache": "^4.0.1",
     "mocha": "^5.0.5",
@@ -4251,13 +4267,10 @@ module.exports={
     "url": "git://github.com/mde/ejs.git"
   },
   "scripts": {
-    "coverage": "istanbul cover node_modules/mocha/bin/_mocha",
-    "devdoc": "jake doc[dev]",
-    "doc": "jake doc",
-    "lint": "eslint \"**/*.js\" Jakefile",
-    "test": "jake test"
+    "postinstall": "node ./postinstall.js",
+    "test": "mocha"
   },
-  "version": "2.6.2"
+  "version": "2.7.4"
 }
 
 },{}],18:[function(require,module,exports){
