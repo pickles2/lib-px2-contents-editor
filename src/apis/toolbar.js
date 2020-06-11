@@ -22,11 +22,11 @@ module.exports = function(px2ce){
 		var code = ''
 			+'<div class="pickles2-contents-editor--toolbar">'
 				+'<div class="pickles2-contents-editor--toolbar-btns">'
-					+'<div class="btn-group" role="group">'
+					+'<div class="px2-input-group">'
 					+'</div>'
 				+'</div>'
 				+'<div class="pickles2-contents-editor--toolbar-finish">'
-					+'<div class="btn-group" role="group">'
+					+'<div class="px2-input-group">'
 						+'<button class="px2-btn px2-btn--primary px2-btn--sm pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> '+px2ce.lb.get('ui_label.done')+'</button>'
 					+'</div>'
 				+'</div>'
@@ -35,7 +35,7 @@ module.exports = function(px2ce){
 		$toolbar = $(code);
 		$canvas.append($toolbar);
 
-		$btns = $('.pickles2-contents-editor--toolbar-btns .btn-group');
+		$btns = $('.pickles2-contents-editor--toolbar-btns .px2-input-group');
 		for( var idx in options.btns ){
 			this.addButton(options.btns[idx]);
 		}

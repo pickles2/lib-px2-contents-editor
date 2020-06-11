@@ -309,7 +309,13 @@
   border-left: 3px solid #999;
   margin: 0.5em 0 0.5em -30px;
   background-color: #fff;
-  font-weight: bold; }
+  font-weight: bold;
+  position: relative; }
+  .broccoli__edit-window h3 small {
+    display: block;
+    font-size: 11px;
+    line-height: 1.3;
+    margin: 0 2px; }
 
 .broccoli__edit-window .has-error h3 {
   color: #a94442; }
@@ -708,19 +714,16 @@
     text-decoration: none;
     text-overflow: ellipsis;
     overflow: hidden;
-    cursor: move;
-    font-weight: bold; }
+    cursor: move; }
     .broccoli__module-palette a.broccoli__module-palette--draggablebutton:after {
       content: url("./images/clip.png");
       width: 20px;
       height: 20px;
       margin-left: 0.5em;
       color: #669; }
-    .broccoli__module-palette a.broccoli__module-palette--draggablebutton[data-clip="false"] {
-      font-weight: normal; }
-      .broccoli__module-palette a.broccoli__module-palette--draggablebutton[data-clip="false"]:after {
-        content: "";
-        margin-left: 0; }
+    .broccoli__module-palette a.broccoli__module-palette--draggablebutton[data-clip="false"]:after {
+      content: "";
+      margin-left: 0; }
     .broccoli__module-palette a.broccoli__module-palette--draggablebutton:hover {
       background-color: #ddd;
       background: linear-gradient(to bottom, #f9f9f9, #ddd);

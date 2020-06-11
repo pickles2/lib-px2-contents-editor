@@ -1385,7 +1385,7 @@ $(window).load(function(){
 						'page_path': params.page_path ,
 						'elmCanvas': $canvas.get(0),
 						'preview':{
-							'origin': 'http://px2ce-preview.localhost'
+							'origin': '/tests/htdocs2/htdocs/subapp/.px_execute.php/sample_pages/page3/'
 						},
 						'customFields':{
 							'custom1': function(broccoli){

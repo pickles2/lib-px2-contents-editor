@@ -134,6 +134,7 @@ module.exports = function(px2ce){
 				btns.push({
 					"type": 'element',
 					"elm": $('<select>')
+						.addClass('px2-input')
 						.append( $('<option value="auto">ビューポート: ウィンドウサイズにフィット</option>') )
 						.append( $('<option value="1400">ビューポート: PCサイズ (1400px)</option>') )
 						.append( $('<option value="900">ビューポート: タブレットサイズ (900px)</option>') )
