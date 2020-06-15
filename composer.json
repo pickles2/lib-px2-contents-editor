@@ -32,16 +32,16 @@
         "broccoli-html-editor/broccoli-field-table": "^0.2"
     },
     "require-dev": {
-        "pickles2/px-fw-2.x": "dev-develop",
+        "pickles2/px-fw-2.x": "^2.0",
         "broccoli-html-editor/broccoli-module-fess": "dev-develop",
         "broccoli-html-editor/broccoli-module-plain-html-elements": "dev-develop",
-        "pickles2/px2-dec": "dev-develop",
-        "pickles2/px2-multitheme": "dev-develop",
-        "pickles2/px2-path-resolver": "dev-develop",
+        "pickles2/px2-dec": "^2.0",
+        "pickles2/px2-multitheme": "^2.0",
+        "pickles2/px2-path-resolver": "^2.0",
         "pickles2/px2-px2dthelper": "^2.0",
-        "pickles2/px2-remove-attr": "dev-develop",
-        "pickles2/px2-sitemapexcel": "dev-develop",
-        "tomk79/broccoli-module-lp": "dev-develop",
+        "pickles2/px2-remove-attr": "^2.0",
+        "pickles2/px2-sitemapexcel": "^2.0||^2.1",
+        "tomk79/broccoli-module-lp": "^0.1",
         "phpunit/phpunit": "^4.1.0"
     },
     "autoload": {
