@@ -761,6 +761,7 @@ class main{
 			'realpathDataDir' =>  $this->realpathDataDir,
 			'contents_bowl_name_by' => @$px2conf->plugins->px2dt->contents_bowl_name_by,
 			'customFields' => $customFields ,
+			'fieldConfig' => @(array) $px2conf->plugins->px2dt->guieditor->field_config,
 			'bindTemplate' => $bindTemplate,
 			'log' => function($msg){
 				// エラー発生時にコールされます。

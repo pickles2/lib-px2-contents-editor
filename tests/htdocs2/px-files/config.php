@@ -267,6 +267,11 @@ return call_user_func( function(){
 		),
 	);
 
+	@$conf->plugins->px2dt->guieditor->field_config = array(
+		'image' => array( // image field に対する設定
+			'filenameAutoSetter' => 'ifEmpty', // filenameAutoSetterの初期値を設定
+		),
+	);
 
 	/**
 	 * `memory_limit`
