@@ -54,6 +54,7 @@ module.exports = function(){
 		options.appMode = options.appMode || 'web'; // web | desktop
 		options.customFields = options.customFields || {}; // custom fields
 		options.customFieldsIncludePath = options.customFieldsIncludePath || {}; // custom fields include path (for cliend libs)
+		options.userStorage = options.userStorage || null; // User Storage I/O
 		options.log = options.log || function(msg){
 			console.error(msg);
 		};
@@ -735,7 +736,9 @@ module.exports = function(){
 					'pathResourceDir': _this.pathResourceDir,
 					'realpathDataDir':  _this.realpathDataDir,
 					'contents_bowl_name_by': px2conf.plugins.px2dt.contents_bowl_name_by,
-					'customFields': customFields ,
+					'customFields': customFields,
+            		'userStorage': px2ce.options.userStorage,
+					'fieldConfig': px2conf.plugins.px2dt.guieditor.field_config,
 					'bindTemplate': bindTemplate,
 					'log': function(msg){
 						// エラー発生時にコールされます。

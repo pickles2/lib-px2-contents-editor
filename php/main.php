@@ -82,6 +82,9 @@ class main{
 		if( !array_key_exists('customFields', $options) || !is_array( $options['customFields'] ) ){
 			$options['customFields'] = array(); // custom fields
 		}
+		if( !array_key_exists('userStorage', $options) || !is_callable( $options['userStorage'] ) ){
+			$options['userStorage'] = null; // User Storage I/O
+		}
 		if( !array_key_exists('log', $options) || !is_callable( $options['log'] ) ){
 			$options['log'] = function($msg){
 				// var_dump($msg);
@@ -761,6 +764,7 @@ class main{
 			'realpathDataDir' =>  $this->realpathDataDir,
 			'contents_bowl_name_by' => @$px2conf->plugins->px2dt->contents_bowl_name_by,
 			'customFields' => $customFields ,
+			'userStorage' => $this->options['userStorage'],
 			'fieldConfig' => @(array) $px2conf->plugins->px2dt->guieditor->field_config,
 			'bindTemplate' => $bindTemplate,
 			'log' => function($msg){
