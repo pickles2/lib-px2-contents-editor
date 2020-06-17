@@ -41,6 +41,7 @@ px2proj.get_config(function(px2conf){
 			'function': 'window.broccoliFieldLpCssMarginPadding'
 		}
 	};
+	var confDroppedFileOperator = px2conf.plugins.px2dt.guieditor.dropped_file_operator;
 
 	var customFieldsIncludePath = [];
 	for(var fieldName in confCustomFields){
@@ -58,6 +59,27 @@ px2proj.get_config(function(px2conf){
 				var pathJs = require('path').resolve(entryScript, '..', confCustomFields[fieldName].frontend.file);
 				app.use( '/broccoli_custom_fields/'+fieldName, express.static( require('path').resolve(pathJs, '..') ) );
 				customFieldsIncludePath.push( '/broccoli_custom_fields/'+fieldName+'/'+utils79.basename(pathJs) );
+			}
+		}
+	}
+
+	for(var extOrMimetypeName in confDroppedFileOperator){
+		if( confDroppedFileOperator[extOrMimetypeName].file && confDroppedFileOperator[extOrMimetypeName].function ){
+			var dirnameExtOrMimetypeName = extOrMimetypeName;
+			dirnameExtOrMimetypeName = dirnameExtOrMimetypeName.split(/[^a-zA-Z0-9\-\_]/).join('__');
+			if( confDroppedFileOperator[extOrMimetypeName].dir ){
+				var pathDir = require('path').resolve(entryScript, '..', confDroppedFileOperator[extOrMimetypeName].dir);
+				app.use( '/broccoli_dropped_file_operator/'+dirnameExtOrMimetypeName, express.static( require('path').resolve(pathDir) ) );
+				if( typeof(confDroppedFileOperator[extOrMimetypeName].file) === typeof('') ){
+					confDroppedFileOperator[extOrMimetypeName].file = [confDroppedFileOperator[extOrMimetypeName].file];
+				}
+				for( idx in confDroppedFileOperator[extOrMimetypeName].file ){
+					customFieldsIncludePath.push( '/broccoli_dropped_file_operator/'+dirnameExtOrMimetypeName+'/'+confDroppedFileOperator[extOrMimetypeName].file[idx] );
+				}
+			}else{
+				var pathJs = require('path').resolve(entryScript, '..', confDroppedFileOperator[extOrMimetypeName].file);
+				app.use( '/broccoli_dropped_file_operator/'+dirnameExtOrMimetypeName, express.static( require('path').resolve(pathJs, '..') ) );
+				customFieldsIncludePath.push( '/broccoli_dropped_file_operator/'+dirnameExtOrMimetypeName+'/'+utils79.basename(pathJs) );
 			}
 		}
 	}

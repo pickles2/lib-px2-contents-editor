@@ -93,7 +93,7 @@
 							} ,
 							function(_bootupInfomations){
 								bootupInfomations = _bootupInfomations;
-								console.log('=----=----=', bootupInfomations);
+								// console.log('=----=----=', bootupInfomations);
 								serverConfig = bootupInfomations.conf;
 
 								it1.next(data);
@@ -324,21 +324,21 @@
 					var confDroppedFileOperator = {};
 					try {
 						confDroppedFileOperator = px2conf.plugins.px2dt.guieditor.dropped_file_operator;
-						for( var fieldName in confDroppedFileOperator ){
+						for( var extOrMimetypeName in confDroppedFileOperator ){
 							try {
-								if( confDroppedFileOperator[fieldName].file && confDroppedFileOperator[fieldName].function ){
-									// console.log(eval( confDroppedFileOperator[fieldName].function ));
-									var tmpCustomFieldFunction = eval( confDroppedFileOperator[fieldName].function );
+								if( confDroppedFileOperator[extOrMimetypeName].file && confDroppedFileOperator[extOrMimetypeName].function ){
+									// console.log(eval( confDroppedFileOperator[extOrMimetypeName].function ));
+									var tmpCustomFieldFunction = eval( confDroppedFileOperator[extOrMimetypeName].function );
 									if( typeof(tmpCustomFieldFunction) == typeof(function(){}) ){
-										droppedFileOperator[fieldName] = tmpCustomFieldFunction;
+										droppedFileOperator[extOrMimetypeName] = tmpCustomFieldFunction;
 									}else{
-										console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend); Is NOT a Function.' );
+										console.error( 'FAILED to load custom field: ' + extOrMimetypeName + ' (frontend); Is NOT a Function.' );
 									}
 								}else{
-									console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend); unknown type.' );
+									console.error( 'FAILED to load custom field: ' + extOrMimetypeName + ' (frontend); unknown type.' );
 								}
 							} catch (e) {
-								console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend);', e );
+								console.error( 'FAILED to load custom field: ' + extOrMimetypeName + ' (frontend);', e );
 							}
 						}
 					} catch (e) {

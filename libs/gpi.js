@@ -235,6 +235,33 @@ module.exports = function(px2ce, data, callback){
 					}
 				} catch (e) {
 				}
+				try {
+					var confDroppedFileOperator = conf.plugins.px2dt.guieditor.dropped_file_operator;
+					for(var extOrMimetypeName in confDroppedFileOperator){
+						var file = confDroppedFileOperator[extOrMimetypeName].file;
+						var dir = confDroppedFileOperator[extOrMimetypeName].dir;
+						var fnc = confDroppedFileOperator[extOrMimetypeName].function;
+						if( file && fnc ){
+							if( typeof(file) == typeof('') ){
+								file = [file];
+							}
+							for(var idx in file){
+								var filePath = '.';
+								if( typeof(dir) == typeof('') && utils79.is_dir(require('path').resolve(px2ce.entryScript, '..', dir)) ){
+									filePath = dir;
+								}
+								var pathJs = require('path').resolve(px2ce.entryScript, '..', filePath, file[idx]);
+								var binJs = require('fs').readFileSync( pathJs ).toString();
+								code += '/**'+"\n";
+								code += ' * '+extOrMimetypeName+"\n";
+								code += ' */'+"\n";
+								code += binJs+"\n";
+								code += ''+"\n";
+							}
+						}
+					}
+				} catch (e) {
+				}
 				code = 'data:text/javascript;base64,'+(new Buffer(code).toString('base64'));
 				codes.push(code);
 				callback(codes);
