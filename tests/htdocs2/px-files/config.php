@@ -252,7 +252,7 @@ return call_user_func( function(){
 			'frontend'=>array(
 				'dir' => '../../px-files/broccoli-fields/projectCustom1/',
 				'file' => 'frontend.js',
-				'function' => 'window.broccoliFieldProjectCustom1'
+				'function' => 'window.broccoliFieldProjectCustom1',
 			),
 		),
 		'projectCustom2'=>array(
@@ -262,7 +262,7 @@ return call_user_func( function(){
 			),
 			'frontend'=>array(
 				'file' => '../../px-files/broccoli-fields/projectCustom2/frontend.js',
-				'function' => 'window.broccoliFieldProjectCustom2'
+				'function' => 'window.broccoliFieldProjectCustom2',
 			),
 		),
 	);
@@ -270,6 +270,29 @@ return call_user_func( function(){
 	@$conf->plugins->px2dt->guieditor->field_config = array(
 		'image' => array( // image field に対する設定
 			'filenameAutoSetter' => 'ifEmpty', // filenameAutoSetterの初期値を設定
+		),
+	);
+
+	@$conf->plugins->px2dt->guieditor->dropped_file_operator = array(
+		'png' => array(
+			'file' => __DIR__.'/broccoli-plugins/broccoliDroppedFileOperatorImageTest.js',
+			'function' => 'window.broccoliDroppedFileOperatorImageTest',
+		),
+		'gif' => array(
+			'file' => __DIR__.'/broccoli-plugins/broccoliDroppedFileOperatorImageTest.js',
+			'function' => 'window.broccoliDroppedFileOperatorImageTest',
+		),
+		'jpg' => array(
+			'file' => __DIR__.'/broccoli-plugins/broccoliDroppedFileOperatorImageTest.js',
+			'function' => 'window.broccoliDroppedFileOperatorImageTest',
+		),
+		'svg' => array(
+			'file' => __DIR__.'/broccoli-plugins/broccoliDroppedFileOperatorImageTest.js',
+			'function' => 'window.broccoliDroppedFileOperatorImageTest',
+		),
+		'application/svg+xml' => array(
+			'file' => __DIR__.'/broccoli-plugins/broccoliDroppedFileOperatorImageTest.js',
+			'function' => 'window.broccoliDroppedFileOperatorImageTest',
 		),
 	);
 

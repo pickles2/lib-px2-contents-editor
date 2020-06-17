@@ -25154,6 +25154,7 @@ module.exports = function(px2ce){
 			var px2ce = this;
 			var px2conf;
 			var customFields = {};
+			var droppedFileOperator = {};
 
 			new Promise(function(rlv){rlv();})
 				.then(function(){ return new Promise(function(rlv, rjt){
@@ -25224,6 +25225,30 @@ module.exports = function(px2ce){
 					} catch (e) {
 					}
 
+					// ファイルのドロップに対する処理の追加
+					var confDroppedFileOperator = {};
+					try {
+						confDroppedFileOperator = px2conf.plugins.px2dt.guieditor.dropped_file_operator;
+						for( var fieldName in confDroppedFileOperator ){
+							try {
+								if( confDroppedFileOperator[fieldName].file && confDroppedFileOperator[fieldName].function ){
+									// console.log(eval( confDroppedFileOperator[fieldName].function ));
+									var tmpCustomFieldFunction = eval( confDroppedFileOperator[fieldName].function );
+									if( typeof(tmpCustomFieldFunction) == typeof(function(){}) ){
+										droppedFileOperator[fieldName] = tmpCustomFieldFunction;
+									}else{
+										console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend); Is NOT a Function.' );
+									}
+								}else{
+									console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend); unknown type.' );
+								}
+							} catch (e) {
+								console.error( 'FAILED to load custom field: ' + fieldName + ' (frontend);', e );
+							}
+						}
+					} catch (e) {
+					}
+
 					// console.log(customFields);
 
 					rlv();
@@ -25247,6 +25272,7 @@ module.exports = function(px2ce){
 						'contents_bowl_name_by': contents_bowl_name_by,
 							// ↑bowlの名称を、data-contents属性値から取得します。
 						'customFields': customFields,
+						'droppedFileOperator': droppedFileOperator,
 						'lang': px2ce.options.lang,
 						'gpiBridge': function(api, options, callback){
 							// GPI(General Purpose Interface) Bridge

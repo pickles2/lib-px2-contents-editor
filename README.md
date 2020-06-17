@@ -189,6 +189,7 @@ $ npm run test
 - Broccoliエディタで、ビューポートサイズを変更できるようになった。
 - Broccoliエディタの新しい設定項目 `fieldConfig` に対応。
 - Broccoliエディタの新しい設定項目 `userStorage` に対応。
+- Broccoliエディタの新しい設定項目 `droppedFileOperator` に対応。
 
 ### pickles2-contents-editor v2.0.10 (2020年1月2日)
 

@@ -54,6 +54,7 @@
 			options.contents_area_selector = options.contents_area_selector || '.contents';
 			options.contents_bowl_name_by = options.contents_bowl_name_by || 'id';
 			options.gpiBridge = options.gpiBridge || function(){};
+			options.droppedFileOperator = options.droppedFileOperator || {};
 			options.onClickContentsLink = options.onClickContentsLink || function(){};
 			options.onMessage = options.onMessage || function(){};
 			options.lang = options.lang || 'en';
@@ -237,7 +238,8 @@
 					} ,
 					function(it1, data){
 						_this.progressMessage('コンテンツデータを初期化しています...。');
-						_this.contentsSourceData = new (require('./contentsSourceData.js'))(_this).init(
+						_this.contentsSourceData = new (require('./contentsSourceData.js'))(_this);
+						_this.contentsSourceData.init(
 							function(){
 								it1.next(data);
 							}
@@ -1022,6 +1024,8 @@
 				return;
 			}
 
+			_this.progressMessage('コピーしています。');
+
 			this.selectedInstanceToJsonString(function(jsonStr){
 				if(jsonStr === false){
 					_this.message('インスタンスのコピーに失敗しました。');
@@ -1029,7 +1033,9 @@
 					return;
 				}
 				_this.clipboard.set( jsonStr, null, event );
+				_this.progressMessage('インスタンスをコピーしました。');
 				_this.message('インスタンスをコピーしました。');
+				_this.closeProgress();
 				callback(true);
 			});
 			return;
@@ -1449,7 +1455,7 @@
 		 * プログレスを閉じる
 		 */
 		this.closeProgress = function( callback ){
-			callback = callback||function(){};
+			callback = callback || function(){};
 			var $progress = $('body').find('.broccoli__progress');
 			if( !$progress.length ){
 				_this.setUiState();
@@ -1623,8 +1629,8 @@ module.exports = function(broccoli){
 					navigator.clipboard.writeText(text).then(function() {
 						console.log('navigator.clipboard: Copying to clipboard was successful!');
 						callback();
-					}, function(err) {
-						console.error('navigator.clipboard: Could not copy text:', err);
+					}, function() {
+						console.error('navigator.clipboard: Could not copy text:', text);
 						callback();
 					});
 					return;
@@ -1793,7 +1799,7 @@ module.exports = function(broccoli){
 			]
 		);
 
-		return this;
+		return;
 	}// init()
 
 	/**
@@ -1826,7 +1832,7 @@ module.exports = function(broccoli){
 		if( container == 'bowl' ){
 			return this.get( aryPath, data.bowl[fieldName] );
 		}
-		if( !modTpl.fields[fieldName] ){
+		if( !modTpl || !modTpl.fields || !modTpl.fields[fieldName] ){
 			return false;
 		}
 
@@ -1898,13 +1904,13 @@ module.exports = function(broccoli){
 	 * インスタンスを追加する (非同期)
 	 */
 	this.addInstance = function( modId, containerInstancePath, cb, subModName ){
-		// console.log( '----- addInstance: '+modId+': '+containerInstancePath );
+		// console.log( '----- addInstance: '+(modId.modId || modId)+': '+containerInstancePath );
 		cb = cb||function(){};
 
 		if( containerInstancePath.match(new RegExp('^\\/bowl\\.[^\\/]+$')) ){
 			broccoli.message('bowl に追加することはできません。アペンダーに追加してください。');
 			cb();
-			return this;
+			return;
 		}
 
 		var newData = {};
@@ -1946,7 +1952,7 @@ module.exports = function(broccoli){
 		// console.log( aryPath );
 
 		function set_r( aryPath, data, newData ){
-			// console.log( data );
+			// console.log( '=-=-=-=-=-=-=-=-=-=-=-=', aryPath, data );
 			var cur = aryPath.shift();
 			var idx = null;
 			var tmpSplit = cur.split('@');
@@ -1984,7 +1990,7 @@ module.exports = function(broccoli){
 						broccoli.message('モジュールの数が最大件数 '+modTpl.fields[fieldName]['maxLength']+' に達しています。');
 						return false;
 					}
-					if(newDataModTpl.info.enabledParents.length){
+					if( newDataModTpl && newDataModTpl.info && newDataModTpl.info.enabledParents && newDataModTpl.info.enabledParents.length ){
 						var tmpIsEnabledParent = false;
 						for(var tmpIdx in newDataModTpl.info.enabledParents){
 							if(newDataModTpl.info.enabledParents[tmpIdx] == modTpl.id){
@@ -2012,7 +2018,7 @@ module.exports = function(broccoli){
 							return false;
 						}
 					}
-					if(newDataModTpl.info.enabledBowls.length){
+					if(newDataModTpl && newDataModTpl.info && newDataModTpl.info.enabledBowls && newDataModTpl.info.enabledBowls.length){
 						var tmpIsEnabledBowl = false;
 						for(var tmpIdx in newDataModTpl.info.enabledBowls){
 							if( containerInstancePath.match( new RegExp('^\\/bowl\\.' + (newDataModTpl.info.enabledBowls[tmpIdx]) + '\\/') ) ){
@@ -2061,7 +2067,7 @@ module.exports = function(broccoli){
 		cb(result);
 
 		return;
-	}// addInstance()
+	} // addInstance()
 
 	/**
 	 * インスタンスを更新する
@@ -2158,12 +2164,12 @@ module.exports = function(broccoli){
 		if( isBowlRoot(fromContainerInstancePath) ){
 			broccoli.message('bowl を移動することはできません。');
 			cb(false);
-			return this;
+			return;
 		}
 		if( isBowlRoot(toContainerInstancePath) ){
 			broccoli.message('bowl への移動はできません。アペンダーへドロップしてください。');
 			cb(false);
-			return this;
+			return;
 		}
 
 		function parseInstancePath(path){
@@ -2199,7 +2205,7 @@ module.exports = function(broccoli){
 			if( fromParsed.num == toParsed.num ){
 				// to と from が一緒だったら何もしない。
 				cb(false);
-				return this;
+				return;
 			}
 			if( fromParsed.num < toParsed.num ){
 				// 上から1つ以上下へ
@@ -2259,10 +2265,14 @@ module.exports = function(broccoli){
 		callback = callback || function(){};
 		options = options || {};
 		var _this = this;
-		var supplementModPackage = options.supplementModPackage;
+		var supplementModPackage = options.supplementModPackage || '';
 		var parsedModId = broccoli.parseModuleId(objInstance.modId);
 		if( parsedModId.package === null ){
-			objInstance.modId = supplementModPackage + ':' + parsedModId.category + '/' + parsedModId.module;
+			if( parsedModId.category == '_sys' ){
+				objInstance.modId = parsedModId.category + '/' + parsedModId.module;
+			}else{
+				objInstance.modId = supplementModPackage + ':' + parsedModId.category + '/' + parsedModId.module;
+			}
 		}
 
 		var newData = JSON.parse( JSON.stringify( objInstance ) );
@@ -5481,6 +5491,7 @@ module.exports = function(broccoli){
 		e.stopPropagation();
 		e.preventDefault();
 		var event = e.originalEvent;
+		// console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=', event);
 		$(elm).removeClass('broccoli--panel__drag-entered');
 		$(elm).removeClass('broccoli--panel__drag-entered-u');
 		$(elm).removeClass('broccoli--panel__drag-entered-d');
@@ -5526,6 +5537,11 @@ module.exports = function(broccoli){
 
 				return moveToPath + '@' + (moveToIdx + 1);
 			})(moveTo);
+		}
+
+		if( event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length ){
+			console.log('外部からファイルがドロップされました。', event.dataTransfer.files);
+			return onDropFile(e, moveTo, callback);
 		}
 
 		if( moveFroms[0] === moveTo || ( broccoli.isInstanceSelected( moveTo ) && method === 'moveTo' ) ){
@@ -5655,14 +5671,10 @@ module.exports = function(broccoli){
 			} catch (e) {
 				modClip = false;
 			}
-			// console.log(modId);
-			// console.log(modClip);
+
 			if( modClip !== false ){
 				console.log('クリップがドロップされました。');
-				// console.log(modId);
-				// console.log(modClip);
 				var parsedModId = broccoli.parseModuleId(modId);
-				// console.log(parsedModId.package);
 
 				broccoli.gpi(
 					'getClipModuleContents',
@@ -5756,6 +5768,205 @@ module.exports = function(broccoli){
 		});
 		return;
 	} // onDrop()
+
+	/**
+	 * パネルの ondrop イベントハンドラ: ファイルを受け取った場合の処理
+	 */
+	function onDropFile(e, moveTo, callback){
+		callback = callback || function(){};
+		var event = e.originalEvent;
+		if( !event.dataTransfer || !event.dataTransfer.files || !event.dataTransfer.files.length ){
+			broccoli.message('外部からドロップされたファイルが取得できません。');
+			console.error('外部からドロップされたファイルが取得できません。', event);
+			callback();
+			return;
+		}
+
+		// console.info( event.dataTransfer.files );
+
+		it79.ary(
+			event.dataTransfer.files,
+			function( it1, fileInfo, idx ){
+				// console.log(idx, fileInfo);
+
+				var mimetype = fileInfo.type;
+				if( !mimetype ){
+					it1.next();
+					return;
+				}
+
+				broccoli.progressMessage( fileInfo.name + ' を処理中...' );
+
+				var originalFileSize = fileInfo.size;
+				var originalFileName = fileInfo.name;
+				var originalFileFirstname = originalFileName;
+				var originalFileExt = 'png';
+				if( originalFileName.match( /^(.*)\.([a-zA-Z0-9\_]+)$/i ) ){
+					originalFileFirstname = RegExp.$1;
+					originalFileExt = RegExp.$2;
+					originalFileExt = originalFileExt.toLowerCase();
+				}
+
+				var customFunc = false;
+				if( typeof(broccoli.options.droppedFileOperator[mimetype]) == typeof(function(){}) ){
+					// mimetypeで登録されていたら、そちらへ転送
+					customFunc = broccoli.options.droppedFileOperator[mimetype];
+				}else if( typeof(broccoli.options.droppedFileOperator[originalFileExt]) == typeof(function(){}) ){
+					// 拡張子で登録されていたら、そちらへ転送
+					customFunc = broccoli.options.droppedFileOperator[originalFileExt];
+				}
+				if(customFunc){
+					customFunc( fileInfo, function(clipContents){
+						if( typeof(clipContents) == typeof({}) && clipContents.data && clipContents.resources ){
+							insertClipModule(clipContents, moveTo, {}, function(){
+								it1.next();
+							});
+							return;
+						}
+					} );
+					return;
+				}
+
+				var reader = new FileReader();
+				reader.onload = function(evt) {
+					// console.log(evt.target);
+					var content = evt.target.result;
+					// console.log(content);
+
+					switch( mimetype ){
+
+						// --------------------------------------
+						// JSON形式のファイルドロップを処理
+						case 'text/json':
+						case 'application/json':
+							var jsonContents = false;
+							try{
+								jsonContents = JSON.parse(content);
+							}catch(e){
+								console.error(e);
+								broccoli.message('JSON形式をデコードできません。');
+								it1.next();
+								return;
+							}
+							// console.log(jsonContents);
+							if( jsonContents && jsonContents.data && jsonContents.resources ){
+								// クリップモジュール形式と評価される場合は、
+								// クリップモジュールドロップと同様の挿入処理をする。
+
+								if(!confirm('クリップデータを挿入しますか？')){
+									it1.next();
+									return;
+								}
+
+								insertClipModule(jsonContents, moveTo, {}, function(){
+									it1.next();
+								});
+
+								return;
+							}
+
+							broccoli.message('対応していないJSON形式です。');
+							it1.next();
+							return;
+							break;
+
+						// --------------------------------------
+						// 画像ファイルのドロップを処理
+						// _sys/image に当てはめて挿入します。
+						case 'image/jpeg':
+						case 'image/png':
+						case 'image/gif':
+						case 'image/svg+xml':
+							originalFileFirstname = originalFileFirstname.split(/[^a-zA-Z0-9]/).join('_');
+
+							var base64 = content.replace(/^data\:[a-zA-Z0-9]+\/[a-zA-Z0-9]+\;base64\,/i, '');
+							var clipContents = {
+								'data': [
+									{
+										"modId": "_sys/image",
+										"fields": {
+											"src": {
+												"resKey": "___dropped_local_image___",
+												"path": "",
+												"resType": "",
+												"webUrl": ""
+											}
+										}
+									}
+								],
+								'resources': {
+									"___dropped_local_image___": {
+										"ext": originalFileExt,
+										"type": mimetype,
+										"size": originalFileSize,
+										"base64": base64,
+										"isPrivateMaterial": false,
+										"publicFilename": originalFileFirstname,
+										"md5": "",
+										"field": "image",
+										"fieldNote": {}
+									}
+								}
+							};
+							insertClipModule(clipContents, moveTo, {}, function(){
+								it1.next();
+							});
+							return;
+							break;
+
+						// --------------------------------------
+						// 対応していないファイル形式
+						default:
+							broccoli.message('対応していないファイル形式です。');
+							console.error('対応していないファイル形式です。', fileInfo.type);
+							it1.next();
+							return;
+							break;
+					}
+					it1.next();
+					return;
+				}
+
+				switch( mimetype ){
+					case 'image/jpeg':
+					case 'image/png':
+					case 'image/gif':
+					case 'image/svg+xml':
+						reader.readAsDataURL(fileInfo);
+						break;
+					case 'text/plain':
+					case 'text/json':
+					case 'application/json':
+					case 'text/html':
+					case 'text/markdown':
+						reader.readAsText(fileInfo);
+						break;
+					default:
+						broccoli.message('処理できないファイルです。');
+						console.error('処理できないファイルです。', mimetype);
+						it1.next();
+						break;
+				}
+			},
+			function(){
+				// callback();
+				broccoli.unselectInstance(function(){
+					broccoli.saveContents(function(){
+						broccoli.message('ファイルを挿入しました。');
+						broccoli.redraw(function(){
+							broccoli.closeProgress(function(){
+								broccoli.selectInstance(newInstancePath, function(){
+									callback();
+								});
+							});
+						});
+					});
+				});
+			}
+		);
+
+		return;
+	} // onDropFile()
 
 	/**
 	 * パネルの ondblclick イベントハンドラ
@@ -6054,6 +6265,56 @@ module.exports = function(broccoli){
 		// this.updateInstancePathView();
 		callback();
 		return this;
+	}
+
+	/**
+	 * クリップモジュールを挿入する
+	 */
+	function insertClipModule(clipContents, moveTo, options, callback){
+		options = options || {};
+		options.packageId = options.packageId || undefined;
+
+		it79.ary(
+			clipContents.data ,
+			function(it1, row1, idx1){
+				broccoli.contentsSourceData.duplicateInstance(clipContents.data[idx1], clipContents.resources, {'supplementModPackage': options.packageId}, function(newData){
+					// console.log(newData, moveTo);
+
+					broccoli.contentsSourceData.addInstance( newData, moveTo, function(result){
+						// 上から順番に挿入していくので、
+						// moveTo を1つインクリメントしなければいけない。
+						// (そうしないと、天地逆さまに積み上げられることになる。)
+
+						moveTo = broccoli.incrementInstancePath(moveTo);
+						it1.next();
+					} );
+
+				});
+			} ,
+			function(){
+				broccoli.resourceMgr.getResourceDb(function(tmpResourceDb){
+					for( var resKey in clipContents.resources ){
+						tmpResourceDb[resKey] = clipContents.resources[resKey];
+					}
+					broccoli.resourceMgr.setResourceDb(tmpResourceDb, function(result){
+						callback();
+						// broccoli.unselectInstance(function(){
+						// 	broccoli.saveContents(function(){
+						// 		broccoli.message('クリップモジュールを挿入しました。');
+						// 		broccoli.redraw(function(){
+						// 			broccoli.closeProgress(function(){
+						// 				broccoli.selectInstance(newInstancePath, function(){
+						// 					callback();
+						// 				});
+						// 			});
+						// 		});
+						// 	});
+						// });
+					});
+				});
+			}
+		);
+		return;
 	}
 
 	/**

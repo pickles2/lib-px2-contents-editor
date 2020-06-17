@@ -219,6 +219,9 @@ class main{
 		// プロジェクト定義のカスタムフィールドを追加
 		$confCustomFields = @$this->px2conf->plugins->px2dt->guieditor->custom_fields;
 		$realpath_contRoot = dirname( $this->entryScript );
+		if( is_dir($realpath_dist) && !is_dir($realpath_dist.'/custom_fields/') ){
+			$this->fs->mkdir($realpath_dist.'/custom_fields/');
+		}
 		if(is_object($confCustomFields)){
 			foreach( $confCustomFields as $fieldName=>$field ){
 				$path_client_lib_dir = @$confCustomFields->{$fieldName}->frontend->dir;
@@ -247,6 +250,62 @@ class main{
 							}else{
 								$path_client_lib = $this->fs->get_realpath($path_client_lib, realpath($path_client_lib_dir));
 								$tmp_res_local_path = 'custom_fields/'.urlencode($fieldName).'/'.urlencode(basename($path_client_lib));
+								$this->fs->copy_r($path_client_lib, $realpath_dist.'/'.$tmp_res_local_path);
+								if( $ext == 'css' ){
+									array_push($rtn->css, $tmp_res_local_path);
+								}elseif( $ext == 'js' ){
+									array_push($rtn->js, $tmp_res_local_path);
+								}
+							}
+						}else{
+							$path_client_lib = $this->fs->get_realpath($path_client_lib, realpath($path_client_lib_dir));
+							if( $ext == 'css' ){
+								array_push($rtn->css, $path_client_lib);
+							}elseif( $ext == 'js' ){
+								array_push($rtn->js, $path_client_lib);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// dropped_file_operator 定義のJSを追加
+		$droppedFileOperator = @$this->px2conf->plugins->px2dt->guieditor->dropped_file_operator;
+		$realpath_contRoot = dirname( $this->entryScript );
+		if( is_dir($realpath_dist) && !is_dir($realpath_dist.'/dropped_file_operator/') ){
+			$this->fs->mkdir($realpath_dist.'/dropped_file_operator/');
+		}
+		if(is_object($droppedFileOperator)){
+			foreach( $droppedFileOperator as $extOrMimetypeName=>$frontend ){
+				$path_client_lib_dir = @$droppedFileOperator->{$extOrMimetypeName}->dir;
+				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
+				if(is_string($realpath_dist) && is_dir($realpath_dist) && @$droppedFileOperator->{$extOrMimetypeName}->dir){
+					$this->fs->copy_r($path_client_lib_dir, $realpath_dist.'/dropped_file_operator/'.urlencode($extOrMimetypeName).'/');
+				}
+
+				$paths_client_lib = @$droppedFileOperator->{$extOrMimetypeName}->file;
+				if(is_string($paths_client_lib)){
+					$paths_client_lib = array( $paths_client_lib );
+				}
+				if( is_array($paths_client_lib) && count($paths_client_lib) ){
+					foreach($paths_client_lib as $path_client_lib){
+						if(!$path_client_lib){ continue; }
+						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
+						$ext = @strtolower($matched[1]);
+
+						$extOrMimetypeName = preg_replace('/[^a-zA-Z0-9\-\_]/', '__', $extOrMimetypeName);
+
+						if(is_string($realpath_dist) && is_dir($realpath_dist) ){
+							if(@$droppedFileOperator->{$extOrMimetypeName}->dir){
+								if( $ext == 'css' ){
+									array_push($rtn->css, 'dropped_file_operator/'.urlencode($extOrMimetypeName).'/'.$path_client_lib);
+								}elseif( $ext == 'js' ){
+									array_push($rtn->js, 'dropped_file_operator/'.urlencode($extOrMimetypeName).'/'.$path_client_lib);
+								}
+							}else{
+								$path_client_lib = $this->fs->get_realpath($path_client_lib, realpath($path_client_lib_dir));
+								$tmp_res_local_path = 'dropped_file_operator/'.urlencode($extOrMimetypeName).'/'.urlencode(basename($path_client_lib));
 								$this->fs->copy_r($path_client_lib, $realpath_dist.'/'.$tmp_res_local_path);
 								if( $ext == 'css' ){
 									array_push($rtn->css, $tmp_res_local_path);

@@ -44,6 +44,9 @@ class gpi{
 				$bootup['languageCsv'] = file_get_contents( __DIR__.'/../data/language.csv' );
 				$bootup['editorMode'] = $this->px2ce->check_editor_mode();
 				$bootup['projectConf'] = $this->px2ce->get_project_conf();
+
+				// プロジェクトが拡張した broccoli-fields のクライアントサイドスクリプトを取得
+				// ※ get_client_resources() により事前ロードしてもらう方針に変更。この機能は廃止する予定。
 				$bootup['customFieldsClientSideLibs'] = array();
 				$code = '';
 				$code = 'data:text/javascript;base64,'.base64_encode($code);
