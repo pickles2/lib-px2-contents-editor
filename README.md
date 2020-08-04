@@ -187,6 +187,7 @@ $ npm run test
 
 - defaultエディタで、行の折り返しのモードを切り替えられるようになった。
 - Broccoliエディタで、ビューポートサイズを変更できるようになった。
+- Broccoliエディタで、選択したインスタンスをJSONファイルに出力できるようになった。
 - Broccoliエディタの新しい設定項目 `fieldConfig` に対応。
 - Broccoliエディタの新しい設定項目 `userStorage` に対応。
 - Broccoliエディタの新しい設定項目 `droppedFileOperator` に対応。

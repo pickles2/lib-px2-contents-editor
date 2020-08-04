@@ -23896,6 +23896,19 @@ module.exports = function(px2ce){
 						})
 				});
 
+				btns.push({
+					"label": 'JSONを出力',
+					"click": function(){
+						broccoli.selectedInstanceToJsonString(function(jsonStr){
+							if(!jsonStr){
+								alert('インスタンスを選択してください。');
+								return;
+							}
+							alert(jsonStr);
+						});
+					}
+				});
+
 				toolbar.init({
 					"btns":btns,
 					"onFinish": function(){
