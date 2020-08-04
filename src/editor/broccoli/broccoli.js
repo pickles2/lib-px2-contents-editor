@@ -18,6 +18,7 @@ module.exports = function(px2ce){
 		editorLib = 'ace';
 	}
 	var canvasWidth = 'auto';
+	var dateformat = require('dateformat');
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -148,14 +149,23 @@ module.exports = function(px2ce){
 				});
 
 				btns.push({
-					"label": 'JSONを出力',
+					"label": 'クリップJSONを出力',
 					"click": function(){
 						broccoli.selectedInstanceToJsonString(function(jsonStr){
 							if(!jsonStr){
 								alert('インスタンスを選択してください。');
 								return;
 							}
-							alert(jsonStr);
+							var a = document.createElement('a');
+							var blob = new Blob(
+								[jsonStr],
+								{
+									"type": "application/json"
+								}
+							);
+							a.href = window.URL.createObjectURL(blob);
+							a.download = 'clip-'+dateformat(new Date(), 'yyyy-mm-dd-HH-MM-ss')+'.json';
+							a.click();
 						});
 					}
 				});
