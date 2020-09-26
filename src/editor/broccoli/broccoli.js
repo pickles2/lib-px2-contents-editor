@@ -151,22 +151,31 @@ module.exports = function(px2ce){
 				btns.push({
 					"label": 'クリップJSONを出力',
 					"click": function(){
-						broccoli.selectedInstanceToJsonString(function(jsonStr){
-							if(!jsonStr){
-								alert('インスタンスを選択してください。');
-								return;
-							}
-							var a = document.createElement('a');
-							var blob = new Blob(
-								[jsonStr],
-								{
-									"type": "application/json"
+						px2style.loading();
+						try{
+							broccoli.selectedInstanceToJsonString(function(jsonStr){
+								if(!jsonStr){
+									alert('インスタンスを選択してください。');
+									px2style.closeLoading();
+									return;
 								}
-							);
-							a.href = window.URL.createObjectURL(blob);
-							a.download = 'clip-'+dateformat(new Date(), 'yyyy-mm-dd-HH-MM-ss')+'.json';
-							a.click();
-						});
+								var a = document.createElement('a');
+								var blob = new Blob(
+									[jsonStr],
+									{
+										"type": "application/json"
+									}
+								);
+								a.href = window.URL.createObjectURL(blob);
+								a.download = 'clip-'+dateformat(new Date(), 'yyyy-mm-dd-HH-MM-ss')+'.json';
+								a.click();
+								px2style.closeLoading();
+							});
+						}catch(e){
+							console.error(e);
+							alert('ERROR');
+							px2style.closeLoading();
+						}
 					}
 				});
 
