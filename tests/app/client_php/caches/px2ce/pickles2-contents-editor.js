@@ -4434,27 +4434,21 @@ exports.cache = {
 
 },{}],18:[function(require,module,exports){
 module.exports={
-  "_args": [
-    [
-      "ejs@2.7.4",
-      "/Users/tomk79/mydoc_TomK/projs/pickles2/pickles2/node-pickles2-contents-editor"
-    ]
-  ],
-  "_from": "ejs@2.7.4",
+  "_from": "ejs@^2.6.2",
   "_id": "ejs@2.7.4",
   "_inBundle": false,
   "_integrity": "sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==",
   "_location": "/ejs",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "ejs@2.7.4",
+    "raw": "ejs@^2.6.2",
     "name": "ejs",
     "escapedName": "ejs",
-    "rawSpec": "2.7.4",
+    "rawSpec": "^2.6.2",
     "saveSpec": null,
-    "fetchSpec": "2.7.4"
+    "fetchSpec": "^2.6.2"
   },
   "_requiredBy": [
     "/",
@@ -4462,7 +4456,8 @@ module.exports={
     "/langbank"
   ],
   "_resolved": "https://registry.npmjs.org/ejs/-/ejs-2.7.4.tgz",
-  "_spec": "2.7.4",
+  "_shasum": "48661287573dcc53e366c7a1ae52c3a120eec9ba",
+  "_spec": "ejs@^2.6.2",
   "_where": "/Users/tomk79/mydoc_TomK/projs/pickles2/pickles2/node-pickles2-contents-editor",
   "author": {
     "name": "Matthew Eernisse",
@@ -4472,7 +4467,9 @@ module.exports={
   "bugs": {
     "url": "https://github.com/mde/ejs/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {},
+  "deprecated": false,
   "description": "Embedded JavaScript templates",
   "devDependencies": {
     "browserify": "^13.1.1",
@@ -24574,6 +24571,7 @@ module.exports = function(px2ce){
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
+	var current_tab = 'html';
 	var px2conf = {},
 		pagesByLayout = [];
 		useWrapMode = true;
@@ -24781,6 +24779,8 @@ module.exports = function(px2ce){
 				$elmEditor = $canvas.find('.pickles2-contents-editor--default-editor');
 				$elmBtns = $canvas.find('.pickles2-contents-editor--default-btns');
 
+				$elmEditor.on('drop', onFileDropped); // ファイルドロップへの対応
+
 				$elmTabs = $canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch]');
 				$elmTabs
 					.on('click', function(){
@@ -24789,6 +24789,7 @@ module.exports = function(px2ce){
 						$this.attr({'disabled': 'disabled'});
 						var tabFor = $this.attr('data-pickles2-contents-editor-switch');
 						// console.log(tabFor);
+						current_tab = tabFor;
 						$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
 						$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
 						$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
@@ -24958,6 +24959,32 @@ module.exports = function(px2ce){
 
 		callback(true);
 		return;
+	}
+
+	/**
+	 * ファイルドロップイベントハンドラ
+	 */
+	function onFileDropped(e){
+		console.log(e);
+		console.log(current_tab, px2conf);
+		var uploadFileName = './index_files/dummy.png'; // TODO: アップロードされたファイルから命名すること
+		var insertString = '';
+		switch(current_tab){
+			case 'css':
+				insertString = 'url("'+uploadFileName+'")';
+				break;
+			case 'js':
+				insertString = '"'+uploadFileName+'"';
+				break;
+			case 'html':
+			default:
+				insertString = '<img src="'+uploadFileName+'" alt="" />';
+				break;
+				
+		}
+		if( editorLib == 'ace' ){
+			$elmTextareas[current_tab].insert(insertString);
+		}
 	}
 
 	/**

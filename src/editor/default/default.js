@@ -7,6 +7,7 @@ module.exports = function(px2ce){
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
+	var current_tab = 'html';
 	var px2conf = {},
 		pagesByLayout = [];
 		useWrapMode = true;
@@ -214,6 +215,8 @@ module.exports = function(px2ce){
 				$elmEditor = $canvas.find('.pickles2-contents-editor--default-editor');
 				$elmBtns = $canvas.find('.pickles2-contents-editor--default-btns');
 
+				$elmEditor.on('drop', onFileDropped); // ファイルドロップへの対応
+
 				$elmTabs = $canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch]');
 				$elmTabs
 					.on('click', function(){
@@ -222,6 +225,7 @@ module.exports = function(px2ce){
 						$this.attr({'disabled': 'disabled'});
 						var tabFor = $this.attr('data-pickles2-contents-editor-switch');
 						// console.log(tabFor);
+						current_tab = tabFor;
 						$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
 						$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
 						$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
@@ -391,6 +395,33 @@ module.exports = function(px2ce){
 
 		callback(true);
 		return;
+	}
+
+	/**
+	 * ファイルドロップイベントハンドラ
+	 * TODO: 開発中の機能です。
+	 */
+	function onFileDropped(e){
+		// console.log(e);
+		// console.log(current_tab, px2conf);
+		var uploadFileName = './index_files/dummy.png'; // TODO: アップロードされたファイルから命名すること
+		var insertString = '';
+		switch(current_tab){
+			case 'css':
+				insertString = 'url("'+uploadFileName+'")';
+				break;
+			case 'js':
+				insertString = '"'+uploadFileName+'"';
+				break;
+			case 'html':
+			default:
+				insertString = '<img src="'+uploadFileName+'" alt="" />';
+				break;
+				
+		}
+		if( editorLib == 'ace' ){
+			$elmTextareas[current_tab].insert(insertString);
+		}
 	}
 
 	/**

@@ -185,6 +185,7 @@ $ npm run test
 
 ### pickles2-contents-editor v2.0.12 (リリース日未定)
 
+- デフォルトエディタでリソースファイルの直接ドロップができるようになった。
 - その他の細かい修正。
 
 ### pickles2-contents-editor v2.0.11 (2020年8月12日)
