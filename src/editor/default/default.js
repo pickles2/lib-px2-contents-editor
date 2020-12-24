@@ -400,7 +400,6 @@ module.exports = function(px2ce){
 
 	/**
 	 * ファイルドロップイベントハンドラ
-	 * TODO: 開発中の機能です。
 	 */
 	function onFileDropped(e){
 		// console.log(e);
@@ -409,9 +408,10 @@ module.exports = function(px2ce){
 		e.preventDefault();
 		var event = e.originalEvent;
 		var fileInfo = event.dataTransfer.files[0];
+		// console.log(fileInfo);
 		var dataUri;
 		var path_resource;
-		console.log(fileInfo);
+
 		function readSelectedLocalFile(fileInfo, callback){
 			var reader = new FileReader();
 			reader.onload = function(evt) {
@@ -419,6 +419,7 @@ module.exports = function(px2ce){
 			}
 			reader.readAsDataURL(fileInfo);
 		}
+
 		it79.fnc({}, [
 			function(it1){
 				// mod.filename
@@ -435,7 +436,7 @@ module.exports = function(px2ce){
 						'page_path': page_path
 					},
 					function(result){
-						console.log(result);
+						// console.log(result);
 						var path = require('path');
 						var relative_path = path.relative(px2conf.path_controot+page_path, result);
 						path_resource = relative_path;
@@ -596,8 +597,30 @@ module.exports = function(px2ce){
 			function(result){
 				// console.log(result);
 				console.log(droppedFileList);//TODO: ドロップされたリソースをアップロードする処理を追加する。
-				droppedFileList = []; // アップロードしたら忘れて良い。
-				callback(result);
+
+				it79.ary(
+					droppedFileList,
+					function(itAry1, row, idx){
+						// console.log(itAry1, row, idx);
+						px2ce.gpiBridge(
+							{
+								'api': 'savePageResources',
+								'page_path': page_path,
+								'filename': row.name,
+								'base64': row.base64
+							},
+							function(result){
+								// console.log(result);
+								itAry1.next();
+							}
+						);
+					},
+					function(){
+						droppedFileList = []; // アップロードしたら忘れて良い。
+						callback(result);
+					}
+				);
+
 			}
 		);
 	}

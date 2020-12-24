@@ -130,6 +130,17 @@ class gpi{
 				return $path_resource;
 				break;
 
+			case 'savePageResources':
+				// コンテンツのリソースファイルを保存する
+				$realpath_resource = $this->px2ce->px2query($data['page_path'].'?PX=api.get.realpath_files&path_resource='.urlencode($data['filename']), array("output"=>"json"));
+				$bin = $data['base64'];
+
+				// TODO: $bin は base64_decode() する
+
+				$result = $this->px2ce->fs()->save_file($realpath_resource, $bin);
+				return $result;
+				break;
+
 			case "getModuleCssJsSrc":
 				// モジュールCSS,JSソースを取得する
 				$results = $this->px2ce->getModuleCssJsSrc($data['theme_id']);
