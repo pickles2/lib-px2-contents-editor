@@ -134,8 +134,8 @@ class gpi{
 				// コンテンツのリソースファイルを保存する
 				$realpath_resource = $this->px2ce->px2query($data['page_path'].'?PX=api.get.realpath_files&path_resource='.urlencode($data['filename']), array("output"=>"json"));
 				$bin = $data['base64'];
-
-				// TODO: $bin は base64_decode() する
+				$bin = preg_replace('/^data\:.*?base64\,/', '', $bin);
+				$bin = base64_decode($bin);
 
 				$result = $this->px2ce->fs()->save_file($realpath_resource, $bin);
 				return $result;
