@@ -25002,11 +25002,14 @@ module.exports = function(px2ce){
 					function(result){
 						// console.log(result);
 						var path = require('path');
-						var tmpPathControot = px2conf.path_controot.replace(/\/+$/, '');
-console.log('/'.replace(/\/+$/, ''));
-console.log('/aaa/'.replace(/\/+$/, ''));
-console.log('/aaa/bbb/'.replace(/\/+$/, ''));
-						var relative_path = path.relative(tmpPathControot+page_path, result);
+						var tmpPathControot = px2conf.path_controot;
+						tmpPathControot = '/';
+						tmpPathControot = tmpPathControot.replace(/\/+$/, '')+page_path;
+console.log(tmpPathControot);
+						tmpPathControot = tmpPathControot.replace(/[^\/]*$/, '');
+console.log(tmpPathControot);
+						var relative_path = path.relative(tmpPathControot, result);
+console.log(relative_path);
 						path_resource = relative_path;
 						it1.next();
 					}
