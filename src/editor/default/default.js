@@ -438,7 +438,8 @@ module.exports = function(px2ce){
 					function(result){
 						// console.log(result);
 						var path = require('path');
-						var relative_path = path.relative(px2conf.path_controot+page_path, result);
+						var tmpPathControot = px2conf.path_controot.replace(/\/+$/, '');
+						var relative_path = path.relative(tmpPathControot+page_path, result);
 						path_resource = relative_path;
 						it1.next();
 					}

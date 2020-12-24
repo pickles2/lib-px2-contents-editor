@@ -25002,7 +25002,11 @@ module.exports = function(px2ce){
 					function(result){
 						// console.log(result);
 						var path = require('path');
-						var relative_path = path.relative(px2conf.path_controot+page_path, result);
+						var tmpPathControot = px2conf.path_controot.replace(/\/+$/, '');
+console.log('/'.replace(/\/+$/, ''));
+console.log('/aaa/'.replace(/\/+$/, ''));
+console.log('/aaa/bbb/'.replace(/\/+$/, ''));
+						var relative_path = path.relative(tmpPathControot+page_path, result);
 						path_resource = relative_path;
 						it1.next();
 					}
@@ -25025,6 +25029,8 @@ module.exports = function(px2ce){
 					case 'html':
 					default:
 						insertString = '<img src="'+uploadFileName+'" alt="" />'+"\n";
+							// TODO: ファイルの種類に応じてタグの出し分けをしたい。
+							// 例: 画像なら img要素、 mp4 なら video要素、 それ以外は ダウンロードボタン
 						break;
 				}
 
@@ -25033,7 +25039,7 @@ module.exports = function(px2ce){
 					// AceEditorの処理
 					$elmTextareas[current_tab].insert(insertString);
 				}else{
-					console.error('AceEditor以外のファイル挿入機能は未開発です。'); // TODO:
+					console.error('AceEditor以外のファイル挿入機能は未開発です。'); // TODO: 実装する
 				}
 
 				// アップロードファイルを一時記憶
@@ -25160,12 +25166,12 @@ module.exports = function(px2ce){
 			},
 			function(result){
 				// console.log(result);
-				console.log(droppedFileList);//TODO: ドロップされたリソースをアップロードする処理を追加する。
+				// console.log(droppedFileList);
 
 				it79.ary(
 					droppedFileList,
 					function(itAry1, row, idx){
-						console.log(itAry1, row, idx);
+						// console.log(itAry1, row, idx);
 						px2ce.gpiBridge(
 							{
 								'api': 'savePageResources',
@@ -25174,7 +25180,7 @@ module.exports = function(px2ce){
 								'base64': row.base64
 							},
 							function(result){
-								console.log(result);
+								// console.log(result);
 								itAry1.next();
 							}
 						);
