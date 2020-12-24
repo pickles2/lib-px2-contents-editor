@@ -24572,6 +24572,7 @@ module.exports = function(px2ce){
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 	var current_tab = 'html';
+	var droppedFileList = [];
 	var px2conf = {},
 		pagesByLayout = [];
 		useWrapMode = true;
@@ -24968,24 +24969,83 @@ module.exports = function(px2ce){
 	function onFileDropped(e){
 		// console.log(e);
 		// console.log(current_tab, px2conf);
-		var uploadFileName = './index_files/dummy.png'; // TODO: アップロードされたファイルから命名すること
-		var insertString = '';
-		switch(current_tab){
-			case 'css':
-				insertString = 'url("'+uploadFileName+'")';
-				break;
-			case 'js':
-				insertString = '"'+uploadFileName+'"';
-				break;
-			case 'html':
-			default:
-				insertString = '<img src="'+uploadFileName+'" alt="" />';
-				break;
-				
+		e.stopPropagation();
+		e.preventDefault();
+		var event = e.originalEvent;
+		var fileInfo = event.dataTransfer.files[0];
+		var dataUri;
+		var path_resource;
+		console.log(fileInfo);
+		function readSelectedLocalFile(fileInfo, callback){
+			var reader = new FileReader();
+			reader.onload = function(evt) {
+				callback( evt.target.result );
+			}
+			reader.readAsDataURL(fileInfo);
 		}
-		if( editorLib == 'ace' ){
-			$elmTextareas[current_tab].insert(insertString);
-		}
+		it79.fnc({}, [
+			function(it1){
+				// mod.filename
+				readSelectedLocalFile(fileInfo, function(_dataUri){
+					dataUri = _dataUri;
+					// console.log(dataUri);
+					it1.next();
+				});
+			},
+			function(it1){
+				px2ce.gpiBridge(
+					{
+						'api': 'getPathResources',
+						'page_path': page_path
+					},
+					function(result){
+						console.log(result);
+						var path = require('path');
+						var relative_path = path.relative(px2conf.path_controot+page_path, result);
+						path_resource = relative_path;
+						it1.next();
+					}
+				);
+			},
+			function(it1){
+				var fileName = fileInfo.name;
+				var uploadFileName = './'+path_resource+'/'+fileName;
+				var insertString = '';
+
+				// 開いているタブの種類に応じて、
+				// 挿入する文字列を出し分ける。
+				switch(current_tab){
+					case 'css':
+						insertString = 'url("'+uploadFileName+'")';
+						break;
+					case 'js':
+						insertString = '"'+uploadFileName+'"';
+						break;
+					case 'html':
+					default:
+						insertString = '<img src="'+uploadFileName+'" alt="" />'+"\n";
+						break;
+				}
+
+				// 文字列を挿入する
+				if( editorLib == 'ace' ){
+					// AceEditorの処理
+					$elmTextareas[current_tab].insert(insertString);
+				}else{
+					console.error('AceEditor以外のファイル挿入機能は未開発です。'); // TODO:
+				}
+
+				// アップロードファイルを一時記憶
+				// ファイルは、次回保存時に保存されます。
+				droppedFileList.push({
+					'name': fileName,
+					'type': fileInfo.type,
+					'size': fileInfo.size,
+					'base64': dataUri,
+				});
+				it1.next();
+			}
+		]);
 	}
 
 	/**
@@ -25099,6 +25159,8 @@ module.exports = function(px2ce){
 			},
 			function(result){
 				// console.log(result);
+				console.log(droppedFileList);//TODO: ドロップされたリソースをアップロードする処理を追加する。
+				droppedFileList = []; // アップロードしたら忘れて良い。
 				callback(result);
 			}
 		);
@@ -25107,7 +25169,7 @@ module.exports = function(px2ce){
 
 }
 
-},{"../../apis/postMessenger.js":122,"../../apis/toolbar.js":123,"iterate79":23,"jquery":24}],126:[function(require,module,exports){
+},{"../../apis/postMessenger.js":122,"../../apis/toolbar.js":123,"iterate79":23,"jquery":24,"path":27}],126:[function(require,module,exports){
 /**
  * not_exists.js
  */

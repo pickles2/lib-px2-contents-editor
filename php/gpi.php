@@ -117,9 +117,17 @@ class gpi{
 				break;
 
 			case "broccoliBridge":
+				// Broccoliへの中継
 				$broccoliBridge = new editor_broccoli($this->px2ce);
 				$result = $broccoliBridge->bridge($data);
 				return $result;
+				break;
+
+			case "getPathResources":
+				// リソースディレクトリのパスを得る
+				// これは、コンテンツにリソースへのリンクを埋め込むために使用する。
+				$path_resource = $this->px2ce->px2query($data['page_path'].'?PX=api.get.path_files&path_resource=', array("output"=>"json"));
+				return $path_resource;
 				break;
 
 			case "getModuleCssJsSrc":
