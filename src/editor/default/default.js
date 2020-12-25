@@ -463,9 +463,11 @@ module.exports = function(px2ce){
 						break;
 					case 'html':
 					default:
-						insertString = '<img src="'+uploadFileName+'" alt="" />'+"\n";
-							// TODO: ファイルの種類に応じてタグの出し分けをしたい。
-							// 例: 画像なら img要素、 mp4 なら video要素、 それ以外は ダウンロードボタン
+						if( fileInfo.type.match(/^image\//) ){
+							insertString = '<img src="'+uploadFileName+'" alt="" />'+"\n";
+						}else{
+							insertString = '<a href="'+uploadFileName+'" download="'+fileName+'">'+fileName+'</a>'+"\n";
+						}
 						break;
 				}
 

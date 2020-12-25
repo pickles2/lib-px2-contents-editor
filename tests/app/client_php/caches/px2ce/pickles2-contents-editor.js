@@ -25003,13 +25003,9 @@ module.exports = function(px2ce){
 						// console.log(result);
 						var path = require('path');
 						var tmpPathControot = px2conf.path_controot;
-						tmpPathControot = '/';
 						tmpPathControot = tmpPathControot.replace(/\/+$/, '')+page_path;
-console.log(tmpPathControot);
 						tmpPathControot = tmpPathControot.replace(/[^\/]*$/, '');
-console.log(tmpPathControot);
 						var relative_path = path.relative(tmpPathControot, result);
-console.log(relative_path);
 						path_resource = relative_path;
 						it1.next();
 					}
@@ -25031,9 +25027,11 @@ console.log(relative_path);
 						break;
 					case 'html':
 					default:
-						insertString = '<img src="'+uploadFileName+'" alt="" />'+"\n";
-							// TODO: ファイルの種類に応じてタグの出し分けをしたい。
-							// 例: 画像なら img要素、 mp4 なら video要素、 それ以外は ダウンロードボタン
+						if( fileInfo.type.match(/^image\//) ){
+							insertString = '<img src="'+uploadFileName+'" alt="" />'+"\n";
+						}else{
+							insertString = '<a href="'+uploadFileName+'" download="'+fileName+'">'+fileName+'</a>'+"\n";
+						}
 						break;
 				}
 
