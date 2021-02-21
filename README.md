@@ -183,7 +183,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.12 (リリース日未定)
+### pickles2-contents-editor v2.0.12 (2020年2月21日)
 
 - Update: Broccoli v0.4.x
 - デフォルトエディタでリソースファイルの直接ドロップができるようになった。
