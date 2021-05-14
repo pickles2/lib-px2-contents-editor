@@ -3029,7 +3029,7 @@ module.exports = function(broccoli, targetElm, callback){
 						'href':'javascript:;',
 						'data-broccoli-module-category-id': packageId + ':' + categoryId
 					})
-					.click(function(){
+					.on('click', function(){
 						var $categoryId = $(this).attr('data-broccoli-module-category-id');
 						$(this).toggleClass('broccoli__module-palette__closed');
 						$ulMod.toggle(100)
@@ -3572,8 +3572,10 @@ module.exports = function(broccoli){
 	var _this = this;
 
 	var it79 = require('iterate79');
+	var LangBank = require('langbank');
 	var php = require('phpjs');
 	var $ = require('jquery');
+	var modLb;
 
 	var $editWindow;
 	var tplFrame = ''
@@ -3726,7 +3728,7 @@ module.exports = function(broccoli){
 			// console.log(readme);
 			if(readme){
 				$editWindow.find('.broccoli__edit-window-module-readme-inner .broccoli__module-readme').html(readme);
-				$editWindow.find('.broccoli__edit-window-module-readme-switch a').click(function(){
+				$editWindow.find('.broccoli__edit-window-module-readme-switch a').on('click', function(){
 					var $this = $(this);
 					var className = 'broccoli__edit-window-module-readme-switch__on';
 					$editWindow.find('.broccoli__edit-window-module-readme').toggle('fast', function(){
@@ -3747,7 +3749,7 @@ module.exports = function(broccoli){
 		}
 
 		$editWindow.find('.broccoli__edit-window-builtin-fields').hide();
-		$editWindow.find('.broccoli__edit-window-builtin-fields-switch a').click(function(){
+		$editWindow.find('.broccoli__edit-window-builtin-fields-switch a').on('click', function(){
 			var $this = $(this);
 			var className = 'broccoli__edit-window-builtin-fields-switch__on';
 			$editWindow.find('.broccoli__edit-window-builtin-fields').toggle('fast', function(){
@@ -3791,6 +3793,9 @@ module.exports = function(broccoli){
 							case 'module':
 							case 'loop':
 								var $ul = $('<ul>');
+								if(!data.fields[field.name]){
+									data.fields[field.name] = {};
+								}
 								it79.ary(
 									data.fields[field.name],
 									function(it2, childData, idx2){
@@ -3876,8 +3881,8 @@ module.exports = function(broccoli){
 
 										broccoli.panels.setPanelEventHandlers( $a );
 										$a
-											.unbind('drop')
-											.bind('drop', function(e){
+											.off('drop')
+											.on('drop', function(e){
 												_this.lock();//フォームをロック
 												broccoli.panels.onDrop(e, this, function(){
 													updateModuleAndLoopField( instancePath, function(){
@@ -3886,12 +3891,12 @@ module.exports = function(broccoli){
 													} );
 												});
 											})
-											.unbind('click')
-											.bind('click', function(e){
+											.off('click')
+											.on('click', function(e){
 												return false;
 											})
-											.unbind('dblclick')
-											.bind('dblclick', function(e){
+											.off('dblclick')
+											.on('dblclick', function(e){
 												var $this = $(this);
 												// インスタンス instancePath の変更を保存し、
 												// 一旦編集ウィンドウを閉じたあと、
@@ -3939,11 +3944,11 @@ module.exports = function(broccoli){
 													// 'data-broccoli-is-instance-tree-view': 'yes',
 													'draggable': false
 												})
-												.bind('mouseover', function(e){
+												.on('mouseover', function(e){
 													e.stopPropagation();
 													$(this).addClass('broccoli--panel__hovered')
 												})
-												.bind('mouseout',function(e){
+												.on('mouseout',function(e){
 													$(this).removeClass('broccoli--panel__hovered')
 												})
 												.append( $('<div>')
@@ -3962,7 +3967,7 @@ module.exports = function(broccoli){
 													// 'data-broccoli-is-instance-tree-view': 'yes',
 													'draggable': false
 												})
-												.bind('click', function(e){
+												.on('click', function(e){
 													e.stopPropagation();
 													var $this = $(this);
 													var instancePath = $this.attr('data-broccoli-instance-path');
@@ -3974,11 +3979,11 @@ module.exports = function(broccoli){
 														broccoli.focusInstance( instancePath );
 													} );
 												})
-												.bind('mouseover', function(e){
+												.on('mouseover', function(e){
 													e.stopPropagation();
 													$(this).addClass('broccoli--panel__hovered')
 												})
-												.bind('mouseout',function(e){
+												.on('mouseout',function(e){
 													$(this).removeClass('broccoli--panel__hovered')
 												})
 												.append( $('<div>')
@@ -3988,8 +3993,8 @@ module.exports = function(broccoli){
 										}
 										broccoli.panels.setPanelEventHandlers( $appender );
 										$appender
-											.unbind('drop')
-											.bind('drop', function(e){
+											.off('drop')
+											.on('drop', function(e){
 												_this.lock();//フォームをロック
 												broccoli.panels.onDrop(e, this, function(){
 													updateModuleAndLoopField( instancePath, function(){
@@ -3998,8 +4003,8 @@ module.exports = function(broccoli){
 													} );
 												});
 											})
-											.unbind('dblclick')
-											.bind('dblclick', function(e){
+											.off('dblclick')
+											.on('dblclick', function(e){
 												_this.lock();//フォームをロック
 												broccoli.panels.onDblClick(e, this, function(){
 													updateModuleAndLoopField( instancePath, function(){
@@ -4049,200 +4054,234 @@ module.exports = function(broccoli){
 
 		var focusDone = false;
 		var fieldCount = 0;
-		it79.ary(
-			mod.fields,
-			function(it1, field, fieldName){
-				if( typeof(field) != typeof({}) ){
-					// オブジェクトではない field → Skip
+		it79.fnc({}, [
+			function(it1){
+				modLb = new LangBank(mod.languageCsv, function(){
 					it1.next();
-					return;
-				}
-				fieldCount ++;
-				// console.log(fieldName);
-				// console.log(field);
-				field.fieldType = field.fieldType || 'input';
-				var $field = $(tplField)
-					.attr({
-						'data-broccoli-edit-window-field-name': field.name ,
-						'data-broccoli-edit-window-field-type': field.fieldType
-					})
-				;
-				$field.find('>h3')
-					.text((field.label||field.name)+' ')
-					.append( $('<small>')
-						.text( field.name + ' (' + (field.fieldType=='input' ? field.type : field.fieldType) + ')' )
-					)
-				;
-
-				if( field.validate ){
-					for(var valiNum in field.validate){
-						if( field.validate[valiNum] == 'required' ){
-							$field.addClass('broccoli__edit-window-field-required');
-							break;
-						}
-					}
-				}
-
-				if( field.description ){
-					$field.find('>.broccoli__edit-window-field-description')
-						.html( field.description )
-					;
-				}else{
-					$field.find('>.broccoli__edit-window-field-description')
-						.remove()
-					;
-				}
-				$fields.append($field);
-
-				// console.log( broccoli.fieldDefinitions );
-				var elmFieldContent = $field.find('.broccoli__edit-window-field-content').get(0);
-				field.fieldType = field.fieldType || 'input';
-				switch( field.fieldType ){
-					case 'input':
-						var fieldDefinition = broccoli.getFieldDefinition(field.type);
-						fieldDefinition.mkEditor(mod.fields[field.name], data.fields[field.name], elmFieldContent, function(){
-							if(!focusDone){
-								focusDone = true;
-								fieldDefinition.focus(elmFieldContent, function(){
-									it1.next();
-								});
-								return;
-							}
-							it1.next();
-							return;
-						})
-						break;
-					case 'module':
-					case 'loop':
-						$(elmFieldContent)
-							.append(
-								$('<div>')
-									.addClass('broccoli__edit-window-module-fields')
-									.attr({
-										"data-broccoli--editwindow-field-name": field.name
-									})
-									.append( $('<div>')
-										.addClass('broccoli__edit-window-module-fields__instances')
-									)
-									.append( $('<div>')
-										.addClass('broccoli__edit-window-module-fields__palette')
-									)
-							)
-						;
-						it1.next();
-						break;
-					default:
-						$(elmFieldContent)
-							.append(
-								'<p>'+php.htmlspecialchars( (typeof(field.fieldType)===typeof('') ? field.fieldType : 'unknown') )+'</p>'
-							)
-						;
-						it1.next();
-						break;
-				}
-				return;
-			},
-			function(){
-
-				if(!fieldCount){
-					$fields
-						.append(
-							'<p style="text-align: center; margin: 7em 1em;">このモジュールにはオプションが定義されていません。</p>'
-						)
-					;
-				}
-
-				updateModuleAndLoopField(instancePath, function(){
-					$editWindow.find('#broccoli__edit-window-builtin-anchor-field')
-						.val(data.anchor)
-					;
-					$editWindow.find('#broccoli__edit-window-builtin-dec-field')
-						.val(data.dec)
-					;
-					$editWindow.find('.broccoli__edit-window-form-buttons button')
-						.removeAttr('disabled')
-					;
-					$editWindow.find('form')
-						.removeAttr('disabled')
-						.on('submit', function(){
-							// 編集内容を保存する
-							// console.log( data );
-							// console.log( mod );
-							formErrorMessage([]);
-
-							_this.lock();//フォームをロック
-							broccoli.progress();
-							validateInstance(instancePath, mod, data, function(res){
-								if( !res ){
-									// エラーがあるため次へ進めない
-									_this.unlock();
-									broccoli.closeProgress();
-									return;
-								}
-								saveInstance(instancePath, mod, data, function(res){
-									broccoli.progressMessage('');
-									broccoli.closeProgress();
-									callback(res);
-								});
-							});
-
-						})
-					;
-					$editWindow.find('button.broccoli__edit-window-btn-cancel')
-						.on('click', function(){
-							_this.lock();
-							callback(false);
-						})
-					;
-					$editWindow.find('button.broccoli__edit-window-btn-remove')
-						.on('click', function(){
-							_this.lock();
-							if( !confirm('このインスタンスを削除します。よろしいですか？') ){
-								_this.unlock();
-								return;
-							}
-							if( instancePath.match(new RegExp('^\\/bowl\\.[^\\/]+$')) ){
-								alert('ルートインスタンスは削除できません。');
-								_this.unlock();
-								return;
-							}
-							broccoli.contentsSourceData.removeInstance(instancePath, function(){
-								broccoli.unselectInstance(function(){
-									callback(true);
-								});
-							});
-						})
-					;
-					(function($target){
-						// タブキーの制御
-						var $tabTargets = $target.find('a, input, textarea, select, button');
-						var $start = $tabTargets.eq(0);
-						var $end = $tabTargets.eq(-1);
-						$start
-							.on('keydown', function(e){
-								if (e.keyCode == 9 && e.originalEvent.shiftKey) {
-									$end.focus();
-									e.preventDefault();
-									e.stopPropagation();
-									return false;
-								}
-							})
-						;
-						$end
-							.on('keydown', function(e){
-								if (e.keyCode == 9 && !e.originalEvent.shiftKey) {
-									$start.focus();
-									e.preventDefault();
-									e.stopPropagation();
-									return false;
-								}
-							})
-						;
-					})($editWindow);
 				});
+			},
+			function(it1){
+				// console.log(modLb);
+				// console.log(broccoli.lb.lang);
+				modLb.setLang(broccoli.lb.lang);
+				// console.log(modLb.getList());
+				it1.next();
+			},
+			function(it1){
+				it79.ary(
+					mod.fields,
+					function(it2, field, fieldName){
+						if( typeof(field) != typeof({}) ){
+							// オブジェクトではない field → Skip
+							it2.next();
+							return;
+						}
+						fieldCount ++;
+						// console.log(fieldName);
+						// console.log(field);
+						field.fieldType = field.fieldType || 'input';
+						var $field = $(tplField)
+							.attr({
+								'data-broccoli-edit-window-field-name': field.name ,
+								'data-broccoli-edit-window-field-type': field.fieldType
+							})
+						;
+						$field.find('>h3')
+							.text((field.label||field.name)+' ')
+							.append( $('<small>')
+								.text( field.name + ' (' + (field.fieldType=='input' ? field.type : field.fieldType) + ')' )
+							)
+						;
 
+						if( field.validate ){
+							for(var valiNum in field.validate){
+								if( field.validate[valiNum] == 'required' ){
+									$field.addClass('broccoli__edit-window-field-required');
+									break;
+								}
+							}
+						}
+
+						if( field.description ){
+							$field.find('>.broccoli__edit-window-field-description')
+								.html( field.description )
+							;
+						}else{
+							$field.find('>.broccoli__edit-window-field-description')
+								.remove()
+							;
+						}
+						$fields.append($field);
+
+						// console.log( broccoli.fieldDefinitions );
+						var elmFieldContent = $field.find('.broccoli__edit-window-field-content').get(0);
+						field.fieldType = field.fieldType || 'input';
+						switch( field.fieldType ){
+							case 'input':
+								var fieldDefinition = broccoli.getFieldDefinition(field.type);
+								mod.fields[field.name].lb = new (function(lb, field){
+									this.get = function(key, defValue){
+										// console.log('=-=-=-=-=-=', field, data);
+										var rtn = '';
+										var fullkey = '';
+										if( data.subModName ){
+											fullkey = 'subModule.'+data.subModName+'.'+field.name+':'+key;
+										}else{
+											fullkey = 'fields.'+field.name+':'+key;
+										}
+										rtn = lb.get(fullkey);
+										if( rtn == '' || rtn == '---' ){
+											rtn = defValue;
+										}
+										// console.log(fullkey, lb.getList(), rtn);
+										return rtn;
+									}
+								})(modLb, field);
+								fieldDefinition.mkEditor(mod.fields[field.name], data.fields[field.name], elmFieldContent, function(){
+									if(!focusDone){
+										focusDone = true;
+										fieldDefinition.focus(elmFieldContent, function(){
+											it2.next();
+										});
+										return;
+									}
+									it2.next();
+									return;
+								})
+								break;
+							case 'module':
+							case 'loop':
+								$(elmFieldContent)
+									.append(
+										$('<div>')
+											.addClass('broccoli__edit-window-module-fields')
+											.attr({
+												"data-broccoli--editwindow-field-name": field.name
+											})
+											.append( $('<div>')
+												.addClass('broccoli__edit-window-module-fields__instances')
+											)
+											.append( $('<div>')
+												.addClass('broccoli__edit-window-module-fields__palette')
+											)
+									)
+								;
+								it2.next();
+								break;
+							default:
+								$(elmFieldContent)
+									.append(
+										'<p>'+php.htmlspecialchars( (typeof(field.fieldType)===typeof('') ? field.fieldType : 'unknown') )+'</p>'
+									)
+								;
+								it2.next();
+								break;
+						}
+						return;
+					},
+					function(){
+
+						if(!fieldCount){
+							$fields
+								.append(
+									'<p style="text-align: center; margin: 7em 1em;">このモジュールにはオプションが定義されていません。</p>'
+								)
+							;
+						}
+
+						updateModuleAndLoopField(instancePath, function(){
+							$editWindow.find('#broccoli__edit-window-builtin-anchor-field')
+								.val(data.anchor)
+							;
+							$editWindow.find('#broccoli__edit-window-builtin-dec-field')
+								.val(data.dec)
+							;
+							$editWindow.find('.broccoli__edit-window-form-buttons button')
+								.removeAttr('disabled')
+							;
+							$editWindow.find('form')
+								.removeAttr('disabled')
+								.on('submit', function(){
+									// 編集内容を保存する
+									// console.log( data );
+									// console.log( mod );
+									formErrorMessage([]);
+
+									_this.lock();//フォームをロック
+									broccoli.progress();
+									validateInstance(instancePath, mod, data, function(res){
+										if( !res ){
+											// エラーがあるため次へ進めない
+											_this.unlock();
+											broccoli.closeProgress();
+											return;
+										}
+										saveInstance(instancePath, mod, data, function(res){
+											broccoli.progressMessage('');
+											broccoli.closeProgress();
+											callback(res);
+										});
+									});
+
+								})
+							;
+							$editWindow.find('button.broccoli__edit-window-btn-cancel')
+								.on('click', function(){
+									_this.lock();
+									callback(false);
+								})
+							;
+							$editWindow.find('button.broccoli__edit-window-btn-remove')
+								.on('click', function(){
+									_this.lock();
+									if( !confirm('このインスタンスを削除します。よろしいですか？') ){
+										_this.unlock();
+										return;
+									}
+									if( instancePath.match(new RegExp('^\\/bowl\\.[^\\/]+$')) ){
+										alert('ルートインスタンスは削除できません。');
+										_this.unlock();
+										return;
+									}
+									broccoli.contentsSourceData.removeInstance(instancePath, function(){
+										broccoli.unselectInstance(function(){
+											callback(true);
+										});
+									});
+								})
+							;
+							(function($target){
+								// タブキーの制御
+								var $tabTargets = $target.find('a, input, textarea, select, button');
+								var $start = $tabTargets.eq(0);
+								var $end = $tabTargets.eq(-1);
+								$start
+									.on('keydown', function(e){
+										if (e.keyCode == 9 && e.originalEvent.shiftKey) {
+											$end.focus();
+											e.preventDefault();
+											e.stopPropagation();
+											return false;
+										}
+									})
+								;
+								$end
+									.on('keydown', function(e){
+										if (e.keyCode == 9 && !e.originalEvent.shiftKey) {
+											$start.focus();
+											e.preventDefault();
+											e.stopPropagation();
+											return false;
+										}
+									})
+								;
+							})($editWindow);
+							it1.next();
+						});
+					}
+				);
 			}
-		);
+		]);
 		return this;
 	}
 
@@ -4439,7 +4478,7 @@ module.exports = function(broccoli){
 	return;
 }
 
-},{"iterate79":124,"jquery":126,"phpjs":136}],7:[function(require,module,exports){
+},{"iterate79":124,"jquery":126,"langbank":127,"phpjs":136}],7:[function(require,module,exports){
 /**
  * fieldBase.js
  */
@@ -4480,9 +4519,13 @@ module.exports = function(broccoli){
 
 				// サーバーサイドの bind() に相当する処理
 				try {
-					rtn = utils79.toStr(fieldData);
+					if( typeof(fieldData)===typeof({}) && fieldData.src ){
+						rtn = utils79.toStr(fieldData.src);
+					}else{
+						rtn = utils79.toStr(fieldData);
+					}
 				} catch (e) {
-					rtn = '[error]'
+					rtn = '[error]';
 				}
 				rlv();
 
@@ -4506,7 +4549,7 @@ module.exports = function(broccoli){
 				callback( rtn );
 			}); })
 		;
-		return this;
+		return;
 	}
 
 	/**
@@ -4520,20 +4563,24 @@ module.exports = function(broccoli){
 		var $rtn = $('<div>'),
 			$formElm
 		;
+		var presetString = data;
+		if( typeof(presetString) === typeof({}) && presetString.src !== undefined ){
+			presetString = presetString.src;
+		}
 
 		if( rows == 1 ){
 			$formElm = $('<input type="text" class="form-control">')
 				.attr({
 					"name": mod.name
 				})
-				.val(data)
+				.val(presetString)
 				.css({'width':'100%'})
 			;
 			$rtn.append( $formElm );
 
 		}else if( editorLib == 'ace' ){
 			$formElm = $('<div>')
-				.text(data)
+				.text(presetString)
 				.css({
 					'position': 'relative',
 					'width': '100%',
@@ -4588,7 +4635,7 @@ module.exports = function(broccoli){
 					"name": mod.name,
 					"rows": rows
 				})
-				.val(data)
+				.val(presetString)
 				.css({'width':'100%','height':'auto'})
 			;
 			$rtn.append( $formElm );
@@ -4599,7 +4646,7 @@ module.exports = function(broccoli){
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback();
 		}); });
-		return this;
+		return;
 	}
 
 	/**
@@ -4611,7 +4658,7 @@ module.exports = function(broccoli){
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback();
 		}); });
-		return this;
+		return;
 	}
 
 	/**
@@ -4625,7 +4672,7 @@ module.exports = function(broccoli){
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback(data);
 		}); });
-		return this;
+		return;
 	}
 
 	/**
@@ -4637,7 +4684,7 @@ module.exports = function(broccoli){
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback(data);
 		}); });
-		return this;
+		return;
 	}
 
 
@@ -4663,7 +4710,7 @@ module.exports = function(broccoli){
 		broccoli.validate(attr, src, rules, mod, function(errorMsgs){
 			callback( errorMsgs );
 		});
-		return this;
+		return;
 	}
 
 	/**
@@ -4673,7 +4720,7 @@ module.exports = function(broccoli){
 		options = options || {};
 		options.message = options.message || function(msg){};//ユーザーへのメッセージテキストを送信
 		var $dom = $(elm);
-		var src;
+		var src = '';
 		if( $dom.find('input[type=text]').length ){
 			src = $dom.find('input[type=text]').val();
 		}else if( editorLib == 'ace' && mod.aceEditor ){
@@ -4686,7 +4733,7 @@ module.exports = function(broccoli){
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
 			callback(src);
 		}); });
-		return this;
+		return;
 	}
 
 	/**
@@ -4705,7 +4752,7 @@ module.exports = function(broccoli){
 				callback(result);
 			}
 		);
-		return this;
+		return;
 	}
 
 }
@@ -7084,7 +7131,73 @@ module.exports = function(broccoli){
 module.exports = function(broccoli){
 
 	var _this = this;
+	var $ = require('jquery');
+	var utils79 = require('utils79');
 	var Pickr = require('@simonwep/pickr/dist/pickr.es5.min');
+	var Promise = require('es6-promise').Promise;
+
+
+	/**
+	 * プレビュー用の簡易なHTMLを生成する (Client Side)
+	 * InstanceTreeViewで利用する。
+	 */
+	this.mkPreviewHtml = function( fieldData, mod, callback ){
+		var value = '';
+		var rtn = '';
+		new Promise(function(rlv){rlv();})
+			.then(function(){ return new Promise(function(rlv, rjt){
+
+				// サーバーサイドの bind() に相当する処理
+				try {
+					if( typeof(fieldData)===typeof({}) && fieldData.src ){
+						value = utils79.toStr(fieldData.src);
+					}else{
+						value = utils79.toStr(fieldData);
+					}
+				} catch (e) {
+					console.error('color field: Unable to read value.', fieldData, e);
+					value = '[error]';
+				}
+				rlv();
+
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+
+				// console.log(value);
+
+				var $rtn = $('<div>');
+
+				var $colorChip = $('<span>')
+					.css({
+						"display": "inline-block",
+						"background-color": value,
+						"border": "1px solid #fff",
+						"width": "4em",
+						"height": "1.5em",
+						"margin-right": "0.5em"
+					});
+				$rtn.append($colorChip);
+
+				var $content = $('<span>').append(value);
+				$content.find('*').each(function(){
+					$(this)
+						.removeAttr('style') //スタイル削除しちゃう
+					;
+				});
+				$content.find('style').remove(); // styleタグも削除しちゃう
+
+				$rtn.append($content);
+
+				rtn = $rtn.html();
+				rlv();
+
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				callback( rtn );
+			}); })
+		;
+		return;
+	}
 
 	/**
 	 * エディタUIを生成 (Client Side)
@@ -7094,6 +7207,12 @@ module.exports = function(broccoli){
 		if( mod.rows ){
 			rows = mod.rows;
 		}
+
+		var presetString = data;
+		if( typeof(presetString) === typeof({}) && presetString.src !== undefined ){
+			presetString = presetString.src;
+		}
+
 		var $formElm;
 		var $Cleared = $('<a>');
 		var $PickrW = $('<div>');
@@ -7129,7 +7248,7 @@ module.exports = function(broccoli){
 			.attr({
 				"name": mod.name
 			})
-			.val(data)
+			.val(presetString)
 		;
 
 		$(elm).append($formElm);
@@ -7140,7 +7259,7 @@ module.exports = function(broccoli){
 			el: $Pickr.get(0),
 			container: $wrapper_c1.get(0),
 			theme: 'classic', // or 'monolith', or 'nano'
-			default: (data || '#ffffff00'),
+			default: (presetString || '#ffffff00'),
 			autoReposition: false,
 			closeOnScroll: true,
 			inline: false,
@@ -7243,30 +7362,40 @@ module.exports = function(broccoli){
 		var src = $dom.find('input[type=hidden]').val();
 		src = JSON.parse( JSON.stringify(src) );
 
+		var finData = {
+			"src": src
+		};
+
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
-			callback(src);
+			callback(finData);
 		}); });
 		return;
 	}
 
 }
 
-},{"@simonwep/pickr/dist/pickr.es5.min":31}],19:[function(require,module,exports){
+},{"@simonwep/pickr/dist/pickr.es5.min":31,"es6-promise":97,"jquery":126,"utils79":177}],19:[function(require,module,exports){
 module.exports = function(broccoli){
 
 	/**
 	 * エディタUIを生成 (Client Side)
 	 */
 	this.mkEditor = function( mod, data, elm, callback ){
+
+		var presetString = data;
+		if( typeof(presetString) === typeof({}) && presetString.src !== undefined ){
+			presetString = presetString.src;
+		}
+
 		mod.step = mod.step || "min";
 		var $rtn = $('<div>');
 		$rtn.css({'display': 'flex'});
 
 		var valDate, valTime;
-		if( data ){
-			valDate = dateFormat('Y-m-d', data);
-			valTime = dateFormat('H:i', data);
-			valTimeSec = dateFormat('H:i:s', data);
+		if( presetString ){
+			valDate = dateFormat('Y-m-d', presetString);
+			valTime = dateFormat('H:i', presetString);
+			valTimeSec = dateFormat('H:i:s', presetString);
 		}
 
 		var $date = $('<input type="date" class="form-control">')
@@ -7315,8 +7444,12 @@ module.exports = function(broccoli){
 		}
 		src = JSON.parse( JSON.stringify(src) );
 
+		var finData = {
+			"src": src
+		};
+
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
-			callback(src);
+			callback(finData);
 		}); });
 		return this;
 	}
@@ -7341,11 +7474,17 @@ module.exports = function(broccoli){
 	 * エディタUIを生成 (Client Side)
 	 */
 	this.mkEditor = function( mod, data, elm, callback ){
-		var $input = $('<input class="form-control">')
+
+		var presetString = data;
+		if( typeof(presetString) === typeof({}) && presetString.src !== undefined ){
+			presetString = presetString.src;
+		}
+
+		var $input = $('<input type="text" class="form-control">')
 			.attr({
 				"name":mod.name
 			})
-			.val(data)
+			.val(presetString)
 			.css({'width':'100%','height':'auto'})
 		;
 		var rtn = $('<div>')
@@ -7367,8 +7506,12 @@ module.exports = function(broccoli){
 		var src = $dom.find('input').val();
 		src = JSON.parse( JSON.stringify(src) );
 
+		var finData = {
+			"src": src
+		};
+
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
-			callback(src);
+			callback(finData);
 		}); });
 		return;
 	}
@@ -7377,6 +7520,34 @@ module.exports = function(broccoli){
 
 },{}],21:[function(require,module,exports){
 module.exports = function(broccoli){
+
+	/**
+	 * エディタUIで編集した内容を保存 (Client Side)
+	 */
+	this.saveEditorContent = function( elm, data, mod, callback, options ){
+		options = options || {};
+		options.message = options.message || function(msg){};//ユーザーへのメッセージテキストを送信
+		var $dom = $(elm);
+		var src = '';
+		if( $dom.find('input[type=text]').length ){
+			src = $dom.find('input[type=text]').val();
+		}else if( window.ace && mod.aceEditor ){
+			src = mod.aceEditor.getValue();
+		}else if( $dom.find('textarea').length ){
+			src = $dom.find('textarea').val();
+		}
+		src = JSON.parse( JSON.stringify(src) );
+
+        var finData = {
+            "src": src
+        };
+
+		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
+			callback(finData);
+		}); });
+		return;
+	}
+
 }
 
 },{}],22:[function(require,module,exports){
@@ -8597,6 +8768,11 @@ module.exports = function(broccoli){
 	 */
 	this.mkEditor = function( mod, data, elm, callback ){
 
+		var presetString = data;
+		if( typeof(presetString) === typeof({}) && presetString.src !== undefined ){
+			presetString = presetString.src;
+		}
+
 		var $select = $('<select>');
 		if( mod.options ){
 			if(mod.display == 'radio'){
@@ -8605,6 +8781,7 @@ module.exports = function(broccoli){
 					.css({'max-width':'100%'})
 				;
 				for( var idx in mod.options ){
+					var label = mod.lb.get('options.'+idx+'.label', mod.options[idx].label);
 					var $option = $('<label>')
 						.css({
 							'display': 'inline-block',
@@ -8619,10 +8796,10 @@ module.exports = function(broccoli){
 							})
 						)
 						.append( $('<span>')
-							.text(mod.options[idx].label)
+							.text(label)
 						)
 					;
-					if( data==mod.options[idx].value ){
+					if( presetString==mod.options[idx].value ){
 						$option.find('input').attr({
 							'checked': 'checked'
 						});
@@ -8653,13 +8830,14 @@ module.exports = function(broccoli){
 					})
 				;
 				for( var idx in mod.options ){
+					var label = mod.lb.get('options.'+idx+'.label', mod.options[idx].label);
 					var $option = $('<option>')
 						.attr({
 							'value':mod.options[idx].value
 						})
-						.text(mod.options[idx].label)
+						.text(label)
 					;
-					if( data==mod.options[idx].value ){
+					if( presetString==mod.options[idx].value ){
 						$option.attr({
 							'selected': 'selected'
 						});
@@ -8701,8 +8879,13 @@ module.exports = function(broccoli){
 			src = $dom.find('select').val();
 		}
 		src = JSON.parse( JSON.stringify(src) );
+
+		var finData = {
+			"src": src
+		};
+
 		new Promise(function(rlv){rlv();}).then(function(){ return new Promise(function(rlv, rjt){
-			callback(src);
+			callback(finData);
 		}); });
 		return;
 	}
