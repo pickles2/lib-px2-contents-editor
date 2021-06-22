@@ -25673,6 +25673,7 @@ module.exports = function(px2ce){
 							// GPI(General Purpose Interface) Bridge
 							// broccoliは、バックグラウンドで様々なデータ通信を行います。
 							// GPIは、これらのデータ通信を行うための汎用的なAPIです。
+							// console.log('========= gpiBridge:', api, options);
 							px2ce.gpiBridge(
 								{
 									'api': 'broccoliBridge',
@@ -25683,6 +25684,7 @@ module.exports = function(px2ce){
 									}
 								},
 								function(data){
+									// console.log('------ gpiBridge:', data);
 									callback(data);
 								}
 							);
