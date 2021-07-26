@@ -6,7 +6,7 @@ require_once( __DIR__.'/../../htdocs2/px-files/broccoli-fields/projectCustom2/ba
 
 $realpath_current = realpath('.');
 chdir(__DIR__.'/../../htdocs2/htdocs/subapp/');
-$px = new \picklesFramework2\px(__DIR__.'/../../htdocs2/px-files/');
+$px = new \picklesFramework2\px('../../px-files/');
 chdir($realpath_current);
 
 $px2ce = new pickles2\libs\contentsEditor\main($px);

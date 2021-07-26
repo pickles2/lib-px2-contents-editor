@@ -17,9 +17,6 @@ class main {
 	/** Filesystem Utility */
 	private $fs;
 
-	/** Cache */
-	private $cache;
-
 	/**
 	 * 編集対象のモード
 	 * コンテンツ以外にも対応範囲を拡大
@@ -75,8 +72,6 @@ class main {
 	public function __construct( $px = null ){
 		$this->px = $px;
 		$this->fs = new \tomk79\filesystem();
-
-		$this->cache = new cache( $px );
 	}
 
 	/**
@@ -470,23 +465,39 @@ class main {
 	private function getProjectInfo(){
 		$pjInfo = array();
 
-		$allData = $this->px2query(
-			$this->page_path.'?PX=px2dthelper.get.all',
-			array(
-				"output" => "json"
-			)
-		);
+		if( !is_object($this->px) ){
+			$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $this->px );
+			$pjInfo['conf'] = $this->px->conf();
+			$pjInfo['pageInfo'] = $this->px->site()->get_page_info( $this->page_path );
+			$pjInfo['contRoot'] = $this->px->get_path_controot();
+			$pjInfo['documentRoot'] = $this->px->get_path_docroot();
+			$pjInfo['realpathFiles'] = $px2dthelper->realpath_files( $this->page_path );
+			$pjInfo['pathFiles'] = $px2dthelper->path_files( $this->page_path );
+			$pjInfo['realpathThemeCollectionDir'] = $px2dthelper->get_realpath_theme_collection_dir();
+			$pjInfo['realpathDataDir'] = $px2dthelper->get_realpath_data_dir( $this->page_path );
+			$pjInfo['pathResourceDir'] = $px2dthelper->get_path_resource_dir( $this->page_path );
+			$pjInfo['realpath_homedir'] = $this->px->get_realpath_homedir();
+			$pjInfo = (array) json_decode( json_encode( $pjInfo ), false );
 
-		$pjInfo['conf'] = $allData->config;
-		$pjInfo['pageInfo'] = $allData->page_info;
-		$pjInfo['contRoot'] = $allData->path_controot;
-		$pjInfo['documentRoot'] = $allData->realpath_docroot;
-		$pjInfo['realpathFiles'] = $allData->realpath_files;
-		$pjInfo['pathFiles'] = $allData->path_files;
-		$pjInfo['realpathThemeCollectionDir'] = $allData->realpath_theme_collection_dir;
-		$pjInfo['realpathDataDir'] = $allData->realpath_data_dir;
-		$pjInfo['pathResourceDir'] = $allData->path_resource_dir;
-		$pjInfo['realpath_homedir'] = $allData->realpath_homedir;
+		}else{
+			$allData = $this->px2query(
+				$this->page_path.'?PX=px2dthelper.get.all',
+				array(
+					"output" => "json"
+				)
+			);
+
+			$pjInfo['conf'] = $allData->config;
+			$pjInfo['pageInfo'] = $allData->page_info;
+			$pjInfo['contRoot'] = $allData->path_controot;
+			$pjInfo['documentRoot'] = $allData->realpath_docroot;
+			$pjInfo['realpathFiles'] = $allData->realpath_files;
+			$pjInfo['pathFiles'] = $allData->path_files;
+			$pjInfo['realpathThemeCollectionDir'] = $allData->realpath_theme_collection_dir;
+			$pjInfo['realpathDataDir'] = $allData->realpath_data_dir;
+			$pjInfo['pathResourceDir'] = $allData->path_resource_dir;
+			$pjInfo['realpath_homedir'] = $allData->realpath_homedir;
+		}
 
 		// var_dump($pjInfo);
 		return $pjInfo;
