@@ -24522,15 +24522,29 @@ module.exports = function(px2ce){
 			'right': 0,
 			'width': '100%'
 		});
+
 		var pathViewHeight = $elmInstancePathView.outerHeight();
-		if(!show_instanceTreeView){
-			$elmCanvasFrame.css({
-				'position': 'absolute',
-				'top': tbHeight,
-				'left': 0,
-				'width': '80%',
-				'height': $canvas.height() - pathViewHeight - tbHeight
-			});
+
+		var instansTreeViewWidth = ($canvas.width() > 1020 ? '340px' : '30%');
+		var modulePaletteWidth = ($canvas.width() > 680 ? '240px' : '25%');
+
+		$elmCanvasFrame.css({
+			'position': 'absolute',
+			'top': tbHeight,
+			'left': 0,
+			'width': 'calc(100% - '+modulePaletteWidth+')',
+			'height': $canvas.height() - pathViewHeight - tbHeight
+		});
+
+		$elmModulePalette.css({
+			'position': 'absolute',
+			'top': tbHeight,
+			'right': 0,
+			'width': modulePaletteWidth,
+			'height': $canvas.height() - pathViewHeight - tbHeight
+		});
+
+		if( !show_instanceTreeView ){
 			$elmInstanceTreeView.hide();
 		}else{
 			$elmInstanceTreeView.show();
@@ -24538,24 +24552,14 @@ module.exports = function(px2ce){
 				'position': 'absolute',
 				'top': tbHeight,
 				'left': 0,
-				'width': '20%',
+				'width': instansTreeViewWidth,
 				'height': $canvas.height() - pathViewHeight - tbHeight
 			});
 			$elmCanvasFrame.css({
-				'position': 'absolute',
-				'top': tbHeight,
-				'left': '20%',
-				'width': '60%',
-				'height': $canvas.height() - pathViewHeight - tbHeight
+				'left': instansTreeViewWidth,
+				'width': 'calc(100% - '+modulePaletteWidth+' - '+instansTreeViewWidth+')',
 			});
 		}
-		$elmModulePalette.css({
-			'position': 'absolute',
-			'top': tbHeight,
-			'right': 0,
-			'width': '20%',
-			'height': $canvas.height() - pathViewHeight - tbHeight
-		});
 
 
 		if(broccoli){
