@@ -17,6 +17,9 @@ class main {
 	/** Filesystem Utility */
 	private $fs;
 
+	/** Cache */
+	private $cache;
+
 	/**
 	 * 編集対象のモード
 	 * コンテンツ以外にも対応範囲を拡大
@@ -72,6 +75,8 @@ class main {
 	public function __construct( $px = null ){
 		$this->px = $px;
 		$this->fs = new \tomk79\filesystem();
+
+		$this->cache = new cache( $px );
 	}
 
 	/**

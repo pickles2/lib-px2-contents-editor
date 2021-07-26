@@ -1,0 +1,58 @@
+/**
+ * module: themeEditorModules:layouts/fullcolumn
+ */
+body, html {
+  margin: 0;
+  padding: 0; }
+
+.theme-layouts {
+  margin: 10px 10px;
+  width: auto; }
+  .theme-layouts img {
+    max-width: 100%; }
+  .theme-layouts__header {
+    border: 3px solid #930; }
+  .theme-layouts__body {
+    display: flex; }
+  .theme-layouts__content {
+    width: 100%; }
+  .theme-layouts__lnavi {
+    margin-right: 20px; }
+  .theme-layouts__rnavi {
+    margin-left: 20px; }
+  .theme-layouts__footer {
+    border: 3px solid #036; }
+  .theme-layouts--lnavi .theme-layouts__content {
+    width: 75%; }
+    .theme-layouts--lnavi .theme-layouts__lnavi {
+      width: 25%; }
+  .theme-layouts--rnavi .theme-layouts__content {
+    width: 75%; }
+    .theme-layouts--rnavi .theme-layouts__rnavi {
+      width: 25%; }
+  .theme-layouts--3columns .theme-layouts__content {
+    width: 60%; }
+    .theme-layouts--3columns .theme-layouts__lnavi {
+      width: 20%; }
+    .theme-layouts--3columns .theme-layouts__rnavi {
+      width: 20%; }
+  @media all and (max-width: 400px) {
+  .theme-layouts .theme-layouts__body {
+    display: block; }
+  .theme-layouts .theme-layouts__content, .theme-layouts .theme-layouts__lnavi, .theme-layouts .theme-layouts__rnavi {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0; } }
+
+/**
+ * module: themeEditorModules:vars/breadcrumb
+ */
+.theme-breadcrumb ul, .theme-breadcrumb li {
+  margin: 0;
+  padding: 0;
+  display: inline;
+  list-style-type: none; }
+  .theme-breadcrumb li::after {
+    content: " > "; }
+  .theme-breadcrumb li:last-child::after {
+    content: none; }

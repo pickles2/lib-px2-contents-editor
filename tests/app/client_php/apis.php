@@ -3,7 +3,13 @@ require_once(__DIR__.'/../../../vendor/autoload.php');
 require_once(__DIR__.'/../../php_test_helper/test_php_field_custom1.php');
 require_once( __DIR__.'/../../htdocs2/px-files/broccoli-fields/projectCustom1/backend.php' );
 require_once( __DIR__.'/../../htdocs2/px-files/broccoli-fields/projectCustom2/backend.php' );
-$px2ce = new pickles2\libs\contentsEditor\main();
+
+$realpath_current = realpath('.');
+chdir(__DIR__.'/../../htdocs2/htdocs/subapp/');
+$px = new \picklesFramework2\px(__DIR__.'/../../htdocs2/px-files/');
+chdir($realpath_current);
+
+$px2ce = new pickles2\libs\contentsEditor\main($px);
 $px2ce->init(array(
 	'target_mode' => (strlen(@$_REQUEST['target_mode']) ? $_REQUEST['target_mode'] : 'page_content'),
 	'page_path' => @$_REQUEST['page_path'], // <- 編集対象ページのパス
