@@ -9,7 +9,10 @@ namespace pickles2\libs\contentsEditor;
  *
  * @author Tomoya Koyanagi <tomk79@gmail.com>
  */
-class main{
+class main {
+
+	/** Pickles 2 オブジェクト */
+	private $px;
 
 	/** Filesystem Utility */
 	private $fs;
@@ -63,8 +66,11 @@ class main{
 
 	/**
 	 * Constructor
+	 *
+	 * @param object $px Pickles 2 オブジェクト
 	 */
-	public function __construct(){
+	public function __construct( $px = null ){
+		$this->px = $px;
 		$this->fs = new \tomk79\filesystem();
 	}
 
@@ -108,7 +114,7 @@ class main{
 		$this->entryScript = $options['entryScript'];
 		$this->target_mode = (@strlen($options['target_mode']) ? $options['target_mode'] : 'page_content');
 		$this->page_path = @$options['page_path'];
-		if(!is_string($this->page_path)){
+		if( !is_string($this->page_path) ){
 			// 編集対象ページが指定されていない場合
 			return;
 		}
@@ -876,38 +882,38 @@ class main{
 	 * リクエストから標準エラー出力を検出した場合、 `$px->error( $stderr )` に転送します。
 	 */
 	public function px2query($request_path, $options = null, &$return_var = null){
-		if(!is_string($request_path)){
+		if( !is_string($request_path) ){
 			// $this->error('Invalid argument supplied for 1st option $request_path in $px->internal_sub_request(). It required String value.');
 			return false;
 		}
-		if(!strlen($request_path)){ $request_path = '/'; }
-		if(is_null($options)){ $options = array(); }
+		if( !strlen($request_path) ){ $request_path = '/'; }
+		if( is_null($options) ){ $options = array(); }
 		$php_command = array();
 		array_push( $php_command, addslashes($this->php_command['php']) );
 			// ↑ Windows でこれを `escapeshellarg()` でエスケープすると、なぜかエラーに。
 
-		if( strlen(@$this->php_command['php_ini']) ){
+		if( isset( $this->php_command['php_ini'] ) && strlen( $this->php_command['php_ini'] ) ){
 			$php_command = array_merge(
 				$php_command,
 				array(
-					'-c', escapeshellarg(@$this->php_command['php_ini']),// ← php.ini のパス
+					'-c', escapeshellarg($this->php_command['php_ini']),// ← php.ini のパス
 				)
 			);
 		}
-		if( strlen(@$this->php_command['php_extension_dir']) ){
+		if( isset( $this->php_command['php_extension_dir'] ) && strlen( $this->php_command['php_extension_dir'] ) ){
 			$php_command = array_merge(
 				$php_command,
 				array(
-					'-d', escapeshellarg(@$this->php_command['php_extension_dir']),// ← php.ini definition
+					'-d', escapeshellarg($this->php_command['php_extension_dir']),// ← php.ini definition
 				)
 			);
 		}
 		array_push($php_command, escapeshellarg( realpath($this->entryScript) ));
-		if( @$options['output'] == 'json' ){
+		if( isset( $options['output'] ) && $options['output'] == 'json' ){
 			array_push($php_command, '-o');
 			array_push($php_command, 'json');
 		}
-		if( @strlen($options['user_agent']) ){
+		if( isset( $options['user_agent'] ) && strlen( $options['user_agent'] ) ){
 			array_push($php_command, '-u');
 			array_push($php_command, escapeshellarg($options['user_agent']));
 		}
