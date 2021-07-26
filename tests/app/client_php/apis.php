@@ -4,10 +4,20 @@ require_once(__DIR__.'/../../php_test_helper/test_php_field_custom1.php');
 require_once( __DIR__.'/../../htdocs2/px-files/broccoli-fields/projectCustom1/backend.php' );
 require_once( __DIR__.'/../../htdocs2/px-files/broccoli-fields/projectCustom2/backend.php' );
 
+
+
+// Pickles 2 に擬態する
+// `$px` を生成するため。
 $realpath_current = realpath('.');
+$script_filename_current = $_SERVER['SCRIPT_FILENAME'];
 chdir(__DIR__.'/../../htdocs2/htdocs/subapp/');
+$_SERVER['PATH_INFO'] = @$_REQUEST['page_path'];
+$_SERVER['SCRIPT_NAME'] = '/subapp/.px_execute.php';
+$_SERVER['SCRIPT_FILENAME'] = realpath('./.px_execute.php');
 $px = new \picklesFramework2\px('../../px-files/');
-chdir($realpath_current);
+
+
+
 
 $px2ce = new pickles2\libs\contentsEditor\main($px);
 $px2ce->init(array(

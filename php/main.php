@@ -465,18 +465,19 @@ class main {
 	private function getProjectInfo(){
 		$pjInfo = array();
 
-		if( !is_object($this->px) ){
+		if( is_object($this->px) ){
 			$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $this->px );
 			$pjInfo['conf'] = $this->px->conf();
 			$pjInfo['pageInfo'] = $this->px->site()->get_page_info( $this->page_path );
 			$pjInfo['contRoot'] = $this->px->get_path_controot();
-			$pjInfo['documentRoot'] = $this->px->get_path_docroot();
+			$pjInfo['documentRoot'] = $this->px->get_realpath_docroot();
 			$pjInfo['realpathFiles'] = $px2dthelper->realpath_files( $this->page_path );
-			$pjInfo['pathFiles'] = $px2dthelper->path_files( $this->page_path );
-			$pjInfo['realpathThemeCollectionDir'] = $px2dthelper->get_realpath_theme_collection_dir();
 			$pjInfo['realpathDataDir'] = $px2dthelper->get_realpath_data_dir( $this->page_path );
 			$pjInfo['pathResourceDir'] = $px2dthelper->get_path_resource_dir( $this->page_path );
-			$pjInfo['realpath_homedir'] = $this->px->get_realpath_homedir();
+			// $pjInfo['pathFiles'] = $px2dthelper->path_files( $this->page_path );
+			// $pjInfo['realpath_homedir'] = $this->px->get_realpath_homedir();
+			$pjInfo['realpathThemeCollectionDir'] = $px2dthelper->get_realpath_theme_collection_dir();
+
 			$pjInfo = (array) json_decode( json_encode( $pjInfo ), false );
 
 		}else{
@@ -492,11 +493,11 @@ class main {
 			$pjInfo['contRoot'] = $allData->path_controot;
 			$pjInfo['documentRoot'] = $allData->realpath_docroot;
 			$pjInfo['realpathFiles'] = $allData->realpath_files;
-			$pjInfo['pathFiles'] = $allData->path_files;
-			$pjInfo['realpathThemeCollectionDir'] = $allData->realpath_theme_collection_dir;
 			$pjInfo['realpathDataDir'] = $allData->realpath_data_dir;
 			$pjInfo['pathResourceDir'] = $allData->path_resource_dir;
-			$pjInfo['realpath_homedir'] = $allData->realpath_homedir;
+			// $pjInfo['pathFiles'] = $allData->path_files;
+			// $pjInfo['realpath_homedir'] = $allData->realpath_homedir;
+			$pjInfo['realpathThemeCollectionDir'] = $allData->realpath_theme_collection_dir;
 		}
 
 		// var_dump($pjInfo);
