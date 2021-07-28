@@ -77,3 +77,12 @@
   width: 100%;
   height: 100%;
   border: none; }
+
+.broccoli .broccoli__lightbox-inner--edit-window-mode {
+  width: 45%;
+  margin: 20px 20px 20px auto; }
+
+@media all and (max-width: 600px) {
+  .broccoli .broccoli__lightbox-inner {
+    width: 100%;
+    min-width: 0; } }
