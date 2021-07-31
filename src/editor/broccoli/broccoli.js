@@ -277,6 +277,10 @@ module.exports = function(px2ce){
 				});
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				$elmCanvasFrame.on('click', function(){
+					broccoli.unselectInstance();
+				})
+
 				setKeyboardEvent(function(){
 					rlv();
 				});
