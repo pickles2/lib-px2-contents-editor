@@ -142,7 +142,7 @@
 
 							case 'html.gui':
 								// broccoli
-								$canvas.html('<p>GUIエディタを起動します。</p>');
+								$canvas.html('<p>ブロックエディタを起動します。</p>');
 								editor = new (require('./editor/broccoli/broccoli.js'))(_this);
 								editor.init(editorOption, function(){
 									it1.next(data);
