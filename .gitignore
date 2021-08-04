@@ -30,3 +30,6 @@ package-lock.json
 # composer
 composer.lock
 vendor
+
+# via project
+tests/app/client_php/caches/

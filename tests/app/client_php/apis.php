@@ -8,6 +8,7 @@ require_once( __DIR__.'/../../htdocs2/px-files/broccoli-fields/projectCustom2/ba
 
 // Pickles 2 に擬態する
 // `$px` を生成するため。
+$px = null;
 $realpath_current = realpath('.');
 $script_filename_current = $_SERVER['SCRIPT_FILENAME'];
 chdir(__DIR__.'/../../htdocs2/htdocs/subapp/');
@@ -15,7 +16,7 @@ $_SERVER['PATH_INFO'] = @$_REQUEST['page_path'];
 $_SERVER['SCRIPT_NAME'] = '/subapp/.px_execute.php';
 $_SERVER['SCRIPT_FILENAME'] = realpath('./.px_execute.php');
 $px = new \picklesFramework2\px('../../px-files/');
-
+header('HTTP/1.1 200 OK');
 
 
 
