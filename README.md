@@ -183,7 +183,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.13 (リリース日未定)
+### pickles2-contents-editor v2.0.13 (2021年8月21日)
 
 - パフォーマンスに関する改善。
 - UIに関する改善。
