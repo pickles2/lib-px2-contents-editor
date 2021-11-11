@@ -197,11 +197,11 @@ class main {
 		// broccoli-html-editor
 		if(is_string($realpath_dist) && is_dir($realpath_dist)){
 			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/', $realpath_dist.'/broccoli/');
-			array_push($rtn->js, 'broccoli/broccoli.min.js');
-			array_push($rtn->css, 'broccoli/broccoli.min.css');
+			array_push($rtn->js, 'broccoli/broccoli.js');
+			array_push($rtn->css, 'broccoli/broccoli.css');
 		}else{
-			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.js'));
-			array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.min.css'));
+			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.js'));
+			array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.css'));
 		}
 
 		// px2ce
