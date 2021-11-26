@@ -183,7 +183,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.14 (リリース日未定)
+### pickles2-contents-editor v2.0.14 (2021年11月26日)
 
 - Broccoli v0.5系対応
 
