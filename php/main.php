@@ -217,9 +217,11 @@ class main {
 		// broccoli-field-table
 		if(is_string($realpath_dist) && is_dir($realpath_dist)){
 			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/', $realpath_dist.'/broccoli-field-table/');
-			array_push($rtn->js, 'broccoli-field-table/broccoli-field-table.min.js');
+			array_push($rtn->js, 'broccoli-field-table/broccoli-field-table.js');
+			array_push($rtn->css, 'broccoli-field-table/broccoli-field-table.css');
 		}else{
-			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/broccoli-field-table.min.js'));
+			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/broccoli-field-table.js'));
+			array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/broccoli-field-table.css'));
 		}
 
 		// プロジェクト定義のカスタムフィールドを追加
