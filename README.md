@@ -183,7 +183,7 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
-### pickles2-contents-editor v2.0.15 (リリース日未定)
+### pickles2-contents-editor v2.0.15 (2022年1月4日)
 
 - broccoli-field-table v0.3系対応
 
