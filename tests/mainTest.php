@@ -2,10 +2,10 @@
 /**
  * test for pickles2/lib-px2-contents-editor
  */
-class mainTest extends PHPUnit_Framework_TestCase{
+class mainTest extends PHPUnit\Framework\TestCase{
 	private $fs;
 
-	public function setup(){
+	public function setUp() : void{
 		mb_internal_encoding('UTF-8');
 		require_once(__DIR__.'/php_test_helper/helper.php');
 		testHelper::start_built_in_server();
@@ -16,7 +16,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * 普通にインスタンス化して実行してみるテスト
 	 */
 	public function testStandard(){
+		$this->assertTrue( true );
 		$px2ce = testHelper::makeDefaultPx2Ce();
+
 		// $cd = realpath('.');
 		// $SCRIPT_FILENAME = $_SERVER['SCRIPT_FILENAME'];
 		// chdir(__DIR__.'/testData/standard/');

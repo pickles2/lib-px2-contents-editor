@@ -183,6 +183,11 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.0 (リリース日未定)
+
+- サポートするPHPのバージョンを `>=7.3.0` に変更。
+- PHP 8.1 に対応した。
+
 ### pickles2-contents-editor v2.0.15 (2022年1月4日)
 
 - broccoli-field-table v0.3系対応

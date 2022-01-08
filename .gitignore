@@ -31,5 +31,11 @@ package-lock.json
 composer.lock
 vendor
 
+# PHPUnit
+.phpunit.result.cache
+
+# PHP Documentor
+.phpdoc
+
 # via project
 tests/app/client_php/caches/

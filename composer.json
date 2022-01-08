@@ -27,7 +27,7 @@
     "repositories": [
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=7.3.0",
         "broccoli-html-editor/broccoli-html-editor": "~0.4",
         "broccoli-html-editor/broccoli-field-table": "~0.2"
     },
@@ -42,7 +42,7 @@
         "pickles2/px2-remove-attr": "~2.0",
         "pickles2/px2-sitemapexcel": "~2.0||~2.1",
         "tomk79/broccoli-module-lp": "~0.1",
-        "phpunit/phpunit": "^4.1.0"
+        "phpunit/phpunit": "~9.5"
     },
     "autoload": {
         "psr-4": {
