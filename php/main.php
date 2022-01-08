@@ -195,7 +195,7 @@ class main {
 
 
 		// broccoli-html-editor
-		if(is_string($realpath_dist) && is_dir($realpath_dist)){
+		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
 			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/', $realpath_dist.'/broccoli/');
 			array_push($rtn->js, 'broccoli/broccoli.js');
 			array_push($rtn->css, 'broccoli/broccoli.css');
@@ -205,7 +205,7 @@ class main {
 		}
 
 		// px2ce
-		if(is_string($realpath_dist) && is_dir($realpath_dist)){
+		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
 			$this->fs->copy_r(__DIR__.'/../dist/', $realpath_dist.'/px2ce/');
 			array_push($rtn->js, 'px2ce/pickles2-contents-editor.min.js');
 			array_push($rtn->css, 'px2ce/pickles2-contents-editor.min.css');
@@ -215,7 +215,7 @@ class main {
 		}
 
 		// broccoli-field-table
-		if(is_string($realpath_dist) && is_dir($realpath_dist)){
+		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
 			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/', $realpath_dist.'/broccoli-field-table/');
 			array_push($rtn->js, 'broccoli-field-table/broccoli-field-table.js');
 			array_push($rtn->css, 'broccoli-field-table/broccoli-field-table.css');
@@ -227,14 +227,14 @@ class main {
 		// プロジェクト定義のカスタムフィールドを追加
 		$confCustomFields = @$this->px2conf->plugins->px2dt->guieditor->custom_fields;
 		$realpath_contRoot = dirname( $this->entryScript );
-		if( is_dir($realpath_dist) && !is_dir($realpath_dist.'/custom_fields/') ){
+		if( is_dir(''.$realpath_dist) && !is_dir(''.$realpath_dist.'/custom_fields/') ){
 			$this->fs->mkdir($realpath_dist.'/custom_fields/');
 		}
 		if(is_object($confCustomFields)){
 			foreach( $confCustomFields as $fieldName=>$field ){
 				$path_client_lib_dir = @$confCustomFields->{$fieldName}->frontend->dir;
 				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
-				if(is_string($realpath_dist) && is_dir($realpath_dist) && @$confCustomFields->{$fieldName}->frontend->dir){
+				if(is_string(''.$realpath_dist) && is_dir(''.$realpath_dist) && @$confCustomFields->{$fieldName}->frontend->dir){
 					$this->fs->copy_r($path_client_lib_dir, $realpath_dist.'/custom_fields/'.urlencode($fieldName).'/');
 				}
 
@@ -248,7 +248,7 @@ class main {
 						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
 						$ext = @strtolower($matched[1]);
 
-						if(is_string($realpath_dist) && is_dir($realpath_dist) ){
+						if(is_string($realpath_dist) && is_dir(''.$realpath_dist) ){
 							if(@$confCustomFields->{$fieldName}->frontend->dir){
 								if( $ext == 'css' ){
 									array_push($rtn->css, 'custom_fields/'.urlencode($fieldName).'/'.$path_client_lib);
@@ -281,14 +281,14 @@ class main {
 		// dropped_file_operator 定義のJSを追加
 		$droppedFileOperator = @$this->px2conf->plugins->px2dt->guieditor->dropped_file_operator;
 		$realpath_contRoot = dirname( $this->entryScript );
-		if( is_dir($realpath_dist) && !is_dir($realpath_dist.'/dropped_file_operator/') ){
+		if( is_dir(''.$realpath_dist) && !is_dir(''.$realpath_dist.'/dropped_file_operator/') ){
 			$this->fs->mkdir($realpath_dist.'/dropped_file_operator/');
 		}
 		if(is_object($droppedFileOperator)){
 			foreach( $droppedFileOperator as $extOrMimetypeName=>$frontend ){
 				$path_client_lib_dir = @$droppedFileOperator->{$extOrMimetypeName}->dir;
 				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
-				if(is_string($realpath_dist) && is_dir($realpath_dist) && @$droppedFileOperator->{$extOrMimetypeName}->dir){
+				if(is_string($realpath_dist) && is_dir(''.$realpath_dist) && @$droppedFileOperator->{$extOrMimetypeName}->dir){
 					$this->fs->copy_r($path_client_lib_dir, $realpath_dist.'/dropped_file_operator/'.urlencode($extOrMimetypeName).'/');
 				}
 
@@ -304,7 +304,7 @@ class main {
 
 						$extOrMimetypeName = preg_replace('/[^a-zA-Z0-9\-\_]/', '__', $extOrMimetypeName);
 
-						if(is_string($realpath_dist) && is_dir($realpath_dist) ){
+						if(is_string($realpath_dist) && is_dir(''.$realpath_dist) ){
 							if(@$droppedFileOperator->{$extOrMimetypeName}->dir){
 								if( $ext == 'css' ){
 									array_push($rtn->css, 'dropped_file_operator/'.urlencode($extOrMimetypeName).'/'.$path_client_lib);
@@ -443,12 +443,12 @@ class main {
 		if( $this->get_app_mode() != 'desktop' ){
 			return false;
 		}
-		if( !is_dir($this->realpathFiles) ){
+		if( !is_dir(''.$this->realpathFiles) ){
 			$this->fs()->mkdir($this->realpathFiles);
 		}
 		$realpath_target = $this->fs()->get_realpath($this->realpathFiles.'/'.$path);
-		if( !is_dir(dirname($realpath_target)) ){
-			$this->fs()->mkdir(dirname($realpath_target));
+		if( !is_dir(dirname(''.$realpath_target)) ){
+			$this->fs()->mkdir(dirname(''.$realpath_target));
 		}
 
 		if( realpath('/') == '/' ){
@@ -539,7 +539,7 @@ class main {
 		}
 		$realpath_vendor = $this->get_realpath_vendor();
 		foreach($this->fs->ls( $realpath_vendor ) as $vendor){
-			if( !is_dir($realpath_vendor.$vendor.'/') ){
+			if( !is_dir(''.$realpath_vendor.$vendor.'/') ){
 				continue;
 			}
 			foreach($this->fs->ls( $realpath_vendor.$vendor.'/' ) as $package){
@@ -762,7 +762,7 @@ class main {
 			// モジュールフォルダの指定がない場合
 		}else{
 			$pathModuleDir = $this->fs()->get_realpath( $pathModuleDir.'/', dirname($this->entryScript) );
-			if( !is_dir($pathModuleDir) ){
+			if( !is_dir(''.$pathModuleDir) ){
 				// 指定されたモジュールフォルダが存在しない場合
 			}else{
 				// info.json を読み込み
@@ -779,7 +779,7 @@ class main {
 							// (= paths_module_template の設定を優先)
 							continue;
 						}
-						if( is_dir($pathModuleDir.$infoJson->sort[$idx]) ){
+						if( is_dir(''.$pathModuleDir.$infoJson->sort[$idx]) ){
 							$pathsModuleTemplate[$infoJson->sort[$idx]] = $pathModuleDir.$infoJson->sort[$idx];
 						}
 					}
@@ -794,7 +794,7 @@ class main {
 						// (= paths_module_template の設定を優先)
 						continue;
 					}
-					if( is_dir($pathModuleDir.$fileList[$idx]) ){
+					if( is_dir(''.$pathModuleDir.$fileList[$idx]) ){
 						$pathsModuleTemplate[$fileList[$idx]] = $pathModuleDir.$fileList[$idx];
 					}
 				}
