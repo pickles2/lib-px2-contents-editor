@@ -466,6 +466,16 @@ class main {
 	 */
 	private function getProjectInfo(){
 		$pjInfo = array();
+		$pjInfo['conf'] = null;
+		$pjInfo['pageInfo'] = null;
+		$pjInfo['contRoot'] = null;
+		$pjInfo['documentRoot'] = null;
+		$pjInfo['realpathFiles'] = null;
+		$pjInfo['realpathDataDir'] = null;
+		$pjInfo['pathResourceDir'] = null;
+		// $pjInfo['pathFiles'] = null;
+		// $pjInfo['realpath_homedir'] = null;
+		$pjInfo['realpathThemeCollectionDir'] = null;
 
 		if( is_object($this->px) ){
 			$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $this->px );
@@ -490,16 +500,18 @@ class main {
 				)
 			);
 
-			$pjInfo['conf'] = $allData->config;
-			$pjInfo['pageInfo'] = $allData->page_info;
-			$pjInfo['contRoot'] = $allData->path_controot;
-			$pjInfo['documentRoot'] = $allData->realpath_docroot;
-			$pjInfo['realpathFiles'] = $allData->realpath_files;
-			$pjInfo['realpathDataDir'] = $allData->realpath_data_dir;
-			$pjInfo['pathResourceDir'] = $allData->path_resource_dir;
-			// $pjInfo['pathFiles'] = $allData->path_files;
-			// $pjInfo['realpath_homedir'] = $allData->realpath_homedir;
-			$pjInfo['realpathThemeCollectionDir'] = $allData->realpath_theme_collection_dir;
+			if( is_object($allData) ){
+				$pjInfo['conf'] = $allData->config;
+				$pjInfo['pageInfo'] = $allData->page_info;
+				$pjInfo['contRoot'] = $allData->path_controot;
+				$pjInfo['documentRoot'] = $allData->realpath_docroot;
+				$pjInfo['realpathFiles'] = $allData->realpath_files;
+				$pjInfo['realpathDataDir'] = $allData->realpath_data_dir;
+				$pjInfo['pathResourceDir'] = $allData->path_resource_dir;
+				// $pjInfo['pathFiles'] = $allData->path_files;
+				// $pjInfo['realpath_homedir'] = $allData->realpath_homedir;
+				$pjInfo['realpathThemeCollectionDir'] = $allData->realpath_theme_collection_dir;
+			}
 		}
 
 		// var_dump($pjInfo);
@@ -510,8 +522,20 @@ class main {
 	 * 自動ロードのカスタムフィールドを検索する
 	 */
 	private function find_autoload_custom_fields(){
-		if( !@is_object($this->px2conf->plugins->px2dt->guieditor->custom_fields) ){
-			@$this->px2conf->plugins->px2dt->guieditor->custom_fields = json_decode('{}');
+		if( !isset($this->px2conf) || !is_object($this->px2conf) ){
+			@$this->px2conf = new \stdClass();
+		}
+		if( !isset($this->px2conf->plugins) || !is_object($this->px2conf->plugins) ){
+			@$this->px2conf->plugins = new \stdClass();
+		}
+		if( !isset($this->px2conf->plugins->px2dt) || !is_object($this->px2conf->plugins->px2dt) ){
+			@$this->px2conf->plugins->px2dt = new \stdClass();
+		}
+		if( !isset($this->px2conf->plugins->px2dt->guieditor) || !is_object($this->px2conf->plugins->px2dt->guieditor) ){
+			@$this->px2conf->plugins->px2dt->guieditor = new \stdClass();
+		}
+		if( !isset($this->px2conf->plugins->px2dt->guieditor->custom_fields) || !is_object($this->px2conf->plugins->px2dt->guieditor->custom_fields) ){
+			@$this->px2conf->plugins->px2dt->guieditor->custom_fields = new \stdClass();
 		}
 		$realpath_vendor = $this->get_realpath_vendor();
 		foreach($this->fs->ls( $realpath_vendor ) as $vendor){
