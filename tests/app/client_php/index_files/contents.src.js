@@ -23,6 +23,9 @@ $(window).load(function(){
 				"url": "./apis.php",
 				"type": 'get',
 				'data': {'page_path':params.page_path, 'client_resources':1},
+				"error": function(err){
+					console.error(err);
+				},
 				"success": function(resources){
 					// console.info('-------',resources);
 

@@ -88,10 +88,10 @@ class editor_default{
 			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
 			$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-			if( !strlen($codes['css']) ){
+			if( !strlen(''.$codes['css']) ){
 				$strLoaderCSS = '';
 			}
-			if( !strlen($codes['js']) ){
+			if( !strlen(''.$codes['js']) ){
 				$strLoaderJS = '';
 			}
 
@@ -116,7 +116,7 @@ class editor_default{
 		// JSファイルを保存
 		if( array_key_exists('js', $codes) ){
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-			if( !strlen($codes['js']) ){
+			if( !strlen(''.$codes['js']) ){
 				@unlink( $realpath_resource_dir . '/script.js' );
 			}else{
 				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );

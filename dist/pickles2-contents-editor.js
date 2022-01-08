@@ -4453,7 +4453,6 @@ module.exports={
   "_requiredBy": [
     "/",
     "/broccoli-html-editor",
-    "/broccoli-html-editor/langbank",
     "/langbank"
   ],
   "_resolved": "https://registry.npmjs.org/ejs/-/ejs-2.7.4.tgz",

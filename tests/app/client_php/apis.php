@@ -22,7 +22,7 @@ header('HTTP/1.1 200 OK');
 
 $px2ce = new pickles2\libs\contentsEditor\main($px);
 $px2ce->init(array(
-	'target_mode' => (strlen(@$_REQUEST['target_mode']) ? $_REQUEST['target_mode'] : 'page_content'),
+	'target_mode' => (strlen(''.@$_REQUEST['target_mode']) ? $_REQUEST['target_mode'] : 'page_content'),
 	'page_path' => @$_REQUEST['page_path'], // <- 編集対象ページのパス
 	'appMode' => 'web', // 'web' or 'desktop'. default to 'web'
 	'entryScript' => realpath(__DIR__.'/../../htdocs2/htdocs/subapp/.px_execute.php'),

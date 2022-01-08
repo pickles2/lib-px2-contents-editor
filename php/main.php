@@ -82,7 +82,7 @@ class main {
 		if( !is_array($options) ){
 			$options = array();
 		}
-		if( !array_key_exists('appMode', $options) || !strlen( $options['appMode'] ) ){
+		if( !array_key_exists('appMode', $options) || !strlen( ''.$options['appMode'] ) ){
 			$options['appMode'] = 'web'; // web | desktop
 		}
 		if( !array_key_exists('customFields', $options) || !is_array( $options['customFields'] ) ){
@@ -101,18 +101,18 @@ class main {
 			'php_ini'=>null,
 			'php_extension_dir'=>null,
 		);
-		if( array_key_exists('php', $options) && strlen($options['php']) ){
+		if( array_key_exists('php', $options) && strlen(''.$options['php']) ){
 			$this->php_command['php'] = $options['php'];
 		}
-		if( array_key_exists('php_ini', $options) && strlen($options['php_ini']) ){
+		if( array_key_exists('php_ini', $options) && strlen(''.$options['php_ini']) ){
 			$this->php_command['php_ini'] = $options['php_ini'];
 		}
-		if( array_key_exists('php_extension_dir', $options) && strlen($options['php_extension_dir']) ){
+		if( array_key_exists('php_extension_dir', $options) && strlen(''.$options['php_extension_dir']) ){
 			$this->php_command['php_extension_dir'] = $options['php_extension_dir'];
 		}
 
 		$this->entryScript = $options['entryScript'];
-		$this->target_mode = (@strlen($options['target_mode']) ? $options['target_mode'] : 'page_content');
+		$this->target_mode = (@strlen(''.$options['target_mode']) ? $options['target_mode'] : 'page_content');
 		$this->page_path = @$options['page_path'];
 		if( !is_string($this->page_path) ){
 			// 編集対象ページが指定されていない場合
@@ -534,7 +534,7 @@ class main {
 								// fieldではない
 								continue;
 							}
-							if( !property_exists($item, 'id') || !strlen($item->id) ){
+							if( !property_exists($item, 'id') || !strlen(''.$item->id) ){
 								// IDが未設定
 								continue;
 							}
@@ -565,7 +565,7 @@ class main {
 	 * モジュールCSS,JSソースを取得する
 	 */
 	public function getModuleCssJsSrc($theme_id = null){
-		if(!strlen($theme_id)){
+		if(!strlen(''.$theme_id)){
 			$theme_id = '';
 		}
 		$rtn = array(
@@ -593,7 +593,7 @@ class main {
 	 * ローカルCSS,JSソースを取得する
 	 */
 	public function getLocalCssJsSrc($theme_id = null, $layout_id = null){
-		if(!strlen($theme_id)){
+		if(!strlen(''.$theme_id)){
 			$theme_id = '';
 		}
 		$rtn = array(
@@ -688,7 +688,7 @@ class main {
 
 		$customFields = array();
 		$page_content = $this->page_path;
-		if( strlen(@$pageInfo->content) ){
+		if( strlen(''.@$pageInfo->content) ){
 			$page_content = $pageInfo->content;
 		}
 
@@ -787,7 +787,7 @@ class main {
 						$fin .= "\n";
 						$fin .= "\n";
 						$fin .= '<'.'?php ob_start(); ?'.'>'."\n";
-						$fin .= (strlen($htmls[$bowlId]) ? $htmls[$bowlId]."\n" : '');
+						$fin .= (strlen(''.$htmls[$bowlId]) ? $htmls[$bowlId]."\n" : '');
 						$fin .= '<'.'?php $px->bowl()->send( ob_get_clean(), '.json_encode($bowlId).' ); ?'.'>'."\n";
 						$fin .= "\n";
 					}
@@ -829,7 +829,7 @@ class main {
 						$fin .= "\n";
 						$fin .= "\n";
 						$fin .= '<'.'?php ob_start(); ?'.'>'."\n";
-						$fin .= (strlen($htmls[$bowlId]) ? $htmls[$bowlId]."\n" : '');
+						$fin .= (strlen(''.$htmls[$bowlId]) ? $htmls[$bowlId]."\n" : '');
 						$fin .= '<'.'?php $px->bowl()->send( ob_get_clean(), '.json_encode($bowlId).' ); ?'.'>'."\n";
 						$fin .= "\n";
 					}
@@ -905,13 +905,13 @@ class main {
 			// $this->error('Invalid argument supplied for 1st option $request_path in $px->internal_sub_request(). It required String value.');
 			return false;
 		}
-		if( !strlen($request_path) ){ $request_path = '/'; }
+		if( !strlen(''.$request_path) ){ $request_path = '/'; }
 		if( is_null($options) ){ $options = array(); }
 		$php_command = array();
 		array_push( $php_command, addslashes($this->php_command['php']) );
 			// ↑ Windows でこれを `escapeshellarg()` でエスケープすると、なぜかエラーに。
 
-		if( isset( $this->php_command['php_ini'] ) && strlen( $this->php_command['php_ini'] ) ){
+		if( isset( $this->php_command['php_ini'] ) && strlen( ''.$this->php_command['php_ini'] ) ){
 			$php_command = array_merge(
 				$php_command,
 				array(
@@ -919,7 +919,7 @@ class main {
 				)
 			);
 		}
-		if( isset( $this->php_command['php_extension_dir'] ) && strlen( $this->php_command['php_extension_dir'] ) ){
+		if( isset( $this->php_command['php_extension_dir'] ) && strlen( ''.$this->php_command['php_extension_dir'] ) ){
 			$php_command = array_merge(
 				$php_command,
 				array(
@@ -932,7 +932,7 @@ class main {
 			array_push($php_command, '-o');
 			array_push($php_command, 'json');
 		}
-		if( isset( $options['user_agent'] ) && strlen( $options['user_agent'] ) ){
+		if( isset( $options['user_agent'] ) && strlen( ''.$options['user_agent'] ) ){
 			array_push($php_command, '-u');
 			array_push($php_command, escapeshellarg($options['user_agent']));
 		}
@@ -966,7 +966,7 @@ class main {
 		ob_get_clean();
 
 		$bin = $io[1]; // stdout
-		if( strlen( $io[2] ) ){
+		if( strlen( ''.$io[2] ) ){
 			// $this->error($io[2]); // stderr
 		}
 
