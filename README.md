@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.1 (リリース日未定)
+
+- その他の細かい修正。
+
 ### pickles2-contents-editor v2.1.0 (2022年1月8日)
 
 - サポートするPHPのバージョンを `>=7.3.0` に変更。
