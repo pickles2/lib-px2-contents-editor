@@ -185,6 +185,7 @@ $ npm run test
 
 ### pickles2-contents-editor v2.1.1 (リリース日未定)
 
+- `$conf->path_controot` が深いパスに設定されている場合に、異なる編集対象が選択される場合がある問題を修正。
 - その他の細かい修正。
 
 ### pickles2-contents-editor v2.1.0 (2022年1月8日)

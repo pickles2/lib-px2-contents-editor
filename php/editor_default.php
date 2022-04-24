@@ -136,7 +136,7 @@ class editor_default{
 		}
 		$rtn = array(
 			'realpathFiles' => $this->px2ce->fs()->get_realpath($this->px2ce->get_realpath_files()),
-			'contentsPath' => $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$page_path),
+			'contentsPath' => $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$page_path),
 			'strLoaderCSS' => '<'.'?php ob_start(); ?'.'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'.'>" /><'.'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'.'>'."\n",
 			'strLoaderJS' => '<'.'?php ob_start(); ?'.'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'.'>"></script><'.'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'.'>'."\n"
 		);
