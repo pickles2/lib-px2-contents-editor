@@ -23924,7 +23924,7 @@ module.exports = function(px2ce){
 				+'</div>'
 				+'<div class="pickles2-contents-editor--toolbar-finish">'
 					+'<div class="px2-input-group">'
-						+'<button class="px2-btn px2-btn--primary px2-btn--sm pickles2-contents-editor--toolbar-btn-finish"><span class="glyphicon glyphicon-floppy-save"></span> '+px2ce.lb.get('ui_label.done')+'</button>'
+						+'<button class="px2-btn px2-btn--primary px2-btn--sm pickles2-contents-editor--toolbar-btn-finish">'+px2ce.lb.get('ui_label.done')+'</button>'
 					+'</div>'
 				+'</div>'
 			+'</div>'

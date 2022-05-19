@@ -48,7 +48,7 @@
     "gulp-twig": "^0.3.0",
     "gulp-uglify": "^1.2.0",
     "mocha": "^2.3.0",
-    "px2style": "file:submodules/px2style",
+    "px2style": "git+https://github.com/pickles2/px2style.git#develop",
     "url-parse": "^1.1.1"
   }
 }
