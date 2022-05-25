@@ -37,12 +37,21 @@
 		line-height: 0;
 		clear: both;
 	}
+
+	@media all and (max-width: 600px) {
+		select { // TODO: 仮の処理: ビューポートサイズのセレクタは小さい画面では隠す
+			display: none !important;
+		}
+	}
 }
 
 .pickles2-contents-editor--broccoli{
 	&-canvas-frame{
+		position: absolute;
+		top: 0px;
+		left: 0px;
 		overflow: auto;
-		width: 100%;
+		width: calc(100% - 240px);
 		height: 100%;
 		background: linear-gradient(45deg, #e9e9e9 25%, transparent 25%, transparent 75%, #e9e9e9 75%),
 					linear-gradient(45deg, #e9e9e9 25%, transparent 25%, transparent 75%, #e9e9e9 75%);
@@ -57,14 +66,41 @@
 		margin: 0 auto;
 	}
 	&-palette{
+		position: absolute;
+		top: 0px;
+		right: 0px;
 		background-color: #f6f6f6;
 		overflow: auto;
+		width: 240px;
 	}
 	&-instance-tree-view{
+		position: absolute;
+		top: 0px;
+		left: 0px;
 		background-color: #f6f6f6;
 		overflow: auto;
+		width: 340px;
+		max-width: 80%;
+		opacity: 0.97;
 	}
 	&-instance-path-view{
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+	}
+
+	@media all and (max-width: 600px) {
+		&-canvas-frame{
+			width: 100%;
+		}
+		&-palette{
+			display: none;
+		}
+		&-instance-tree-view{
+			width: 80%;
+		}
 	}
 }
 
@@ -77,6 +113,10 @@
 
 .pickles2-contents-editor--default{
 	&-canvas{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 60%;
 		overflow: auto;
 		-webkit-overflow-scrolling: touch;
 		overflow-scrolling: touch;
@@ -90,16 +130,31 @@
 			border-width: 0;
 		}
 	}
-	&-editor-body{
-		>div{
-			width: 100%;
-			height: 100%;
-			border: none;
+	&-editor {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 40%;
+
+		&-body{
+			>div{
+				width: 100%;
+				height: 100%;
+				border: none;
+			}
+			textarea{
+				width: 100%;
+				height: 100%;
+				border: none;
+			}
 		}
-		textarea{
+	}
+	@media all and (max-width: 600px) {
+		&-canvas{
+			display: none;
+		}
+		&-editor {
 			width: 100%;
-			height: 100%;
-			border: none;
 		}
 	}
 }

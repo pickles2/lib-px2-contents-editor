@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.2 (リリース日未定)
+
+- 小さい画面に配慮したレイアウトの改善。
+
 ### pickles2-contents-editor v2.1.1 (2022年5月22日)
 
 - `$conf->path_controot` が深いパスに設定されている場合に、異なる編集対象が選択される場合がある問題を修正。

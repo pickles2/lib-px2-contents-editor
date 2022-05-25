@@ -7076,10 +7076,16 @@
     font-size: 0.1em;
     line-height: 0;
     clear: both; }
+  @media all and (max-width: 600px) {
+    .pickles2-contents-editor--toolbar select {
+      display: none !important; } }
 
 .pickles2-contents-editor--broccoli-canvas-frame {
+  position: absolute;
+  top: 0px;
+  left: 0px;
   overflow: auto;
-  width: 100%;
+  width: calc(100% - 240px);
   height: 100%;
   background: linear-gradient(45deg, #e9e9e9 25%, transparent 25%, transparent 75%, #e9e9e9 75%), linear-gradient(45deg, #e9e9e9 25%, transparent 25%, transparent 75%, #e9e9e9 75%);
   background-color: #f9f9f9;
@@ -7093,12 +7099,37 @@
   margin: 0 auto; }
 
 .pickles2-contents-editor--broccoli-palette {
+  position: absolute;
+  top: 0px;
+  right: 0px;
   background-color: #f6f6f6;
-  overflow: auto; }
+  overflow: auto;
+  width: 240px; }
 
 .pickles2-contents-editor--broccoli-instance-tree-view {
+  position: absolute;
+  top: 0px;
+  left: 0px;
   background-color: #f6f6f6;
-  overflow: auto; }
+  overflow: auto;
+  width: 340px;
+  max-width: 80%;
+  opacity: 0.97; }
+
+.pickles2-contents-editor--broccoli-instance-path-view {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%; }
+
+@media all and (max-width: 600px) {
+  .pickles2-contents-editor--broccoli-canvas-frame {
+    width: 100%; }
+  .pickles2-contents-editor--broccoli-palette {
+    display: none; }
+  .pickles2-contents-editor--broccoli-instance-tree-view {
+    width: 80%; } }
 
 .pickles2-contents-editor--notExists {
   border: 1px solid #eee;
@@ -7107,6 +7138,10 @@
   margin-top: 3em; }
 
 .pickles2-contents-editor--default-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   overflow-scrolling: touch; }
@@ -7119,15 +7154,25 @@
     border: none;
     border-width: 0; }
 
-.pickles2-contents-editor--default-editor-body > div {
-  width: 100%;
-  height: 100%;
-  border: none; }
+.pickles2-contents-editor--default-editor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%; }
+  .pickles2-contents-editor--default-editor-body > div {
+    width: 100%;
+    height: 100%;
+    border: none; }
+  .pickles2-contents-editor--default-editor-body textarea {
+    width: 100%;
+    height: 100%;
+    border: none; }
 
-.pickles2-contents-editor--default-editor-body textarea {
-  width: 100%;
-  height: 100%;
-  border: none; }
+@media all and (max-width: 600px) {
+  .pickles2-contents-editor--default-canvas {
+    display: none; }
+  .pickles2-contents-editor--default-editor {
+    width: 100%; } }
 
 .broccoli .broccoli__lightbox-inner--edit-window-mode {
   width: 45%;

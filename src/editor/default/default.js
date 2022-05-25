@@ -501,23 +501,13 @@ module.exports = function(px2ce){
 		var $toolbar = toolbar.getElm();
 		var tbHeight = $toolbar.outerHeight();
 
-		$canvas.css({
-			'position': 'relative'
-		});
 		$elmCanvas.css({
-			'position': 'absolute',
-			'overflow': 'auto',
 			'top': tbHeight,
-			'left': 0,
-			'width': '60%',
-			'height': $canvas.innerHeight() - tbHeight
+			'height': $canvas.innerHeight() - tbHeight,
 		});
 		$elmEditor.css({
-			'position': 'absolute',
 			'top': tbHeight,
-			'right': 0,
-			'width': '40%',
-			'height': $canvas.innerHeight() - tbHeight
+			'height': $canvas.innerHeight() - tbHeight,
 		});
 
 		$canvas.find('.pickles2-contents-editor--default-editor-body').css({

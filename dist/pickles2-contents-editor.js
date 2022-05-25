@@ -24515,36 +24515,14 @@ module.exports = function(px2ce){
 
 		var $toolbar = toolbar.getElm();
 		var tbHeight = $toolbar.outerHeight();
-
-		$canvas.css({
-			'position': 'relative'
-		});
-		$elmInstancePathView.css({
-			'position': 'absolute',
-			'bottom': 0,
-			'left': 0,
-			'right': 0,
-			'width': '100%'
-		});
-
 		var pathViewHeight = $elmInstancePathView.outerHeight();
 
-		var instansTreeViewWidth = ($canvas.width() > 1020 ? '340px' : '30%');
-		var modulePaletteWidth = ($canvas.width() > 680 ? '240px' : '25%');
-
 		$elmCanvasFrame.css({
-			'position': 'absolute',
 			'top': tbHeight,
-			'left': 0,
-			'width': 'calc(100% - '+modulePaletteWidth+')',
 			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
-
 		$elmModulePalette.css({
-			'position': 'absolute',
 			'top': tbHeight,
-			'right': 0,
-			'width': modulePaletteWidth,
 			'height': $canvas.height() - pathViewHeight - tbHeight
 		});
 
@@ -24553,15 +24531,8 @@ module.exports = function(px2ce){
 		}else{
 			$elmInstanceTreeView.show();
 			$elmInstanceTreeView.css({
-				'position': 'absolute',
 				'top': tbHeight,
-				'left': 0,
-				'width': instansTreeViewWidth,
 				'height': $canvas.height() - pathViewHeight - tbHeight
-			});
-			$elmCanvasFrame.css({
-				'left': instansTreeViewWidth,
-				'width': 'calc(100% - '+modulePaletteWidth+' - '+instansTreeViewWidth+')',
 			});
 		}
 
@@ -25082,23 +25053,13 @@ module.exports = function(px2ce){
 		var $toolbar = toolbar.getElm();
 		var tbHeight = $toolbar.outerHeight();
 
-		$canvas.css({
-			'position': 'relative'
-		});
 		$elmCanvas.css({
-			'position': 'absolute',
-			'overflow': 'auto',
 			'top': tbHeight,
-			'left': 0,
-			'width': '60%',
-			'height': $canvas.innerHeight() - tbHeight
+			'height': $canvas.innerHeight() - tbHeight,
 		});
 		$elmEditor.css({
-			'position': 'absolute',
 			'top': tbHeight,
-			'right': 0,
-			'width': '40%',
-			'height': $canvas.innerHeight() - tbHeight
+			'height': $canvas.innerHeight() - tbHeight,
 		});
 
 		$canvas.find('.pickles2-contents-editor--default-editor-body').css({
