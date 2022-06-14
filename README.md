@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.3 (リリース日未定)
+
+- その他の細かい修正。
+
 ### pickles2-contents-editor v2.1.2 (2022年6月5日)
 
 - 小さい画面に配慮したレイアウトの改善。

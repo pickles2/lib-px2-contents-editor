@@ -14,9 +14,6 @@
 		}
 	})().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
 
-	// broccoli-field-table をロード
-	document.write('<script src="'+__dirname+'/libs/broccoli-field-table/dist/broccoli-field-table.js"></script>');
-
 	window.Pickles2ContentsEditor = function(){
 		var $ = require('jquery');
 		var it79 = require('iterate79');
