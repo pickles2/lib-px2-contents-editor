@@ -46,6 +46,23 @@ mix
 
 
 	// --------------------------------------
+	// Pickles 2 Contents Editor
+	.js('src/pickles2-contents-editor.js', 'dist/pickles2-contents-editor.js')
+	.js('src/pickles2-preview-contents.js', 'dist/pickles2-preview-contents.js')
+	.sass('src/pickles2-contents-editor.css.scss', 'dist/pickles2-contents-editor.css')
+
+	// .min files
+	.copy('dist/pickles2-contents-editor.js', 'dist/pickles2-contents-editor.min.js')
+	.copy('dist/pickles2-preview-contents.js', 'dist/pickles2-preview-contents.min.js')
+	.copy('dist/pickles2-contents-editor.css', 'dist/pickles2-contents-editor.min.css')
+
+	// --------------------------------------
+	// DevScripts
+	.js('tests/app/client_php/index_files/contents.src.js', 'tests/app/client_php/index_files/contents.js')
+	.js('tests/app/client/index_files/contents.src.js', 'tests/app/client/index_files/contents.js')
+
+	// --------------------------------------
 	// Static Frontend Libraries
+	.copyDirectory('src/editor/broccoli/canvas.html', 'dist/editor/broccoli/canvas.html')
 	.copyDirectory('node_modules/broccoli-field-table/dist', 'dist/libs/broccoli-field-table/dist')
 ;

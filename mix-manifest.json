@@ -1,4 +1,13 @@
 {
+    "/dist/pickles2-contents-editor.js": "/dist/pickles2-contents-editor.js",
+    "/dist/pickles2-preview-contents.js": "/dist/pickles2-preview-contents.js",
+    "/tests/app/client_php/index_files/contents.js": "/tests/app/client_php/index_files/contents.js",
+    "/tests/app/client/index_files/contents.js": "/tests/app/client/index_files/contents.js",
+    "/dist/pickles2-contents-editor.css": "/dist/pickles2-contents-editor.css",
+    "/dist/pickles2-contents-editor.min.js": "/dist/pickles2-contents-editor.min.js",
+    "/dist/pickles2-preview-contents.min.js": "/dist/pickles2-preview-contents.min.js",
+    "/dist/pickles2-contents-editor.min.css": "/dist/pickles2-contents-editor.min.css",
+    "/dist/editor/broccoli/canvas.html": "/dist/editor/broccoli/canvas.html",
     "/dist/libs/broccoli-field-table/dist/broccoli-field-table.js": "/dist/libs/broccoli-field-table/dist/broccoli-field-table.js",
     "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js": "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js"
 }
