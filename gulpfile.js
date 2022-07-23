@@ -15,12 +15,6 @@ let browserify = require("gulp-browserify");//NodeJSのコードをブラウザ�
 let packageJson = require(__dirname+'/package.json');
 
 
-// client-libs (frontend) を処理
-gulp.task("client-libs", function() {
-	return gulp.src(["node_modules/broccoli-field-table/dist/**/*"])
-		.pipe(gulp.dest( './dist/libs/broccoli-field-table/dist/' ))
-	;
-});
 
 // src 中の *.css を処理
 gulp.task('.css', function(){
@@ -129,13 +123,6 @@ gulp.task("test/contents.js:php", function() {
 });
 
 
-// ブラウザを立ち上げてプレビューする
-gulp.task("preview", function(callback) {
-	require('child_process').spawn('open',[conf.origin+'/']);
-	callback();
-});
-
-
 
 let _tasks = gulp.parallel(
 	'.html',
@@ -145,8 +132,7 @@ let _tasks = gulp.parallel(
 	'test/contents.js:js',
 	'test/contents.js:php',
 	'pickles2-contents-editor.js',
-	'pickles2-preview-contents.js',
-	'client-libs'
+	'pickles2-preview-contents.js'
 );
 
 // src 中のすべての拡張子を監視して処理
