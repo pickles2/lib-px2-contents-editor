@@ -6,9 +6,8 @@ if($pid){
 $WEB_SERVER_HOST = '127.0.0.1';
 $WEB_SERVER_PORT = 8088;
 // $WEB_SERVER_DOCROOT = __DIR__.'/../../htdocs2/htdocs/';
-// $WEB_SERVER_ROUTER = __DIR__.'/router.php';
 $WEB_SERVER_DOCROOT = __DIR__.'/../../../';
-$WEB_SERVER_ROUTER = null;
+$WEB_SERVER_ROUTER = __DIR__.'/route.php';
 
 // Command that starts the built-in web server
 $command = sprintf(

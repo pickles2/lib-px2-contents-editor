@@ -402,13 +402,10 @@ module.exports = function(px2ce){
 	 * ファイルドロップイベントハンドラ
 	 */
 	function onFileDropped(e){
-		// console.log(e);
-		// console.log(current_tab, px2conf);
 		e.stopPropagation();
 		e.preventDefault();
 		var event = e.originalEvent;
 		var fileInfo = event.dataTransfer.files[0];
-		// console.log(fileInfo);
 		var dataUri;
 		var path_resource;
 
@@ -425,7 +422,6 @@ module.exports = function(px2ce){
 				// mod.filename
 				readSelectedLocalFile(fileInfo, function(_dataUri){
 					dataUri = _dataUri;
-					// console.log(dataUri);
 					it1.next();
 				});
 			},
@@ -436,7 +432,6 @@ module.exports = function(px2ce){
 						'page_path': page_path
 					},
 					function(result){
-						// console.log(result);
 						var path = require('path');
 						var tmpPathControot = px2conf.path_controot;
 						tmpPathControot = tmpPathControot.replace(/\/+$/, '')+page_path;
@@ -541,7 +536,6 @@ module.exports = function(px2ce){
 		it79.fnc({}, [
 			function( it1, data ){
 				// postMessageの送受信を行う準備
-				console.log('---- postMessenger.init()');
 				_this.postMessenger.init(function(){
 					it1.next(data);
 				});
@@ -553,8 +547,6 @@ module.exports = function(px2ce){
 					'getHtmlContentHeightWidth',
 					{},
 					function(hw){
-						// $canvas.find('iframe').height( hw.h + 0 ).width( hw.w + 0 );
-						// it1.next(data);
 						it1.next(arg);
 					}
 				);
@@ -564,7 +556,7 @@ module.exports = function(px2ce){
 				it1.next(data);
 			}
 		]);
-		return this;
+		return;
 	}
 
 	/**
@@ -592,13 +584,9 @@ module.exports = function(px2ce){
 				'codes': codes
 			},
 			function(result){
-				// console.log(result);
-				// console.log(droppedFileList);
-
 				it79.ary(
 					droppedFileList,
 					function(itAry1, row, idx){
-						// console.log(itAry1, row, idx);
 						px2ce.gpiBridge(
 							{
 								'api': 'savePageResources',
@@ -607,7 +595,6 @@ module.exports = function(px2ce){
 								'base64': row.base64
 							},
 							function(result){
-								// console.log(result);
 								itAry1.next();
 							}
 						);

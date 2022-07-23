@@ -13,7 +13,7 @@ $realpath_current = realpath('.');
 $script_filename_current = $_SERVER['SCRIPT_FILENAME'];
 chdir(__DIR__.'/../../htdocs2/htdocs/subapp/');
 $_SERVER['PATH_INFO'] = @$_REQUEST['page_path'];
-$_SERVER['SCRIPT_NAME'] = '/subapp/.px_execute.php';
+$_SERVER['SCRIPT_NAME'] = '/tests/htdocs2/htdocs/subapp/.px_execute.php';
 $_SERVER['SCRIPT_FILENAME'] = realpath('./.px_execute.php');
 $px = new \picklesFramework2\px('../../px-files/');
 header('HTTP/1.1 200 OK');
@@ -29,9 +29,9 @@ $px2ce->init(array(
 	// 'entryScript' => realpath(__DIR__.'/../../htdocs/.px_execute.php'),
 	'customFields' => array(
 		'custom1' => 'test_php_field_custom1',
-	) ,
+	),
 	'log' => function($msg){
-	}
+	},
 ));
 if(@$_GET['client_resources']){
 	$value = $px2ce->get_client_resources(__DIR__.'/caches/');

@@ -23,8 +23,6 @@
 		return;
 	});
 
-	// console.log(window.location);
-
 	function callbackMessage(callbackId, data){
 		if(!_origin){return;}
 		if(typeof(callbackId)!==typeof('')){return;}
@@ -42,7 +40,6 @@
 		_origin = event.origin;
 
 		if(data.api == 'getHtmlContentHeightWidth'){
-			// var height = $iframeWindow.find('html').outerHeight();
 			var hw = {};
 			hw.h = Math.max.apply( null, [document.body.clientHeight , document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight] );
 			hw.w = Math.max.apply( null, [document.body.clientWidth , document.body.scrollWidth, document.documentElement.scrollWidth, document.documentElement.clientWidth] );
@@ -58,7 +55,9 @@
 		return;
 	});
 
-	$iframeWindow.on("click", "a", function() {
+	$iframeWindow.on("click", "a", function(e) {
+		e.stopPropagation();
+		e.preventDefault();
 		var data = {};
 		var $this = $(this);
 		data.url = $this.prop('href');
@@ -68,7 +67,9 @@
 		callbackMessage( 'onClickContentsLink', data );
 		return false;
 	});
-	$iframeWindow.find('form').bind("submit", function() {
+	$iframeWindow.find('form').on("submit", function(e) {
+		e.stopPropagation();
+		e.preventDefault();
 		var data = {};
 		var $this = $(this);
 		data.url = $this.prop('action');

@@ -7,7 +7,7 @@ return call_user_func( function(){
 	// project
 	$conf->name = 'htdocs2'; // サイト名
 	$conf->domain = null; // ドメイン
-	$conf->path_controot = '/subapp/'; // コンテンツルートディレクトリ
+	$conf->path_controot = '/tests/htdocs2/htdocs/subapp/'; // コンテンツルートディレクトリ
 
 	// paths
 	$conf->path_top = '/'; // トップページのパス(デフォルト "/")

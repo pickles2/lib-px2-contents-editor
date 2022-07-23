@@ -23,12 +23,12 @@
  ?>
 
 <!-- jQuery -->
-<script src="<?php print htmlspecialchars($px->href('/common/scripts/jquery-1.10.1.min.js')); ?>" type="text/javascript"></script>
+<script src="<?php print htmlspecialchars(''.$px->href('/common/scripts/jquery-1.10.1.min.js')); ?>" type="text/javascript"></script>
 
 <!-- Bootstrap -->
-<link rel="stylesheet" href="<?= htmlspecialchars( $px->href('/common/styles/bootstrap/css/bootstrap.min.css') ); ?>">
-<script src="<?= htmlspecialchars( $px->href('/common/styles/bootstrap/js/bootstrap.min.js') ); ?>"></script>
+<link rel="stylesheet" href="<?= htmlspecialchars( ''.$px->href('/common/styles/bootstrap/css/bootstrap.min.css') ); ?>">
+<script src="<?= htmlspecialchars( ''.$px->href('/common/styles/bootstrap/js/bootstrap.min.js') ); ?>"></script>
 
 <!-- Contents Styles -->
-<link rel="stylesheet" href="<?php print htmlspecialchars($px->href('/common/styles/contents.css')); ?>" type="text/css" />
-<script src="<?= htmlspecialchars( $px->href('/common/scripts/contents.js') ); ?>"></script>
+<link rel="stylesheet" href="<?php print htmlspecialchars(''.$px->href('/common/styles/contents.css')); ?>" type="text/css" />
+<script src="<?= htmlspecialchars( ''.$px->href('/common/scripts/contents.js') ); ?>"></script>

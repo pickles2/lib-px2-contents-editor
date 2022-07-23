@@ -1,6 +1,6 @@
 var it79 = require('iterate79');
 
-$(window).load(function(){
+$(window).on('load', function(){
 	var conf = require('../../../../config/default.json');
 	// console.log(conf);
 	var params = parseUriParam(window.location.href);
@@ -66,10 +66,10 @@ $(window).load(function(){
 			windowResized(function(){
 				pickles2ContentsEditor.init(
 					{
-						'page_path': params.page_path ,
+						'page_path': params.page_path,
 						'elmCanvas': $canvas.get(0),
 						'preview':{
-							'origin': '/tests/htdocs2/htdocs/subapp/.px_execute.php/sample_pages/page3/'
+							'origin': '',
 						},
 						'customFields':{
 							'custom1': function(broccoli){
@@ -116,7 +116,7 @@ $(window).load(function(){
 					},
 					function(){
 
-						$(window).resize(function(){
+						$(window).on('resize', function(){
 							// このメソッドは、canvasの再描画を行います。
 							// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
 							windowResized(function(){

@@ -185,6 +185,7 @@ $ npm run test
 
 ### pickles2-contents-editor v2.1.3 (リリース日未定)
 
+- プレビューコンテンツ用スクリプトに関する不具合の修正。
 - その他の細かい修正。
 
 ### pickles2-contents-editor v2.1.2 (2022年6月5日)
@@ -253,83 +254,6 @@ $ npm run test
 
 - モジュールパレットの表示サイズの調整が少しズレる問題を修正。
 - コンテンツの作成をキャンセルできるようになった。
-
-### pickles2-contents-editor v2.0.5 (2018年8月25日)
-
-- 初期起動時のパフォーマンスを向上した。
-
-### pickles2-contents-editor v2.0.4 (2018年8月10日)
-
-- PHP版で、 Windows でテーマのプレビューを開けない問題を修正。
-
-### pickles2-contents-editor v2.0.3 (2018年8月8日)
-
-- NodeJS版のオプションで、 カスタムフィールドの frontend.dir に対応した。
-- PHP版で、依存ライブラリのバージョン指定に関する間違いを修正。
-
-### pickles2-contents-editor v2.0.2 (2018年7月30日)
-
-- PHP版で、モジュールのCSS、JSが取得できない不具合を修正。
-- PHP版で、Windows上で起きていたいくつかの不具合を修正。
-
-### pickles2-contents-editor v2.0.1 (2018年7月27日)
-
-- PHP版でフィールドプラグインを読み込めるようになった。
-- PHP版でオプション `customFieldsIncludePath` を削除。 `get_client_resources()` が必要なリソースリストを提供するように変更。
-- その他いくつかの不具合を修正。
-
-### pickles2-contents-editor v2.0.0 (2018年7月11日)
-
-- バックエンドの処理を PHP に移行。 (NodeJS の実装は、しばらく残した後に、削除される予定)
-
-### pickles2-contents-editor v2.0.0-beta.4 (2018年6月22日)
-
-- broccoli-html-editor を外部からの供給に依存するようになった。
-- broccoli-field-table
-	- 最後の行が結合されている場合に、列幅指定が欠落する不具合を修正。
-- broccoli-html-editor オブジェクトを取り出すAPI `px2ce.createBroccoli()` を追加。
-- broccoli-html-editor で、プロジェクト固有のカスタムフィールドを追加できる機能を追加。
-- テーマの編集に対応した。
-- `page_path` に alias や dynamic path を受け取った場合に異常終了する不具合を修正。
-- Pickles 2 が深い階層にある場合に、HTMLを正常に更新できない不具合を修正。
-- 新しい Pickles 2 共有設定 `$conf->plugins->px2dt->guieditor->path_resource_dir` を追加。
-- 新しい Pickles 2 共有設定 `$conf->plugins->px2dt->guieditor->path_data_dir` を追加。
-- 新しい Pickles 2 共有設定 `$conf->plugins->px2dt->guieditor->custom_fields` を追加。
-- 新しい Pickles 2 共有設定 `$conf->plugins->px2dt->path_module_templates_dir` を追加。
-- サーバーサイドのオプションに `target_mode` を追加。
-- サーバーサイドのオプションに `commands.php` を追加。
-- サーバーサイドのオプションに `customFieldsIncludePath` を追加。
-- クライアントサイドの新しいオプション `lang` を追加。
-- クライアントサイドに `clipboard.set()`, `clipboard.get()` オプションを追加。
-- `checkEditorMode()` を px2-px2dthelper 依存に変更。
-- `initContentFiles()` を px2-px2dthelper 依存に変更。
-- その他パフォーマンス向上、細かい不具合の修正など。
-
-### pickles2-contents-editor v2.0.0-beta.3 (2016年8月3日)
-
-- コンフィグ `path_controot` が `/` 以外の場合に、起きる不具合を修正。
-- ローカルリソースの読み込みの記述を、 $px->path_files() 依存に変更。
-- broccoli-html-editor
-	- selectフィールドに、オプション `"display": "radio"` を追加。ラジオボタン形式の入力欄を作成できるようになった。
-	- editWindow上 の loop appender をダブルクリック操作した後に表示が更新されない問題を修正。
-	- Ace Editor が有効な場合、同じ種類のフィールドが1つのモジュールに並んでいる場合に、最後の値がすべてに適用されてしまう不具合を修正。
-	- コピー＆ペースト操作時に、誤った操作ができてしまう不具合を修正。
-	- データ上のエラーで、誤ったモジュールが混入した場合に異常終了しないように修正。
-	- loopフィールドのサブモジュールに元のモジュール名が引き継がれない不具合を修正。
-
-### pickles2-contents-editor v2.0.0-beta.2 (2016年6月8日)
-
-- broccoli-html-editor@0.1.0-beta.9 に更新。
-- 設定項目 customFields を追加。
-- window.keypress が存在する場合に、自動的にキーバインドを設定するようになった。
-- Ace Editor を自然改行されるように設定した。
-- Ace Editor で、書式に応じてテーマが変わるようにした。
-- Ace Editor の文字サイズを最適化。
-- broccoli-html-editorのモジュールの詳細ダイアログで、READMEの内容をコピーできるようにした。
-- サーバーサイドのinit項目にも page_path を追加。
-- ソース編集で、CSS と JS が空白なときにも、外部ファイルが作られてしまう問題を修正。
-- desktopモードで ブラウザで開く が動作しない不具合を修正。
-- その他パフォーマンス向上、細かい不具合の修正など。
 
 
 ## License
