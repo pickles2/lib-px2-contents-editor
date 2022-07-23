@@ -34,8 +34,8 @@
 		this.lb = {};
 
 		/**
-		* initialize
-		*/
+		 * initialize
+		 */
 		this.init = function(options, callback){
 			callback = callback || function(){};
 			var _this = this;
@@ -108,7 +108,7 @@
 					function(it1, data){
 						var csv = bootupInfomations.languageCsv;
 						_this.lb = new LangBank(csv, function(){
-							console.log('pickles2-contents-editor: set language "'+_this.options.lang+'"');
+							// console.log('pickles2-contents-editor: set language "'+_this.options.lang+'"');
 							_this.lb.setLang( _this.options.lang );
 							// console.log( _this.lb.get('ui_label.close') );
 							it1.next(data);
@@ -116,7 +116,7 @@
 					} ,
 					function(it1, data){
 						var editorMode = bootupInfomations.editorMode;
-						console.log(editorMode);
+						// console.log(editorMode);
 						var editorOption = {
 							'editorMode': editorMode,
 							'serverConfig': serverConfig
@@ -208,8 +208,7 @@
 					'api':'openResourceDir'
 				},
 				function(res){
-					console.log('open resource directory of: ' + _this.page_path);
-					console.log(res);
+					console.log('open resource directory of:', _this.page_path, res);
 				}
 			);
 			return;

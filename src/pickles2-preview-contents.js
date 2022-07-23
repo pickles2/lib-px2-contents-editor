@@ -2,9 +2,10 @@
 	var $ = require('jquery');
 	var $iframeWindow = $(window.document);
 
-	var e=document.querySelector('[data-broccoli-receive-message]');//broccoliの仕様に便乗する都合上、この属性名はbroccoliに従うことになる。
-	e.parentNode.removeChild(e);
-
+	var scriptElement = document.querySelector('[data-broccoli-receive-message]');//broccoliの仕様に便乗する都合上、この属性名はbroccoliに従うことになる。
+	if(scriptElement){
+		scriptElement.parentNode.removeChild(scriptElement);
+	}
 	var _origin;
 
 
