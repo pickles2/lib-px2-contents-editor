@@ -9,6 +9,10 @@ module.exports = function(px2ce){
 	var page_path = px2ce.page_path;
 	var current_tab = 'html';
 	var droppedFileList = [];
+	var previewScrollPosition = {
+		top: 0,
+		left: 0,
+	};
 	var px2conf = {},
 		pagesByLayout = [];
 		useWrapMode = true;
@@ -352,7 +356,13 @@ module.exports = function(px2ce){
 				setKeyboardEvent(function(){
 					windowResized(function(){
 					});
-					updatePreview();
+
+					var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
+					$iframe
+						.attr({
+							'src': previewUrl
+						})
+					;
 				});
 				it1.next(arg);
 			}
@@ -518,11 +528,29 @@ module.exports = function(px2ce){
 	 */
 	function updatePreview(){
 		var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
-		$iframe
-			.attr({
-				'src': previewUrl
-			})
-		;
+		it79.fnc({}, [
+			function(it){
+				if( _this.postMessenger===undefined ){
+					it.next();
+					return;
+				}
+				_this.postMessenger.send(
+					'getScrollPosition',
+					{},
+					function(position){
+						previewScrollPosition = position;
+						it.next();
+					}
+				);
+			},
+			function(it){
+				$iframe
+					.attr({
+						'src': previewUrl
+					})
+				;
+			},
+		]);
 	}
 
 	/**
@@ -540,21 +568,21 @@ module.exports = function(px2ce){
 					it1.next(data);
 				});
 			} ,
-			function(it1, arg){
-				// iframeのサイズ合わせ
-				// TODO: 子ウィンドウは、最初の通信で Origin を記憶するので、特に必要ないけどリクエストを投げている。よりよい方法が欲しい。
+			function(it1, data){
+				// スクロール位置を復元
+				// NOTE: 子ウィンドウは、最初の通信で Origin を記憶する。
 				_this.postMessenger.send(
-					'getHtmlContentHeightWidth',
-					{},
-					function(hw){
-						it1.next(arg);
+					'setScrollPosition',
+					previewScrollPosition,
+					function(){
+						it1.next(data);
 					}
 				);
 			},
 			function(it1, data){
 				callback();
 				it1.next(data);
-			}
+			},
 		]);
 		return;
 	}

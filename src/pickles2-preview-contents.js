@@ -48,6 +48,20 @@
 			callbackMessage(data.callback, hw);
 			return;
 
+		}else if(data.api == 'getScrollPosition'){
+			var position = {};
+			position.top = window.scrollY;
+			position.left = window.scrollX;
+
+			callbackMessage(data.callback, position);
+			return;
+
+		}else if(data.api == 'setScrollPosition'){
+			window.scrollTo(data.options);
+
+			callbackMessage(data.callback, true);
+			return;
+
 		}else{
 			callbackMessage(data.callback, false);
 			return;
