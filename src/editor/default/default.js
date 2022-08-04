@@ -134,6 +134,7 @@ module.exports = function(px2ce){
 						saveContentsSrc(
 							function(result){
 								if(!result.result){
+									console.error('Error:', result);
 									alert(result.message);
 								}
 								px2ce.finish();
@@ -168,7 +169,7 @@ module.exports = function(px2ce){
 							saveContentsSrc(
 								function(result){
 									if(!result.result){
-										console.error(result);
+										console.error('Error:', result);
 										alert(result.message);
 									}
 									updatePreview();
@@ -390,6 +391,7 @@ module.exports = function(px2ce){
 			saveContentsSrc(
 				function(result){
 					if(!result.result){
+						console.error('Error:', result);
 						alert(result.message);
 					}
 					updatePreview();
