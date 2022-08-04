@@ -46,7 +46,6 @@ module.exports = function(px2ce){
 		}
 		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=default';
 		rtn += (hash.length ? '#'+hash : '');
-		// console.log(rtn);
 		return rtn;
 	}
 	function getPreviewUrl(){
@@ -64,7 +63,6 @@ module.exports = function(px2ce){
 		var pathname = px2conf.path_controot + px2ce.page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		var rtn = px2ce.options.preview.origin + pathname;
-		// console.log(rtn);
 		return rtn;
 	}
 	function toggleWordWrapMode(elmBtn){
@@ -135,7 +133,6 @@ module.exports = function(px2ce){
 						// 完了イベント
 						saveContentsSrc(
 							function(result){
-								console.log(result);
 								if(!result.result){
 									alert(result.message);
 								}
@@ -229,7 +226,6 @@ module.exports = function(px2ce){
 						$elmTabs.removeAttr('disabled');
 						$this.attr({'disabled': 'disabled'});
 						var tabFor = $this.attr('data-pickles2-contents-editor-switch');
-						// console.log(tabFor);
 						current_tab = tabFor;
 						$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
 						$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
@@ -243,8 +239,7 @@ module.exports = function(px2ce){
 				$elmCanvas.html('').append($iframe);
 				$iframe
 					.on('load', function(){
-						console.log('pickles2-contents-editor: preview loaded');
-						// alert('pickles2-contents-editor: preview loaded');
+						console.info('pickles2-contents-editor: preview loaded');
 						onPreviewLoad( callback );
 					})
 				;
@@ -278,7 +273,6 @@ module.exports = function(px2ce){
 						'page_path': page_path
 					},
 					function(codes){
-						// console.log(codes);
 
 						if( editorLib == 'ace' ){
 							$canvas.find('.pickles2-contents-editor--default-editor-body-html').append('<div>');
@@ -395,7 +389,6 @@ module.exports = function(px2ce){
 		_Keypress.simple_combo(px2ce.getCmdKeyName()+" s", function(e) {
 			saveContentsSrc(
 				function(result){
-					console.log(result);
 					if(!result.result){
 						alert(result.message);
 					}
@@ -527,7 +520,6 @@ module.exports = function(px2ce){
 	 * プレビューを更新
 	 */
 	function updatePreview(){
-		var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
 		it79.fnc({}, [
 			function(it){
 				if( _this.postMessenger===undefined ){
@@ -544,11 +536,16 @@ module.exports = function(px2ce){
 				);
 			},
 			function(it){
-				$iframe
-					.attr({
-						'src': previewUrl
-					})
-				;
+				_this.postMessenger.send(
+					'reload',
+					{},
+					function(result){
+						if( !result ){
+							console.error('Failed to reload preview.');
+						}
+						it.next();
+					}
+				);
 			},
 		]);
 	}

@@ -62,6 +62,11 @@
 			callbackMessage(data.callback, true);
 			return;
 
+		}else if(data.api == 'reload'){
+			window.location.reload();
+			callbackMessage(data.callback, true);
+			return;
+
 		}else{
 			callbackMessage(data.callback, false);
 			return;

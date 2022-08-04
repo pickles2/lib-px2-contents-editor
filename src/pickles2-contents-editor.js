@@ -39,7 +39,7 @@
 		this.init = function(options, callback){
 			callback = callback || function(){};
 			var _this = this;
-			// console.log(options);
+
 			this.options = options;
 			this.options.customFields = this.options.customFields || {}; // custom fields
 			this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
@@ -90,9 +90,7 @@
 							} ,
 							function(_bootupInfomations){
 								bootupInfomations = _bootupInfomations;
-								// console.log('=----=----=', bootupInfomations);
 								serverConfig = bootupInfomations.conf;
-
 								it1.next(data);
 							}
 						);
@@ -108,15 +106,12 @@
 					function(it1, data){
 						var csv = bootupInfomations.languageCsv;
 						_this.lb = new LangBank(csv, function(){
-							// console.log('pickles2-contents-editor: set language "'+_this.options.lang+'"');
 							_this.lb.setLang( _this.options.lang );
-							// console.log( _this.lb.get('ui_label.close') );
 							it1.next(data);
 						});
 					} ,
 					function(it1, data){
 						var editorMode = bootupInfomations.editorMode;
-						// console.log(editorMode);
 						var editorOption = {
 							'editorMode': editorMode,
 							'serverConfig': serverConfig
@@ -228,7 +223,6 @@
 		 */
 		this.getCmdKeyName = function(){
 			var ua = window.navigator.userAgent;
-			// console.log(ua);
 			var idxOf = ua.indexOf( 'Mac OS X' );
 			if( idxOf >= 0 ){
 				return 'cmd';
@@ -261,10 +255,8 @@
 							var scr = document.createElement('script');
 							scr.src = scriptUrl;
 							scr.onload = function(e){
-								// console.log('custom script loaded.', this, e);
 								itAry.next();
 							};
-							// console.log(scr);
 							scr.onerror = function(e){
 								console.error('custom script NOT loaded.', this, e);
 								itAry.next();
@@ -299,7 +291,6 @@
 						for( var fieldName in confCustomFields ){
 							try {
 								if( confCustomFields[fieldName].frontend.file && confCustomFields[fieldName].frontend.function ){
-									// console.log(eval( confCustomFields[fieldName].frontend.function ));
 									var tmpCustomFieldFunction = eval( confCustomFields[fieldName].frontend.function );
 									if( typeof(tmpCustomFieldFunction) == typeof(function(){}) ){
 										customFields[fieldName] = tmpCustomFieldFunction;
@@ -323,7 +314,6 @@
 						for( var extOrMimetypeName in confDroppedFileOperator ){
 							try {
 								if( confDroppedFileOperator[extOrMimetypeName].file && confDroppedFileOperator[extOrMimetypeName].function ){
-									// console.log(eval( confDroppedFileOperator[extOrMimetypeName].function ));
 									var tmpCustomFieldFunction = eval( confDroppedFileOperator[extOrMimetypeName].function );
 									if( typeof(tmpCustomFieldFunction) == typeof(function(){}) ){
 										droppedFileOperator[extOrMimetypeName] = tmpCustomFieldFunction;
@@ -339,8 +329,6 @@
 						}
 					} catch (e) {
 					}
-
-					// console.log(customFields);
 
 					rlv();
 				}); })
@@ -369,7 +357,6 @@
 							// GPI(General Purpose Interface) Bridge
 							// broccoliは、バックグラウンドで様々なデータ通信を行います。
 							// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-							// console.log('========= gpiBridge:', api, options);
 							px2ce.gpiBridge(
 								{
 									'api': 'broccoliBridge',
@@ -380,7 +367,6 @@
 									}
 								},
 								function(data){
-									// console.log('------ gpiBridge:', data);
 									callback(data);
 								}
 							);

@@ -50,7 +50,6 @@ module.exports = function(px2ce){
 		}
 		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=broccoli';
 		rtn += (hash.length ? '#'+hash : '');
-		// console.log(rtn);
 		return rtn;
 	}
 	function getPreviewUrl(){
@@ -69,7 +68,6 @@ module.exports = function(px2ce){
 		var pathname = px2conf.path_controot + px2ce.page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		var rtn = px2ce.options.preview.origin + pathname;
-		// console.log(rtn);
 		return rtn;
 	}
 
@@ -371,7 +369,6 @@ module.exports = function(px2ce){
 				width: 700
 			},
 			function(){
-				console.log('done.');
 			}
 		);
 
@@ -382,7 +379,6 @@ module.exports = function(px2ce){
 			},
 			function(codes){
 				loadedCodes = codes;
-				// console.log(codes);
 
 				if( editorLib == 'ace' ){
 					$dialogBody.css({'height': 300});
@@ -433,7 +429,6 @@ module.exports = function(px2ce){
 				'codes': codes
 			},
 			function(result){
-				// console.log(result);
 				callback(result);
 			}
 		);
@@ -457,7 +452,6 @@ module.exports = function(px2ce){
 			}
 			e.preventDefault();
 			broccoli.remove(function(){
-				console.log('remove instance done.');
 			});
 			return true;
 		});
@@ -468,7 +462,6 @@ module.exports = function(px2ce){
 			}
 			e.preventDefault();
 			broccoli.remove(function(){
-				console.log('remove instance done.');
 			});
 			return true;
 		});
@@ -488,7 +481,6 @@ module.exports = function(px2ce){
 			}
 			e.preventDefault();
 			broccoli.historyBack(function(){
-				console.log('historyBack done.');
 			});
 			return true;
 		});
@@ -499,7 +491,6 @@ module.exports = function(px2ce){
 			}
 			e.preventDefault();
 			broccoli.historyGo(function(){
-				console.log('historyGo done.');
 			});
 			return true;
 		});

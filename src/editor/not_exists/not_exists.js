@@ -44,7 +44,6 @@ module.exports = function(px2ce){
 
 		$canvas.find('form').submit(function(){
 			var editor_mode = $(this).find('input[name=editor-mode]:checked').val();
-			// console.log( editor_mode );
 			if( !editor_mode ){
 				alert('ERROR: editor-mode is not selected.');
 				return false;
@@ -57,7 +56,6 @@ module.exports = function(px2ce){
 					'editor_mode': editor_mode
 				},
 				function(result){
-					console.log(result);
 					window.location.reload();
 				}
 			);
