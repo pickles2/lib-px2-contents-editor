@@ -4,6 +4,8 @@
     "/tests/app/client_php/index_files/contents.js": "/tests/app/client_php/index_files/contents.js",
     "/tests/app/client/index_files/contents.js": "/tests/app/client/index_files/contents.js",
     "/dist/pickles2-contents-editor.css": "/dist/pickles2-contents-editor.css",
+    "/dist/fonts/bootstrap-icons.woff": "/dist/fonts/bootstrap-icons.woff",
+    "/dist/fonts/bootstrap-icons.woff2": "/dist/fonts/bootstrap-icons.woff2",
     "/dist/pickles2-contents-editor.min.js": "/dist/pickles2-contents-editor.min.js",
     "/dist/pickles2-preview-contents.min.js": "/dist/pickles2-preview-contents.min.js",
     "/dist/pickles2-contents-editor.min.css": "/dist/pickles2-contents-editor.min.css",

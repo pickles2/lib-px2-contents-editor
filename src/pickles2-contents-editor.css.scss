@@ -1,11 +1,12 @@
 @charset "utf-8";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons";
+
 .pickles2-contents-editor{
 	// border: 1px solid #000;
 	overflow: auto;
 	position: relative;
 
 	@import "../node_modules/px2style/dist/px2style";
-	@import "../node_modules/bootstrap/dist/css/bootstrap";
 }
 
 .pickles2-contents-editor--toolbar{

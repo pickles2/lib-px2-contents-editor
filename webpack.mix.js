@@ -49,7 +49,10 @@ mix
 	// Pickles 2 Contents Editor
 	.js('src/pickles2-contents-editor.js', 'dist/pickles2-contents-editor.js')
 	.js('src/pickles2-preview-contents.js', 'dist/pickles2-preview-contents.js')
-	.sass('src/pickles2-contents-editor.css.scss', 'dist/pickles2-contents-editor.css')
+	.sass('src/pickles2-contents-editor.css.scss', 'dist/pickles2-contents-editor.css').options({
+		processCssUrls: false,
+	})
+	.copyDirectory('node_modules/bootstrap-icons/font/fonts', 'dist/fonts')
 
 	// .min files
 	.copy('dist/pickles2-contents-editor.js', 'dist/pickles2-contents-editor.min.js')

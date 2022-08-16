@@ -43,7 +43,7 @@
     "babel-loader": "^8.2.4",
     "biflora": "0.0.1-alpha.1",
     "body-parser": "^1.15.0",
-    "bootstrap": "^3.4.1",
+    "bootstrap-icons": "^1.9.1",
     "broccoli-html-editor": "github:broccoli-html-editor/broccoli-html-editor.git#develop",
     "cheerio": "*",
     "config": "^1.20.1",
