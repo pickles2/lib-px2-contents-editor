@@ -163,20 +163,20 @@ module.exports = function(px2ce){
 							"px2-btn--toggle-on"
 						]
 					});
-					toolbar.addButton({
-						"label": "保存する",
-						"click": function(){
-							saveContentsSrc(
-								function(result){
-									if(!result.result){
-										console.error('Error:', result);
-										alert(result.message);
-									}
-									updatePreview();
-								}
-							);
-						}
-					});
+					// toolbar.addButton({
+					// 	"label": "保存する",
+					// 	"click": function(){
+					// 		saveContentsSrc(
+					// 			function(result){
+					// 				if(!result.result){
+					// 					console.error('Error:', result);
+					// 					alert(result.message);
+					// 				}
+					// 				updatePreview();
+					// 			}
+					// 		);
+					// 	}
+					// });
 					it1.next(arg);
 				});
 			},
@@ -186,16 +186,10 @@ module.exports = function(px2ce){
 							+'<div class="pickles2-contents-editor--default">'
 								+'<div class="pickles2-contents-editor--default-editor">'
 									+'<div class="pickles2-contents-editor--default-switch-tab">'
-										+'<div class="btn-group btn-group-justified" role="group">'
-											+'<div class="btn-group" role="group">'
-												+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="html" disabled>HTML</button>'
-											+'</div>'
-											+'<div class="btn-group" role="group">'
-												+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="css">CSS (SCSS)</button>'
-											+'</div>'
-											+'<div class="btn-group" role="group">'
-												+'<button class="btn btn-default btn-xs" data-pickles2-contents-editor-switch="js">JavaScript</button>'
-											+'</div>'
+										+'<div class="px2-input-group px2-input-group--fluid" role="group">'
+											+'<button class="px2-btn px2-btn--sm  px2-btn--toggle-on" data-pickles2-contents-editor-switch="html">HTML</button>'
+											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="css">CSS (SCSS)</button>'
+											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="js">JavaScript</button>'
 										+'</div>'
 									+'</div>'
 									+'<div class="pickles2-contents-editor--default-editor-body">'
@@ -224,8 +218,8 @@ module.exports = function(px2ce){
 				$elmTabs
 					.on('click', function(){
 						var $this = $(this);
-						$elmTabs.removeAttr('disabled');
-						$this.attr({'disabled': 'disabled'});
+						$elmTabs.removeClass('px2-btn--toggle-on');
+						$this.addClass('px2-btn--toggle-on');
 						var tabFor = $this.attr('data-pickles2-contents-editor-switch');
 						current_tab = tabFor;
 						$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
