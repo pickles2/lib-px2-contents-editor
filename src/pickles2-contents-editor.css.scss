@@ -134,6 +134,7 @@
 		overflow: auto;
 		width: calc(100% - 220px);
 		height: auto;
+		padding-left: 10px;
 		box-sizing: border-box;
 		background: linear-gradient(45deg, #e9e9e9 25%, transparent 25%, transparent 75%, #e9e9e9 75%),
 					linear-gradient(45deg, #e9e9e9 25%, transparent 25%, transparent 75%, #e9e9e9 75%);
@@ -166,6 +167,26 @@
 		max-width: 80%;
 		height: 100%;
 		transition: left 0.1s linear;
+		&-inner {
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+		&-opener {
+			padding: 0;
+			border: 0 none;
+			position: absolute;
+			top: 0;
+			left: 100%;
+			display: block;
+			height: 100%;
+			width: 10px;
+			background-color: #ddd;
+			cursor: pointer;
+			&:hover {
+				background-color: #999;
+			}
+		}
 	}
 	&-instance-path-view {
 		position: relative;
@@ -190,7 +211,7 @@
 .pickles2-contents-editor__broccoli-instance-tree-view-opened {
 	.pickles2-contents-editor__broccoli {
 		&-canvas-frame {
-			padding-left: 240px;
+			padding-left: calc(240px + 10px);
 		}
 		&-instance-tree-view{
 			left: 0;

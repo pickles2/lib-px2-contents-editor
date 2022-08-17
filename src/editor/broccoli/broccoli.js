@@ -29,6 +29,7 @@ module.exports = function(px2ce){
 		$elmCanvas,
 		$elmModulePalette,
 		$elmInstanceTreeView,
+		$elmInstanceTreeViewOpener,
 		$elmInstancePathView;
 
 	function getCanvasPageUrl(){
@@ -71,6 +72,14 @@ module.exports = function(px2ce){
 		return rtn;
 	}
 
+	function toggleInstanceTreeView(){
+		$canvas.toggleClass('pickles2-contents-editor__broccoli-instance-tree-view-opened');
+
+		_this.redraw(function(){
+			// alert('完了');
+		});
+	}
+
 	/**
 	 * 初期化
 	 */
@@ -93,17 +102,6 @@ module.exports = function(px2ce){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				var btns = [
-					{
-						"label": px2ce.lb.get('ui_label.toggle_instance_treeview'),
-						"click": function(){
-
-							$canvas.toggleClass('pickles2-contents-editor__broccoli-instance-tree-view-opened');
-
-							_this.redraw(function(){
-								// alert('完了');
-							});
-						}
-					},
 					{
 						"label": px2ce.lb.get('ui_label.open_in_browser'),
 						"click": function(){
@@ -200,7 +198,10 @@ module.exports = function(px2ce){
 					fin += 			'</div>';
 					fin += 		'</div>';
 					fin += 		'<div class="pickles2-contents-editor__broccoli-palette"></div>';
-					fin += 		'<div class="pickles2-contents-editor__broccoli-instance-tree-view"></div>';
+					fin += 		'<div class="pickles2-contents-editor__broccoli-instance-tree-view">';
+					fin += 			'<div class="pickles2-contents-editor__broccoli-instance-tree-view-inner"></div>';
+					fin += 			'<button type="button" class="pickles2-contents-editor__broccoli-instance-tree-view-opener"></button>';
+					fin += 		'</div>';
 					fin += 	'</div>';
 					fin += 	'<div class="pickles2-contents-editor__broccoli-instance-path-view"></div>';
 					fin += '</div>';
@@ -212,8 +213,13 @@ module.exports = function(px2ce){
 				$elmCanvasFrame = $canvas.find('.pickles2-contents-editor__broccoli-canvas-frame');
 				$elmCanvas = $canvas.find('.pickles2-contents-editor__broccoli-canvas');
 				$elmModulePalette = $canvas.find('.pickles2-contents-editor__broccoli-palette');
-				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor__broccoli-instance-tree-view');
+				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor__broccoli-instance-tree-view-inner');
+				$elmInstanceTreeViewOpener = $canvas.find('.pickles2-contents-editor__broccoli-instance-tree-view-opener');
 				$elmInstancePathView = $canvas.find('.pickles2-contents-editor__broccoli-instance-path-view');
+
+				$elmInstanceTreeViewOpener.on('click', function(){
+					toggleInstanceTreeView();
+				});
 
 				_this.redraw(function(){
 					rlv();
