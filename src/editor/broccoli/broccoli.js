@@ -102,14 +102,18 @@ module.exports = function(px2ce){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				var btns = [
+					// --------------------------------------
+					// プレビューボタン
 					{
 						"label": px2ce.lb.get('ui_label.open_in_browser'),
 						"click": function(){
 							px2ce.openUrlInBrowser( getPreviewUrl() );
 						}
-					}
+					},
 				];
 
+				// --------------------------------------
+				// CSS, JS のカスタマイズ機能
 				if( px2ce.target_mode == 'theme_layout' ){
 					// ↓ CSSとJavaScriptをBroccoli編集画面から編集できる機能
 					// 　テーマ編集にのみ適用する。
@@ -130,22 +134,37 @@ module.exports = function(px2ce){
 					});
 				}
 
+				// --------------------------------------
+				// レスポンシブプレビュー機能
+				var $viewPortSwitcher = $('<div class="px2-input-group">').html(`
+					<button class="px2-btn" data-px2ce-broccoli-preview-viewport="pc"><i class="bi bi-pc-display-horizontal"></i></button>
+					<button class="px2-btn" data-px2ce-broccoli-preview-viewport="tb"><i class="bi bi-tablet"></i></button>
+					<button class="px2-btn" data-px2ce-broccoli-preview-viewport="sp"><i class="bi bi-phone"></i></button>
+				`);
+				$viewPortSwitcher.find('button').on('click', function(){
+					var $this = $(this);
+					var viewPortType = $this.attr('data-px2ce-broccoli-preview-viewport');
+					if( $this.hasClass('px2-btn--toggle-on') ){
+						$viewPortSwitcher.find('button').removeClass('px2-btn--toggle-on');
+						$elmCanvas.css({"width": 'auto'});
+					}else{
+						$viewPortSwitcher.find('button').removeClass('px2-btn--toggle-on');
+						$this.addClass('px2-btn--toggle-on');
+						switch( viewPortType ){
+							case 'pc': $elmCanvas.css({"width": 1400}); break;
+							case 'tb': $elmCanvas.css({"width": 900}); break;
+							case 'sp': $elmCanvas.css({"width": 460}); break;
+						}
+					}
+					_this.redraw();
+				});
 				btns.push({
 					"type": 'element',
-					"elm": $('<select>')
-						.addClass('px2-input')
-						.append( $('<option value="auto">ビューポート: ウィンドウサイズにフィット</option>') )
-						.append( $('<option value="1400">ビューポート: PCサイズ (1400px)</option>') )
-						.append( $('<option value="900">ビューポート: タブレットサイズ (900px)</option>') )
-						.append( $('<option value="460">ビューポート: スマートフォンサイズ (460px)</option>') )
-						.on('change', function(e){
-							var val = $(this).find('option:selected').val();
-							canvasWidth = val;
-							$elmCanvas.css({"width": (canvasWidth=='auto' ? '100%' : canvasWidth)});
-							_this.redraw();
-						})
+					"elm": $viewPortSwitcher,
 				});
 
+				// --------------------------------------
+				// クリップJSONを出力
 				btns.push({
 					"label": 'クリップJSONを出力',
 					"click": function(){
