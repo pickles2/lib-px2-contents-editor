@@ -26,6 +26,10 @@
 		this.theme_id;
 		this.layout_id;
 
+		var Px2Style = require('px2style');
+		var px2style = this.px2style = new Px2Style();
+		px2style.setConfig('additionalClassName', 'pickles2-contents-editor');
+
 		var serverConfig;
 		var editor;
 		var bootupInfomations;

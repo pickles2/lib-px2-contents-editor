@@ -6,6 +6,7 @@ module.exports = function(px2ce){
 	var $ = require('jquery');
 	var utils79 = require('utils79');
 	var it79 = require('iterate79');
+	var px2style = px2ce.px2style;
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 	var Promise = require('es6-promise').Promise;
@@ -347,18 +348,10 @@ module.exports = function(px2ce){
 									);
 								}); })
 								.then(function(){ return new Promise(function(rlv, rjt){
-									$elmCanvas.attr({
-										"data-broccoli-preview": getCanvasPageUrl()
-									});
+									window.location.reload();
 									rlv();
 								}); })
 								.then(function(){ return new Promise(function(rlv, rjt){
-									$broccoliCanvas.find('iframe')
-										.attr({
-											'src': $broccoliCanvas.attr('data-broccoli-preview')
-										})
-									;
-
 									px2style.closeModal();
 									rlv();
 								}); })
