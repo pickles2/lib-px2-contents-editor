@@ -24,13 +24,12 @@ module.exports = function(px2ce){
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
 	var broccoli;
-	var $elmCanvasFrame,
+	var $elmMiddleBlock,
+		$elmCanvasFrame,
 		$elmCanvas,
 		$elmModulePalette,
 		$elmInstanceTreeView,
 		$elmInstancePathView;
-
-	var show_instanceTreeView = false;
 
 	function getCanvasPageUrl(){
 		var rtn = getPreviewUrl();
@@ -97,7 +96,9 @@ module.exports = function(px2ce){
 					{
 						"label": px2ce.lb.get('ui_label.toggle_instance_treeview'),
 						"click": function(){
-							show_instanceTreeView = (show_instanceTreeView ? false : true);
+
+							$canvas.toggleClass('pickles2-contents-editor__broccoli-instance-tree-view-opened');
+
 							_this.redraw(function(){
 								// alert('完了');
 							});
@@ -178,6 +179,7 @@ module.exports = function(px2ce){
 					}
 				});
 
+				$canvas.html('');
 				toolbar.init({
 					"btns":btns,
 					"onFinish": function(){
@@ -191,24 +193,27 @@ module.exports = function(px2ce){
 			.then(function(){ return new Promise(function(rlv, rjt){
 				$canvas.append((function(){
 					var fin = '';
-					fin += '<div class="pickles2-contents-editor--broccoli">';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-canvas-frame">';
-					fin += 		'<div class="pickles2-contents-editor--broccoli-canvas" data-broccoli-preview="">';
+					fin += '<div class="pickles2-contents-editor__broccoli">';
+					fin += 	'<div class="pickles2-contents-editor__broccoli-middle-block">';
+					fin += 		'<div class="pickles2-contents-editor__broccoli-canvas-frame">';
+					fin += 			'<div class="pickles2-contents-editor__broccoli-canvas" data-broccoli-preview="">';
+					fin += 			'</div>';
 					fin += 		'</div>';
+					fin += 		'<div class="pickles2-contents-editor__broccoli-palette"></div>';
+					fin += 		'<div class="pickles2-contents-editor__broccoli-instance-tree-view"></div>';
 					fin += 	'</div>';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-palette"></div>';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-tree-view"></div>';
-					fin += 	'<div class="pickles2-contents-editor--broccoli-instance-path-view"></div>';
+					fin += 	'<div class="pickles2-contents-editor__broccoli-instance-path-view"></div>';
 					fin += '</div>';
 					return fin;
 				})());
 
 
-				$elmCanvasFrame = $canvas.find('.pickles2-contents-editor--broccoli-canvas-frame');
-				$elmCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
-				$elmModulePalette = $canvas.find('.pickles2-contents-editor--broccoli-palette');
-				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor--broccoli-instance-tree-view');
-				$elmInstancePathView = $canvas.find('.pickles2-contents-editor--broccoli-instance-path-view');
+				$elmMiddleBlock = $canvas.find('.pickles2-contents-editor__broccoli-middle-block');
+				$elmCanvasFrame = $canvas.find('.pickles2-contents-editor__broccoli-canvas-frame');
+				$elmCanvas = $canvas.find('.pickles2-contents-editor__broccoli-canvas');
+				$elmModulePalette = $canvas.find('.pickles2-contents-editor__broccoli-palette');
+				$elmInstanceTreeView = $canvas.find('.pickles2-contents-editor__broccoli-instance-tree-view');
+				$elmInstancePathView = $canvas.find('.pickles2-contents-editor__broccoli-instance-path-view');
 
 				_this.redraw(function(){
 					rlv();
@@ -327,7 +332,7 @@ module.exports = function(px2ce){
 						}
 
 						saveContentsSrc(loadedCodes, function(){
-							var $broccoliCanvas = $canvas.find('.pickles2-contents-editor--broccoli-canvas');
+							var $broccoliCanvas = $canvas.find('.pickles2-contents-editor__broccoli-canvas');
 
 							new Promise(function(rlv){rlv();})
 								.then(function(){ return new Promise(function(rlv, rjt){
@@ -507,30 +512,6 @@ module.exports = function(px2ce){
 	 */
 	_this.redraw = function( callback ){
 		callback = callback || function(){};
-
-		var $toolbar = toolbar.getElm();
-		var tbHeight = $toolbar.outerHeight();
-		var pathViewHeight = $elmInstancePathView.outerHeight();
-
-		$elmCanvasFrame.css({
-			'top': tbHeight,
-			'height': $canvas.height() - pathViewHeight - tbHeight
-		});
-		$elmModulePalette.css({
-			'top': tbHeight,
-			'height': $canvas.height() - pathViewHeight - tbHeight
-		});
-
-		if( !show_instanceTreeView ){
-			$elmInstanceTreeView.hide();
-		}else{
-			$elmInstanceTreeView.show();
-			$elmInstanceTreeView.css({
-				'top': tbHeight,
-				'height': $canvas.height() - pathViewHeight - tbHeight
-			});
-		}
-
 
 		if(broccoli){
 			broccoli.redraw(function(){

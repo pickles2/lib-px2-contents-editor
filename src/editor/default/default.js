@@ -128,6 +128,7 @@ module.exports = function(px2ce){
 				);
 			},
 			function(it1, arg){
+				$canvas.html('');
 				toolbar.init({
 					"onFinish": function(){
 						// 完了イベント
@@ -183,38 +184,38 @@ module.exports = function(px2ce){
 			function(it1, arg){
 				$canvas.append((function(){
 					var fin = ''
-							+'<div class="pickles2-contents-editor--default">'
-								+'<div class="pickles2-contents-editor--default-editor">'
-									+'<div class="pickles2-contents-editor--default-switch-tab">'
+							+'<div class="pickles2-contents-editor__default">'
+								+'<div class="pickles2-contents-editor__default-editor">'
+									+'<div class="pickles2-contents-editor__default-switch-tab">'
 										+'<div class="px2-input-group px2-input-group--fluid" role="group">'
 											+'<button class="px2-btn px2-btn--sm  px2-btn--toggle-on" data-pickles2-contents-editor-switch="html">HTML</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="css">CSS (SCSS)</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="js">JavaScript</button>'
 										+'</div>'
 									+'</div>'
-									+'<div class="pickles2-contents-editor--default-editor-body">'
-										+'<div class="pickles2-contents-editor--default-editor-body-html"></div>'
-										+'<div class="pickles2-contents-editor--default-editor-body-css"></div>'
-										+'<div class="pickles2-contents-editor--default-editor-body-js"></div>'
+									+'<div class="pickles2-contents-editor__default-editor-body">'
+										+'<div class="pickles2-contents-editor__default-editor-body-html"></div>'
+										+'<div class="pickles2-contents-editor__default-editor-body-css"></div>'
+										+'<div class="pickles2-contents-editor__default-editor-body-js"></div>'
 									+'</div>'
 								+'</div>'
-								+'<div class="pickles2-contents-editor--default-canvas" data-pickles2-contents-editor-preview-url="">'
+								+'<div class="pickles2-contents-editor__default-canvas" data-pickles2-contents-editor-preview-url="">'
 								+'</div>'
 							+'</div>'
 					;
 					return fin;
 				})());
 
-				$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
-				$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
+				$canvas.find('.pickles2-contents-editor__default-editor-body-css').hide();
+				$canvas.find('.pickles2-contents-editor__default-editor-body-js').hide();
 
-				$elmCanvas = $canvas.find('.pickles2-contents-editor--default-canvas');
-				$elmEditor = $canvas.find('.pickles2-contents-editor--default-editor');
-				$elmBtns = $canvas.find('.pickles2-contents-editor--default-btns');
+				$elmCanvas = $canvas.find('.pickles2-contents-editor__default-canvas');
+				$elmEditor = $canvas.find('.pickles2-contents-editor__default-editor');
+				$elmBtns = $canvas.find('.pickles2-contents-editor__default-btns');
 
 				$elmEditor.on('drop', onFileDropped); // ファイルドロップへの対応
 
-				$elmTabs = $canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch]');
+				$elmTabs = $canvas.find('.pickles2-contents-editor__default-switch-tab [data-pickles2-contents-editor-switch]');
 				$elmTabs
 					.on('click', function(){
 						var $this = $(this);
@@ -222,10 +223,10 @@ module.exports = function(px2ce){
 						$this.addClass('px2-btn--toggle-on');
 						var tabFor = $this.attr('data-pickles2-contents-editor-switch');
 						current_tab = tabFor;
-						$canvas.find('.pickles2-contents-editor--default-editor-body-html').hide();
-						$canvas.find('.pickles2-contents-editor--default-editor-body-css').hide();
-						$canvas.find('.pickles2-contents-editor--default-editor-body-js').hide();
-						$canvas.find('.pickles2-contents-editor--default-editor-body-'+tabFor).show();
+						$canvas.find('.pickles2-contents-editor__default-editor-body-html').hide();
+						$canvas.find('.pickles2-contents-editor__default-editor-body-css').hide();
+						$canvas.find('.pickles2-contents-editor__default-editor-body-js').hide();
+						$canvas.find('.pickles2-contents-editor__default-editor-body-'+tabFor).show();
 					})
 				;
 
@@ -270,9 +271,9 @@ module.exports = function(px2ce){
 					function(codes){
 
 						if( editorLib == 'ace' ){
-							$canvas.find('.pickles2-contents-editor--default-editor-body-html').append('<div>');
-							$canvas.find('.pickles2-contents-editor--default-editor-body-css').append('<div>');
-							$canvas.find('.pickles2-contents-editor--default-editor-body-js').append('<div>');
+							$canvas.find('.pickles2-contents-editor__default-editor-body-html').append('<div>');
+							$canvas.find('.pickles2-contents-editor__default-editor-body-css').append('<div>');
+							$canvas.find('.pickles2-contents-editor__default-editor-body-js').append('<div>');
 
 							var aceCss = {
 								'position': 'relative',
@@ -281,13 +282,13 @@ module.exports = function(px2ce){
 							};
 							$elmTextareas = {};
 							$elmTextareas['html'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor--default-editor-body-html div').text(codes['html']).css(aceCss).get(0)
+								$canvas.find('.pickles2-contents-editor__default-editor-body-html div').text(codes['html']).css(aceCss).get(0)
 							);
 							$elmTextareas['css'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor--default-editor-body-css div').text(codes['css']).css(aceCss).get(0)
+								$canvas.find('.pickles2-contents-editor__default-editor-body-css div').text(codes['css']).css(aceCss).get(0)
 							);
 							$elmTextareas['js'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor--default-editor-body-js div').text(codes['js']).css(aceCss).get(0)
+								$canvas.find('.pickles2-contents-editor__default-editor-body-js div').text(codes['js']).css(aceCss).get(0)
 							);
 							for(var i in $elmTextareas){
 								$elmTextareas[i].setFontSize(16);
@@ -307,12 +308,12 @@ module.exports = function(px2ce){
 								case 'md':
 									$elmTextareas['html'].setTheme("ace/theme/github");
 									$elmTextareas['html'].getSession().setMode("ace/mode/markdown");
-									$canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch=html]').text('Markdown');
+									$canvas.find('.pickles2-contents-editor__default-switch-tab [data-pickles2-contents-editor-switch=html]').text('Markdown');
 									break;
 								case 'txt':
 									$elmTextareas['html'].setTheme("ace/theme/katzenmilch");
 									$elmTextareas['html'].getSession().setMode("ace/mode/plain_text");
-									$canvas.find('.pickles2-contents-editor--default-switch-tab [data-pickles2-contents-editor-switch=html]').text('Text');
+									$canvas.find('.pickles2-contents-editor__default-switch-tab [data-pickles2-contents-editor-switch=html]').text('Text');
 									break;
 								case 'html':
 								default:
@@ -322,14 +323,14 @@ module.exports = function(px2ce){
 							}
 
 						}else{
-							$canvas.find('.pickles2-contents-editor--default-editor-body-html').append('<textarea>');
-							$canvas.find('.pickles2-contents-editor--default-editor-body-css').append('<textarea>');
-							$canvas.find('.pickles2-contents-editor--default-editor-body-js').append('<textarea>');
+							$canvas.find('.pickles2-contents-editor__default-editor-body-html').append('<textarea>');
+							$canvas.find('.pickles2-contents-editor__default-editor-body-css').append('<textarea>');
+							$canvas.find('.pickles2-contents-editor__default-editor-body-js').append('<textarea>');
 
 							$elmTextareas = {};
-							$elmTextareas['html'] = $canvas.find('.pickles2-contents-editor--default-editor-body-html textarea');
-							$elmTextareas['css'] = $canvas.find('.pickles2-contents-editor--default-editor-body-css textarea');
-							$elmTextareas['js'] = $canvas.find('.pickles2-contents-editor--default-editor-body-js textarea');
+							$elmTextareas['html'] = $canvas.find('.pickles2-contents-editor__default-editor-body-html textarea');
+							$elmTextareas['css'] = $canvas.find('.pickles2-contents-editor__default-editor-body-css textarea');
+							$elmTextareas['js'] = $canvas.find('.pickles2-contents-editor__default-editor-body-js textarea');
 
 							$elmTextareas['html'].val(codes['html']);
 							$elmTextareas['css'] .val(codes['css']);
@@ -492,20 +493,8 @@ module.exports = function(px2ce){
 	function windowResized( callback ){
 		callback = callback || function(){};
 
-		var $toolbar = toolbar.getElm();
-		var tbHeight = $toolbar.outerHeight();
-
-		$elmCanvas.css({
-			'top': tbHeight,
-			'height': $canvas.innerHeight() - tbHeight,
-		});
-		$elmEditor.css({
-			'top': tbHeight,
-			'height': $canvas.innerHeight() - tbHeight,
-		});
-
-		$canvas.find('.pickles2-contents-editor--default-editor-body').css({
-			'height': $elmEditor.outerHeight() - $canvas.find('.pickles2-contents-editor--default-switch-tab').outerHeight() - 2
+		$canvas.find('.pickles2-contents-editor__default-editor-body').css({
+			'height': $elmEditor.outerHeight() - $canvas.find('.pickles2-contents-editor__default-switch-tab').outerHeight() - 2
 		});
 
 		callback();

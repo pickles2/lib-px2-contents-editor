@@ -16,7 +16,7 @@ module.exports = function(px2ce){
 
 			var fin = ''
 				+ '<div class="container">'
-					+ '<div class="pickles2-contents-editor--notExists">'
+					+ '<div class="pickles2-contents-editor__notExists">'
 						+ '<form action="javascript:;" method="get">'
 							+ '<p>コンテンツファイルが存在しません。</p>'
 							+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
