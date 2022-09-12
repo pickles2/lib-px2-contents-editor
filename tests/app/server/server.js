@@ -95,7 +95,7 @@ px2proj.get_config(function(px2conf){
 	app.use( '/common/bootstrap/', express.static( path.resolve(__dirname, '../../../node_modules/bootstrap/dist/') ) );
 	app.use( '/common/pickles2-contents-editor/', express.static( path.resolve(__dirname, '../../../dist/') ) );
 	app.use( '/common/broccoli-html-editor/', express.static( path.resolve(__dirname, '../../../node_modules/broccoli-html-editor/client/dist/') ) );
-	app.use( '/common/px2style/', express.static( path.resolve(__dirname, '../../../node_modules/px2style/dist/') ) );
+	app.use( '/common/px2style/', express.static( path.resolve(__dirname, '../../../node_modules/px2style/px2style/') ) );
 	app.use( '/common/ace-builds/', express.static( path.resolve(__dirname, '../../../node_modules/ace-builds/src-noconflict/') ) );
 	app.use( '/apis/px2ce', require('./apis/px2ce.js')({
 		'customFieldsIncludePath': customFieldsIncludePath
