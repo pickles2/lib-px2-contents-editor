@@ -2,12 +2,18 @@
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons";
 
 .pickles2-contents-editor{
-	overflow: hidden;
-	position: relative;
+	@import "../node_modules/px2style/px2style/px2style";
+
 	display: flex;
 	flex-direction: column;
 
-	@import "../node_modules/px2style/px2style/px2style";
+	&__inner{
+		flex-grow: 100;
+		overflow: hidden;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+	}
 }
 
 // --------------------------------------

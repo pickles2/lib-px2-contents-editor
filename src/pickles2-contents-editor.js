@@ -68,8 +68,10 @@
 				return false;
 			}
 
-			$canvas = $(options.elmCanvas);
-			$canvas.addClass('pickles2-contents-editor');
+			var $canvasWrap = $(options.elmCanvas);
+			$canvasWrap.addClass('pickles2-contents-editor');
+			$canvasWrap.html('<div class="pickles2-contents-editor__inner">');
+			$canvas = $canvasWrap.find('.pickles2-contents-editor__inner');
 			$canvas
 				.on('dragover', function(e){
 					e.stopPropagation();
