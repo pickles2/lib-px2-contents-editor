@@ -38,7 +38,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@simonwep/pickr": "^1.8.2",
-    "ace-builds": "file:submodules/ace-builds",
+    "ace-builds": "github:ajaxorg/ace-builds",
     "axios": "^0.25",
     "babel-loader": "^8.2.4",
     "biflora": "0.0.1-alpha.1",
