@@ -1,9 +1,8 @@
 @charset "utf-8";
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons";
+@import "../node_modules/px2style/px2style/px2style";
 
 .pickles2-contents-editor{
-	@import "../node_modules/px2style/px2style/px2style";
-
 	display: flex;
 	flex-direction: column;
 

@@ -28,7 +28,6 @@
 
 		require('px2style/px2style/px2style.js');
 		var px2style = window.px2style;
-		px2style.setConfig('additionalClassName', 'pickles2-contents-editor');
 
 		var serverConfig;
 		var editor;
