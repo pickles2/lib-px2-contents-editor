@@ -26,7 +26,7 @@
 		this.theme_id;
 		this.layout_id;
 
-		require('px2style/px2style/px2style.js');
+		require('px2style/dist/px2style.js');
 		var px2style = window.px2style;
 
 		var serverConfig;
