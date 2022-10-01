@@ -164,15 +164,39 @@ module.exports = function(px2ce){
 				});
 
 				// --------------------------------------
-				// クリップJSONを出力
+				// 挿入
 				btns.push({
-					"label": 'クリップJSONを出力',
+					"label": px2ce.lb.get('ui_label.insert'),
 					"click": function(){
 						px2style.loading();
 						try{
 							broccoli.selectedInstanceToJsonString(function(jsonStr){
 								if(!jsonStr){
-									alert('インスタンスを選択してください。');
+									alert(px2ce.lb.get('ui_message.select_instance'));
+									px2style.closeLoading();
+									return;
+								}
+								broccoli.insertInstance(broccoli.getSelectedInstance());
+								px2style.closeLoading();
+							});
+						}catch(e){
+							console.error(e);
+							alert('ERROR');
+							px2style.closeLoading();
+						}
+					}
+				});
+
+				// --------------------------------------
+				// クリップJSONを出力
+				btns.push({
+					"label": px2ce.lb.get('ui_label.clipping'),
+					"click": function(){
+						px2style.loading();
+						try{
+							broccoli.selectedInstanceToJsonString(function(jsonStr){
+								if(!jsonStr){
+									alert(px2ce.lb.get('ui_message.select_instance'));
 									px2style.closeLoading();
 									return;
 								}
