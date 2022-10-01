@@ -39,3 +39,6 @@ vendor
 
 # via project
 tests/app/client_php/caches/
+
+# dotenv
+.env

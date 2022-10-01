@@ -10,7 +10,13 @@
         }
     ],
     "scripts":{
-        "start": [
+		"start": [
+			"@php ./tests/htdocs/.px_execute.php \"/?PX=serve&S=localhost:8080\""
+		],
+		"start-pub": [
+			"@php ./tests/htdocs/.px_execute.php \"/?PX=serve.pub&S=localhost:8081\""
+		],
+        "start-no-px2": [
             "php tests/app/php_test_server/start.php"
         ],
         "preview": [
@@ -35,6 +41,7 @@
         "pickles2/px-fw-2.x": "~2.0",
         "broccoli-html-editor/broccoli-module-fess": "*",
         "broccoli-html-editor/broccoli-module-plain-html-elements": "*",
+        "pickles2/px2-clover": "~0.2.0",
         "pickles2/px2-dec": "~2.0",
         "pickles2/px2-multitheme": "~2.0",
         "pickles2/px2-path-resolver": "~2.0",
@@ -42,7 +49,9 @@
         "pickles2/px2-remove-attr": "~2.0",
         "pickles2/px2-sitemapexcel": "~2.0||~2.1",
         "tomk79/broccoli-module-lp": "~0.1",
-        "phpunit/phpunit": "~9.5"
+        "tomk79/px2-serve": "~0.1.3",
+        "phpunit/phpunit": "~9.5",
+		"vlucas/phpdotenv": "~5.4.0"
     },
     "autoload": {
         "psr-4": {

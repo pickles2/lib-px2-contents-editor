@@ -1,8 +1,9 @@
 {
- "ext": "csv",
- "size": 69,
- "base64": "44Kr44Op44OgQSzjgqvjg6njg6BCLOOCq+ODqeODoEMKQTIsQjIsQzIKQTMsQjMsQzMKQTQsQjQsQzQKQTUsQjUsQzUK",
- "isPrivateMaterial": true,
- "publicFilename": "",
- "type": "text/csv"
+    "ext": "csv",
+    "size": 69,
+    "base64": "44Kr44Op44OgQSzjgqvjg6njg6BCLOOCq+ODqeODoEMKQTIsQjIsQzIKQTMsQjMsQzMKQTQsQjQsQzQKQTUsQjUsQzUK",
+    "isPrivateMaterial": true,
+    "publicFilename": "",
+    "type": "text/csv",
+    "md5": "4c25a257ed56e3e80a8b3bce2d878bb6"
 }
