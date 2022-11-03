@@ -28,7 +28,7 @@
     "fs-extra": "^0.26.6",
     "iterate79": "^0.1.0",
     "jquery": "^3.6.0",
-    "langbank": "0.0.2",
+    "langbank": "^0.3.0",
     "phpjs": "^1.3.2",
     "px2agent": "^2.0.4",
     "utils79": "^0.0.5"
