@@ -590,6 +590,8 @@ class main {
 			if( is_string($field_info) ){
 				if( isset($this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_info}) && is_object($this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_info}) ){
 					$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_id} = $this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_info};
+				}else{
+					unset($this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_id});
 				}
 			}
 		}
