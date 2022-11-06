@@ -582,6 +582,18 @@ class main {
 				}
 			}
 		}
+
+		// fieldの情報が string で設定されている場合
+		// 同名の別のフィールドが登録されているか確認し、あればコピーする。
+		// この機能は pickles2-contents-editor v2.1.4 で追加されました。
+		foreach( $this->px2conf->plugins->px2dt->guieditor->custom_fields as $field_id => $field_info ){
+			if( is_string($field_info) ){
+				if( isset($this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_info}) && is_object($this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_info}) ){
+					$this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_id} = $this->px2conf->plugins->px2dt->guieditor->custom_fields->{$field_info};
+				}
+			}
+		}
+
 		return true;
 	}
 

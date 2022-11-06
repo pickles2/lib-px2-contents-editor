@@ -186,6 +186,7 @@ $ npm run test
 ### pickles2-contents-editor v2.1.4 (リリース日未定)
 
 - 依存パッケージを更新。
+- カスタムフィールドの指定をフィールドIDで指定して、既存の設定をコピーできるようになった。
 
 ### pickles2-contents-editor v2.1.3 (2022年11月3日)
 
