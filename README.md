@@ -183,6 +183,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.4 (リリース日未定)
+
+- 依存パッケージを更新。
+
 ### pickles2-contents-editor v2.1.3 (2022年11月3日)
 
 - デフォルトのエディタで、保存時にプレビューのスクロール位置を復元するようになった。

@@ -34,8 +34,8 @@
     ],
     "require": {
         "php": ">=7.3.0",
-        "broccoli-html-editor/broccoli-html-editor": ">=0.4",
-        "broccoli-html-editor/broccoli-field-table": ">=0.2"
+        "broccoli-html-editor/broccoli-html-editor": "~1.0",
+        "broccoli-html-editor/broccoli-field-table": "~0.3"
     },
     "require-dev": {
         "pickles2/px-fw-2.x": "~2.0",
