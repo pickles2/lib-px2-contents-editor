@@ -493,6 +493,9 @@ module.exports = function(px2ce){
 		_Keypress = new window.keypress.Listener();
 		_this.Keypress = _Keypress;
 		_Keypress.simple_combo("backspace", function(e) {
+			if( $(e.target).closest('[contenteditable]').length ){
+				return true;
+			}
 			switch(e.target.tagName.toLowerCase()){
 				case 'input': case 'textarea':
 				return true; break;
@@ -503,6 +506,9 @@ module.exports = function(px2ce){
 			return true;
 		});
 		_Keypress.simple_combo("delete", function(e) {
+			if( $(e.target).closest('[contenteditable]').length ){
+				return true;
+			}
 			switch(e.target.tagName.toLowerCase()){
 				case 'input': case 'textarea':
 				return true; break;
@@ -513,6 +519,9 @@ module.exports = function(px2ce){
 			return true;
 		});
 		_Keypress.simple_combo("escape", function(e) {
+			if( $(e.target).closest('[contenteditable]').length ){
+				return true;
+			}
 			switch(e.target.tagName.toLowerCase()){
 				case 'input': case 'textarea':
 				return true; break;
@@ -522,6 +531,9 @@ module.exports = function(px2ce){
 			return true;
 		});
 		_Keypress.simple_combo(px2ce.getCmdKeyName()+" z", function(e) {
+			if( $(e.target).closest('[contenteditable]').length ){
+				return true;
+			}
 			switch(e.target.tagName.toLowerCase()){
 				case 'input': case 'textarea':
 				return true; break;
@@ -532,6 +544,9 @@ module.exports = function(px2ce){
 			return true;
 		});
 		_Keypress.simple_combo(px2ce.getCmdKeyName()+" y", function(e) {
+			if( $(e.target).closest('[contenteditable]').length ){
+				return true;
+			}
 			switch(e.target.tagName.toLowerCase()){
 				case 'input': case 'textarea':
 				return true; break;
