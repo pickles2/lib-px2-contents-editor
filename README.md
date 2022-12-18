@@ -122,6 +122,9 @@ pickles2ContentsEditor.init(
 		'complete': function(){
 			alert('完了しました。');
 		},
+		'onOpenFilesDirectory': function(){
+			alert('リソースディレクトリを開きます。');
+		},
 		'onClickContentsLink': function( uri, data ){
 			alert('編集: ' + uri);
 		},
@@ -188,6 +191,7 @@ $ npm run test
 - 依存パッケージを更新。
 - カスタムフィールドの指定をフィールドIDで指定して、既存の設定をコピーできるようになった。
 - Broccoli編集画面で、 `[contenteditable]` が利用されているフィールドでバックスペースなどのキーボード操作が効かなくなる問題を修正。
+- `onOpenFilesDirectory` オプションを追加。
 
 ### pickles2-contents-editor v2.1.3 (2022年11月3日)
 

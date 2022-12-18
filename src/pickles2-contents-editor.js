@@ -48,6 +48,7 @@
 			this.options.customFields = this.options.customFields || {}; // custom fields
 			this.options.gpiBridge = this.options.gpiBridge || function(){ alert('gpiBridge required.'); };
 			this.options.complete = this.options.complete || function(){ alert('finished.'); };
+			this.options.onOpenFilesDirectory = this.options.onOpenFilesDirectory || null;
 			this.options.onClickContentsLink = this.options.onClickContentsLink || function(uri, data){ alert('onClickContentsLink: '+uri); };
 			this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
 			this.options.preview = this.options.preview || {};
@@ -199,6 +200,11 @@
 		* リソースフォルダを開く
 		*/
 		this.openResourceDir = function(){
+			if( this.options.onOpenFilesDirectory ){
+				this.options.onOpenFilesDirectory();
+				return;
+			}
+
 			if( serverConfig.appMode == 'web' ){
 				alert('ウェブモードではフォルダを開けません。');
 				return;
