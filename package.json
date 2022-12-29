@@ -1,6 +1,6 @@
 {
   "name": "pickles2-contents-editor",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Pickles 2 contents editor library.",
   "private": false,
   "main": "libs/main.js",
