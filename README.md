@@ -186,6 +186,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.5 (リリース日未定)
+
+- テーマレイアウトをBroccoli編集する際に、Request URI Too Long になる場合がある問題を修正した。
+
 ### pickles2-contents-editor v2.1.4 (2022年12月29日)
 
 - 依存パッケージを更新。

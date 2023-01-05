@@ -10,8 +10,8 @@ return call_user_func( function(){
 	$conf = new stdClass;
 
 	// project
-	$conf->name = 'Pickles 2'; // サイト名
-	$conf->domain = null; // ドメイン
+	$conf->name = 'Pickles 2 Contents Editor'; // サイト名
+	$conf->domain = 'pickles2.com'; // ドメイン
 	$conf->path_controot = '/'; // コンテンツルートディレクトリ
 
 	// paths
@@ -51,14 +51,24 @@ return call_user_func( function(){
 
 
 
-	// paths_proc_type
-	// パスのパターン別に処理方法を設定します。
-	//     - ignore = 対象外パス
-	//     - direct = 加工せずそのまま出力する(デフォルト)
-	//     - その他 = extension 名
-	// パターンは先頭から検索され、はじめにマッチした設定を採用します。
-	// ワイルドカードとして "*"(アスタリスク) が使用可能です。
-	// 処理は、 `$conf->funcs->processor` に設定した順に実行されます。
+	/**
+	 * paths_proc_type
+	 *
+	 * パスのパターン別に処理方法を設定します。
+	 *
+	 * - ignore = 対象外パス。Pickles 2 のアクセス可能範囲から除外します。このパスにへのアクセスは拒絶され、パブリッシュの対象からも外されます。
+	 * - direct = 物理ファイルを、ファイルとして読み込んでから加工処理を通します。 (direct以外の通常の処理は、PHPファイルとして `include()` されます)
+	 * - pass = 物理ファイルを、そのまま無加工で出力します。 (デフォルト)
+	 * - その他 = extension名
+	 *
+	 * パターンは先頭から検索され、はじめにマッチした設定を採用します。
+	 * ワイルドカードとして "*"(アスタリスク) が使用可能です。
+	 * 部分一致ではなく、完全一致で評価されます。従って、ディレクトリ以下すべてを表現する場合は、 `/*` で終わるようにしてください。
+	 *
+	 * extensionは、 `$conf->funcs->processor` に設定し、設定した順に実行されます。
+	 * 例えば、 '*.html' => 'html' にマッチしたリクエストは、
+	 * $conf->funcs->processor->html に設定したプロセッサのリストに沿って、上から順に処理されます。
+	 */
 	$conf->paths_proc_type = array(
 		'/.htaccess' => 'ignore' ,
 		'/.px_execute.php' => 'ignore' ,
@@ -74,6 +84,10 @@ return call_user_func( function(){
 		'*/.svn/*' => 'ignore' ,
 		'*/.git/*' => 'ignore' ,
 		'*/.gitignore' => 'ignore' ,
+
+		'*/__console_resources/*.html' => 'pass',
+			// NOTE: これがないと、Broccoliによるテーマ編集画面の初期化ができない。
+			// TODO: この行に依存せず Broccoliでテーマ編集できる方法を検討する。
 
 		'*.html' => 'html' ,
 		'*.htm' => 'html' ,

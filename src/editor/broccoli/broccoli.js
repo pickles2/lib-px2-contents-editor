@@ -36,8 +36,6 @@ module.exports = function(px2ce){
 		var rtn = getPreviewUrl();
 		if( px2ce.target_mode == 'theme_layout' ){
 			rtn = px2ce.__dirname + '/editor/broccoli/canvas.html'
-			rtn += '?css='+utils79.base64_encode(moduleCssJs.css + "/* */\n" + localCssJs.css);
-			rtn += '&js='+utils79.base64_encode(moduleCssJs.js + "/* */\n" + localCssJs.js);
 		}
 		var hash = '';
 		var query = '';
@@ -328,6 +326,21 @@ module.exports = function(px2ce){
 						}
 					);
 				});
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// Attach CSS and JS.
+				if( px2ce.target_mode != 'theme_layout' ){
+					// テーマ編集時のみ必要。
+					rlv();
+					return;
+				}
+				var win = $elmCanvas.find('iframe').get(0).contentWindow;
+				win.postMessage({
+					"px2ceCommand": "loadCustomResources",
+					"css": moduleCssJs.css + "/* */\n" + localCssJs.css,
+					"js": moduleCssJs.js + "/* */\n" + localCssJs.js,
+				});
+				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				$elmCanvasFrame.on('click', function(){

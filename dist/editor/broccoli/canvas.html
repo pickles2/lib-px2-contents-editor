@@ -4,30 +4,22 @@
 		<meta charset="utf-8" />
 		<title>pickles2-contents-editor - preview</title>
 <script>
-	/**
-	 * URIパラメータをパースする
-	 */
-	function parseUriParam(url){
-		var paramsArray = [];
-		parameters = url.split("?");
-		if( parameters.length > 1 ) {
-			var params = parameters[1].split("&");
-			for ( var i = 0; i < params.length; i++ ) {
-				var paramItem = params[i].split("=");
-				for( var i2 in paramItem ){
-					paramItem[i2] = decodeURIComponent( paramItem[i2] );
-				}
-				paramsArray.push( paramItem[0] );
-				paramsArray[paramItem[0]] = paramItem[1];
-			}
+window.addEventListener('message', function(e) {
+	console.log('postMesage recieved:', e.data);
+	if( e.data && e.data.px2ceCommand ){
+		switch(e.data.px2ceCommand){
+			case "loadCustomResources":
+				document.getElementById("px2ce-dynamic-style").innerHTML = e.data.css;
+				document.getElementById("px2ce-dynamic-js").innerHTML = e.data.js;
+				break;
 		}
-		return paramsArray;
 	}
-	var params = parseUriParam(window.location.href);
-	// console.log(params);
-	document.write('<link rel="stylesheet" href="data:text/css;base64,'+params.css+'" />');
-	document.write('<scr'+'ipt src="data:text/javascript;base64,'+params.js+'"></scr'+'ipt>');
+},false);
 </script>
+		<style id="px2ce-dynamic-style">
+		</style>
+		<style id="px2ce-dynamic-js">
+		</style>
 	</head>
 	<body>
 		<div data-pickles2-theme-editor-contents-area="main"></div>
