@@ -85,10 +85,6 @@ return call_user_func( function(){
 		'*/.git/*' => 'ignore' ,
 		'*/.gitignore' => 'ignore' ,
 
-		'*/__console_resources/*.html' => 'pass',
-			// NOTE: これがないと、Broccoliによるテーマ編集画面の初期化ができない。
-			// TODO: この行に依存せず Broccoliでテーマ編集できる方法を検討する。
-
 		'*.html' => 'html' ,
 		'*.htm' => 'html' ,
 		'*.css' => 'css' ,
