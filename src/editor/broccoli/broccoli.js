@@ -35,7 +35,7 @@ module.exports = function(px2ce){
 	function getCanvasPageUrl(){
 		var rtn = getPreviewUrl();
 		if( px2ce.target_mode == 'theme_layout' ){
-			rtn = px2ce.__dirname + '/editor/broccoli/canvas.html'
+			rtn = px2ce.__dirname + '/editor/broccoli/canvas.pass.html'
 		}
 		var hash = '';
 		var query = '';

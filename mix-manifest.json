@@ -9,7 +9,7 @@
     "/dist/pickles2-contents-editor.min.js": "/dist/pickles2-contents-editor.min.js",
     "/dist/pickles2-preview-contents.min.js": "/dist/pickles2-preview-contents.min.js",
     "/dist/pickles2-contents-editor.min.css": "/dist/pickles2-contents-editor.min.css",
-    "/dist/editor/broccoli/canvas.html": "/dist/editor/broccoli/canvas.html",
+    "/dist/editor/broccoli/canvas.pass.html": "/dist/editor/broccoli/canvas.pass.html",
     "/dist/libs/broccoli-field-table/dist/broccoli-field-table.js": "/dist/libs/broccoli-field-table/dist/broccoli-field-table.js",
     "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js": "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js"
 }
