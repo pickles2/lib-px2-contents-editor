@@ -52,12 +52,7 @@
 
 // --------------------------------------
 // コンテンツが存在しない
-.pickles2-contents-editor__notExists{
-	border: 1px solid #eee;
-	background-color: #fff;
-	padding: 20px;
-	margin-top: 3em;
-}
+@import "./editor/not_exists/not_exists.css.scss";
 
 
 // --------------------------------------
@@ -227,7 +222,7 @@
 
 // --------------------------------------
 // broccoli 拡張
-.broccoli{
+.broccoli {
 
 	// lightbox
 	// 編集ウィンドウの配置を変更: 画面右に寄るようにする
