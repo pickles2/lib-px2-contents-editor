@@ -30,7 +30,10 @@ module.exports = function(px2ce){
 		$elmTextareas,
 		$elmTabs;
 
-	var timer_onPreviewLoad;
+	var timer_onPreviewLoad,
+		timer_autoSave;
+	var isSaving = false,
+		isAutoSaveReserved = false;
 
 	function getCanvasPageUrl(){
 		var rtn = getPreviewUrl();
@@ -91,6 +94,42 @@ module.exports = function(px2ce){
 		}
 		return;
 	}
+	function autoSave(interval, finish){
+		if( isSaving ){
+			isAutoSaveReserved = {
+				interval: interval,
+				finish: finish,
+			};
+			return;
+		}
+
+		clearTimeout(timer_autoSave);
+		timer_autoSave = setTimeout(function(){
+			isSaving = true;
+			saveContentsSrc(
+				function(result){
+					if(!result.result){
+						console.error('Error:', result);
+						alert(result.message);
+					}
+
+					isSaving = false;
+
+					if( isAutoSaveReserved ){
+						isAutoSaveReserved = false;
+						autoSave(0, isAutoSaveReserved.finish);
+						return;
+					}
+
+					if( finish ){
+						px2ce.finish();
+					}else{
+						updatePreview();
+					}
+				}
+			);
+		}, interval);
+	}
 
 	/**
 	 * 初期化
@@ -132,15 +171,7 @@ module.exports = function(px2ce){
 				toolbar.init({
 					"onFinish": function(){
 						// 完了イベント
-						saveContentsSrc(
-							function(result){
-								if(!result.result){
-									console.error('Error:', result);
-									alert(result.message);
-								}
-								px2ce.finish();
-							}
-						);
+						autoSave(0, true);
 					}
 				},function(){
 					toolbar.addButton({
@@ -164,24 +195,12 @@ module.exports = function(px2ce){
 							"px2-btn--toggle-on"
 						]
 					});
-					// toolbar.addButton({
-					// 	"label": "保存する",
-					// 	"click": function(){
-					// 		saveContentsSrc(
-					// 			function(result){
-					// 				if(!result.result){
-					// 					console.error('Error:', result);
-					// 					alert(result.message);
-					// 				}
-					// 				updatePreview();
-					// 			}
-					// 		);
-					// 	}
-					// });
 					it1.next(arg);
 				});
 			},
 			function(it1, arg){
+				// --------------------------------------
+				// 画面のフレームを構成する
 				$canvas.append((function(){
 					var fin = ''
 							+'<div class="pickles2-contents-editor__default">'
@@ -259,6 +278,8 @@ module.exports = function(px2ce){
 				});
 			},
 			function(it1, arg){
+				// --------------------------------------
+				// テキストエディタを初期化する
 				$elmCanvas.attr({
 					"data-pickles2-contents-editor-preview-url": getCanvasPageUrl()
 				});
@@ -266,7 +287,7 @@ module.exports = function(px2ce){
 				px2ce.gpiBridge(
 					{
 						'api': 'getContentsSrc',
-						'page_path': page_path
+						'page_path': page_path,
 					},
 					function(codes){
 
@@ -343,19 +364,38 @@ module.exports = function(px2ce){
 				);
 			},
 			function(it1, arg){
-				setKeyboardEvent(function(){
-					windowResized(function(){
-					});
-
-					var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
-					$iframe
-						.attr({
-							'src': previewUrl
-						})
-					;
-				});
+				// --------------------------------------
+				// 自動保存イベントをセット
+				if( editorLib == 'ace' ){
+					for(var i in $elmTextareas){
+						$elmTextareas[i].getSession().on('change', function(){ autoSave(1000); });
+					}
+				}else{
+					for(var i in $elmTextareas){
+						$elmTextareas[i].on('change, keydown, keyup', function(){ autoSave(1000); });
+					}
+				}
 				it1.next(arg);
-			}
+			},
+			function(it1, arg){
+				setKeyboardEvent(function(){
+					it1.next(arg);
+				});
+			},
+			function(it1, arg){
+				windowResized(function(){
+					it1.next(arg);
+				});
+			},
+			function(it1, arg){
+				var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
+				$iframe
+					.attr({
+						'src': previewUrl,
+					})
+				;
+				it1.next(arg);
+			},
 		]);
 
 	};
@@ -383,15 +423,7 @@ module.exports = function(px2ce){
 		_Keypress = new window.keypress.Listener();
 		_this.Keypress = _Keypress;
 		_Keypress.simple_combo(px2ce.getCmdKeyName()+" s", function(e) {
-			saveContentsSrc(
-				function(result){
-					if(!result.result){
-						console.error('Error:', result);
-						alert(result.message);
-					}
-					updatePreview();
-				}
-			);
+			autoSave(0, e.shiftKey);
 		});
 
 		callback(true);

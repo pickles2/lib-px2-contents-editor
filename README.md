@@ -189,6 +189,8 @@ $ npm run test
 ### pickles2-contents-editor v2.1.5 (リリース日未定)
 
 - テーマレイアウトをBroccoli編集する際に、Request URI Too Long になる場合がある問題を修正した。
+- デフォルトエディタで、コンテンツの変更に反応して自動保存されるようになった。
+- デフォルトエディタで、`Cmd + Shift + S` (Windows では `Ctrl + Shift + S`) で、保存して終了できるようになった。
 - その他の細かい修正。
 
 ### pickles2-contents-editor v2.1.4 (2022年12月29日)
