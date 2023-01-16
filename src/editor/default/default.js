@@ -108,9 +108,10 @@ module.exports = function(px2ce){
 			isSaving = true;
 			saveContentsSrc(
 				function(result){
-					if(!result.result){
+					if(!result || !result.result){
 						console.error('Error:', result);
-						alert(result.message);
+						alert(`Error: ${result.message}`);
+						return;
 					}
 
 					isSaving = false;
