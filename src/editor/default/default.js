@@ -108,13 +108,13 @@ module.exports = function(px2ce){
 			isSaving = true;
 			saveContentsSrc(
 				function(result){
+					isSaving = false;
+
 					if(!result || !result.result){
 						console.error('Error:', result);
 						alert(`Error: ${result.message}`);
 						return;
 					}
-
-					isSaving = false;
 
 					if( isAutoSaveReserved ){
 						isAutoSaveReserved = false;
