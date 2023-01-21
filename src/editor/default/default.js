@@ -188,6 +188,12 @@ module.exports = function(px2ce){
 						}
 					});
 					toolbar.addButton({
+						"label": "画像ファイルを挿入",
+						"click": function(){
+							openInsertImageDialog();
+						}
+					});
+					toolbar.addButton({
 						"label": "折返し",
 						"click": function(){
 							toggleWordWrapMode(this);
@@ -518,6 +524,37 @@ module.exports = function(px2ce){
 				it1.next();
 			}
 		]);
+	}
+
+	/**
+	 * 画像挿入ダイアログを開く
+	 */
+	function openInsertImageDialog(){
+		px2style.modal({
+			"title": "画像を挿入",
+			"body": "<p>開発中の機能です。</p>",
+			"form": {
+				"submit": function(){
+					var imageFilePath = 'about:blank'; // TODO: 選択された画像のパスを決めてセットする
+					var insertCode = imageFilePath;
+					if( current_tab == 'html' ){
+						insertCode = `<img src="${imageFilePath}" alt="" />`+"\n";
+					}else if( current_tab == 'css' ){
+						insertCode = `url("${imageFilePath}")`+"\n";
+					}else if( current_tab == 'js' ){
+						insertCode = `"${imageFilePath}"`+"\n";
+					}
+					var $currentTab = $elmTextareas[current_tab];
+					console.log($currentTab);
+					if( editorLib == 'ace' ){
+						$currentTab.setValue( $currentTab.getValue() + insertCode );
+					}else{
+						$currentTab.val( $currentTab.val() + insertCode );
+					}
+				}
+			},
+		}, function(){
+		});
 	}
 
 	/**
