@@ -545,11 +545,13 @@ module.exports = function(px2ce){
 						insertCode = `"${imageFilePath}"`+"\n";
 					}
 					var $currentTab = $elmTextareas[current_tab];
-					console.log($currentTab);
+
 					if( editorLib == 'ace' ){
-						$currentTab.setValue( $currentTab.getValue() + insertCode );
+						$currentTab.insert(insertCode);
 					}else{
-						$currentTab.val( $currentTab.val() + insertCode );
+						var curesorPosition = $currentTab.get(0).selectionStart;
+						var currentString = $currentTab.val();
+						$currentTab.val(currentString.slice(0, curesorPosition) + insertCode + currentString.slice(curesorPosition));
 					}
 				}
 			},
