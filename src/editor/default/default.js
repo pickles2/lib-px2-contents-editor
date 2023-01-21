@@ -369,11 +369,11 @@ module.exports = function(px2ce){
 				// 自動保存イベントをセット
 				if( editorLib == 'ace' ){
 					for(var i in $elmTextareas){
-						$elmTextareas[i].getSession().on('change', function(){ autoSave(15000); });
+						$elmTextareas[i].getSession().on('change', function(){ autoSave(5000); });
 					}
 				}else{
 					for(var i in $elmTextareas){
-						$elmTextareas[i].on('change, keydown, keyup', function(){ autoSave(15000); });
+						$elmTextareas[i].on('change, keydown, keyup', function(){ autoSave(5000); });
 					}
 				}
 				it1.next(arg);
