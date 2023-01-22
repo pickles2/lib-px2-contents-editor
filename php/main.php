@@ -286,26 +286,26 @@ class main {
 		}
 		if(is_object($droppedFileOperator)){
 			foreach( $droppedFileOperator as $extOrMimetypeName=>$frontend ){
-				$path_client_lib_dir = @$droppedFileOperator->{$extOrMimetypeName}->dir;
+				$path_client_lib_dir = $droppedFileOperator->{$extOrMimetypeName}->dir ?? null;
 				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
-				if(is_string($realpath_dist) && is_dir(''.$realpath_dist) && @$droppedFileOperator->{$extOrMimetypeName}->dir){
+				if(is_string($realpath_dist ?? '') && is_dir($realpath_dist ?? null) && $droppedFileOperator->{$extOrMimetypeName}->dir ?? null){
 					$this->fs->copy_r($path_client_lib_dir, $realpath_dist.'/dropped_file_operator/'.urlencode($extOrMimetypeName).'/');
 				}
 
-				$paths_client_lib = @$droppedFileOperator->{$extOrMimetypeName}->file;
-				if(is_string($paths_client_lib)){
+				$paths_client_lib = $droppedFileOperator->{$extOrMimetypeName}->file ?? null;
+				if(is_string($paths_client_lib ?? '')){
 					$paths_client_lib = array( $paths_client_lib );
 				}
-				if( is_array($paths_client_lib) && count($paths_client_lib) ){
+				if( is_array($paths_client_lib ?? null) && count($paths_client_lib) ){
 					foreach($paths_client_lib as $path_client_lib){
 						if(!$path_client_lib){ continue; }
 						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
-						$ext = @strtolower($matched[1]);
+						$ext = strtolower($matched[1] ?? '');
 
 						$extOrMimetypeName = preg_replace('/[^a-zA-Z0-9\-\_]/', '__', $extOrMimetypeName);
 
 						if(is_string($realpath_dist) && is_dir(''.$realpath_dist) ){
-							if(@$droppedFileOperator->{$extOrMimetypeName}->dir){
+							if($droppedFileOperator->{$extOrMimetypeName}->dir ?? null){
 								if( $ext == 'css' ){
 									array_push($rtn->css, 'dropped_file_operator/'.urlencode($extOrMimetypeName).'/'.$path_client_lib);
 								}elseif( $ext == 'js' ){
