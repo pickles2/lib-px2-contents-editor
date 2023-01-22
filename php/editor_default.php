@@ -107,7 +107,7 @@ class editor_default{
 		if( array_key_exists('css', $codes) ){
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 			if( !strlen($codes['css']) ){
-				@unlink( $realpath_resource_dir . '/style.css.scss' );
+				$this->px2ce->fs()->rm( $realpath_resource_dir . '/style.css.scss' );
 			}else{
 				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/style.css.scss', $codes['css'] );
 			}
@@ -117,7 +117,7 @@ class editor_default{
 		if( array_key_exists('js', $codes) ){
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 			if( !strlen(''.$codes['js']) ){
-				@unlink( $realpath_resource_dir . '/script.js' );
+				$this->px2ce->fs()->rm( $realpath_resource_dir . '/script.js' );
 			}else{
 				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
 			}
