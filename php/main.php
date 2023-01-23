@@ -788,7 +788,7 @@ class main {
 				if( is_array(@$infoJson->sort) ){
 					// 並び順の指定がある場合
 					foreach( $infoJson->sort as $idx=>$row ){
-						if( @$pathsModuleTemplate[$infoJson->sort[$idx]] ){
+						if( $pathsModuleTemplate[$infoJson->sort[$idx]] ?? null ){
 							// 既に登録済みのパッケージIDは上書きしない
 							// (= paths_module_template の設定を優先)
 							continue;
@@ -803,7 +803,7 @@ class main {
 				$fileList = $this->fs()->ls($pathModuleDir);
 				sort($fileList); // sort
 				foreach( $fileList as $idx=>$row){
-					if( @$pathsModuleTemplate[$fileList[$idx]] ){
+					if( $pathsModuleTemplate[$fileList[$idx]] ?? null ){
 						// 既に登録済みのパッケージIDは上書きしない
 						// (= paths_module_template の設定を優先)
 						continue;
@@ -887,7 +887,7 @@ class main {
 			'contents_bowl_name_by' => @$px2conf->plugins->px2dt->contents_bowl_name_by,
 			'customFields' => $customFields ,
 			'userStorage' => $this->options['userStorage'],
-			'fieldConfig' => @(array) $px2conf->plugins->px2dt->guieditor->field_config,
+			'fieldConfig' => (array) ($px2conf->plugins->px2dt->guieditor->field_config ?? null),
 			'bindTemplate' => $bindTemplate,
 			'log' => function($msg){
 				// エラー発生時にコールされます。
