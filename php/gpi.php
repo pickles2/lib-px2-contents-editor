@@ -53,7 +53,7 @@ class gpi{
 				array_push($bootup['customFieldsClientSideLibs'], $code);
 
 				$bootup['pagesByLayout'] = array();
-				$layout_id = (strlen(''.@$data['layout_id']) ? $data['layout_id'] : 'default');
+				$layout_id = (strlen($data['layout_id'] ?? '') ? $data['layout_id'] : 'default');
 				$sitemap = $this->px2ce->px2query('/?PX=api.get.sitemap', array("output"=>"json"));
 
 				foreach($sitemap as $idx=>$page_info){

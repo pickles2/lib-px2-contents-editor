@@ -112,8 +112,8 @@ class main {
 		}
 
 		$this->entryScript = $options['entryScript'];
-		$this->target_mode = (@strlen(''.$options['target_mode']) ? $options['target_mode'] : 'page_content');
-		$this->page_path = @$options['page_path'];
+		$this->target_mode = (strlen($options['target_mode'] ?? '') ? $options['target_mode'] : 'page_content');
+		$this->page_path = $options['page_path'] ?? null;
 		if( !is_string($this->page_path) ){
 			// 編集対象ページが指定されていない場合
 			return;
@@ -225,16 +225,16 @@ class main {
 		}
 
 		// プロジェクト定義のカスタムフィールドを追加
-		$confCustomFields = @$this->px2conf->plugins->px2dt->guieditor->custom_fields;
+		$confCustomFields = $this->px2conf->plugins->px2dt->guieditor->custom_fields ?? null;
 		$realpath_contRoot = dirname( $this->entryScript );
-		if( is_dir(''.$realpath_dist) && !is_dir(''.$realpath_dist.'/custom_fields/') ){
+		if( is_string($realpath_dist) && is_dir($realpath_dist) && !is_dir($realpath_dist.'/custom_fields/') ){
 			$this->fs->mkdir($realpath_dist.'/custom_fields/');
 		}
 		if(is_object($confCustomFields)){
 			foreach( $confCustomFields as $fieldName=>$field ){
-				$path_client_lib_dir = @$confCustomFields->{$fieldName}->frontend->dir;
+				$path_client_lib_dir = $confCustomFields->{$fieldName}->frontend->dir ?? null;
 				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
-				if(is_string(''.$realpath_dist) && is_dir(''.$realpath_dist) && @$confCustomFields->{$fieldName}->frontend->dir){
+				if(is_string($realpath_dist) && is_dir($realpath_dist) && ($confCustomFields->{$fieldName}->frontend->dir ?? null)){
 					$this->fs->copy_r($path_client_lib_dir, $realpath_dist.'/custom_fields/'.urlencode($fieldName).'/');
 				}
 
@@ -246,10 +246,10 @@ class main {
 					foreach($paths_client_lib as $path_client_lib){
 						if(!$path_client_lib){ continue; }
 						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
-						$ext = @strtolower($matched[1]);
+						$ext = strtolower($matched[1] ?? '');
 
 						if(is_string($realpath_dist) && is_dir(''.$realpath_dist) ){
-							if(@$confCustomFields->{$fieldName}->frontend->dir){
+							if( $confCustomFields->{$fieldName}->frontend->dir ?? null ){
 								if( $ext == 'css' ){
 									array_push($rtn->css, 'custom_fields/'.urlencode($fieldName).'/'.$path_client_lib);
 								}elseif( $ext == 'js' ){
@@ -279,33 +279,33 @@ class main {
 		}
 
 		// dropped_file_operator 定義のJSを追加
-		$droppedFileOperator = @$this->px2conf->plugins->px2dt->guieditor->dropped_file_operator;
+		$droppedFileOperator = $this->px2conf->plugins->px2dt->guieditor->dropped_file_operator ?? null;
 		$realpath_contRoot = dirname( $this->entryScript );
-		if( is_dir(''.$realpath_dist) && !is_dir(''.$realpath_dist.'/dropped_file_operator/') ){
+		if( is_string($realpath_dist) && is_dir($realpath_dist) && !is_dir($realpath_dist.'/dropped_file_operator/') ){
 			$this->fs->mkdir($realpath_dist.'/dropped_file_operator/');
 		}
 		if(is_object($droppedFileOperator)){
 			foreach( $droppedFileOperator as $extOrMimetypeName=>$frontend ){
-				$path_client_lib_dir = @$droppedFileOperator->{$extOrMimetypeName}->dir;
+				$path_client_lib_dir = $droppedFileOperator->{$extOrMimetypeName}->dir ?? null;
 				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
-				if(is_string($realpath_dist) && is_dir(''.$realpath_dist) && @$droppedFileOperator->{$extOrMimetypeName}->dir){
+				if(is_string($realpath_dist ?? '') && is_dir($realpath_dist ?? null) && ($droppedFileOperator->{$extOrMimetypeName}->dir ?? null)){
 					$this->fs->copy_r($path_client_lib_dir, $realpath_dist.'/dropped_file_operator/'.urlencode($extOrMimetypeName).'/');
 				}
 
-				$paths_client_lib = @$droppedFileOperator->{$extOrMimetypeName}->file;
-				if(is_string($paths_client_lib)){
+				$paths_client_lib = $droppedFileOperator->{$extOrMimetypeName}->file ?? null;
+				if(is_string($paths_client_lib ?? '')){
 					$paths_client_lib = array( $paths_client_lib );
 				}
-				if( is_array($paths_client_lib) && count($paths_client_lib) ){
+				if( is_array($paths_client_lib ?? null) && count($paths_client_lib) ){
 					foreach($paths_client_lib as $path_client_lib){
 						if(!$path_client_lib){ continue; }
 						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
-						$ext = @strtolower($matched[1]);
+						$ext = strtolower($matched[1] ?? '');
 
 						$extOrMimetypeName = preg_replace('/[^a-zA-Z0-9\-\_]/', '__', $extOrMimetypeName);
 
-						if(is_string($realpath_dist) && is_dir(''.$realpath_dist) ){
-							if(@$droppedFileOperator->{$extOrMimetypeName}->dir){
+						if(is_string($realpath_dist) && is_dir($realpath_dist) ){
+							if($droppedFileOperator->{$extOrMimetypeName}->dir ?? null){
 								if( $ext == 'css' ){
 									array_push($rtn->css, 'dropped_file_operator/'.urlencode($extOrMimetypeName).'/'.$path_client_lib);
 								}elseif( $ext == 'js' ){
@@ -523,19 +523,19 @@ class main {
 	 */
 	private function find_autoload_custom_fields(){
 		if( !isset($this->px2conf) || !is_object($this->px2conf) ){
-			@$this->px2conf = new \stdClass();
+			$this->px2conf = new \stdClass();
 		}
 		if( !isset($this->px2conf->plugins) || !is_object($this->px2conf->plugins) ){
-			@$this->px2conf->plugins = new \stdClass();
+			$this->px2conf->plugins = new \stdClass();
 		}
 		if( !isset($this->px2conf->plugins->px2dt) || !is_object($this->px2conf->plugins->px2dt) ){
-			@$this->px2conf->plugins->px2dt = new \stdClass();
+			$this->px2conf->plugins->px2dt = new \stdClass();
 		}
 		if( !isset($this->px2conf->plugins->px2dt->guieditor) || !is_object($this->px2conf->plugins->px2dt->guieditor) ){
-			@$this->px2conf->plugins->px2dt->guieditor = new \stdClass();
+			$this->px2conf->plugins->px2dt->guieditor = new \stdClass();
 		}
 		if( !isset($this->px2conf->plugins->px2dt->guieditor->custom_fields) || !is_object($this->px2conf->plugins->px2dt->guieditor->custom_fields) ){
-			@$this->px2conf->plugins->px2dt->guieditor->custom_fields = new \stdClass();
+			$this->px2conf->plugins->px2dt->guieditor->custom_fields = new \stdClass();
 		}
 		$realpath_vendor = $this->get_realpath_vendor();
 		foreach($this->fs->ls( $realpath_vendor ) as $vendor){
@@ -726,7 +726,7 @@ class main {
 
 		$customFields = array();
 		$page_content = $this->page_path;
-		if( strlen(''.@$pageInfo->content) ){
+		if( strlen($pageInfo->content ?? '') ){
 			$page_content = $pageInfo->content;
 		}
 
@@ -741,10 +741,10 @@ class main {
 		}
 
 		// プロジェクトが拡張するフィールド
-		$confCustomFields = @$px2conf->plugins->px2dt->guieditor->custom_fields;
+		$confCustomFields = $px2conf->plugins->px2dt->guieditor->custom_fields ?? null;
 		if(is_object($confCustomFields)){
 			foreach( $confCustomFields as $fieldName=>$field ){
-				if( @$confCustomFields->{$fieldName}->backend->class ){
+				if( $confCustomFields->{$fieldName}->backend->class ?? null ){
 					$customFields[$fieldName] = $confCustomFields->{$fieldName}->backend->class;
 				}
 			}
@@ -757,7 +757,7 @@ class main {
 		if( $this->target_mode == 'theme_layout' ){
 			// テーマ編集ではスキップ
 		}else{
-			$tmp_paths_module_template = @$px2conf->plugins->px2dt->paths_module_template;
+			$tmp_paths_module_template = $px2conf->plugins->px2dt->paths_module_template ?? null;
 			if( is_array($tmp_paths_module_template) || is_object($tmp_paths_module_template) ){
 				foreach( $tmp_paths_module_template as $idx=>$path_module_template ){
 					$pathsModuleTemplate[$idx] = $this->fs()->get_realpath( $path_module_template.'/', dirname($this->entryScript) );
@@ -767,7 +767,7 @@ class main {
 
 		// モジュールテンプレートを収集
 		// (モジュールフォルダからロード)
-		$pathModuleDir = @$px2conf->plugins->px2dt->path_module_templates_dir;
+		$pathModuleDir = $px2conf->plugins->px2dt->path_module_templates_dir ?? null;
 		if( $this->target_mode == 'theme_layout' ){
 			// テーマ編集では `broccoli_module_packages` をロードする。
 			$pathModuleDir = $this->documentRoot.$this->theme_id.'/broccoli_module_packages/';
@@ -785,10 +785,10 @@ class main {
 					$srcInfoJson = file_get_contents($pathModuleDir.'/info.json');
 					$infoJson = json_decode($srcInfoJson);
 				}
-				if( is_array(@$infoJson->sort) ){
+				if( is_array($infoJson->sort ?? null) ){
 					// 並び順の指定がある場合
 					foreach( $infoJson->sort as $idx=>$row ){
-						if( @$pathsModuleTemplate[$infoJson->sort[$idx]] ){
+						if( $pathsModuleTemplate[$infoJson->sort[$idx]] ?? null ){
 							// 既に登録済みのパッケージIDは上書きしない
 							// (= paths_module_template の設定を優先)
 							continue;
@@ -803,7 +803,7 @@ class main {
 				$fileList = $this->fs()->ls($pathModuleDir);
 				sort($fileList); // sort
 				foreach( $fileList as $idx=>$row){
-					if( @$pathsModuleTemplate[$fileList[$idx]] ){
+					if( $pathsModuleTemplate[$fileList[$idx]] ?? null ){
 						// 既に登録済みのパッケージIDは上書きしない
 						// (= paths_module_template の設定を優先)
 						continue;
@@ -884,10 +884,10 @@ class main {
 			'pathHtml' => $this->fs()->get_realpath($this->contRoot.'/'.$page_content),
 			'pathResourceDir' => $this->pathResourceDir,
 			'realpathDataDir' =>  $this->realpathDataDir,
-			'contents_bowl_name_by' => @$px2conf->plugins->px2dt->contents_bowl_name_by,
+			'contents_bowl_name_by' => $px2conf->plugins->px2dt->contents_bowl_name_by ?? null,
 			'customFields' => $customFields ,
 			'userStorage' => $this->options['userStorage'],
-			'fieldConfig' => @(array) $px2conf->plugins->px2dt->guieditor->field_config,
+			'fieldConfig' => (array) ($px2conf->plugins->px2dt->guieditor->field_config ?? null),
 			'bindTemplate' => $bindTemplate,
 			'log' => function($msg){
 				// エラー発生時にコールされます。
