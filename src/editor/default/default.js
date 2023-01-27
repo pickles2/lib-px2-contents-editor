@@ -530,11 +530,24 @@ module.exports = function(px2ce){
 	 * 画像挿入ダイアログを開く
 	 */
 	function openInsertImageDialog(){
-		px2style.modal({
+		var $body = $(`<div>
+			<p>挿入する画像を選択してください。</p>
+			<p><input type="file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" /></p>
+		</div>`);
+		var modalObj = px2style.modal({
 			"title": "画像を挿入",
-			"body": "<p>開発中の機能です。</p>",
+			"body": $body,
 			"form": {
 				"submit": function(){
+					var $inputFile = $body.find('input[name=insert-image-file]');
+					var uploadFileInfoJSON = $inputFile.attr('data-upload-file');
+					if( !uploadFileInfoJSON ){
+						return;
+					}
+					var uploadFileInfo = JSON.parse(uploadFileInfoJSON);
+console.log(uploadFileInfo);
+
+
 					var imageFilePath = 'about:blank'; // TODO: 選択された画像のパスを決めてセットする
 					var insertCode = imageFilePath;
 					if( current_tab == 'html' ){
@@ -556,6 +569,48 @@ module.exports = function(px2ce){
 				}
 			},
 		}, function(){
+
+			$body.find('input[name=insert-image-file]')
+				.on('change', function(e){
+					var $this = $(this);
+					var fileInfo = e.target.files[0];
+					var realpathSelected = $this.val();
+
+					/**
+					 * fileAPIからファイルを取り出して反映する
+					 */
+					function applyFile(fileInfo){
+						function readSelectedLocalFile(fileInfo, callback){
+							var reader = new FileReader();
+							reader.onload = function(evt) {
+								callback( evt.target.result );
+							}
+							reader.readAsDataURL(fileInfo);
+						}
+
+						// mod.filename
+						readSelectedLocalFile(fileInfo, function(dataUri){
+							$this.attr({
+								'data-upload-file': JSON.stringify({
+									'src': dataUri,
+									'size': fileInfo.size,
+									// 'ext': getExtension( fileInfo.name ),
+									'mimeType': fileInfo.type,
+									'base64': (function(dataUri){
+										dataUri = dataUri.replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '');
+										// console.log(dataUri);
+										return dataUri;
+									})(dataUri),
+								})
+							});
+						});
+					}
+
+					if( realpathSelected ){
+						applyFile(fileInfo);
+					}
+				});
+
 		});
 	}
 
