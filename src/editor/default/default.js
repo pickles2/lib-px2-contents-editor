@@ -239,7 +239,25 @@ module.exports = function(px2ce){
 				$elmEditor = $canvas.find('.pickles2-contents-editor__default-editor');
 				$elmBtns = $canvas.find('.pickles2-contents-editor__default-btns');
 
-				$elmEditor.on('drop', onFileDropped); // ファイルドロップへの対応
+				$elmEditor.on('drop', function(e){
+					// ファイルドロップへの対応
+					e.stopPropagation();
+					e.preventDefault();
+					var event = e.originalEvent;
+					var droppedFileInfo = event.dataTransfer.files[0];
+
+					// mod.filename
+					readSelectedLocalFile(droppedFileInfo, function(_dataUri){
+						var fileInfo = {
+							'name': droppedFileInfo.name,
+							'size': droppedFileInfo.size,
+							// 'ext': getExtension( droppedFileInfo.name ),
+							'type': droppedFileInfo.type,
+							"base64": _dataUri,
+						};
+						insertUploadFile(fileInfo);
+					});
+				});
 
 				$elmTabs = $canvas.find('.pickles2-contents-editor__default-switch-tab [data-pickles2-contents-editor-switch]');
 				$elmTabs
@@ -438,32 +456,64 @@ module.exports = function(px2ce){
 	}
 
 	/**
-	 * ファイルドロップイベントハンドラ
+	 * 画像挿入ダイアログを開く
 	 */
-	function onFileDropped(e){
-		e.stopPropagation();
-		e.preventDefault();
-		var event = e.originalEvent;
-		var fileInfo = event.dataTransfer.files[0];
+	function openInsertImageDialog(){
+		var $body = $(`<div>
+			<p>挿入する画像を選択してください。</p>
+			<p><input type="file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" /></p>
+		</div>`);
+		var modalObj = px2style.modal({
+			"title": "画像を挿入",
+			"body": $body,
+			"form": {
+				"submit": function(){
+					var $inputFile = $body.find('input[name=insert-image-file]');
+					var fileInfoJSON = $inputFile.attr('data-upload-file');
+					if( !fileInfoJSON ){
+						return;
+					}
+					var fileInfo = JSON.parse(fileInfoJSON);
+
+					insertUploadFile(fileInfo);
+				}
+			},
+		}, function(){
+
+			$body.find('input[name=insert-image-file]')
+				.on('change', function(e){
+					var $this = $(this);
+					var fileInfo = e.target.files[0];
+					var realpathSelected = $this.val();
+
+					if( realpathSelected ){
+						readSelectedLocalFile(fileInfo, function(dataUri){
+							$this.attr({
+								'data-upload-file': JSON.stringify({
+									'name': fileInfo.name,
+									'size': fileInfo.size,
+									// 'ext': getExtension( fileInfo.name ),
+									'type': fileInfo.type,
+									'base64': dataUri,
+								})
+							});
+						});
+					}
+				});
+
+		});
+	}
+
+	/**
+	 * アップロードしたファイルをコンテンツに挿入する
+	 */
+	function insertUploadFile(fileInfo, callback){
+console.log('fileInfo:', fileInfo);
+
 		var dataUri;
 		var path_resource;
 
-		function readSelectedLocalFile(fileInfo, callback){
-			var reader = new FileReader();
-			reader.onload = function(evt) {
-				callback( evt.target.result );
-			}
-			reader.readAsDataURL(fileInfo);
-		}
-
 		it79.fnc({}, [
-			function(it1){
-				// mod.filename
-				readSelectedLocalFile(fileInfo, function(_dataUri){
-					dataUri = _dataUri;
-					it1.next();
-				});
-			},
 			function(it1){
 				px2ce.gpiBridge(
 					{
@@ -505,113 +555,54 @@ module.exports = function(px2ce){
 						break;
 				}
 
-				// 文字列を挿入する
-				if( editorLib == 'ace' ){
-					// AceEditorの処理
-					$elmTextareas[current_tab].insert(insertString);
-				}else{
-					console.error('AceEditor以外のファイル挿入機能は未開発です。'); // TODO: 実装する
-				}
-
 				// アップロードファイルを一時記憶
 				// ファイルは、次回保存時に保存されます。
 				droppedFileList.push({
-					'name': fileName,
+					'name': fileInfo.name,
 					'type': fileInfo.type,
 					'size': fileInfo.size,
-					'base64': dataUri,
+					'base64': fileInfo.base64,
 				});
+
+				// コンテンツに文字列を挿入する
+				insertText( insertString, current_tab );
+
 				it1.next();
+			},
+			function(){
+				callback();
 			}
 		]);
+		return;
 	}
 
 	/**
-	 * 画像挿入ダイアログを開く
+	 * アップロードファイルを読み込む
 	 */
-	function openInsertImageDialog(){
-		var $body = $(`<div>
-			<p>挿入する画像を選択してください。</p>
-			<p><input type="file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" /></p>
-		</div>`);
-		var modalObj = px2style.modal({
-			"title": "画像を挿入",
-			"body": $body,
-			"form": {
-				"submit": function(){
-					var $inputFile = $body.find('input[name=insert-image-file]');
-					var uploadFileInfoJSON = $inputFile.attr('data-upload-file');
-					if( !uploadFileInfoJSON ){
-						return;
-					}
-					var uploadFileInfo = JSON.parse(uploadFileInfoJSON);
-console.log(uploadFileInfo);
+	function readSelectedLocalFile(fileInfo, callback){
+		var reader = new FileReader();
+		reader.onload = function(evt) {
+			callback( evt.target.result );
+		}
+		reader.readAsDataURL(fileInfo);
+	}
 
+	/**
+	 * エディタにテキストを挿入する
+	 */
+	function insertText( insertCode, targetTab ){
+		if( !targetTab ){
+			targetTab = current_tab;
+		}
+		var $currentTab = $elmTextareas[targetTab];
 
-					var imageFilePath = 'about:blank'; // TODO: 選択された画像のパスを決めてセットする
-					var insertCode = imageFilePath;
-					if( current_tab == 'html' ){
-						insertCode = `<img src="${imageFilePath}" alt="" />`+"\n";
-					}else if( current_tab == 'css' ){
-						insertCode = `url("${imageFilePath}")`+"\n";
-					}else if( current_tab == 'js' ){
-						insertCode = `"${imageFilePath}"`+"\n";
-					}
-					var $currentTab = $elmTextareas[current_tab];
-
-					if( editorLib == 'ace' ){
-						$currentTab.insert(insertCode);
-					}else{
-						var curesorPosition = $currentTab.get(0).selectionStart;
-						var currentString = $currentTab.val();
-						$currentTab.val(currentString.slice(0, curesorPosition) + insertCode + currentString.slice(curesorPosition));
-					}
-				}
-			},
-		}, function(){
-
-			$body.find('input[name=insert-image-file]')
-				.on('change', function(e){
-					var $this = $(this);
-					var fileInfo = e.target.files[0];
-					var realpathSelected = $this.val();
-
-					/**
-					 * fileAPIからファイルを取り出して反映する
-					 */
-					function applyFile(fileInfo){
-						function readSelectedLocalFile(fileInfo, callback){
-							var reader = new FileReader();
-							reader.onload = function(evt) {
-								callback( evt.target.result );
-							}
-							reader.readAsDataURL(fileInfo);
-						}
-
-						// mod.filename
-						readSelectedLocalFile(fileInfo, function(dataUri){
-							$this.attr({
-								'data-upload-file': JSON.stringify({
-									'src': dataUri,
-									'size': fileInfo.size,
-									// 'ext': getExtension( fileInfo.name ),
-									'mimeType': fileInfo.type,
-									'base64': (function(dataUri){
-										dataUri = dataUri.replace(new RegExp('^data\\:[^\\;]*\\;base64\\,'), '');
-										// console.log(dataUri);
-										return dataUri;
-									})(dataUri),
-								})
-							});
-						});
-					}
-
-					if( realpathSelected ){
-						applyFile(fileInfo);
-					}
-				});
-
-		});
+		if( editorLib == 'ace' ){
+			$currentTab.insert(insertCode);
+		}else{
+			var curesorPosition = $currentTab.get(0).selectionStart;
+			var currentString = $currentTab.val();
+			$currentTab.val(currentString.slice(0, curesorPosition) + insertCode + currentString.slice(curesorPosition));
+		}
 	}
 
 	/**
