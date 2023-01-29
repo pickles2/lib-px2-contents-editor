@@ -508,8 +508,6 @@ module.exports = function(px2ce){
 	 * アップロードしたファイルをコンテンツに挿入する
 	 */
 	function insertUploadFile(fileInfo, callback){
-console.log('fileInfo:', fileInfo);
-
 		var dataUri;
 		var path_resource;
 
@@ -533,7 +531,8 @@ console.log('fileInfo:', fileInfo);
 			},
 			function(it1){
 				var fileName = fileInfo.name;
-				var uploadFileName = './'+path_resource+'/'+fileName;
+				// var uploadFileName = './'+path_resource+'/'+fileName;
+				var uploadFileName = '<'+'?= $px->h($px->path_files("/'+fileName+'")) ?>';
 				var insertString = '';
 
 				// 開いているタブの種類に応じて、
@@ -568,6 +567,11 @@ console.log('fileInfo:', fileInfo);
 				insertText( insertString, current_tab );
 
 				it1.next();
+			},
+			function(it1){
+				saveContentsSrc(function(){
+					it1.next();
+				});
 			},
 			function(){
 				callback();
