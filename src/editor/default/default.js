@@ -508,7 +508,6 @@ module.exports = function(px2ce){
 	 * アップロードしたファイルをコンテンツに挿入する
 	 */
 	function insertUploadFile(fileInfo, callback){
-		var dataUri;
 		var path_resource;
 
 		it79.fnc({}, [
@@ -532,8 +531,12 @@ module.exports = function(px2ce){
 			function(it1){
 				var fileName = fileInfo.name;
 				// var uploadFileName = './'+path_resource+'/'+fileName;
-				var uploadFileName = '<'+'?= $px->h($px->path_files("/'+fileName+'")) ?>';
+				var uploadFileName = '<'; // NOTE: minifyされたあと、PHPコードとして成立してしまわないように、複数行に分解している。
+				uploadFileName += '?';
+				uploadFileName += '= $px->h($px->path_files("/'+fileName+'")) ?';
+				uploadFileName += '>';
 				var insertString = '';
+
 
 				// 開いているタブの種類に応じて、
 				// 挿入する文字列を出し分ける。
