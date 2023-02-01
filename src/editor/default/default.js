@@ -239,25 +239,51 @@ module.exports = function(px2ce){
 				$elmEditor = $canvas.find('.pickles2-contents-editor__default-editor');
 				$elmBtns = $canvas.find('.pickles2-contents-editor__default-btns');
 
-				$canvas.on('drop', function(e){
-					// ファイルドロップへの対応
-					e.stopPropagation();
-					e.preventDefault();
-					var event = e.originalEvent;
-					var droppedFileInfo = event.dataTransfer.files[0];
+				var $fileDropField = $(`<div class="pickles2-contents-editor__file-dropper">
+					<div class="pickles2-contents-editor__file-dropper__droparea">
+						<div class="pickles2-contents-editor__file-dropper__droparea-frame">ここにドロップしてください。</div>
+					</div>
+				</div>`)
 
-					// mod.filename
-					readSelectedLocalFile(droppedFileInfo, function(_dataUri){
-						var fileInfo = {
-							'name': droppedFileInfo.name,
-							'size': droppedFileInfo.size,
-							// 'ext': getExtension( droppedFileInfo.name ),
-							'type': droppedFileInfo.type,
-							"base64": _dataUri,
-						};
-						openInsertImageDialog( fileInfo );
+				$canvas.append($fileDropField);
+
+				$canvas
+					.on('dragover', function(){
+						$fileDropField.css({
+							"display": "block",
+						});
+					})
+					.on('dragleave', function(){
+						$fileDropField.css({
+							"display": "none",
+						});
 					});
-				});
+
+				$fileDropField
+					.on('drop', function(e){
+						// ファイルドロップへの対応
+						e.stopPropagation();
+						e.preventDefault();
+						var event = e.originalEvent;
+						var droppedFileInfo = event.dataTransfer.files[0];
+
+						// mod.filename
+						readSelectedLocalFile(droppedFileInfo, function(_dataUri){
+							var fileInfo = {
+								'name': droppedFileInfo.name,
+								'size': droppedFileInfo.size,
+								// 'ext': getExtension( droppedFileInfo.name ),
+								'type': droppedFileInfo.type,
+								"base64": _dataUri,
+							};
+
+							$fileDropField.css({
+								"display": "none",
+							});
+
+							openInsertImageDialog( fileInfo );
+						});
+					});
 
 				$elmTabs = $canvas.find('.pickles2-contents-editor__default-switch-tab [data-pickles2-contents-editor-switch]');
 				$elmTabs
@@ -466,7 +492,7 @@ module.exports = function(px2ce){
 					<li class="px2-form-input-list__li">
 						<div class="px2-form-input-list__label"><label for="insert-image-file">ファイル</label></div>
 						<div class="px2-form-input-list__input">
-							<input type="file" id="insert-image-file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" required />
+							<input type="file" id="insert-image-file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" />
 						</div>
 					</li>
 					<li class="px2-form-input-list__li">

@@ -37,7 +37,7 @@ module.exports = function(px2ce){
 		}
 
 		// 完了イベント発火
-		$canvas.find('.pickles2-contents-editor--toolbar-btn-finish').click(function(){
+		$canvas.find('.pickles2-contents-editor--toolbar-btn-finish').on('click', function(){
 			options.onFinish();
 		});
 

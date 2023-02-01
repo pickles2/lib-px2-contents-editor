@@ -1,9 +1,9 @@
-.pickles2-contents-editor__default{
+.pickles2-contents-editor__default {
 	flex-grow: 100;
 	display: flex;
 	flex-direction: row-reverse;
 
-	&-canvas{
+	&-canvas {
 		position: relative;
 		top: 0;
 		left: 0;
@@ -11,7 +11,7 @@
 		overflow: auto;
 		-webkit-overflow-scrolling: touch;
 		overflow-scrolling: touch;
-		iframe{
+		iframe {
 			display: block;
 			width: 100%;
 			height: 100%;
@@ -27,13 +27,13 @@
 		right: 0;
 		width: 40%;
 
-		&-body{
-			>div{
+		&-body {
+			>div {
 				width: 100%;
 				height: 100%;
 				border: none;
 			}
-			textarea{
+			textarea {
 				width: 100%;
 				height: 100%;
 				border: none;
@@ -41,11 +41,50 @@
 		}
 	}
 	@media all and (max-width: 600px) {
-		&-canvas{
+		&-canvas {
 			display: none;
 		}
 		&-editor {
 			width: 100%;
 		}
+	}
+}
+
+.pickles2-contents-editor__file-dropper {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10000;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	background-color: #eee4;
+
+	&__droparea {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	&__droparea-frame {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: calc(100% - 8vw);
+		height: calc(100% - 8vw);
+		box-sizing: border-box;
+		background-color: #eee1;
+		border: 10px dashed #999;
+		border-radius: 50px;
+		color: #999;
+		font-weight: bold;
+		font-size: 3vw;
+		text-align: center;
 	}
 }
