@@ -239,7 +239,7 @@ module.exports = function(px2ce){
 				$elmEditor = $canvas.find('.pickles2-contents-editor__default-editor');
 				$elmBtns = $canvas.find('.pickles2-contents-editor__default-btns');
 
-				$elmEditor.on('drop', function(e){
+				$canvas.on('drop', function(e){
 					// ファイルドロップへの対応
 					e.stopPropagation();
 					e.preventDefault();
@@ -255,7 +255,7 @@ module.exports = function(px2ce){
 							'type': droppedFileInfo.type,
 							"base64": _dataUri,
 						};
-						insertUploadFile(fileInfo);
+						openInsertImageDialog( fileInfo );
 					});
 				});
 
@@ -458,10 +458,25 @@ module.exports = function(px2ce){
 	/**
 	 * 画像挿入ダイアログを開く
 	 */
-	function openInsertImageDialog(){
+	function openInsertImageDialog( presetInsertFileInfo ){
 		var $body = $(`<div>
 			<p>挿入する画像を選択してください。</p>
-			<p><input type="file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" /></p>
+			<div class="px2-form-input-list">
+				<ul class="px2-form-input-list__ul">
+					<li class="px2-form-input-list__li">
+						<div class="px2-form-input-list__label"><label for="insert-image-file">ファイル</label></div>
+						<div class="px2-form-input-list__input">
+							<input type="file" id="insert-image-file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" required />
+						</div>
+					</li>
+					<li class="px2-form-input-list__li">
+						<div class="px2-form-input-list__label"><label for="insert-image-file-name">ファイル名</label></div>
+						<div class="px2-form-input-list__input">
+							<input type="text" id="insert-image-file-name" name="insert-image-file-name" value="" class="px2-input px2-input--block" required />
+						</div>
+					</li>
+				</ul>
+			</div>
 		</div>`);
 		var modalObj = px2style.modal({
 			"title": "画像を挿入",
@@ -469,18 +484,41 @@ module.exports = function(px2ce){
 			"form": {
 				"submit": function(){
 					var $inputFile = $body.find('input[name=insert-image-file]');
+					var $inputFileName = $body.find('input[name=insert-image-file-name]');
 					var fileInfoJSON = $inputFile.attr('data-upload-file');
 					if( !fileInfoJSON ){
 						return;
 					}
+					if( !$inputFileName.val() ){
+						return;
+					}
 					var fileInfo = JSON.parse(fileInfoJSON);
+					fileInfo.name = $inputFileName.val();
 
 					insertUploadFile(fileInfo);
+					modalObj.close();
 				}
 			},
+			"buttons": [
+				$(`<button type="submit" class="px2-btn px2-btn--primary">挿入する</button>`),
+			],
 		}, function(){
+			var $inputFile = $body.find('input[name=insert-image-file]');
+			var $inputFileName = $body.find('input[name=insert-image-file-name]');
 
-			$body.find('input[name=insert-image-file]')
+			if( typeof(presetInsertFileInfo) == typeof({}) ){
+				$inputFile.attr({
+					'data-upload-file': JSON.stringify({
+						'name': presetInsertFileInfo.name,
+						'size': presetInsertFileInfo.size,
+						'type': presetInsertFileInfo.type,
+						'base64': presetInsertFileInfo.base64,
+					})
+				});
+				$inputFileName.val(presetInsertFileInfo.name);
+			}
+
+			$inputFile
 				.on('change', function(e){
 					var $this = $(this);
 					var fileInfo = e.target.files[0];
@@ -492,11 +530,11 @@ module.exports = function(px2ce){
 								'data-upload-file': JSON.stringify({
 									'name': fileInfo.name,
 									'size': fileInfo.size,
-									// 'ext': getExtension( fileInfo.name ),
 									'type': fileInfo.type,
 									'base64': dataUri,
 								})
 							});
+							$inputFileName.val(fileInfo.name);
 						});
 					}
 				});
