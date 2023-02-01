@@ -4,6 +4,7 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
+	var dateformat = require('dateformat');
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
@@ -504,6 +505,19 @@ module.exports = function(px2ce){
 				</ul>
 			</div>
 		</div>`);
+
+		function isValidFilename(filename){
+			if( !filename.match(/^[a-z0-9\-\_]+\.[a-z0-9]+$/i) ){
+				return false;
+			}
+			return true;
+		}
+		function generateAutoFilename(filename){
+			var ext = filename.replace(/^[\s\S]*\./, '');
+			var today = new Date();
+			return dateformat(today, 'yyyy-mm-dd-hhMMss') + '.' + ext;
+		}
+
 		var modalObj = px2style.modal({
 			"title": "画像を挿入",
 			"body": $body,
@@ -518,8 +532,19 @@ module.exports = function(px2ce){
 					if( !$inputFileName.val() ){
 						return;
 					}
+
+					if( !isValidFilename($inputFileName.val()) ){
+						alert('ファイル名は、半角英数字、ハイフン、アンダースコアで構成してください。');
+						return;
+					}
+
 					var fileInfo = JSON.parse(fileInfoJSON);
-					fileInfo.name = $inputFileName.val();
+					fileInfo.name = (function(){
+						if( !isValidFilename($inputFileName.val()) ){
+							return generateAutoFilename($inputFileName.val());
+						}
+						return $inputFileName.val();
+					})();
 
 					insertUploadFile(fileInfo);
 					modalObj.close();
@@ -541,7 +566,12 @@ module.exports = function(px2ce){
 						'base64': presetInsertFileInfo.base64,
 					})
 				});
-				$inputFileName.val(presetInsertFileInfo.name);
+				$inputFileName.val((function(){
+					if( !isValidFilename(presetInsertFileInfo.name) ){
+						return generateAutoFilename(presetInsertFileInfo.name);
+					}
+					return presetInsertFileInfo.name;
+				})());
 			}
 
 			$inputFile
@@ -560,7 +590,12 @@ module.exports = function(px2ce){
 									'base64': dataUri,
 								})
 							});
-							$inputFileName.val(fileInfo.name);
+							$inputFileName.val((function(){
+								if( !isValidFilename(fileInfo.name) ){
+									return generateAutoFilename(fileInfo.name);
+								}
+								return fileInfo.name;
+							})());
 						});
 					}
 				});
