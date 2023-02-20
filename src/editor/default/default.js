@@ -495,9 +495,9 @@ module.exports = function(px2ce){
 					<li class="px2-form-input-list__li">
 						<div class="px2-form-input-list__label"><label for="insert-image-file">ファイル</label></div>
 						<div class="px2-form-input-list__input">
-							<div class="pickles2-contents-editor__default-image-preview">
-								<img class="pickles2-contents-editor__default-image-preview-image" style="min-width: 10%; max-width: 100%; min-height: 1px; max-height: 200px; user-select: none; pointer-events: none;" />
-								<div class="pickles2-contents-editor__default-image-preview-no-image" style="padding: 3m; font-weight: bold; font-size: 24px; color: #aaa;"></div>
+							<div class="pickles2-contents-editor__default-image-preview" tabindex="0">
+								<img class="pickles2-contents-editor__default-image-preview-image" />
+								<div class="pickles2-contents-editor__default-image-preview-no-image"></div>
 							</div>
 							<input type="file" id="insert-image-file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" />
 						</div>
@@ -512,7 +512,7 @@ module.exports = function(px2ce){
 			</div>
 		</div>`);
 		var $imgPreview = $body.find('.pickles2-contents-editor__default-image-preview-image');
-		var $imgNotImage = $('.pickles2-contents-editor__default-image-preview-no-image');
+		var $imgNotImage = $body.find('.pickles2-contents-editor__default-image-preview-no-image');
 
 		function isValidFilename(filename){
 			if( !filename.match(/^[a-z0-9\-\_]+\.[a-z0-9]+$/i) ){
@@ -532,7 +532,7 @@ module.exports = function(px2ce){
 		function setImagePreview(fileInfo){
 			var fileSrc = fileInfo.src;
 			var fileMimeType = fileInfo.mimeType;
-			if( !fileInfo.src || !fileInfo.ext || !fileInfo.size){
+			if( !fileInfo || !fileInfo.src || !fileInfo.ext || !fileInfo.size){
 				fileSrc = _imgDummy;
 				fileMimeType = 'image/png';
 			}
@@ -590,6 +590,8 @@ module.exports = function(px2ce){
 		}, function(){
 			var $inputFile = $body.find('input[name=insert-image-file]');
 			var $inputFileName = $body.find('input[name=insert-image-file-name]');
+
+			setImagePreview({});
 
 			if( typeof(presetInsertFileInfo) == typeof({}) ){
 				setImagePreview({
@@ -650,15 +652,6 @@ module.exports = function(px2ce){
 
 			var $imagePreviewArea = $body.find('.pickles2-contents-editor__default-image-preview');
 			$imagePreviewArea
-				.css({
-					'border':'1px solid #999',
-					'padding': 10,
-					'margin': '10px auto',
-					'background': '#fff',
-					'outline': 'none',
-					'border-radius': 5,
-					'text-align': 'center',
-				})
 				.on('paste', function(e){
 					var items = e.originalEvent.clipboardData.items;
 					for (var i = 0 ; i < items.length ; i++) {

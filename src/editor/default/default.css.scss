@@ -88,3 +88,33 @@
 		text-align: center;
 	}
 }
+
+.pickles2-contents-editor__default-image-preview {
+	display: block;
+	width: 100%;
+	border: 1px solid #999;
+	padding: 10px;
+	margin: 10px auto;
+	background-color: #fff;
+	outline: none;
+	border-radius: 5;
+	text-align: center;
+	&:focus {
+		background-color: #f5f5f5;
+	}
+
+	&-image {
+		min-width: 10%;
+		max-width: 100%;
+		min-height: 1px;
+		max-height: 200px;
+		user-select: none;
+		pointer-events: none;
+	}
+	&-no-image {
+		padding: 3em;
+		font-weight: bold;
+		font-size: 24px;
+		color: #aaa;
+	}
+}

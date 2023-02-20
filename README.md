@@ -186,6 +186,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.6 (リリース日未定)
+
+- デフォルトエディタ: 画像ファイルダイアログのサムネイルプレビューのUI改善。
+
 ### pickles2-contents-editor v2.1.5 (2023年2月11日)
 
 - テーマレイアウトをBroccoli編集する際に、Request URI Too Long になる場合がある問題を修正した。
