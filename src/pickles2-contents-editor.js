@@ -125,13 +125,16 @@
 						};
 						switch(editorMode){
 							case '.page_not_exists':
-								// ページ自体が存在しない。
+								// ページ自体が存在しない場合
 								$canvas.html('<p>ページが存在しません。</p>');
-								it1.next(data);
+								editor = new (require('./editor/not_exists/not_exists.js'))(_this);
+								editor.init(editorOption, function(){
+									it1.next(data);
+								});
 								break;
 
 							case '.not_exists':
-								// コンテンツが存在しない
+								// コンテンツが存在しない場合
 								$canvas.html('<p>コンテンツが存在しません。</p>');
 								editor = new (require('./editor/not_exists/not_exists.js'))(_this);
 								editor.init(editorOption, function(){
@@ -140,7 +143,7 @@
 								break;
 
 							case 'html.gui':
-								// broccoli
+								// ブロックエディタを起動
 								$canvas.html('<p>ブロックエディタを起動します。</p>');
 								editor = new (require('./editor/broccoli/broccoli.js'))(_this);
 								editor.init(editorOption, function(){
@@ -151,7 +154,7 @@
 							case 'html':
 							case 'md':
 							default:
-								// defaultテキストエディタ
+								// defaultテキストエディタを起動
 								$canvas.html('<p>テキストエディタを起動します。</p>');
 								editor = new (require('./editor/default/default.js'))(_this);
 								editor.init(editorOption, function(){
