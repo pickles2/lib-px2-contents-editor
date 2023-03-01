@@ -26,7 +26,14 @@ module.exports = function(){
 	 */
 	this.page_path;
 
+	/**
+	 * エントリスクリプトのパス
+	 */
 	this.entryScript;
+
+	/**
+	 * px2agent
+	 */
 	this.px2proj;
 
 	/**
@@ -796,8 +803,6 @@ module.exports = function(){
 	 */
 	this.gpi = function(data, callback){
 		callback = callback||function(){};
-		// this.page_path = data.page_path;
-		// console.log(this.page_path);
 		var gpi = require( __dirname+'/gpi.js' );
 		gpi(
 			this,

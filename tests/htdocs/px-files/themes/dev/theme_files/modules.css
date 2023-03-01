@@ -299,9 +299,9 @@
  * module: themeEditorModules:layouts/fullcolumn
  */
 :root {
-  --theme-keycolor: #0C5170;
+  --theme-keycolor: #52B4B9;
   --theme-textcolor-on-keycolor: #eee;
-  --theme-subcolor: #70E600;
+  --theme-subcolor: #33A375;
   --theme-textcolor-on-subcolor: #eee;
 }
 html, body {
@@ -448,9 +448,9 @@ p, li, dt, dd {
  */
 @charset "UTF-8";
 :root {
-  --theme-keycolor: #0C5170;
+  --theme-keycolor: #52B4B9;
   --theme-textcolor-on-keycolor: #eee;
-  --theme-subcolor: #70E600;
+  --theme-subcolor: #33A375;
   --theme-textcolor-on-subcolor: #eee;
 }
 /**
@@ -638,9 +638,9 @@ body.theme-scroll-lock--iphone {
  */
 @charset "UTF-8";
 :root {
-  --theme-keycolor: #0C5170;
+  --theme-keycolor: #52B4B9;
   --theme-textcolor-on-keycolor: #eee;
-  --theme-subcolor: #70E600;
+  --theme-subcolor: #33A375;
   --theme-textcolor-on-subcolor: #eee;
 }
 /**

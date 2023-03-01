@@ -14,24 +14,28 @@
 <header class="theme-header">
 	<div class="theme-header__inner">
 		<div class="theme-header__si">
-			<a href="<?= htmlspecialchars($px->href('/index.html')) ?>"><?= htmlspecialchars( $px->conf()->name ?? '' ) ?></a>		</div>
+			<a href="<?= htmlspecialchars($px->href('/index.html')??'') ?>"><?= htmlspecialchars( $px->conf()->name ?? '' ) ?></a>		</div>
 		<div class="theme-header__shouldernavi"><?php
 	$shoulder_menu = $px->site()->get_shoulder_menu();
-	echo( '<ul>' );
-	foreach( $shoulder_menu as $page_id ){
-		echo( '<li>'.$px->mk_link( $page_id ).'</li>' );
+	if( is_array($shoulder_menu) && count($shoulder_menu) ){
+		echo( '<ul>' );
+		foreach( $shoulder_menu as $page_id ){
+			echo( '<li>'.$px->mk_link( $page_id ).'</li>' );
+		}
+		echo( '</ul>' );
 	}
-	echo( '</ul>' );
 ?>
 </div>
 
 		<div class="theme-header__globalnavi"><?php
 	$global_menu = $px->site()->get_global_menu();
-	echo( '<ul>' );
-	foreach( $global_menu as $page_id ){
-		echo( '<li>'.$px->mk_link( $page_id ).'</li>' );
+	if( is_array($global_menu) && count($global_menu) ){
+		echo( '<ul>'."\n" );
+		foreach( $global_menu as $page_id ){
+			echo( '<li>'.$px->mk_link( $page_id ).'</li>'."\n" );
+		}
+		echo( '</ul>'."\n" );
 	}
-	echo( '</ul>' );
 ?>
 </div>
 	</div>
@@ -42,7 +46,7 @@
 <div class="theme-breadcrumb"><?= $theme->mk_breadcrumb() ?></div>
 <h1><?= preg_replace('/\r\n|\r|\n/', '<br />', htmlspecialchars( $px->site()->get_current_page_info('title_h1') ?? '' )) ?></h1>
 
-<div class="contents" <?= htmlspecialchars($theme->get_attr_bowl_name_by())?>="">
+<div class="contents" <?= htmlspecialchars($theme->get_attr_bowl_name_by() ?? '') ?>="">
 <?= $px->bowl()->pull('') ?>
 </div>
 		</div>
@@ -51,7 +55,7 @@
 <?php
 	$category_top_id = $px->site()->get_category_top();
 ?>
-	<p><a href="<?= htmlspecialchars( $px->href($category_top_id) ) ?>"><?= htmlspecialchars($px->site()->get_page_info($category_top_id, 'title_label')) ?></a></p>
+	<p><a href="<?= htmlspecialchars( $px->href($category_top_id) ?? '' ) ?>"><?= htmlspecialchars($px->site()->get_page_info($category_top_id, 'title_label') ?? '') ?></a></p>
 <?= $theme->mk_sub_menu( $category_top_id ) ?>
 </nav>
 		</div>
@@ -78,16 +82,18 @@
 		<div class="theme-footer__shouldernavi">
 <?php
 	$shoulder_menu = $px->site()->get_shoulder_menu();
-	echo( '<ul>' );
-	echo( '<li>'.$px->mk_link( '', array('current'=>false) ).'</li>' );
-	foreach( $shoulder_menu as $page_id ){
-		echo( '<li>'.$px->mk_link( $page_id ).'</li>' );
+	if( is_array($shoulder_menu) && count($shoulder_menu) ){
+		echo( '<ul>'."\n" );
+		echo( '<li>'.$px->mk_link( '', array('current'=>false) ).'</li>'."\n" );
+		foreach( $shoulder_menu as $page_id ){
+			echo( '<li>'.$px->mk_link( $page_id ).'</li>'."\n" );
+		}
+		echo( '</ul>'."\n" );
 	}
-	echo( '</ul>' );
 ?>
 		</div>
-<?php if( @strlen($px->conf()->copyright) ){ ?>
-<p style="text-align:center;">&copy;<?= htmlspecialchars($px->conf()->copyright); ?>.</p>
+<?php if( strlen($px->conf()->copyright ?? '') ){ ?>
+<p style="text-align:center;">&copy;<?= htmlspecialchars($px->conf()->copyright ?? ''); ?>.</p>
 <?php } ?>
 
 	</div>

@@ -1,6 +1,6 @@
 # pickles2/lib-px2-contents-editor
 
-Pickles 2 のコンテンツ編集インターフェイスを提供します。
+[Pickles 2](https://pickles2.com/) のコンテンツ編集インターフェイスを提供します。
 
 ## Usage
 
