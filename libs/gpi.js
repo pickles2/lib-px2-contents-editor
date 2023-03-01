@@ -80,6 +80,8 @@ module.exports = function(px2ce, data, callback){
 								}
 							}
 
+							$bootup.current_page_info = px2ce.pageInfo;
+
 							callback($bootup);
 						});
 

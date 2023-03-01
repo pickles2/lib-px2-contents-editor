@@ -14,23 +14,25 @@ module.exports = function(px2ce){
 
 		$canvas.html((function(){
 
+			var current_page_info = px2ce.getBootupInfomations().current_page_info;
 			var fin = ''
 				+ '<div class="container">'
 					+ '<div class="pickles2-contents-editor__notExists">'
 						+ '<form action="javascript:;" method="get">'
-							+ '<p>コンテンツファイルが存在しません。</p>'
+							+ $('<p class="pickles2-contents-editor__notExists__title">').text(current_page_info ? current_page_info.title : page_path).prop("outerHTML")
+							+ (current_page_info ? '<p>コンテンツファイルが存在しません。</p>' : '<p>このパスには該当するページが定義されていませんが、先行してコンテンツの制作を始めることができます。</p>')
 							+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
 							+ '<ul>'
-								+ '<li><label><input type="radio" name="editor-mode" value="html.gui" checked="checked" /> ブロックエディタ</label></li>'
-								+ '<li><label><input type="radio" name="editor-mode" value="html" /> HTML</label></li>'
-								+ '<li><label><input type="radio" name="editor-mode" value="md" /> Markdown</label></li>'
+								+ '<li><label><input type="radio" name="editor-mode" value="html.gui" checked="checked" /> '+px2ce.lb.get('ui_label.blockeditor')+'</label></li>'
+								+ '<li><label><input type="radio" name="editor-mode" value="html" /> '+px2ce.lb.get('ui_label.html')+'</label></li>'
+								+ '<li><label><input type="radio" name="editor-mode" value="md" /> '+px2ce.lb.get('ui_label.markdown')+'</label></li>'
 							+ '</ul>'
 							+ '<div class="px2-text-align-center">'
-								+ '<div><p><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg" type="submit">コンテンツファイルを作成する</button></p></div>'
+								+ '<div><p><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg" type="submit">'+px2ce.lb.get('ui_label.create_new_contents')+'</button></p></div>'
 							+ '</div>'
 						+ '</form>'
 						+ '<div class="px2-text-align-center">'
-							+ '<div><p><button class="pickles2-contents-editor__btn-cancel px2-btn px2-btn--default px2-btn--sm" type="button">キャンセル</button></p></div>'
+							+ '<div><p><button class="pickles2-contents-editor__btn-cancel px2-btn px2-btn--default px2-btn--sm" type="button">'+px2ce.lb.get('ui_label.cancel')+'</button></p></div>'
 						+ '</div>'
 					+ '</div>'
 				+ '</div>'

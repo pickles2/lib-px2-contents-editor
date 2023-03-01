@@ -125,8 +125,6 @@ class main {
 		$this->page_path = preg_replace( '/\{(?:\*|\$)[\s\S]*\}/s', '', $this->page_path );
 
 		$pjInfo = $this->getProjectInfo();
-		// var_dump($pjInfo);
-
 		$this->pjInfo = $pjInfo;
 		$this->px2conf = $pjInfo['conf'];
 		$this->pageInfo = $pjInfo['pageInfo'];
@@ -284,7 +282,7 @@ class main {
 		if( is_string($realpath_dist) && is_dir($realpath_dist) && !is_dir($realpath_dist.'/dropped_file_operator/') ){
 			$this->fs->mkdir($realpath_dist.'/dropped_file_operator/');
 		}
-		if(is_object($droppedFileOperator)){
+		if( is_object($droppedFileOperator) ){
 			foreach( $droppedFileOperator as $extOrMimetypeName=>$frontend ){
 				$path_client_lib_dir = $droppedFileOperator->{$extOrMimetypeName}->dir ?? null;
 				$path_client_lib_dir = $this->fs->get_realpath($path_client_lib_dir, $realpath_contRoot);
@@ -293,10 +291,10 @@ class main {
 				}
 
 				$paths_client_lib = $droppedFileOperator->{$extOrMimetypeName}->file ?? null;
-				if(is_string($paths_client_lib ?? '')){
+				if( is_string($paths_client_lib) ){
 					$paths_client_lib = array( $paths_client_lib );
 				}
-				if( is_array($paths_client_lib ?? null) && count($paths_client_lib) ){
+				if( is_array($paths_client_lib) && count($paths_client_lib) ){
 					foreach($paths_client_lib as $path_client_lib){
 						if(!$path_client_lib){ continue; }
 						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
@@ -305,7 +303,7 @@ class main {
 						$extOrMimetypeName = preg_replace('/[^a-zA-Z0-9\-\_]/', '__', $extOrMimetypeName);
 
 						if(is_string($realpath_dist) && is_dir($realpath_dist) ){
-							if($droppedFileOperator->{$extOrMimetypeName}->dir ?? null){
+							if( $droppedFileOperator->{$extOrMimetypeName}->dir ?? null ){
 								if( $ext == 'css' ){
 									array_push($rtn->css, 'dropped_file_operator/'.urlencode($extOrMimetypeName).'/'.$path_client_lib);
 								}elseif( $ext == 'js' ){
@@ -513,10 +511,8 @@ class main {
 				$pjInfo['realpathThemeCollectionDir'] = $allData->realpath_theme_collection_dir;
 			}
 		}
-
-		// var_dump($pjInfo);
 		return $pjInfo;
-	} // getProjectInfo()
+	}
 
 	/**
 	 * 自動ロードのカスタムフィールドを検索する
@@ -614,18 +610,16 @@ class main {
 			'/?PX=px2dthelper.document_modules.build_css&theme_id='.urlencode($theme_id)
 		);
 
-		// var_dump($data);
 		$rtn['css'] .= $data;
 
 		$data = $this->px2query(
 			'/?PX=px2dthelper.document_modules.build_js&theme_id='.urlencode($theme_id)
 		);
 
-		// var_dump($data);
 		$rtn['js'] .= $data;
 
 		return $rtn;
-	} // getModuleCssJsSrc
+	}
 
 	/**
 	 * ローカルCSS,JSソースを取得する
@@ -661,7 +655,7 @@ class main {
 		}
 
 		return $rtn;
-	} // getLocalCssJsSrc
+	}
 
 	/**
 	 * コンテンツファイルを初期化する
@@ -683,12 +677,6 @@ class main {
 		if( $this->target_mode == 'theme_layout' ){
 			// ドキュメントルートの設定上書きがある場合
 			// テーマレイアウトの編集等に利用するモード
-			// var_dump([$this->documentRoot,
-			// 	$this->contRoot,
-			// 	$this->realpathFiles,
-			// 	$this->pathResourceDir,
-			// 	$this->realpathDataDir]);
-
 			if( !is_file( $this->documentRoot . $this->page_path ) ){
 				return '.not_exists';
 			}
@@ -703,7 +691,6 @@ class main {
 				"output" => "json"
 			)
 		);
-		// var_dump($data);
 		return $data;
 	}
 
@@ -749,8 +736,6 @@ class main {
 				}
 			}
 		}
-
-		// var_dump($customFields);
 
 		// モジュールテンプレートを収集
 		// (指定モジュールをロード)
@@ -825,7 +810,7 @@ class main {
 						$fin .= "\n";
 						$fin .= "\n";
 						$fin .= '<'.'?php ob_start(); ?'.'>'."\n";
-						$fin .= (strlen(''.$htmls[$bowlId]) ? $htmls[$bowlId]."\n" : '');
+						$fin .= (strlen($htmls[$bowlId] ?? '') ? $htmls[$bowlId]."\n" : '');
 						$fin .= '<'.'?php $px->bowl()->send( ob_get_clean(), '.json_encode($bowlId).' ); ?'.'>'."\n";
 						$fin .= "\n";
 					}
@@ -912,7 +897,7 @@ class main {
 	 * 汎用API
 	 */
 	public function gpi($data){
-		$gpi = new gpi($this);
+		$gpi = new gpi($this, $this->pageInfo);
 		return $gpi->gpi($data);
 	}
 

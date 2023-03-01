@@ -3,8 +3,12 @@ ui_label.ok,OK,OK,OK,OK
 ui_label.cancel,Cancel,キャンセル,取消,取消
 ui_label.close,Close,閉じる,关闭,關閉
 ui_label.done,Done,完了,,
+ui_label.create_new_contents,"Create new contents","コンテンツファイルを作成する",,
 ui_label.toggle_instance_treeview,"toggle instanceTreeView",インスタンスツリービューを開閉,,
 ui_label.open_in_browser,"Preview",プレビュー,,
 ui_label.clipping,"Clipping",クリッピング,,
 ui_label.insert,"Insert",挿入,,
+ui_label.blockeditor,"Block editor","ブロックエディタ",,
+ui_label.html,"HTML","HTML",,
+ui_label.markdown,"Markdown","Markdown",,
 ui_message.select_instance,"Select any instance.",インスタンスを選択してください。,,

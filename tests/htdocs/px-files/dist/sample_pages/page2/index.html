@@ -3,10 +3,11 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>サンプルページ2 | Pickles 2 Contents Editor</title>
+		<meta name="description" content="このページはPxFWのサンプルコードとして予め用意されたものです。サンプルが不要であれば、sample_pagesディレクトリとともに削除してください。" />
+		<meta name="keywords" content="sample, サンプル" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="keywords" content="sample, サンプル" />
-		<meta name="description" content="このページはPxFWのサンプルコードとして予め用意されたものです。サンプルが不要であれば、sample_pagesディレクトリとともに削除してください。" />
 
  
 <!-- jQuery -->
@@ -20,28 +21,27 @@
 <link rel="stylesheet" href="/common/styles/contents.css" type="text/css" />
 <script src="/common/scripts/contents.js"></script>
 
-		<!-- Bootstrap Theme -->
-		<link rel="stylesheet" href="/caches/p/theme/styles/bootstrap-theme.min.css">
-		<link rel="stylesheet" href="/caches/p/theme/styles/theme.css">
+		<link rel="stylesheet" href="/caches/p/theme/dev/modules.css" />
+		<link rel="stylesheet" href="/caches/p/theme/dev/styles/theme.css">
+
 	</head>
-	<body>
-		<header class="theme_header" id="page_top">
-			<div class="container">
-				<p class="theme_si"><a href="/">Pickles 2 Contents Editor</a></p>
-				<div class="theme_shouldernavi">
-<ul><li><a href="/sample_pages/help/">ヘルプ</a></li></ul>				</div>
-				<div class="theme_globalnavi">
-<ul><li><a href="/sample_pages/">サンプルページ1</a></li><li><a href="/sample_pages/page2/" class="current">サンプルページ2</a></li><li><a href="/sample_pages/page3/">サンプルページ3</a></li></ul>
-				</div>
-			</div>
-		</header>
-		<div class="theme_mainblock">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-9">
-						<div class="theme_breadcrumb"><ul><li><a href="/">ホーム</a></li><li><span>サンプルページ2</span></li></ul></div>
-						<h1>サンプルページ2</h1>
-						<div class="contents">
+	<body id="pagetop">
+<header class="theme-header">
+	<div class="theme-header__inner">
+		<div class="theme-header__si">
+			<a href="/">Pickles 2 Contents Editor</a>		</div>
+		<div class="theme-header__shouldernavi"><ul><li><a href="/sample_pages/help/">ヘルプ</a></li></ul></div>
+
+		<div class="theme-header__globalnavi"><ul><li><a href="/sample_pages/">サンプルページ1</a></li><li><a href="/sample_pages/page2/" class="current">サンプルページ2</a></li><li><a href="/sample_pages/page3/">サンプルページ3</a></li></ul></div>
+	</div>
+</header>
+<div class="theme-layouts theme-layouts--rnavi">
+	<div class="theme-layouts__body">
+		<div class="theme-layouts__content">
+<div class="theme-breadcrumb"><ul><li><a href="/">ホーム</a></li><li><span>サンプルページ2</span></li></ul></div>
+<h1>サンプルページ2</h1>
+
+<div class="contents">
 
 
 <p>
@@ -51,26 +51,34 @@
 	コンテンツファイルが存在しないページにアクセスすると、<q>404 - File not found.</q> のような文言が表示されているはずです。<br />
 </p>
 
-						</div>
-						<div class="theme_breadcrumb"><ul><li><a href="/">ホーム</a></li><li><span>サンプルページ2</span></li></ul></div>
-					</div>
-					<div class="col-sm-3">
-						<nav class="theme_common_navi">
-							<p><a href="/sample_pages/page2/">サンプルページ2</a></p>
+</div>
+		</div>
+		<div class="theme-layouts__rnavi">
+<nav class="theme-common-navi">
+	<p><a href="/sample_pages/page2/">サンプルページ2</a></p>
 <ul>
 <li><a href="/sample_pages/page2/1.htm">サンプル2-1</a></li>
 <li><a href="/sample_pages/page2/2.html">サンプル2-2</a></li>
 </ul>
-						</nav>
-						<div class="contents">
-						</div>
-					</div>
-				</div><!-- /.row -->
-			</div><!-- /.container -->
-		</div><!-- /.theme_mainblock -->
-		<footer class="theme_footer">
-			<div class="container">
-				<nav class="theme_megafooter_navi">
+</nav>
+		</div>
+	</div>
+</div>
+<div class="theme-layouts theme-layouts--rnavi">
+	<div class="theme-layouts__body">
+		<div class="theme-layouts__content">
+<div class="theme-back-to-pagetop">
+	<p><a href="#pagetop">このページの先頭へ戻る</a></p>
+</div>
+<div class="theme-breadcrumb"><ul><li><a href="/">ホーム</a></li><li><span>サンプルページ2</span></li></ul></div>
+		</div>
+		<div class="theme-layouts__rnavi">
+		</div>
+	</div>
+</div>
+<footer class="theme-footer">
+	<div class="theme-footer__inner">
+		<nav class="theme-footer__megafooter-navi">
 <ul>
 <li><a href="/sample_pages/">サンプルページ1</a><ul>
 <li><a href="/sample_pages/fess/">FESSスタイルガイド</a></li>
@@ -93,13 +101,64 @@
 </ul>
 </li>
 </ul>
-				</nav>
+		</nav>
+
+		<div class="theme-footer__shouldernavi">
+<ul><li><a href="/">ホーム</a></li><li><a href="/sample_pages/help/">ヘルプ</a></li></ul>		</div>
+
+	</div>
+</footer>
+<div class="theme-hamburger-menu">
+	<div class="theme-hamburger-menu__open">
+		<button class="theme-hamburger-menu__open-btn">
+			<span class="theme-hamburger-menu__open-btn-inner">
+				<span class="theme-hamburger-menu__open-btn-decoration-a">メニュー</span>
+			</span>
+		</button>
+	</div>
+	<div class="theme-hamburger-menu__body">
+		<div class="theme-hamburger-menu__body-inner">
+			<div class="theme-hamburger-menu__mega-menu">
+<ul>
+<li><a href="/sample_pages/">サンプルページ1</a><ul>
+<li><a href="/sample_pages/fess/">FESSスタイルガイド</a></li>
+<li><a href="/sample_pages/bootstrap/">Bootstrapスタイルガイド</a></li>
+<li><a href="/sample_pages/page1/1.html">ページタイトル(リンクのラベル)</a></li>
+<li><a href="/sample_pages/page1/2.html">PHPコード埋め込み</a></li>
+<li><a href="/sample_pages/page1/3.html">Markdown記法</a></li>
+<li><a href="/sample_pages/page1/4/">ダイナミックパス</a></li>
+<li><a href="/sample_pages/page2/" class="current">サンプルページ2へのエイリアス</a></li>
+</ul>
+</li>
+<li><a href="/sample_pages/page2/" class="current">サンプルページ2</a><ul>
+<li><a href="/sample_pages/page2/1.htm">サンプル2-1</a></li>
+<li><a href="/sample_pages/page2/2.html">サンプル2-2</a></li>
+</ul>
+</li>
+<li><a href="/sample_pages/page3/">サンプルページ3</a><ul>
+<li><a href="/sample_pages/page3/1.html">サンプル3-1</a></li>
+<li><a href="/sample_pages/page3/2.html">サンプル3-2</a></li>
+</ul>
+</li>
+</ul>
 			</div>
-			<div class="container theme_footer_shouldernavi">
+			<div class="theme-hamburger-menu__shoulder-menu">
 <ul><li><a href="/">ホーム</a></li><li><a href="/sample_pages/help/">ヘルプ</a></li></ul>			</div>
-			<div class="container">
-				<p style="text-align:center;">Pickles 2 is made by Tomoya Koyanagi.</p>
-			</div>
-		</footer>
+		</div>
+	</div>
+</div>
+<div class="theme-back-to-pagetop-float">
+	<div class="theme-back-to-pagetop-float__inner">
+		<a href="#pagetop" class="theme-back-to-pagetop-float__back-to-top">
+			<span class="theme-back-to-pagetop-float__back-to-top-inner">
+				<span class="theme-back-to-pagetop-float__back-to-top-decoration-a">このページの先頭へ戻る</span>
+			</span>
+		</a>
+	</div>
+</div>
+
+
+		<script src="/caches/p/theme/dev/modules.js"></script>
+
 	</body>
 </html>

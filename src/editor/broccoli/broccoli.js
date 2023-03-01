@@ -73,9 +73,7 @@ module.exports = function(px2ce){
 	function toggleInstanceTreeView(){
 		$canvas.toggleClass('pickles2-contents-editor__broccoli-instance-tree-view-opened');
 
-		_this.redraw(function(){
-			// alert('完了');
-		});
+		_this.redraw();
 	}
 
 	/**

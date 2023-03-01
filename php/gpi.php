@@ -17,10 +17,16 @@ class gpi{
 	private $px2ce;
 
 	/**
+	 * Current page information
+	 */
+	private $current_page_info;
+
+	/**
 	 * Constructor
 	 */
-	public function __construct( $px2ce ){
+	public function __construct( $px2ce, $current_page_info ){
 		$this->px2ce = $px2ce;
+		$this->current_page_info = $current_page_info;
 	}
 
 	/**
@@ -57,11 +63,13 @@ class gpi{
 				$sitemap = $this->px2ce->px2query('/?PX=api.get.sitemap', array("output"=>"json"));
 
 				foreach($sitemap as $idx=>$page_info){
-					$page_layout_id = (strlen(''.@$sitemap->{$idx}->layout) ? $sitemap->{$idx}->layout : 'default');
+					$page_layout_id = $sitemap->{$idx}->layout ?? 'default';
 					if( $page_layout_id == $layout_id ){
 						array_push( $bootup['pagesByLayout'], $sitemap->{$idx} );
 					}
 				}
+
+				$bootup['current_page_info'] = $this->current_page_info;
 
 				return $bootup;
 

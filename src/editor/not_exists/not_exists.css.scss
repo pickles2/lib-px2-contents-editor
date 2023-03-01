@@ -8,4 +8,10 @@
 	padding: 20px;
 	margin: 3em auto;
     max-width: 460px;
+
+	&__title {
+		text-align: center;
+		font-weight: bold;
+		font-size: 120%;
+	}
 }
