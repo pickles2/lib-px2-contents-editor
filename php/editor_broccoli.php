@@ -23,7 +23,6 @@ class editor_broccoli{
 		$this->px2ce = $px2ce;
 	}
 
-
 	/**
 	 * broccoliBridge
 	 */
@@ -35,6 +34,4 @@ class editor_broccoli{
 		);
 		return $rtn;
 	}
-
-
 }

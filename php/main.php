@@ -717,16 +717,20 @@ class main {
 			$page_content = $pageInfo->content;
 		}
 
+		// --------------------------------------
 		// フィールドを拡張
 
+		// --------------------------------------
 		// px2ce が拡張するフィールド
 		$customFields['table'] = 'broccoliHtmlEditor\\broccoliFieldTable\\main';
 
+		// --------------------------------------
 		// 呼び出し元アプリが拡張するフィールド
 		foreach( $this->options['customFields'] as $idx=>$customField ){
 			$customFields[$idx] = $this->options['customFields'][$idx];
 		}
 
+		// --------------------------------------
 		// プロジェクトが拡張するフィールド
 		$confCustomFields = $px2conf->plugins->px2dt->guieditor->custom_fields ?? null;
 		if(is_object($confCustomFields)){
@@ -737,6 +741,7 @@ class main {
 			}
 		}
 
+		// --------------------------------------
 		// モジュールテンプレートを収集
 		// (指定モジュールをロード)
 		if( $this->target_mode == 'theme_layout' ){
@@ -750,6 +755,7 @@ class main {
 			}
 		}
 
+		// --------------------------------------
 		// モジュールテンプレートを収集
 		// (モジュールフォルダからロード)
 		$pathModuleDir = $px2conf->plugins->px2dt->path_module_templates_dir ?? null;
@@ -800,6 +806,8 @@ class main {
 			}
 		}
 
+		// --------------------------------------
+		// $bindTemplate
 		if( $this->target_mode == 'theme_layout' ){
 			$bindTemplate = function($htmls){
 				$fin = '';
