@@ -141,12 +141,14 @@ class editor_default{
 			'strLoaderJS' => '<'.'?php ob_start(); ?'.'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'.'>"></script><'.'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'.'>'."\n"
 		);
 		if( !is_file($rtn['contentsPath']) ){
-			foreach( array('md') as $tmpExt ){
+			$tmp_ary_exts = array_keys((array) $this->px2ce->get_project_conf()->funcs->processor);
+			foreach( $tmp_ary_exts as $tmpExt ){
 				if( is_file($rtn['contentsPath'].'.'.$tmpExt) ){
 					$rtn['contentsPath'] = $rtn['contentsPath'].'.'.$tmpExt;
 					break;
 				}
 			}
+			unset($tmp_ary_exts, $tmpExt);
 		}
 
 		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
