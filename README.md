@@ -186,6 +186,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.7 (リリース日未定)
+
+- ページが未定義のパスからのコンテンツ編集に関する不具合を修正した。
+
 ### pickles2-contents-editor v2.1.6 (2023年3月11日)
 
 - デフォルトエディタ: 画像ファイルダイアログのサムネイルプレビューのUI改善。

@@ -140,6 +140,14 @@ class editor_default{
 			'strLoaderCSS' => '<'.'?php ob_start(); ?'.'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'.'>" /><'.'?php $px->bowl()->put( ob_get_clean(), \'head\' );?'.'>'."\n",
 			'strLoaderJS' => '<'.'?php ob_start(); ?'.'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'.'>"></script><'.'?php $px->bowl()->put( ob_get_clean(), \'foot\' );?'.'>'."\n"
 		);
+		if( !is_file($rtn['contentsPath']) ){
+			foreach( array('md') as $tmpExt ){
+				if( is_file($rtn['contentsPath'].'.'.$tmpExt) ){
+					$rtn['contentsPath'] = $rtn['contentsPath'].'.'.$tmpExt;
+					break;
+				}
+			}
+		}
 
 		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
 			$tmpPathThemeLayoutDir = '/layouts/'.urlencode($this->px2ce->get_layout_id()).'/';
