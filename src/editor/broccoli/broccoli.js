@@ -237,7 +237,10 @@ module.exports = function(px2ce){
 					fin += 		'<div class="pickles2-contents-editor__broccoli-palette"></div>';
 					fin += 		'<div class="pickles2-contents-editor__broccoli-instance-tree-view">';
 					fin += 			'<div class="pickles2-contents-editor__broccoli-instance-tree-view-inner"></div>';
-					fin += 			'<button type="button" class="pickles2-contents-editor__broccoli-instance-tree-view-opener"></button>';
+					fin += 			'<button type="button" class="pickles2-contents-editor__broccoli-instance-tree-view-opener">';
+					fin += 				'<div class="pickles2-contents-editor__broccoli-instance-tree-view-opener-inner">';
+					fin += 				'</div>';
+					fin += 			'</button>';
 					fin += 		'</div>';
 					fin += 	'</div>';
 					fin += 	'<div class="pickles2-contents-editor__broccoli-instance-path-view"></div>';

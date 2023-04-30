@@ -186,6 +186,10 @@ $ npm run test
 
 ## 更新履歴 - Change log
 
+### pickles2-contents-editor v2.1.8 (リリース日未定)
+
+- Broccoli編集画面で、インスタンスツリービューのトグルボタンのデザインを修正。
+
 ### pickles2-contents-editor v2.1.7 (2023年4月22日)
 
 - ページが未定義のパスからのコンテンツ編集に関する不具合を修正した。
