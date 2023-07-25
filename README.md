@@ -40,7 +40,7 @@ $px2ce->init(array(
 	)
 ));
 
-if(@$_GET['client_resources']){
+if($_GET['client_resources'] ?? null){
 	$value = $px2ce->get_client_resources(__DIR__.'/caches/');
 	header('Content-type: text/json');
 	echo json_encode($value);
@@ -141,50 +141,12 @@ pickles2ContentsEditor.init(
 </script>
 ```
 
-## for developer
-
-```
-$ npm install
-```
-開発環境をセットアップします。
-
-```
-$ npm run submodule-update
-```
-サブモジュールを更新します。
-
-```
-$ npm start
-```
-アプリケーションをスタートします。
-
-```
-$ npm run up
-```
-サーバーを起動します。(`npm start` と同じ)
-
-```
-$ npm run preview
-```
-ブラウザで開きます。(Macのみ)
-
-```
-$ gulp
-```
-ビルドします。
-
-```
-$ gulp watch
-```
-更新を監視して自動的にビルドします。
-
-```
-$ npm run test
-```
-テストスクリプトを実行します。
-
 
 ## 更新履歴 - Change log
+
+### pickles2-contents-editor v2.2.0 (リリース日未定)
+
+- NodeJS版の提供を廃止した。
 
 ### pickles2-contents-editor v2.1.8 (2023年5月1日)
 

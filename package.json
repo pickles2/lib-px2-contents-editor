@@ -1,9 +1,5 @@
 {
-  "name": "pickles2-contents-editor",
-  "version": "2.1.8",
-  "description": "Pickles 2 contents editor library.",
-  "private": false,
-  "main": "libs/main.js",
+  "private": true,
   "scripts": {
     "start": "node ./tests/app/server/server.js;",
     "up": "node ./tests/app/server/server.js;",
