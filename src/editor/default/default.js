@@ -33,7 +33,8 @@ module.exports = function(px2ce){
 		$elmTabs;
 
 	var timer_onPreviewLoad,
-		timer_autoSave;
+		timer_autoSave,
+		timer_updatePreview;
 	var isSaving = false,
 		isAutoSaveReserved = false;
 
@@ -820,6 +821,17 @@ module.exports = function(px2ce){
 	 * プレビューを更新
 	 */
 	function updatePreview(){
+		clearTimeout(timer_updatePreview);
+		timer_updatePreview = setTimeout(function(){
+			console.error('Reloading preview is too slow.');
+			var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
+			$iframe
+				.attr({
+					'src': previewUrl,
+				})
+			;
+		}, 1000);
+
 		it79.fnc({}, [
 			function(it){
 				if( _this.postMessenger===undefined ){
@@ -846,6 +858,9 @@ module.exports = function(px2ce){
 						it.next();
 					}
 				);
+			},
+			function(it){
+				clearTimeout(timer_updatePreview);
 			},
 		]);
 	}

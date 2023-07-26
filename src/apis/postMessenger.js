@@ -75,7 +75,7 @@ module.exports = function(px2ce, iframe){
 	/**
 	 * メッセージを受信する
 	 */
-	window.addEventListener('message',function(event){
+	window.addEventListener('message', function(event){
 		var data=event.data;
 
 		if(data.api == 'onClickContentsLink'){
