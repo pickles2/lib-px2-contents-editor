@@ -32,7 +32,12 @@
 			<a href="/">Pickles 2 Contents Editor</a>		</div>
 		<div class="theme-header__shouldernavi"><ul><li><a href="/sample_pages/help/">ヘルプ</a></li></ul></div>
 
-		<div class="theme-header__globalnavi"><ul><li><a href="/sample_pages/" class="current">サンプルページ1</a></li><li><a href="/sample_pages/page2/">サンプルページ2</a></li><li><a href="/sample_pages/page3/">サンプルページ3</a></li></ul></div>
+		<div class="theme-header__globalnavi"><ul>
+<li><a href="/sample_pages/" class="current">サンプルページ1</a></li>
+<li><a href="/sample_pages/page2/">サンプルページ2</a></li>
+<li><a href="/sample_pages/page3/">サンプルページ3</a></li>
+</ul>
+</div>
 	</div>
 </header>
 <div class="theme-layouts theme-layouts--rnavi">
@@ -71,7 +76,7 @@
 
 
 
-<span id="hash_ユニット_.unit"></span><h2>ユニット .unit</h2>
+<h2 id="hash_ユニット_.unit">ユニット .unit</h2>
 
 <p>すべてのユニットモジュールの基本となるユニットです。レイアウト上のまとまり1つ分をくくるコンテナで、標準仕様では、前後に一定のマージンが与えられ、回り込みが解除されます。</p>
 <p>ユニットの共通仕様を共有するため、他のユニットモジュールは <code>.unit</code> を併記する前提で設計されます。(例：<code>&lt;div class=&quot;cols unit&quot;&gt;～～～&lt;/div&gt;</code>)</p>
@@ -84,7 +89,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_カラムレイアウト_.cols"></span><h2>カラムレイアウト .cols</h2>
+<h2 id="hash_カラムレイアウト_.cols">カラムレイアウト .cols</h2>
 
 <p>
 	カラムレイアウトは、<code>.cols</code> モジュールで、2分割、3分割、4分割のレイアウトを吸収します。<code>.cols</code> をコンテナとして、カラム要素 <code>.cols-1of2</code>(2分割)、<code>.cols-1of3</code>(3分割)、<code>.cols-1of4</code>(4分割)を組み合わせて入れ子にして表現します。異なる幅のカラムを組み合わせて使用することもできます。例えば、<code>.cols-1of4</code>, <code>.cols-1of2</code>, <code>.cols-1of4</code> の順に入れ子にする、などです。幅の合計が100%になるように調整されていればよいだけです。<br />
@@ -95,7 +100,7 @@
 <li class="notes-li">※<code>.cols</code> に限らず、古いブラウザで <code>:last-child</code> を適用させたい要素につけるクラス名は、慣例として <code>*-last</code> としてください。</li>
 </ul>
 
-<span id="hash_2分割"></span><h3>2分割</h3>
+<h3 id="hash_2分割">2分割</h3>
 <div class="cols unit">
 	<div class="cols-col cols-1of2"><div class="cols-pad">
 		<p><code>.cols</code> には <code>.unit</code> を併記します。</p>
@@ -120,7 +125,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_3分割"></span><h3>3分割</h3>
+<h3 id="hash_3分割">3分割</h3>
 <div class="cols unit">
 	<div class="cols-col cols-1of3"><div class="cols-pad">
 		<p><code>.cols</code> には <code>.unit</code> を併記します。</p>
@@ -151,7 +156,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_4分割"></span><h3>4分割</h3>
+<h3 id="hash_4分割">4分割</h3>
 <div class="cols unit">
 	<div class="cols-col cols-1of4"><div class="cols-pad">
 		<p><code>.cols</code> には <code>.unit</code> を併記します。</p>
@@ -190,7 +195,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_5分割"></span><h3>5分割</h3>
+<h3 id="hash_5分割">5分割</h3>
 <div class="cols unit">
 	<div class="cols-col cols-1of5"><div class="cols-pad">
 		<p><code>.cols</code> には <code>.unit</code> を併記します。</p>
@@ -240,7 +245,7 @@
 </div>
 
 
-<span id="hash_変則2分割"></span><h3>変則2分割</h3>
+<h3 id="hash_変則2分割">変則2分割</h3>
 <div class="cols unit">
 	<div class="cols-col cols-3of4"><div class="cols-pad">
 		<p><code>.cols</code> には <code>.unit</code> を併記します。</p>
@@ -264,7 +269,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_変則3分割"></span><h3>変則3分割</h3>
+<h3 id="hash_変則3分割">変則3分割</h3>
 <div class="cols unit">
 	<div class="cols-col cols-1of4"><div class="cols-pad">
 		<p><code>.cols</code> には <code>.unit</code> を併記します。</p>
@@ -297,8 +302,8 @@
 
 
 
-<span id="hash_回り込み画像_.float_media"></span><h2>回り込み画像 .float_media</h2>
-<span id="hash_1/2画像右回り込み"></span><h3>1/2画像右回り込み</h3>
+<h2 id="hash_回り込み画像_.float_media">回り込み画像 .float_media</h2>
+<h3 id="hash_1/2画像右回り込み">1/2画像右回り込み</h3>
 <div class="unit float_media">
 	<div class="float_media-r1of2">
 		<div class="float_media-image"><img src="/sample_pages/fess/units/index_files/sampleimage.png" alt="サンプル画像" /></div>
@@ -332,7 +337,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_1/3画像右回り込み"></span><h3>1/3画像右回り込み</h3>
+<h3 id="hash_1/3画像右回り込み">1/3画像右回り込み</h3>
 <div class="unit float_media">
 	<div class="float_media-r1of3">
 		<div class="float_media-image"><img src="/sample_pages/fess/units/index_files/sampleimage.png" alt="サンプル画像" /></div>
@@ -366,7 +371,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_1/4画像右回り込み"></span><h3>1/4画像右回り込み</h3>
+<h3 id="hash_1/4画像右回り込み">1/4画像右回り込み</h3>
 <div class="unit float_media">
 	<div class="float_media-r1of4">
 		<div class="float_media-image"><img src="/sample_pages/fess/units/index_files/sampleimage.png" alt="サンプル画像" /></div>
@@ -400,7 +405,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_1/2画像左回り込み"></span><h3>1/2画像左回り込み</h3>
+<h3 id="hash_1/2画像左回り込み">1/2画像左回り込み</h3>
 <div class="unit float_media">
 	<div class="float_media-l1of2">
 		<div class="float_media-image"><img src="/sample_pages/fess/units/index_files/sampleimage.png" alt="サンプル画像" /></div>
@@ -434,7 +439,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_1/3画像左回り込み"></span><h3>1/3画像左回り込み</h3>
+<h3 id="hash_1/3画像左回り込み">1/3画像左回り込み</h3>
 <div class="unit float_media">
 	<div class="float_media-l1of3">
 		<div class="float_media-image"><img src="/sample_pages/fess/units/index_files/sampleimage.png" alt="サンプル画像" /></div>
@@ -468,7 +473,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_1/4画像左回り込み"></span><h3>1/4画像左回り込み</h3>
+<h3 id="hash_1/4画像左回り込み">1/4画像左回り込み</h3>
 <div class="unit float_media">
 	<div class="float_media-l1of4">
 		<div class="float_media-image"><img src="/sample_pages/fess/units/index_files/sampleimage.png" alt="サンプル画像" /></div>
@@ -503,7 +508,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_本文部分を矩形に保つ"></span><h3>本文部分を矩形に保つ</h3>
+<h3 id="hash_本文部分を矩形に保つ">本文部分を矩形に保つ</h3>
 <div class="unit float_media">
 	<div class="float_media-l1of4">
 		<div class="float_media-image"><img src="/sample_pages/fess/units/index_files/sampleimage.png" alt="サンプル画像" /></div>
@@ -538,7 +543,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_サムネイルリスト_.thumb_list"></span><h2>サムネイルリスト .thumb_list</h2>
+<h2 id="hash_サムネイルリスト_.thumb_list">サムネイルリスト .thumb_list</h2>
 
 <!--
 UTODO: ガイドラインを提示すべき。
@@ -581,7 +586,7 @@ UTODO: ガイドラインを提示すべき。
 
 
 
-<span id="hash_ページャー_.pager"></span><h2>ページャー .pager</h2>
+<h2 id="hash_ページャー_.pager">ページャー .pager</h2>
 <div class="unit pager">
 	<ul>
 		<li class="pager-first"><span>&lt;&lt;最初</span></li>
@@ -619,14 +624,14 @@ UTODO: ガイドラインを提示すべき。
 
 
 
-<span id="hash_フォーム_.form_buttons"></span><h2>フォーム .form_buttons</h2>
+<h2 id="hash_フォーム_.form_buttons">フォーム .form_buttons</h2>
 <p>
 	フォームエレメント系のモジュールは、パーツモジュールとして設計されています。<br />
 	<a href="/sample_pages/fess/parts/">パーツモジュールのページ</a>を参照してください。<br />
 </p>
 
 
-<span id="hash_送信系ボタン"></span><h3>送信系ボタン</h3>
+<h3 id="hash_送信系ボタン">送信系ボタン</h3>
 
 <form action="javascript:alert('送信されました。');" method="post" class="inline">
 <div class="unit form_buttons">
@@ -662,7 +667,7 @@ UTODO: ガイドラインを提示すべき。
 </div><!-- /.unit -->
 </form>
 
-<span id="hash_キャンセルボタン"></span><h3>キャンセルボタン</h3>
+<h3 id="hash_キャンセルボタン">キャンセルボタン</h3>
 
 <form action="javascript:alert('送信されました。');" method="post" class="inline">
 <div class="unit form_buttons">
@@ -681,7 +686,7 @@ UTODO: ガイドラインを提示すべき。
 </form>
 
 
-<span id="hash_エラー通知ボックス_.form_error_box"></span><h2>エラー通知ボックス .form_error_box</h2>
+<h2 id="hash_エラー通知ボックス_.form_error_box">エラー通知ボックス .form_error_box</h2>
 <p>
 	主に、入力エラーを検出したフォーム画面の先頭で、エラー内容をユーザーへ通知する目的で使用することを想定したものです。<br />
 </p>
@@ -769,7 +774,11 @@ UTODO: ガイドラインを提示すべき。
 		</nav>
 
 		<div class="theme-footer__shouldernavi">
-<ul><li><a href="/">ホーム</a></li><li><a href="/sample_pages/help/">ヘルプ</a></li></ul>		</div>
+<ul>
+<li><a href="/">ホーム</a></li>
+<li><a href="/sample_pages/help/">ヘルプ</a></li>
+</ul>
+		</div>
 
 	</div>
 </footer>

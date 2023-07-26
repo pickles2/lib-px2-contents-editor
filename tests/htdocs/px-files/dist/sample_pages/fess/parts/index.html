@@ -32,7 +32,12 @@
 			<a href="/">Pickles 2 Contents Editor</a>		</div>
 		<div class="theme-header__shouldernavi"><ul><li><a href="/sample_pages/help/">ヘルプ</a></li></ul></div>
 
-		<div class="theme-header__globalnavi"><ul><li><a href="/sample_pages/" class="current">サンプルページ1</a></li><li><a href="/sample_pages/page2/">サンプルページ2</a></li><li><a href="/sample_pages/page3/">サンプルページ3</a></li></ul></div>
+		<div class="theme-header__globalnavi"><ul>
+<li><a href="/sample_pages/" class="current">サンプルページ1</a></li>
+<li><a href="/sample_pages/page2/">サンプルページ2</a></li>
+<li><a href="/sample_pages/page3/">サンプルページ3</a></li>
+</ul>
+</div>
 	</div>
 </header>
 <div class="theme-layouts theme-layouts--rnavi">
@@ -107,7 +112,7 @@
 
 
 
-<span id="hash_段落"></span><h2>段落</h2>
+<h2 id="hash_段落">段落</h2>
 
 <p>段落は、<code>p</code>要素を用いて表現します。</p>
 
@@ -117,7 +122,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_見出し"></span><h2>見出し</h2>
+<h2 id="hash_見出し">見出し</h2>
 
 <p>
 	見出しタグ <code>h2</code>～<code>h6</code>要素のデフォルトスタイルは、素の状態で定義されます。デザインによっては、装飾用に<code>span</code>要素等の階層を追加する必要がある場合も想定されますが、学習しやすさのために <q>可能な限り、素のHTMLの構造のままでマークアップできるように設計する</q> コンセプトに従い、素のままのタグとされました。<br />
@@ -137,7 +142,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_文字サイズ"></span><h2>文字サイズ</h2>
+<h2 id="hash_文字サイズ">文字サイズ</h2>
 
 <div class="unit">
 	文字サイズ指定系のクラス同士を入れ子の関係にする(例： <code>.large</code>の中に<code>.small</code> を置くなど)ことはできません。<br />
@@ -161,10 +166,10 @@
 
 
 
-<span id="hash_リンク"></span><h2>リンク</h2>
+<h2 id="hash_リンク">リンク</h2>
 
 
-<span id="hash_通常のインラインリンク"></span><h3>通常のインラインリンク</h3>
+<h3 id="hash_通常のインラインリンク">通常のインラインリンク</h3>
 
 <p><a href="javascript:alert('リンクがクリックされました。');">通常のインラインリンク</a></p>
 <div class="unit">
@@ -172,7 +177,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_アイコン付きリンク_.icon"></span><h3>アイコン付きリンク .icon</h3>
+<h3 id="hash_アイコン付きリンク_.icon">アイコン付きリンク .icon</h3>
 
 <p><a href="javascript:alert('リンクがクリックされました。');" class="icon">アイコン付きリンク</a></p>
 <div class="unit">
@@ -180,7 +185,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_ページ内リンク(下向き)_.down"></span><h3>ページ内リンク(下向き) .down</h3>
+<h3 id="hash_ページ内リンク(下向き)_.down">ページ内リンク(下向き) .down</h3>
 
 <p><a href="javascript:alert('リンクがクリックされました。');" class="down">ページ内リンク(下向き)</a></p>
 <div class="unit">
@@ -188,7 +193,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_ページ内リンク(上向き)_.up"></span><h3>ページ内リンク(上向き) .up</h3>
+<h3 id="hash_ページ内リンク(上向き)_.up">ページ内リンク(上向き) .up</h3>
 
 <p><a href="javascript:alert('リンクがクリックされました。');" class="up">ページ内リンク(上向き)</a></p>
 <div class="unit">
@@ -196,7 +201,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_戻るリンク_.back"></span><h3>戻るリンク .back</h3>
+<h3 id="hash_戻るリンク_.back">戻るリンク .back</h3>
 
 <p><a href="javascript:history.back();" class="back">戻るリンク</a></p>
 <div class="unit">
@@ -205,13 +210,13 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_付加リンクモジュール"></span><h3>付加リンクモジュール</h3>
+<h3 id="hash_付加リンクモジュール">付加リンクモジュール</h3>
 
 <p>リンクモジュールには、任意の付加リンクモジュールを組み合わせて使用することができます。</p>
 <p>付加リンクモジュールは、<code>a</code>要素の内側に<code>span</code>要素を組み込んで使用します。付加リンク単体での使用(=<code>a</code>要素に直接クラスを指定しての使用)はできません。</p>
 <p>次に示す例は、<q>通常のインラインリンク</q> に付加した場合の実装を示しています。</p>
 
-<span id="hash_別ウィンドウリンク_.blank"></span><h4>別ウィンドウリンク .blank</h4>
+<h4 id="hash_別ウィンドウリンク_.blank">別ウィンドウリンク .blank</h4>
 
 <p><a href="javascript:alert('リンクがクリックされました。');" target="_blank"><span class="blank">別ウィンドウリンク</span></a></p>
 <div class="unit">
@@ -220,7 +225,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_ダウンロードリンク_.download"></span><h4>ダウンロードリンク .download</h4>
+<h4 id="hash_ダウンロードリンク_.download">ダウンロードリンク .download</h4>
 
 <p><a href="javascript:alert('リンクがクリックされました。');"><span class="download">ダウンロードリンク</span></a></p>
 <div class="unit">
@@ -228,7 +233,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_PDF_.pdf"></span><h4>PDF .pdf</h4>
+<h4 id="hash_PDF_.pdf">PDF .pdf</h4>
 
 <p><a href="javascript:alert('リンクがクリックされました。');"><span class="pdf">PDFファイル名</span></a></p>
 <div class="unit">
@@ -237,7 +242,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_リンクリスト_.anchor_links"></span><h3>リンクリスト .anchor_links</h3>
+<h3 id="hash_リンクリスト_.anchor_links">リンクリスト .anchor_links</h3>
 <p>
 	リストは、<code>ul</code>要素の代わりに<code>ol</code>要素を使用することもできます。<code>.more_links-heading</code> の要素は削除しても構いません。また、<code>p</code>要素の他に、<code>h2</code>〜<code>h6</code>要素を使用することもできます。<br />
 </p>
@@ -272,7 +277,7 @@
 </textarea></div>
 </div>
 
-<span id="hash_詳細リンクリスト_.more_links"></span><h3>詳細リンクリスト .more_links</h3>
+<h3 id="hash_詳細リンクリスト_.more_links">詳細リンクリスト .more_links</h3>
 <p>
 	詳細リンクリストは、リストのネストはできません。<br />
 </p>
@@ -295,7 +300,7 @@
 </div>
 
 
-<span id="hash_ページトップリンク_.page_top"></span><h3>ページトップリンク .page_top</h3>
+<h3 id="hash_ページトップリンク_.page_top">ページトップリンク .page_top</h3>
 <div class="page_top">
 	<p><a href="#page_top">ページの先頭へ戻る</a></p>
 </div><!-- /.page_top -->
@@ -307,30 +312,30 @@
 </div>
 
 
-<span id="hash_その他のインライン要素"></span><h2>その他のインライン要素</h2>
+<h2 id="hash_その他のインライン要素">その他のインライン要素</h2>
 
-<span id="hash_強調_strong"></span><h3>強調 strong</h3>
+<h3 id="hash_強調_strong">強調 strong</h3>
 <p><strong>この文言は強調表示です。</strong></p>
 <div class="unit">
 	<div class="code"><textarea readonly="readonly">&lt;p&gt;&lt;strong&gt;この文言は強調表示です。&lt;/strong&gt;&lt;/p&gt;
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_強勢_em"></span><h3>強勢 em</h3>
+<h3 id="hash_強勢_em">強勢 em</h3>
 <p>この文言には<em>強勢(アクセント)</em>をついけています。</p>
 <div class="unit">
 	<div class="code"><textarea readonly="readonly">&lt;p&gt;この文言には&lt;em&gt;強勢(アクセント)&lt;/em&gt;をついけています。&lt;/p&gt;
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_エラー表示_.error"></span><h3>エラー表示 .error</h3>
+<h3 id="hash_エラー表示_.error">エラー表示 .error</h3>
 <p><span class="error">この文言はエラー表示です。</span></p>
 <div class="unit">
 	<div class="code"><textarea readonly="readonly">&lt;span class=&quot;error&quot;&gt;{$string}&lt;/span&gt;
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_注釈表示_.notes"></span><h3>注釈表示 .notes</h3>
+<h3 id="hash_注釈表示_.notes">注釈表示 .notes</h3>
 <p><span class="notes">この文言は注釈表示です。</span></p>
 <div class="unit">
 	<div class="code"><textarea readonly="readonly">&lt;p&gt;&lt;span class=&quot;notes&quot;&gt;この文言は注釈表示です。&lt;/span&gt;&lt;/p&gt;
@@ -338,9 +343,9 @@
 </div>
 
 
-<span id="hash_リスト"></span><h2>リスト</h2>
+<h2 id="hash_リスト">リスト</h2>
 
-<span id="hash_通常のリスト"></span><h3>通常のリスト</h3>
+<h3 id="hash_通常のリスト">通常のリスト</h3>
 <p>
 	設計基本方針 「学習しやすさを重視する。可能な限り、素のHTMLの構造のままでマークアップできるように設計する。」 に従って、通常のリストには、クラス名が与えられていません。<br />
 </p>
@@ -367,7 +372,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_注釈リスト_ul.notes"></span><h3>注釈リスト ul.notes</h3>
+<h3 id="hash_注釈リスト_ul.notes">注釈リスト ul.notes</h3>
 
 <ul class="notes">
 	<li class="notes-li">※リスト内容</li>
@@ -390,7 +395,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_リストマークがないリスト_ul.nomark"></span><h3>リストマークがないリスト ul.nomark</h3>
+<h3 id="hash_リストマークがないリスト_ul.nomark">リストマークがないリスト ul.nomark</h3>
 <ul class="nomark">
 	<li class="nomark-li">リスト内容</li>
 	<li class="nomark-li">リスト内容</li>
@@ -412,7 +417,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_水平並びリスト_ul.horizontal"></span><h3>水平並びリスト ul.horizontal</h3>
+<h3 id="hash_水平並びリスト_ul.horizontal">水平並びリスト ul.horizontal</h3>
 <p>
 	水平並びリストは、<code>ul</code>要素によるリスト構造を水平方向に横並びにレイアウトします。リストの階層は1階層まで可能で、ネストすることはできません。<br />
 </p>
@@ -435,7 +440,7 @@
 
 
 
-<span id="hash_数字リスト"></span><h2>数字リスト</h2>
+<h2 id="hash_数字リスト">数字リスト</h2>
 
 <ol>
 	<li>リスト内容</li>
@@ -461,9 +466,9 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_定義・説明リスト"></span><h2>定義・説明リスト</h2>
+<h2 id="hash_定義・説明リスト">定義・説明リスト</h2>
 
-<span id="hash_通常の定義・説明リスト"></span><h3>通常の定義・説明リスト</h3>
+<h3 id="hash_通常の定義・説明リスト">通常の定義・説明リスト</h3>
 
 <dl>
 	<dt>定義語句</dt>
@@ -486,7 +491,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_注釈定義・説明リスト_dl.notes"></span><h3>注釈定義・説明リスト dl.notes</h3>
+<h3 id="hash_注釈定義・説明リスト_dl.notes">注釈定義・説明リスト dl.notes</h3>
 
 <dl class="notes">
 	<dt class="notes-dt">※1 語句</dt>
@@ -517,7 +522,7 @@
 
 
 
-<span id="hash_日付入りリスト_.date_list"></span><h2>日付入りリスト .date_list</h2>
+<h2 id="hash_日付入りリスト_.date_list">日付入りリスト .date_list</h2>
 <p>
 	日付を書く<code>th</code>要素と、内容を書く<code>td</code>要素は必須の要素です。フラグを表示する<code>td.date_list-flag</code>要素の要・不要や、フラグの種類、記述フォーマットについては、プロジェクトによって独自に設計する必要があります。<br />
 </p>
@@ -588,7 +593,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_罫線"></span><h2>罫線</h2>
+<h2 id="hash_罫線">罫線</h2>
 
 <hr />
 
@@ -597,7 +602,7 @@
 </textarea></div>
 </div><!-- /.unit -->
 
-<span id="hash_テーブル_table.def"></span><h2>テーブル table.def</h2>
+<h2 id="hash_テーブル_table.def">テーブル table.def</h2>
 
 <p>
 	学習しやすさのために <q>可能な限り、素のHTMLの構造のままでマークアップできるように設計する</q> コンセプトに従うならば、本来はクラス名なしの素のHTMLがデフォルトのテーブルスタイルになるべきです。しかし、テーブルに限っては、素のデザインにはボーダーが表示されず、一見して表だと分かるスタイルは適用されません。これをデフォルトとしてボーダーをつけるように変更するのは混乱を招く元となるおそれがあるので、例外的に、デフォルトスタイルにクラス名 <code>.def</code> を定義しています。<br />
@@ -670,7 +675,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_画像置換_.imgrep"></span><h2>画像置換 .imgrep</h2>
+<h2 id="hash_画像置換_.imgrep">画像置換 .imgrep</h2>
 <p>
 	<code>.imgrep</code> には <code>width</code> および <code>height</code> を、<code>.imgrep-panel</code> には <code>background-image</code> 、必要に応じて <code>background-position</code> を上書きして使用します。<br />
 </p>
@@ -689,7 +694,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_メディア別パーツ出し分け"></span><h2>メディア別パーツ出し分け</h2>
+<h2 id="hash_メディア別パーツ出し分け">メディア別パーツ出し分け</h2>
 
 <div class="unit">
 <table class="def" style="width:100%;">
@@ -712,7 +717,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_カレント制御_.current"></span><h2>カレント制御 .current</h2>
+<h2 id="hash_カレント制御_.current">カレント制御 .current</h2>
 
 <p>
 	カレントページを示す要素に適用します。通常は <code>a</code>要素 に対して適用しますが、場合によっては <code>li</code>要素などにも使用する場合にも、同じクラス名を使用します。<br />
@@ -728,9 +733,9 @@
 
 
 
-<span id="hash_ソースコード_.code"></span><h2>ソースコード .code</h2>
+<h2 id="hash_ソースコード_.code">ソースコード .code</h2>
 
-<span id="hash_コピペ用ソースコード"></span><h3>コピペ用ソースコード</h3>
+<h3 id="hash_コピペ用ソースコード">コピペ用ソースコード</h3>
 <div class="unit">
 	<div class="code"><textarea readonly="readonly">&lt;h2&gt;ああああ&lt;/h2&gt;
 </textarea></div>
@@ -746,7 +751,7 @@
 
 
 
-<span id="hash_見てるだけ用ソースコード"></span><h3>見てるだけ用ソースコード</h3>
+<h3 id="hash_見てるだけ用ソースコード">見てるだけ用ソースコード</h3>
 <div class="unit">
 	<div class="code"><pre><code>&lt;h2&gt;ああああ&lt;/h2&gt;
 </code></pre></div>
@@ -761,10 +766,10 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_フォーム"></span><h2>フォーム</h2>
+<h2 id="hash_フォーム">フォーム</h2>
 
 <form action="javascript:alert('フォームが送信されました。');" method="post" class="inline">
-<span id="hash_フォームテーブル_.form_elements"></span><h3>フォームテーブル .form_elements</h3>
+<h3 id="hash_フォームテーブル_.form_elements">フォームテーブル .form_elements</h3>
 <div class="unit">
 <table class="form_elements">
 	<thead>
@@ -867,7 +872,7 @@
 
 
 
-<span id="hash_エラー表示"></span><h3>エラー表示</h3>
+<h3 id="hash_エラー表示">エラー表示</h3>
 
 <div class="unit">
 <table class="form_elements">
@@ -924,7 +929,7 @@
 </div><!-- /.unit -->
 
 
-<span id="hash_必須項目_.must"></span><h3>必須項目 .must</h3>
+<h3 id="hash_必須項目_.must">必須項目 .must</h3>
 <div class="unit">
 <table class="form_elements">
 	<thead>
@@ -952,16 +957,16 @@
 </div>
 
 
-<span id="hash_送信系ボタン"></span><h3>送信系ボタン</h3>
+<h3 id="hash_送信系ボタン">送信系ボタン</h3>
 <p>
 	送信系ボタンは、ユニットモジュールとして設計されています。<br />
 	<a href="/sample_pages/fess/units/">ユニットモジュールのページ</a>を参照してください。<br />
 </p>
 
 
-<span id="hash_フォーム要素"></span><h3>フォーム要素</h3>
+<h3 id="hash_フォーム要素">フォーム要素</h3>
 
-<span id="hash_テキスト入力"></span><h4>テキスト入力</h4>
+<h4 id="hash_テキスト入力">テキスト入力</h4>
 <div class="unit">
 	<input type="text" name="" value="" />
 </div><!-- /.unit -->
@@ -970,7 +975,7 @@
 </textarea></div>
 </div>
 
-<span id="hash_テキスト入力(複数行)"></span><h4>テキスト入力(複数行)</h4>
+<h4 id="hash_テキスト入力(複数行)">テキスト入力(複数行)</h4>
 <div class="unit">
 	<textarea name=""></textarea>
 </div><!-- /.unit -->
@@ -979,7 +984,7 @@
 </textarea></div>
 </div>
 
-<span id="hash_パスワード入力"></span><h4>パスワード入力</h4>
+<h4 id="hash_パスワード入力">パスワード入力</h4>
 <div class="unit">
 	<input type="password" name="" value="" />
 </div><!-- /.unit -->
@@ -988,7 +993,7 @@
 </textarea></div>
 </div>
 
-<span id="hash_プルダウン"></span><h4>プルダウン</h4>
+<h4 id="hash_プルダウン">プルダウン</h4>
 <div class="unit">
 	<select name="">
 		<option value="">選択してください</option>
@@ -1007,7 +1012,7 @@
 </textarea></div>
 </div>
 
-<span id="hash_ラジオボタン"></span><h4>ラジオボタン</h4>
+<h4 id="hash_ラジオボタン">ラジオボタン</h4>
 <div class="unit">
 	<ul class="nomark">
 		<li class="nomark-li"><label><input type="radio" name="radio1" value="" checked="checked" /> 選択肢1</label></li>
@@ -1020,7 +1025,7 @@
 </textarea></div>
 </div>
 
-<span id="hash_チェックボックス"></span><h4>チェックボックス</h4>
+<h4 id="hash_チェックボックス">チェックボックス</h4>
 <div class="unit">
 	<ul class="nomark">
 		<li class="nomark-li"><label><input type="checkbox" name="" value="" checked="checked" /> 選択肢1</label></li>
@@ -1034,7 +1039,7 @@
 </div>
 
 
-<span id="hash_数値入力"></span><h4>数値入力</h4>
+<h4 id="hash_数値入力">数値入力</h4>
 <div class="unit">
 	<input type="number" name="" value="" />
 </div><!-- /.unit -->
@@ -1044,7 +1049,7 @@
 </div>
 
 
-<span id="hash_日付入力"></span><h4>日付入力</h4>
+<h4 id="hash_日付入力">日付入力</h4>
 <div class="unit">
 	<input type="date" name="" value="" />
 </div><!-- /.unit -->
@@ -1054,7 +1059,7 @@
 </div>
 
 
-<span id="hash_日時(ローカルタイム)入力"></span><h4>日時(ローカルタイム)入力</h4>
+<h4 id="hash_日時(ローカルタイム)入力">日時(ローカルタイム)入力</h4>
 <div class="unit">
 	<input type="datetime-local" name="" value="" />
 </div><!-- /.unit -->
@@ -1064,7 +1069,7 @@
 </div>
 
 
-<span id="hash_時刻入力"></span><h4>時刻入力</h4>
+<h4 id="hash_時刻入力">時刻入力</h4>
 <div class="unit">
 	<input type="time" name="" value="13:00" />
 </div><!-- /.unit -->
@@ -1074,7 +1079,7 @@
 </div>
 
 
-<span id="hash_検索キーワード入力"></span><h4>検索キーワード入力</h4>
+<h4 id="hash_検索キーワード入力">検索キーワード入力</h4>
 <div class="unit">
 	<input type="search" name="" value="" />
 </div><!-- /.unit -->
@@ -1084,7 +1089,7 @@
 </div>
 
 
-<span id="hash_電話番号入力"></span><h4>電話番号入力</h4>
+<h4 id="hash_電話番号入力">電話番号入力</h4>
 <div class="unit">
 	<input type="tel" name="" value="" />
 </div><!-- /.unit -->
@@ -1094,7 +1099,7 @@
 </div>
 
 
-<span id="hash_URL入力"></span><h4>URL入力</h4>
+<h4 id="hash_URL入力">URL入力</h4>
 <div class="unit">
 	<input type="url" name="" value="" />
 </div><!-- /.unit -->
@@ -1104,7 +1109,7 @@
 </div>
 
 
-<span id="hash_メールアドレス入力"></span><h4>メールアドレス入力</h4>
+<h4 id="hash_メールアドレス入力">メールアドレス入力</h4>
 <div class="unit">
 	<input type="email" name="" value="" />
 </div><!-- /.unit -->
@@ -1114,7 +1119,7 @@
 </div>
 
 
-<span id="hash_レンジ入力"></span><h4>レンジ入力</h4>
+<h4 id="hash_レンジ入力">レンジ入力</h4>
 <div class="unit">
 	<input type="range" name="" value="" />
 </div><!-- /.unit -->
@@ -1124,7 +1129,7 @@
 </div>
 
 
-<span id="hash_色入力"></span><h4>色入力</h4>
+<h4 id="hash_色入力">色入力</h4>
 <div class="unit">
 	<input type="color" name="" value="" />
 </div><!-- /.unit -->
@@ -1134,7 +1139,7 @@
 </div>
 
 
-<span id="hash_ボタン"></span><h4>ボタン</h4>
+<h4 id="hash_ボタン">ボタン</h4>
 <div class="unit">
 	<button onclick="alert('ボタンをクリックしました。');return false;">ボタン (button要素)</button>
 	<input type="button" value="ボタン (input要素)" onclick="alert('ボタンをクリックしました。');return false;" />
@@ -1217,7 +1222,11 @@
 		</nav>
 
 		<div class="theme-footer__shouldernavi">
-<ul><li><a href="/">ホーム</a></li><li><a href="/sample_pages/help/">ヘルプ</a></li></ul>		</div>
+<ul>
+<li><a href="/">ホーム</a></li>
+<li><a href="/sample_pages/help/">ヘルプ</a></li>
+</ul>
+		</div>
 
 	</div>
 </footer>

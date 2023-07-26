@@ -2,7 +2,7 @@
 	var $ = require('jquery');
 	var $iframeWindow = $(window.document);
 
-	var scriptElement = document.querySelector('[data-broccoli-receive-message]');//broccoliの仕様に便乗する都合上、この属性名はbroccoliに従うことになる。
+	var scriptElement = document.querySelector('[data-broccoli-receive-message]'); // broccoliの仕様に便乗する都合上、この属性名はbroccoliに従うことになる。
 	if(scriptElement){
 		scriptElement.parentNode.removeChild(scriptElement);
 	}
@@ -75,28 +75,32 @@
 	});
 
 	$iframeWindow.on("click", "a", function(e) {
-		e.stopPropagation();
-		e.preventDefault();
 		var data = {};
 		var $this = $(this);
 		data.url = $this.prop('href');
 		data.tagName = this.tagName.toLowerCase();
 		data.href = $this.attr('href');
 		data.target = $this.attr('target');
-		callbackMessage( 'onClickContentsLink', data );
-		return false;
+		if( !data.href.match(/^\#/) ){
+			e.stopPropagation();
+			e.preventDefault();
+			callbackMessage( 'onClickContentsLink', data );
+			return false;
+		}
 	});
-	$iframeWindow.find('form').on("submit", function(e) {
-		e.stopPropagation();
-		e.preventDefault();
+	$iframeWindow.on("submit", "form", function(e) {
 		var data = {};
 		var $this = $(this);
 		data.url = $this.prop('action');
 		data.tagName = this.tagName.toLowerCase();
 		data.action = $this.attr('action');
 		data.target = $this.attr('target');
-		callbackMessage( 'onClickContentsLink', data );
-		return false;
+		if( !data.action.match(/^\#/) ){
+			e.stopPropagation();
+			e.preventDefault();
+			callbackMessage( 'onClickContentsLink', data );
+			return false;
+		}
 	});
 
 })();

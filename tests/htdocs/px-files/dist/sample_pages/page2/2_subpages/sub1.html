@@ -32,7 +32,12 @@
 			<a href="/">Pickles 2 Contents Editor</a>		</div>
 		<div class="theme-header__shouldernavi"><ul><li><a href="/sample_pages/help/">ヘルプ</a></li></ul></div>
 
-		<div class="theme-header__globalnavi"><ul><li><a href="/sample_pages/">サンプルページ1</a></li><li><a href="/sample_pages/page2/" class="current">サンプルページ2</a></li><li><a href="/sample_pages/page3/">サンプルページ3</a></li></ul></div>
+		<div class="theme-header__globalnavi"><ul>
+<li><a href="/sample_pages/">サンプルページ1</a></li>
+<li><a href="/sample_pages/page2/" class="current">サンプルページ2</a></li>
+<li><a href="/sample_pages/page3/">サンプルページ3</a></li>
+</ul>
+</div>
 	</div>
 </header>
 <div class="theme-layouts theme-layouts--rnavi">
@@ -44,16 +49,38 @@
 <div class="contents">
 <!-- == autoindex == -->
 <div style="margin:2em 5%; border:1px solid #bbb; padding:1em; background:rgba(124, 124, 124, 0.05); border-radius:5px;">
-<div style="margin:0; padding:0; text-align:center; font-weight:bold;">INDEX</div><ul style="margin:0; padding:0 0 0 2em;"><li style="list-style-type:disc; display:list-item;"><a href="#hash_共通コンテンツファイルのサンプル">共通コンテンツファイルのサンプル</a></li></ul>
+<div style="margin:0; padding:0; text-align:center; font-weight:bold;">INDEX</div><ul style="margin:0; padding:0 0 0 2em;"><li style="list-style-type:disc; display:list-item;"><a href="#hash_共通コンテンツファイルのサンプル">共通コンテンツファイルのサンプル</a></li>
+<li style="list-style-type:disc; display:list-item;"><a href="#hash__cont-dmy-anchor">#cont-dmy-anchor</a></li>
+<li style="list-style-type:disc; display:list-item;"><a href="#hash_テスト見出し">テスト見出し</a></li></ul>
 </div>
 <!-- / == autoindex == -->
 
 
-<span id="hash_共通コンテンツファイルのサンプル"></span><h2>共通コンテンツファイルのサンプル</h2>
+<h2 id="hash_共通コンテンツファイルのサンプル">共通コンテンツファイルのサンプル</h2>
 
 <p>物理パスのディレクトリ階層が異なる複数のページ間で、共通のコンテンツファイルを共有するサンプルです。</p>
 
 <p style="text-align:center;"><img src="/sample_pages/page2/2_files/coffee.jpg" alt="Coffee" /></p>
+
+<ul>
+<li><a href="https://pickles2.com/">Pickles 2</a></li>
+<li><a href="/">Toppage</a></li>
+<li><a href="#cont-dmy-anchor">Anchor</a></li>
+</ul>
+
+<form action="https://pickles2.com/">
+<button class="px2-btn px2-btn--primary">Submit form</button>
+</form>
+
+<div style="height: 200vh;"></div>
+
+<h2 id="hash__cont-dmy-anchor">#cont-dmy-anchor</h2>
+
+<div id="cont-dmy-anchor"></div>
+
+<h2 id="hash_テスト見出し">テスト見出し</h2>
+
+<p>これはアンカースクロールのテスト用に用意されたアンカー見出しブロックです。</p>
 </div>
 		</div>
 		<div class="theme-layouts__rnavi">
@@ -111,7 +138,11 @@
 		</nav>
 
 		<div class="theme-footer__shouldernavi">
-<ul><li><a href="/">ホーム</a></li><li><a href="/sample_pages/help/">ヘルプ</a></li></ul>		</div>
+<ul>
+<li><a href="/">ホーム</a></li>
+<li><a href="/sample_pages/help/">ヘルプ</a></li>
+</ul>
+		</div>
 
 	</div>
 </footer>
