@@ -54,16 +54,6 @@ mix
 	})
 	.copyDirectory('node_modules/bootstrap-icons/font/fonts', 'dist/fonts')
 
-	// .min files
-	.copy('dist/pickles2-contents-editor.js', 'dist/pickles2-contents-editor.min.js')
-	.copy('dist/pickles2-preview-contents.js', 'dist/pickles2-preview-contents.min.js')
-	.copy('dist/pickles2-contents-editor.css', 'dist/pickles2-contents-editor.min.css')
-
-	// --------------------------------------
-	// DevScripts
-	.js('tests/app/client_php/index_files/contents.src.js', 'tests/app/client_php/index_files/contents.js')
-	.js('tests/app/client/index_files/contents.src.js', 'tests/app/client/index_files/contents.js')
-
 	// --------------------------------------
 	// Static Frontend Libraries
 	.copyDirectory('src/editor/broccoli/canvas.pass.html', 'dist/editor/broccoli/canvas.pass.html')

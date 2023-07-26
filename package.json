@@ -1,17 +1,13 @@
 {
   "private": true,
   "scripts": {
-    "start": "node ./tests/app/server/server.js;",
-    "up": "node ./tests/app/server/server.js;",
-    "preview": "open \"http://127.0.0.1:8080/\"",
     "dev": "npm run development",
     "development": "mix",
     "watch": "mix watch",
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "hot": "mix watch --hot",
     "prod": "npm run production",
-    "production": "mix --production",
-    "test": "gulp; mocha --ui tdd ./tests/"
+    "production": "mix --production"
   },
   "author": "Tomoya Koyanagi",
   "license": "MIT",
