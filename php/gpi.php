@@ -71,6 +71,10 @@ class gpi{
 
 				$bootup['current_page_info'] = $this->current_page_info;
 
+				// コンテンツテンプレート
+				$cTpl = new fncs\contentsTemplate( $this->px2ce );
+				$bootup['contentsTemplates'] = $cTpl->get_list();
+
 				return $bootup;
 
 			case "getConfig":

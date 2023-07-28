@@ -15,7 +15,6 @@
     "broccoli-field-table": "^0.1.0",
     "dateformat": "^3.0.3",
     "desktop-utils": "^0.1.2",
-    "ejs": "^2.6.2",
     "es6-promise": "^3.1.2",
     "fs-extra": "^0.26.6",
     "iterate79": "^0.1.0",

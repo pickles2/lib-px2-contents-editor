@@ -7,8 +7,6 @@ module.exports = function(px2ce){
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	var ejs = require('ejs');
-
 	this.init = function( editorOption, callback ){
 		callback = callback || function(){};
 
@@ -20,7 +18,7 @@ module.exports = function(px2ce){
 					+ '<div class="pickles2-contents-editor__notExists">'
 						+ '<form action="javascript:;" method="get">'
 							+ $('<p class="pickles2-contents-editor__notExists__title">').text(current_page_info ? current_page_info.title : page_path).prop("outerHTML")
-							+ (current_page_info ? '<p>コンテンツファイルが存在しません。</p>' : '<p>このパスには該当するページが定義されていませんが、先行してコンテンツの制作を始めることができます。</p>')
+							+ (current_page_info ? '<p>コンテンツファイルが未作成です。</p>' : '<p>このパスには該当するページが定義されていませんが、先行してコンテンツの制作を始めることができます。</p>')
 							+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
 							+ '<ul>'
 								+ '<li><label><input type="radio" name="editor-mode" value="html.gui" checked="checked" /> '+px2ce.lb.get('ui_label.blockeditor')+'</label></li>'
@@ -37,9 +35,6 @@ module.exports = function(px2ce){
 					+ '</div>'
 				+ '</div>'
 			;
-
-			// Just one template
-			fin = ejs.render(fin, {'basename': utils79.basename(page_path)}, {delimiter: '%'});
 
 			return fin;
 		})());

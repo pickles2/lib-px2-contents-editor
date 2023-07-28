@@ -17,6 +17,9 @@ class main {
 	/** Filesystem Utility */
 	private $fs;
 
+	/** langbank */
+	private $lb;
+
 	/**
 	 * 編集対象のモード
 	 * コンテンツ以外にも対応範囲を拡大
@@ -71,7 +74,10 @@ class main {
 	 */
 	public function __construct( $px = null ){
 		$this->px = $px;
-		$this->fs = new \tomk79\filesystem();
+		$this->fs = $px->fs();
+
+		$this->lb = new \tomk79\LangBank(__DIR__.'/../data/language.csv');
+		$this->lb->setLang( 'ja' );
 	}
 
 	/**
@@ -156,6 +162,13 @@ class main {
 	 */
 	public function fs(){
 		return $this->fs;
+	}
+
+	/**
+	 * $lb
+	 */
+	public function lb(){
+		return $this->lb;
 	}
 
 	/**

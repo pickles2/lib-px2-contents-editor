@@ -7,8 +7,6 @@ module.exports = function(px2ce){
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
 
-	var ejs = require('ejs');
-
 	var $toolbar;
 	var $btns;
 	var options;
