@@ -13,6 +13,7 @@ module.exports = function(px2ce){
 		$canvas.html((function(){
 
 			var current_page_info = px2ce.getBootupInfomations().current_page_info;
+			var contentsTemplates = px2ce.getBootupInfomations().contentsTemplates;
 			var fin = ''
 				+ '<div class="container">'
 					+ '<div class="pickles2-contents-editor__notExists">'
@@ -21,9 +22,13 @@ module.exports = function(px2ce){
 							+ (current_page_info ? '<p>コンテンツファイルが未作成です。</p>' : '<p>このパスには該当するページが定義されていませんが、先行してコンテンツの制作を始めることができます。</p>')
 							+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
 							+ '<ul>'
-								+ '<li><label><input type="radio" name="editor-mode" value="html.gui" checked="checked" /> '+px2ce.lb.get('ui_label.blockeditor')+'</label></li>'
-								+ '<li><label><input type="radio" name="editor-mode" value="html" /> '+px2ce.lb.get('ui_label.html')+'</label></li>'
-								+ '<li><label><input type="radio" name="editor-mode" value="md" /> '+px2ce.lb.get('ui_label.markdown')+'</label></li>'
+								+ ((function(){
+									var rtn = '';
+									contentsTemplates.list.forEach(function(row, index){
+										rtn += '<li><label><input type="radio" name="editor-mode" value="'+($('<p>').text(row.id).html())+'" '+(contentsTemplates.default == row.id ? 'checked="checked"' : '')+' /> '+($('<p>').text(row.name).html())+'</label></li>';
+									});
+									return rtn;
+								})())
 							+ '</ul>'
 							+ '<div class="px2-text-align-center">'
 								+ '<div><p><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg" type="submit">'+px2ce.lb.get('ui_label.create_new_contents')+'</button></p></div>'

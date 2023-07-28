@@ -60,6 +60,8 @@ class contentsTemplate{
             array_push( $rtn->list, $templateInfo );
         }
 
+        $rtn->default = $rtn->list[0]->id ?? null; // デフォルトの選択肢
+
         return $rtn;
     }
 
