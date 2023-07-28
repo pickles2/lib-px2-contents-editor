@@ -158,6 +158,13 @@ class main {
 	}
 
 	/**
+	 * $px
+	 */
+	public function px(){
+		return $this->px;
+	}
+
+	/**
 	 * $fs
 	 */
 	public function fs(){
@@ -674,13 +681,9 @@ class main {
 	 * コンテンツファイルを初期化する
 	 */
 	public function init_content_files($editorMode){
-		$data = $this->px2query(
-			$this->page_path.'?PX=px2dthelper.init_content&editor_mode='.urlencode($editorMode),
-			array(
-				"output" => "json"
-			)
-		);
-		return $data;
+		// コンテンツテンプレート
+		$cTpl = new fncs\contentsTemplate( $this );
+		return $cTpl->init_content($this->page_path, $editorMode);
 	}
 
 	/**

@@ -97,7 +97,6 @@ class gpi{
 
 			case "initContentFiles":
 				// コンテンツファイルを初期化する
-				// var_dump($data);
 				$result = $this->px2ce->init_content_files($data['editor_mode']);
 				return $result;
 				break;
