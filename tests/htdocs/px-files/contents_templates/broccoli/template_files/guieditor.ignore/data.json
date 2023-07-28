@@ -1,2 +1,41 @@
 {
+    "bowl": {
+        "main": {
+            "modId": "_sys/root",
+            "fields": {
+                "main": [
+                    {
+                        "modId": "PlainHTMLElements:PlainHTML/MultiText",
+                        "fields": {
+                            "main": {
+                                "src": "これは、コンテンツテンプレートから初期化された新しいコンテンツです。\n",
+                                "editor": "markdown"
+                            }
+                        },
+                        "anchor": "",
+                        "dec": ""
+                    },
+                    {
+                        "modId": "PlainHTMLElements:PlainHTML/image",
+                        "fields": {
+                            "href": {
+                                "src": ""
+                            },
+                            "image_src": {
+                                "resKey": "4f24b2e8022ee9e981723054afa880d7",
+                                "path": "./template_files/resources/sample.jpg",
+                                "resType": "",
+                                "webUrl": ""
+                            },
+                            "alt_text": {
+                                "src": ""
+                            }
+                        },
+                        "anchor": "",
+                        "dec": ""
+                    }
+                ]
+            }
+        }
+    }
 }

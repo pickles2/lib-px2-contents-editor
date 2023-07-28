@@ -47,8 +47,8 @@ class contentsTemplate{
         }
         $ls = $this->px2ce->fs()->ls($this->path_contents_templates_dir);
         $has_dir = false;
-        foreach($ls as $templateId){
-            if( is_dir($this->path_contents_templates_dir.'/'.urlencode($templateId).'/') ){
+        foreach($ls as $template_id){
+            if( is_dir($this->path_contents_templates_dir.'/'.urlencode($template_id).'/') ){
                 $has_dir = true;
                 break;
             }
@@ -75,18 +75,18 @@ class contentsTemplate{
         );
 
         $ls = $this->px2ce->fs()->ls($this->path_contents_templates_dir);
-        foreach($ls as $templateId){
-            $templateInfo = (object) array();
-            $templateInfo->id = $templateId;
-            $templateInfo->name = $templateId;
+        foreach($ls as $template_id){
+            $template_info = (object) array();
+            $template_info->id = $template_id;
+            $template_info->name = $template_id;
 
-            if( is_file( $this->path_contents_templates_dir.'/'.urlencode($templateInfo->id).'/info.json' ) ){
-                $str_json = file_get_contents( $this->path_contents_templates_dir.'/'.urlencode($templateInfo->id).'/info.json' );
+            if( is_file( $this->path_contents_templates_dir.'/'.urlencode($template_info->id).'/info.json' ) ){
+                $str_json = file_get_contents( $this->path_contents_templates_dir.'/'.urlencode($template_info->id).'/info.json' );
                 $json = json_decode($str_json);
-                $templateInfo->name = $json->name;
+                $template_info->name = $json->name;
             }
 
-            array_push( $rtn->list, $templateInfo );
+            array_push( $rtn->list, $template_info );
         }
 
         $rtn->default = $rtn->list[0]->id ?? null; // デフォルトの選択肢
@@ -119,6 +119,51 @@ class contentsTemplate{
     }
 
     /**
+     * コンテンツテンプレートの情報を取得する
+     */
+    private function get_template_info( $template_id ){
+        $rtn = (object) array();
+        if( !is_dir( $this->path_contents_templates_dir.'/'.urlencode($template_id).'/' ) ){
+            return false;
+        }
+
+        $rtn->id = $template_id;
+        if( is_file( $this->path_contents_templates_dir.'/'.urlencode($template_id).'/info.json' ) ){
+            $str_json = file_get_contents( $this->path_contents_templates_dir.'/'.urlencode($template_id).'/info.json' );
+            $json = json_decode($str_json);
+            $rtn->name = $json->name;
+        }
+
+        $rtn->realpath_template = null;
+        $rtn->realpath_template_files = null;
+        $rtn->ext = null;
+
+        $ls = $this->px->fs()->ls( $this->path_contents_templates_dir.'/'.urlencode($template_id).'/' );
+        foreach( $ls as $basename ){
+            if( $basename == 'template.html' ){
+                $rtn->realpath_template = $this->path_contents_templates_dir.'/'.urlencode($template_id).'/'.$basename;
+                $rtn->ext = 'html';
+                break;
+            }elseif( preg_match('/^template\.html\.([a-zA-Z0-9]+)$/', $basename, $matched) ){
+                $rtn->realpath_template = $this->path_contents_templates_dir.'/'.urlencode($template_id).'/'.$basename;
+                $rtn->ext = $matched[1];
+                break;
+            }
+        }
+
+        if( $rtn->ext == 'htm' ){
+            // htm は html に寄せる
+            $rtn->ext = 'html';
+        }
+
+        if( is_dir( $this->path_contents_templates_dir.'/'.urlencode($template_id).'/template_files/' ) ){
+            $rtn->realpath_template_files = $this->path_contents_templates_dir.'/'.urlencode($template_id).'/template_files/';
+        }
+
+        return $rtn;
+    }
+
+    /**
      * コンテンツを初期化する
      */
     public function init_content($page_path, $editor_mode){
@@ -137,8 +182,9 @@ class contentsTemplate{
         // px2dthelper を直接呼び出す
         $px2dthelper = new \tomk79\pickles2\px2dthelper\main( $this->px );
 
-		if(!strlen($editor_mode ?? '')){
-			$editor_mode = 'html';
+        $template_id = $editor_mode;
+		if(!strlen($template_id ?? '')){
+			$template_id = 'html';
 		}
 		$flg_force = false;
 		$page_info = $this->px->site()->get_page_info( $page_path );
@@ -155,6 +201,8 @@ class contentsTemplate{
 			return array(false, 'Contents already exists.');
 		}
 
+        $contents_template_info = $this->get_template_info( $template_id );
+
 		// 一旦削除する
 		if( $this->px->fs()->is_file( $contRoot.'/'.$path_find_exist_content ) ){
 			$this->px->fs()->rm( $contRoot.'/'.$path_find_exist_content );
@@ -167,18 +215,17 @@ class contentsTemplate{
 		$this->px->fs()->mkdir_r( dirname($realpath_content) );
 
 		// コンテンツ本体を作成
-		$extension = $this->px->fs()->get_extension( $realpath_content );
-		if( $editor_mode != 'html.gui' && $editor_mode != $extension ){
-			$realpath_content .= '.'.$editor_mode;
+		$extension = $contents_template_info->ext;
+		if( $extension !== 'html' ){
+			$realpath_content .= '.'.$extension;
 		}
-		$this->px->fs()->save_file( $realpath_content, '' );
+		$this->px->fs()->copy( $contents_template_info->realpath_template, $realpath_content );
 
-		if( $editor_mode == 'html.gui' ){
+		if( strlen($contents_template_info->realpath_template_files ?? '') && is_dir($contents_template_info->realpath_template_files) ){
 			// broccoli-html-editor の data.json を作成
-			$realpath_data_dir = $px2dthelper->get_realpath_data_dir();
-			// var_dump($realpath_data_dir);
-			$this->px->fs()->mkdir_r( $realpath_data_dir );
-			$this->px->fs()->save_file( $realpath_data_dir.'/data.json', '{}' );
+			$realpath_files = $px2dthelper->realpath_files( $page_path );
+			$this->px->fs()->mkdir_r( $realpath_files );
+			$this->px->fs()->copy_r( $contents_template_info->realpath_template_files, $realpath_files );
 
 		}
 
