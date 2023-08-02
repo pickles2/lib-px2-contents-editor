@@ -72,7 +72,8 @@ class gpi{
 				$bootup['current_page_info'] = $this->current_page_info;
 
 				// コンテンツテンプレート
-				$cTpl = new fncs\contentsTemplate( $this->px2ce );
+				$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $this->px2ce->px() );
+				$cTpl = new \tomk79\pickles2\px2dthelper\fncs\contentsTemplate\contentsTemplate( $px2dthelper, $this->px2ce->px() );
 				$bootup['contentsTemplates'] = $cTpl->get_list();
 
 				return $bootup;

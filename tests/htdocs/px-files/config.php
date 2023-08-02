@@ -262,7 +262,7 @@ return call_user_func( function(){
 	$conf->plugins->px2dt->contents_bowl_name_by = 'data-contents-area'; // <- コンテンツエリアのbowl名を指定する属性名
 
 	// コンテンツテンプレートの格納先ディレクトリ
-	$conf->plugins->px2dt->path_contents_templates_dir = __DIR__.'/contents_templates/';
+	$conf->plugins->px2dt->path_contents_templates_dir = __DIR__.'/cont_tpls/';
 
 
 	// -------- PHP Setting --------

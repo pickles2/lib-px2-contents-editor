@@ -681,9 +681,13 @@ class main {
 	 * コンテンツファイルを初期化する
 	 */
 	public function init_content_files($editorMode){
-		// コンテンツテンプレート
-		$cTpl = new fncs\contentsTemplate( $this );
-		return $cTpl->init_content($this->page_path, $editorMode);
+		$data = $this->px2query(
+			$this->page_path.'?PX=px2dthelper.init_content&editor_mode='.urlencode($editorMode),
+			array(
+				"output" => "json"
+			)
+		);
+		return $data;
 	}
 
 	/**
