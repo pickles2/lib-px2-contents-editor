@@ -144,7 +144,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.0 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.0 (2023年8月29日)
 
 - NodeJS版の提供を廃止した。
 - デフォルトエディタ: プレビュー中のリンククリック時の挙動を改善した。
