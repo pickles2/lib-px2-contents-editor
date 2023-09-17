@@ -144,6 +144,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.1 (リリース日未定)
+
+- `$px->authorizer` の権限管理に対応。
+
 ### pickles2/lib-px2-contents-editor v2.2.0 (2023年8月29日)
 
 - NodeJS版の提供を廃止した。

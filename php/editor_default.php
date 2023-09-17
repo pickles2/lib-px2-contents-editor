@@ -69,6 +69,12 @@ class editor_default{
 	 * コンテンツのソースを保存する
 	 */
 	public function saveContentsSrc($codes){
+		$is_authorized_write_file_directly = (
+			is_object($this->px2ce->px()->authorizer)
+				? $this->px2ce->px()->authorizer->is_authorized('write_file_directly')
+				: true
+		);
+		$sanitizer = new sanitizer($this->px2ce);
 
 		$result = array(
 			'result' => true,
@@ -85,13 +91,17 @@ class editor_default{
 
 		// HTMLファイルを保存
 		if( array_key_exists('html', $codes) ){
+			if( !$is_authorized_write_file_directly ){
+				$codes['html'] = $sanitizer->sanitize_contents($codes['html']);
+			}
+
 			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
 			$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-			if( !strlen(''.$codes['css']) ){
+			if( !strlen($codes['css'] ?? '') ){
 				$strLoaderCSS = '';
 			}
-			if( !strlen(''.$codes['js']) ){
+			if( !strlen($codes['js'] ?? '') ){
 				$strLoaderJS = '';
 			}
 
@@ -105,6 +115,10 @@ class editor_default{
 
 		// CSSファイルを保存
 		if( array_key_exists('css', $codes) ){
+			if( !$is_authorized_write_file_directly ){
+				$codes['css'] = $sanitizer->sanitize_contents($codes['css']);
+			}
+
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 			if( !strlen($codes['css']) ){
 				$this->px2ce->fs()->rm( $realpath_resource_dir . '/style.css.scss' );
@@ -115,8 +129,12 @@ class editor_default{
 
 		// JSファイルを保存
 		if( array_key_exists('js', $codes) ){
+			if( !$is_authorized_write_file_directly ){
+				$codes['js'] = $sanitizer->sanitize_contents($codes['js']);
+			}
+
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-			if( !strlen(''.$codes['js']) ){
+			if( !strlen($codes['js']) ){
 				$this->px2ce->fs()->rm( $realpath_resource_dir . '/script.js' );
 			}else{
 				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
@@ -171,6 +189,5 @@ class editor_default{
 		}
 		return $rtn;
 	}
-
 
 }
