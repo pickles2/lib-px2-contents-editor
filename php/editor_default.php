@@ -69,9 +69,9 @@ class editor_default{
 	 * コンテンツのソースを保存する
 	 */
 	public function saveContentsSrc($codes){
-		$is_authorized_write_file_directly = (
+		$is_authorized_server_side_scripting = (
 			is_object($this->px2ce->px()->authorizer)
-				? $this->px2ce->px()->authorizer->is_authorized('write_file_directly')
+				? $this->px2ce->px()->authorizer->is_authorized('server_side_scripting')
 				: true
 		);
 		$sanitizer = new sanitizer($this->px2ce);
@@ -91,7 +91,7 @@ class editor_default{
 
 		// HTMLファイルを保存
 		if( array_key_exists('html', $codes) ){
-			if( !$is_authorized_write_file_directly ){
+			if( !$is_authorized_server_side_scripting ){
 				$codes['html'] = $sanitizer->sanitize_contents($codes['html']);
 			}
 
@@ -115,7 +115,7 @@ class editor_default{
 
 		// CSSファイルを保存
 		if( array_key_exists('css', $codes) ){
-			if( !$is_authorized_write_file_directly ){
+			if( !$is_authorized_server_side_scripting ){
 				$codes['css'] = $sanitizer->sanitize_contents($codes['css']);
 			}
 
@@ -129,7 +129,7 @@ class editor_default{
 
 		// JSファイルを保存
 		if( array_key_exists('js', $codes) ){
-			if( !$is_authorized_write_file_directly ){
+			if( !$is_authorized_server_side_scripting ){
 				$codes['js'] = $sanitizer->sanitize_contents($codes['js']);
 			}
 
