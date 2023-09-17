@@ -27,6 +27,21 @@ class editor_broccoli{
 	 * broccoliBridge
 	 */
 	public function bridge($data){
+		$is_authorized_write_file_directly = (
+			is_object($this->px2ce->px()->authorizer)
+				? $this->px2ce->px()->authorizer->is_authorized('write_file_directly')
+				: true
+		);
+		$sanitizer = new sanitizer($this->px2ce);
+
+		if( $data['forBroccoli']['api'] == 'saveContentsData' ){
+			if( !$is_authorized_write_file_directly ){
+				$tmp_data_json = json_encode($data['forBroccoli']['options']['data'], JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+				$tmp_data_json = $sanitizer->sanitize_contents($tmp_data_json);
+				$data['forBroccoli']['options']['data'] = json_decode($tmp_data_json, true);
+			}
+		}
+
 		$broccoli = $this->px2ce->createBroccoli();
 		$rtn = $broccoli->gpi(
 			$data['forBroccoli']['api'],
