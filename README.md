@@ -144,6 +144,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.2 (リリース日未定)
+
+- テーマレイアウトをBroccoli編集する時、カスタムCSS/JSの読み込みコードが出力されない不具合を修正。
+
 ### pickles2/lib-px2-contents-editor v2.2.1 (2023年9月24日)
 
 - `$px->authorizer` の権限管理に対応。権限がない場合に、編集コードをサニタイズするようになった。

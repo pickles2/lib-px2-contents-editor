@@ -34,6 +34,8 @@ class editor_broccoli{
 		);
 		$sanitizer = new sanitizer($this->px2ce);
 
+		// --------------------------------------
+		// 権限がない場合に、危険なコードを無害化する
 		if( $data['forBroccoli']['api'] == 'saveContentsData' ){
 			if( !$is_authorized_server_side_scripting ){
 				$tmp_data_json = json_encode($data['forBroccoli']['options']['data'], JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
@@ -42,11 +44,46 @@ class editor_broccoli{
 			}
 		}
 
+
+		// --------------------------------------
+		// Broccoliの処理
 		$broccoli = $this->px2ce->createBroccoli();
 		$rtn = $broccoli->gpi(
 			$data['forBroccoli']['api'],
 			$data['forBroccoli']['options']
 		);
+
+
+		// --------------------------------------
+		// カスタムCSS/JS がある場合に、ロードさせる
+		if( $data['forBroccoli']['api'] == 'buildHtml' ){
+			$custom_css_js = new custom_css_js($this->px2ce);
+			$_targetPaths = $custom_css_js->generateTargetFilePath();
+			if( $_targetPaths === false ){
+				return $rtn;
+			}
+
+			$_contentsPath = $_targetPaths['contentsPath'];
+			$realpath_resource_dir = $_targetPaths['realpathFiles'];
+			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
+			$strLoaderJS = $_targetPaths['strLoaderJS'];
+
+			if( !is_file($realpath_resource_dir.'style.css') && !is_file($realpath_resource_dir.'style.css.scss') ){
+				$strLoaderCSS = '';
+			}
+			if( !is_file($realpath_resource_dir.'script.js') ){
+				$strLoaderJS = '';
+			}
+
+			if( strlen($strLoaderCSS.$strLoaderJS) ){
+				if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+					$src_html = $this->px2ce->fs()->read_file($_contentsPath);
+					$src_html = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $src_html );
+					$this->px2ce->fs()->save_file($_contentsPath, $src_html);
+
+				}
+			}
+		}
 		return $rtn;
 	}
 }
