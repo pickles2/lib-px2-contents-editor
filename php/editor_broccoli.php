@@ -56,7 +56,7 @@ class editor_broccoli{
 
 		// --------------------------------------
 		// カスタムCSS/JS がある場合に、ロードさせる
-		if( $data['forBroccoli']['api'] == 'buildHtml' ){
+		if( $data['forBroccoli']['api'] == 'buildHtml' || $data['forBroccoli']['api'] == 'updateContents' ){
 			$custom_css_js = new custom_css_js($this->px2ce);
 			$_targetPaths = $custom_css_js->generateTargetFilePath();
 			if( $_targetPaths === false ){
