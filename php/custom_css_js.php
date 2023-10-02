@@ -64,7 +64,6 @@ class custom_css_js {
 		}
 		$contPath = $this->px2ce->px2query($page_path.'?PX=api.get.path_content', array('output'=>'json'));
 
-		// var_dump($contPath);
 		if( !is_file($rtn['contentsPath']) ){
 			$rtn['contentsPath'] = $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$contPath);
 		}

@@ -78,6 +78,8 @@ class editor_broccoli{
 			if( strlen($strLoaderCSS.$strLoaderJS) ){
 				if( $this->px2ce->get_target_mode() == 'theme_layout' ){
 					$src_html = $this->px2ce->fs()->read_file($_contentsPath);
+					$src_html = str_replace( $strLoaderCSS, '', $src_html );
+					$src_html = str_replace( $strLoaderJS, '', $src_html );
 					$src_html = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $src_html );
 					$this->px2ce->fs()->save_file($_contentsPath, $src_html);
 

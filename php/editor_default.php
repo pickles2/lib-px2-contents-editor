@@ -100,6 +100,9 @@ class editor_default{
 			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
 			$strLoaderJS = $_targetPaths['strLoaderJS'];
 
+			$codes['html'] = str_replace( $strLoaderCSS, '', $codes['html'] );
+			$codes['html'] = str_replace( $strLoaderJS, '', $codes['html'] );
+
 			if( !strlen($codes['css'] ?? '') ){
 				$strLoaderCSS = '';
 			}
