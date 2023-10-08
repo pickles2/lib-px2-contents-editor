@@ -227,9 +227,11 @@ class main {
 			$this->fs->copy_r(__DIR__.'/../dist/', $realpath_dist.'/px2ce/');
 			array_push($rtn->js, 'px2ce/pickles2-contents-editor.js');
 			array_push($rtn->css, 'px2ce/pickles2-contents-editor.css');
+			// array_push($rtn->css, 'px2ce/themes/darkmode.css'); // NOTE: ダークモードのプレビュー用
 		}else{
 			array_push($rtn->js, realpath(__DIR__.'/../dist/pickles2-contents-editor.js'));
 			array_push($rtn->css, realpath(__DIR__.'/../dist/pickles2-contents-editor.css'));
+			// array_push($rtn->css, realpath(__DIR__.'/../dist/themes/darkmode.css')); // NOTE: ダークモードのプレビュー用
 		}
 
 		// broccoli-field-table
