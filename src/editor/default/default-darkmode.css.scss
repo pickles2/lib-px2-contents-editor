@@ -1,0 +1,22 @@
+.pickles2-contents-editor__file-dropper {
+	background-color: #eee4;
+
+	&__droparea-frame {
+		background-color: #eee1;
+		border: 10px dashed #999;
+		color: #999;
+	}
+}
+
+.pickles2-contents-editor__default-image-preview {
+	border: 1px solid #999;
+	background-color: #fff;
+
+	&:focus {
+		background-color: #f5f5f5;
+	}
+
+	&-no-image {
+		color: #aaa;
+	}
+}

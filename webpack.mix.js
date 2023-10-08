@@ -52,6 +52,7 @@ mix
 	.sass('src/pickles2-contents-editor.css.scss', 'dist/pickles2-contents-editor.css').options({
 		processCssUrls: false,
 	})
+	.sass('src/themes/darkmode.css.scss', 'dist/themes/darkmode.css')
 	.copyDirectory('node_modules/bootstrap-icons/font/fonts', 'dist/fonts')
 
 	// --------------------------------------
