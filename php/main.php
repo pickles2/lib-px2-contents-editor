@@ -209,8 +209,8 @@ class main {
 	 */
 	public function get_client_resources($realpath_dist = null, $options = array()){
 		$path_vendor = $this->get_realpath_vendor();
-		$options = $options ?? array();
 		$options = json_decode(json_encode($options));
+		$options = (object) $options;
 		$options->appearance = $options->appearance ?? "auto";
 
 		$rtn = json_decode('{"css": [], "js": []}');
