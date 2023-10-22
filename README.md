@@ -88,6 +88,7 @@ pickles2ContentsEditor.init(
 			'origin': 'http://127.0.0.1:8081'
 		},
 		'lang': 'en', // language
+        'appearance': 'dark', // light, dark, auto(default)
 		'customFields': {
 			// この設定項目は、 broccoli-html-editor に渡されます
 			'custom1': function(broccoli){
@@ -148,6 +149,7 @@ pickles2ContentsEditor.init(
 
 - テーマレイアウトをBroccoli編集する時、カスタムCSS/JSの読み込みコードが出力されない不具合を修正。
 - ダークモード用のスタイルをバンドルした。
+- `appearance` オプションを追加した。
 
 ### pickles2/lib-px2-contents-editor v2.2.1 (2023年9月24日)
 

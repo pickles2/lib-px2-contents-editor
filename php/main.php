@@ -204,10 +204,14 @@ class main {
 	 * 
 	 * @param string $realpath_dist リソースファイルの出力先。
 	 * 省略時は、各ファイルのサーバー内部パスを返す。
+	 * @param array $options オプション
 	 * @return object css および js ファイルの一覧
 	 */
-	public function get_client_resources($realpath_dist = null){
+	public function get_client_resources($realpath_dist = null, $options = array()){
 		$path_vendor = $this->get_realpath_vendor();
+		$options = $options ?? array();
+		$options = json_decode(json_encode($options));
+		$options->appearance = $options->appearance ?? "auto";
 
 		$rtn = json_decode('{"css": [], "js": []}');
 
@@ -227,11 +231,19 @@ class main {
 			$this->fs->copy_r(__DIR__.'/../dist/', $realpath_dist.'/px2ce/');
 			array_push($rtn->js, 'px2ce/pickles2-contents-editor.js');
 			array_push($rtn->css, 'px2ce/pickles2-contents-editor.css');
-			// array_push($rtn->css, 'px2ce/themes/darkmode.css'); // NOTE: ダークモードのプレビュー用
+			switch($options->appearance){
+				case "auto": array_push($rtn->css, 'px2ce/themes/auto.css'); break;
+				case "light": array_push($rtn->css, 'px2ce/themes/lightmode.css'); break;
+				case "dark": array_push($rtn->css, 'px2ce/themes/darkmode.css'); break;
+			}
 		}else{
 			array_push($rtn->js, realpath(__DIR__.'/../dist/pickles2-contents-editor.js'));
 			array_push($rtn->css, realpath(__DIR__.'/../dist/pickles2-contents-editor.css'));
-			// array_push($rtn->css, realpath(__DIR__.'/../dist/themes/darkmode.css')); // NOTE: ダークモードのプレビュー用
+			switch($options->appearance){
+				case "auto": array_push($rtn->css, realpath(__DIR__.'/../dist/themes/auto.css')); break;
+				case "light": array_push($rtn->css, realpath(__DIR__.'/../dist/themes/lightmode.css')); break;
+				case "dark": array_push($rtn->css, realpath(__DIR__.'/../dist/themes/darkmode.css')); break;
+			}
 		}
 
 		// broccoli-field-table

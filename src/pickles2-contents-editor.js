@@ -53,6 +53,7 @@
 			this.options.onMessage = this.options.onMessage || function(message){ alert('onMessage: '+message); };
 			this.options.preview = this.options.preview || {};
 			this.options.lang = this.options.lang || 'en';
+			this.options.appearance = this.options.appearance || 'auto';
 			this.options.clipboard = this.options.clipboard || {};
 			this.options.clipboard.set = this.options.clipboard.set || null;
 			this.options.clipboard.get = this.options.clipboard.get || null;
@@ -168,20 +169,18 @@
 					}
 				]
 			);
-
-
-		} // init()
+		}
 
 		/**
-		* canvas要素を取得する
-		*/
+		 * canvas要素を取得する
+		 */
 		this.getElmCanvas = function(){
 			return $canvas;
 		}
 
 		/**
-		* ブラウザでURLを開く
-		*/
+		 * ブラウザでURLを開く
+		 */
 		this.openUrlInBrowser = function( url ){
 			if( serverConfig.appMode == 'web' ){
 				window.open(url);
@@ -200,8 +199,8 @@
 		}
 
 		/**
-		* リソースフォルダを開く
-		*/
+		 * リソースフォルダを開く
+		 */
 		this.openResourceDir = function(){
 			if( this.options.onOpenFilesDirectory ){
 				this.options.onOpenFilesDirectory();
@@ -368,6 +367,7 @@
 						'customFields': customFields,
 						'droppedFileOperator': droppedFileOperator,
 						'lang': px2ce.options.lang,
+						'appearance': px2ce.options.appearance,
 						'gpiBridge': function(api, options, callback){
 							// GPI(General Purpose Interface) Bridge
 							// broccoliは、バックグラウンドで様々なデータ通信を行います。
@@ -444,8 +444,8 @@
 		}
 
 		/**
-		* gpiBridgeを呼び出す
-		*/
+		 * gpiBridgeを呼び出す
+		 */
 		this.gpiBridge = function(data, callback){
 			return this.options.gpiBridge(data, callback);
 		}
@@ -458,8 +458,8 @@
 		}
 
 		/**
-		* 再描画
-		*/
+		 * 再描画
+		 */
 		this.redraw = function( callback ){
 			callback = callback || function(){};
 			if(editor){
@@ -474,8 +474,8 @@
 		}
 
 		/**
-		* 編集操作を完了する
-		*/
+		 * 編集操作を完了する
+		 */
 		this.finish = function(){
 			this.options.complete();
 		}

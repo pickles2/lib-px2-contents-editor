@@ -2,6 +2,8 @@
     "/dist/pickles2-contents-editor.js": "/dist/pickles2-contents-editor.js",
     "/dist/pickles2-preview-contents.js": "/dist/pickles2-preview-contents.js",
     "/dist/themes/darkmode.css": "/dist/themes/darkmode.css",
+    "/dist/themes/lightmode.css": "/dist/themes/lightmode.css",
+    "/dist/themes/auto.css": "/dist/themes/auto.css",
     "/dist/pickles2-contents-editor.css": "/dist/pickles2-contents-editor.css",
     "/dist/fonts/bootstrap-icons.woff": "/dist/fonts/bootstrap-icons.woff",
     "/dist/fonts/bootstrap-icons.woff2": "/dist/fonts/bootstrap-icons.woff2",

@@ -1,3 +1,4 @@
+@media (prefers-color-scheme: dark) {
 @import "../../node_modules/px2style/dist/themes/darkmode";
 
 // --------------------------------------
@@ -18,3 +19,5 @@
 // --------------------------------------
 // ブロックエディタモード
 @import "../editor/broccoli/broccoli-darkmode.css.scss";
+
+}
