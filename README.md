@@ -145,7 +145,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.2 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.2 (2023年11月13日)
 
 - テーマレイアウトをBroccoli編集する時、カスタムCSS/JSの読み込みコードが出力されない不具合を修正。
 - ダークモード用のスタイルをバンドルした。
