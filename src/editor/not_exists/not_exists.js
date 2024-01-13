@@ -16,24 +16,45 @@ module.exports = function(px2ce){
 				var current_page_info = px2ce.getBootupInfomations().current_page_info;
 				var contentsTemplates = px2ce.getBootupInfomations().contentsTemplates;
 
+				var hasThumb = contentsTemplates.list.some(row => !!row.thumb);
+
 				$canvas.html((function(){
 
 					var fin = ''
 						+ '<div class="container">'
-							+ '<div class="pickles2-contents-editor__notExists">'
+							+ '<div class="pickles2-contents-editor__notExists'+(hasThumb ? ' pickles2-contents-editor__notExists--has-thumb' : '')+'">'
 								+ '<form action="javascript:;" method="get">'
 									+ $('<p class="pickles2-contents-editor__notExists__title">').text(current_page_info ? current_page_info.title : page_path).prop("outerHTML")
 									+ (current_page_info ? '<p>コンテンツファイルが未作成です。</p>' : '<p>このパスには該当するページが定義されていませんが、先行してコンテンツの制作を始めることができます。</p>')
 									+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
-									+ '<ul>'
-										+ ((function(){
-											var rtn = '';
-											contentsTemplates.list.forEach(function(row, index){
-												rtn += '<li><label><input type="radio" name="editor-mode" value="'+($('<p>').text(row.id).html())+'" '+(contentsTemplates.default == row.id ? 'checked="checked"' : '')+' /> '+($('<p>').text(row.name).html())+'</label></li>';
-											});
-											return rtn;
-										})())
-									+ '</ul>'
+									+ '<div class="pickles2-contents-editor__notExists__list">'
+										+ '<ul>'
+											+ ((function(){
+												var rtn = '';
+												contentsTemplates.list.forEach(function(row, index){
+													rtn += '<li>';
+													rtn += '<label>';
+													rtn += '<input type="radio" name="editor-mode" value="'+($('<p>').text(row.id).html())+'" '+(contentsTemplates.default == row.id ? 'checked="checked"' : '')+' /> ';
+													rtn += '<div class="pickles2-contents-editor__notExists__cassette">';
+													if( hasThumb ){
+														if( row.thumb ){
+															rtn += '<div class="pickles2-contents-editor__notExists__thumb">';
+															rtn += '<img src="'+row.thumb+'" alt="" />';
+															rtn += '</div>';
+														}else{
+															rtn += '<div class="pickles2-contents-editor__notExists__thumb pickles2-contents-editor__notExists__thumb--no-image">';
+															rtn += '</div>';
+														}
+													}
+													rtn += '<div class="pickles2-contents-editor__notExists__name">' + ($('<p>').text(row.name).html()) + '</div>';
+													rtn += '</div>';
+													rtn += '</label>';
+													rtn += '</li>';
+												});
+												return rtn;
+											})())
+										+ '</ul>'
+									+ '</div>'
 									+ '<div class="px2-text-align-center">'
 										+ '<div><p><button class="px2-btn px2-btn--primary px2-btn--block px2-btn--lg" type="submit">'+px2ce.lb.get('ui_label.create_new_contents')+'</button></p></div>'
 									+ '</div>'
