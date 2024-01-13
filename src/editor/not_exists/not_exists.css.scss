@@ -76,19 +76,27 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
-		background-color: #ddd2;
+		background-color: #ddd1;
 	}
 	input[type=radio]:checked + .pickles2-contents-editor__notExists__cassette {
 		border: 4px solid #66f;
-		background-color: #ccf;
+		background-color: #ddf;
 		color: #33f;
 	}
 
 	.pickles2-contents-editor__notExists__thumb {
 		width: 280px;
+		min-height: 200px;
 		max-height: 360px;
 		overflow: auto;
 		flex-grow: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #9993;
+		font-weight: bold;
+		font-size: 34px;
+
 		img {
 			display: block;
 			width: 100%;

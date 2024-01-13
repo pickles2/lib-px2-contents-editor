@@ -35,19 +35,29 @@ module.exports = function(px2ce){
 													rtn += '<li>';
 													rtn += '<label>';
 													rtn += '<input type="radio" name="editor-mode" value="'+($('<p>').text(row.id).html())+'" '+(contentsTemplates.default == row.id ? 'checked="checked"' : '')+' /> ';
-													rtn += '<div class="pickles2-contents-editor__notExists__cassette">';
 													if( hasThumb ){
+														rtn += '<div class="pickles2-contents-editor__notExists__cassette">';
 														if( row.thumb ){
 															rtn += '<div class="pickles2-contents-editor__notExists__thumb">';
 															rtn += '<img src="'+row.thumb+'" alt="" />';
 															rtn += '</div>';
 														}else{
 															rtn += '<div class="pickles2-contents-editor__notExists__thumb pickles2-contents-editor__notExists__thumb--no-image">';
+															rtn += (function(){
+																switch(row.type){
+																	case "html.gui": return 'Block Editor';
+																	case "html": return 'HTML';
+																	case "md": return 'Markdown';
+																}
+																return row.type;
+															})();
 															rtn += '</div>';
 														}
+														rtn += '<div class="pickles2-contents-editor__notExists__name">' + ($('<p>').text(row.name).html()) + '</div>';
+														rtn += '</div>';
+													}else{
+														rtn += ($('<p>').text(row.name).html());
 													}
-													rtn += '<div class="pickles2-contents-editor__notExists__name">' + ($('<p>').text(row.name).html()) + '</div>';
-													rtn += '</div>';
 													rtn += '</label>';
 													rtn += '</li>';
 												});
