@@ -39,7 +39,7 @@ module.exports = function(px2ce){
 														rtn += '<div class="pickles2-contents-editor__notExists__cassette">';
 														if( row.thumb ){
 															rtn += '<div class="pickles2-contents-editor__notExists__thumb">';
-															rtn += '<img src="'+row.thumb+'" alt="" />';
+															rtn += '<div class="pickles2-contents-editor__notExists__thumb-inner"><img src="'+row.thumb+'" alt="" /></div>';
 															rtn += '</div>';
 														}else{
 															rtn += '<div class="pickles2-contents-editor__notExists__thumb pickles2-contents-editor__notExists__thumb--no-image">';

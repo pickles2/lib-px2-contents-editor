@@ -2,12 +2,16 @@
 // コンテンツが存在しない
 .pickles2-contents-editor__notExists {
 	border: 1px solid #eee;
-    border-radius: 12px;
+    border-radius: 13px;
     box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
 	background-color: #fff;
-	padding: 20px;
-	margin: 3em auto;
-    max-width: 460px;
+	padding: 30px;
+	margin: 30px auto;
+	box-sizing: border-box;
+    width: 450px;
+    max-width: calc(100% - 40px);
+    max-height: calc(100vh - 40px);
+	overflow: auto;
 
 	label {
 		cursor: pointer;
@@ -43,8 +47,8 @@
 // サムネイルがある場合のレイアウト
 .pickles2-contents-editor__notExists.pickles2-contents-editor__notExists--has-thumb {
 	.pickles2-contents-editor__notExists__list {
-		margin: 1em 0;
-		padding: 10px;
+		margin: 1em -30px;
+		padding: 10px 30px;
 		overflow: auto;
 		ul {
 			margin: 0;
@@ -86,16 +90,32 @@
 
 	.pickles2-contents-editor__notExists__thumb {
 		width: 280px;
+		max-width: calc(100vw - 130px);
 		min-height: 200px;
 		max-height: 360px;
 		overflow: auto;
 		flex-grow: 1;
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		background-color: #9993;
 		font-weight: bold;
 		font-size: 34px;
+		word-break: break-all;
+		box-sizing: border-box;
+
+		&--no-image {
+			padding: 20px;
+		}
+
+		&-inner {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+			overflow: auto;
+		}
 
 		img {
 			display: block;
