@@ -145,7 +145,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.3 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.3 (2024年3月20日)
 
 - コンテンツテンプレートのサムネイル表示に対応した。
 
