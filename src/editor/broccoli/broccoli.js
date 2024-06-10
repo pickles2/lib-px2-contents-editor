@@ -164,15 +164,14 @@ module.exports = function(px2ce){
 					"click": function(){
 						px2style.loading();
 						try{
-							broccoli.selectedInstanceToJsonString(function(jsonStr){
-								if(!jsonStr){
-									alert(px2ce.lb.get('ui_message.select_instance'));
-									px2style.closeLoading();
-									return;
-								}
-								broccoli.insertInstance(broccoli.getSelectedInstance());
+							var instancePath = broccoli.getSelectedInstance();
+							if( typeof(instancePath) !== typeof('') ){
+								alert(px2ce.lb.get('ui_message.select_instance'));
 								px2style.closeLoading();
-							});
+								return;
+							}
+							broccoli.insertInstance(broccoli.getSelectedInstance());
+							px2style.closeLoading();
 						}catch(e){
 							console.error(e);
 							alert('ERROR');
