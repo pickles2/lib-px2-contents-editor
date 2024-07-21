@@ -145,7 +145,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.4 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.4 (2024年7月21日)
 
 - アペンダーを選択した状態で、「挿入」操作をするとエラーが発生する不具合を修正。
 
