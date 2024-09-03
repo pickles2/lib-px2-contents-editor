@@ -125,4 +125,9 @@ module.exports = function(px2ce){
 		return;
 	}
 
+	/**
+	 * 位置合わせ
+	 */
+	this.adjust = this.redraw;
+
 }

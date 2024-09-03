@@ -71,7 +71,7 @@ module.exports = function(px2ce){
 	function toggleInstanceTreeView(){
 		$canvas.toggleClass('pickles2-contents-editor__broccoli-instance-tree-view-opened');
 
-		_this.redraw();
+		_this.adjust();
 	}
 
 	/**
@@ -150,7 +150,7 @@ module.exports = function(px2ce){
 							case 'sp': $elmCanvas.css({"width": 460}); break;
 						}
 					}
-					_this.redraw();
+					_this.adjust();
 				});
 				btns.push({
 					"type": 'element',
@@ -260,7 +260,7 @@ module.exports = function(px2ce){
 					toggleInstanceTreeView();
 				});
 
-				_this.redraw(function(){
+				_this.adjust(function(){
 					rlv();
 				});
 			}); })
@@ -351,7 +351,7 @@ module.exports = function(px2ce){
 
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				_this.redraw(function(){
+				_this.adjust(function(){
 					rlv();
 				});
 			}); })
@@ -583,7 +583,7 @@ module.exports = function(px2ce){
 	}
 
 	/**
-	 * window.resize イベントハンドラ
+	 * 画面を再描画する
 	 */
 	_this.redraw = function( callback ){
 		callback = callback || function(){};
@@ -592,6 +592,28 @@ module.exports = function(px2ce){
 			broccoli.redraw(function(){
 				callback();
 			});
+		}else{
+			callback();
+		}
+		return;
+	}
+
+	/**
+	 * 位置合わせ
+	 */
+	_this.adjust = function( callback ){
+		callback = callback || function(){};
+
+		if(broccoli){
+			if( broccoli.adjust ){
+				broccoli.adjust(function(){
+					callback();
+				});
+			}else{
+				broccoli.redraw(function(){
+					callback();
+				});
+			}
 		}else{
 			callback();
 		}

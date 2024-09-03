@@ -474,6 +474,22 @@
 		}
 
 		/**
+		 * 位置合わせ
+		 */
+		this.adjust = function( callback ){
+			callback = callback || function(){};
+			if(editor){
+				editor.adjust(function(){
+					callback();
+				});
+				return;
+			}else{
+				callback();
+			}
+			return;
+		}
+
+		/**
 		 * 編集操作を完了する
 		 */
 		this.finish = function(){

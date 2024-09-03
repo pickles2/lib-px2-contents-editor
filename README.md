@@ -145,6 +145,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.5 (リリース日未定)
+
+- ブロックエディタで、ウィンドウサイズ変更時の負担を低減した。
+
 ### pickles2/lib-px2-contents-editor v2.2.4 (2024年7月21日)
 
 - アペンダーを選択した状態で、「挿入」操作をするとエラーが発生する不具合を修正。

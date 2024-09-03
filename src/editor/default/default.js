@@ -467,6 +467,11 @@ module.exports = function(px2ce){
 	}
 
 	/**
+	 * 位置合わせ
+	 */
+	this.adjust = this.redraw;
+
+	/**
 	 * キーボードイベントハンドラ
 	 */
 	function setKeyboardEvent(callback){
