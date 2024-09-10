@@ -145,7 +145,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.5 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.5 (2024年9月10日)
 
 - ブロックエディタで、ウィンドウサイズ変更時の負担を低減した。
 
