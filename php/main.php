@@ -77,14 +77,13 @@ class main {
 		$this->fs = $px->fs();
 
 		$this->lb = new \tomk79\LangBank(__DIR__.'/../data/language.csv');
-		$this->lb->setLang( 'ja' );
+		$this->lb->setLang( $px->lang() ?? 'ja' );
 	}
 
 	/**
 	 * Initialize
 	 */
 	public function init( $options ){
-		// var_dump(options);
 		if( !is_array($options) ){
 			$options = array();
 		}
@@ -99,7 +98,6 @@ class main {
 		}
 		if( !array_key_exists('log', $options) || !is_callable( $options['log'] ) ){
 			$options['log'] = function($msg){
-				// var_dump($msg);
 			};
 		}
 		$this->php_command = array(

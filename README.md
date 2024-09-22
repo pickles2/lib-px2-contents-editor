@@ -145,6 +145,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.6 (リリース日未定)
+
+- Pickles Framework の言語設定で初期化するようになった。
+
 ### pickles2/lib-px2-contents-editor v2.2.5 (2024年9月10日)
 
 - ブロックエディタで、ウィンドウサイズ変更時の負担を低減した。
