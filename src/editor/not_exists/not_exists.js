@@ -25,8 +25,8 @@ module.exports = function(px2ce){
 							+ '<div class="pickles2-contents-editor__notExists'+(hasThumb ? ' pickles2-contents-editor__notExists--has-thumb' : '')+'">'
 								+ '<form action="javascript:;" method="get">'
 									+ $('<p class="pickles2-contents-editor__notExists__title">').text(current_page_info ? current_page_info.title : page_path).prop("outerHTML")
-									+ (current_page_info ? '<p>コンテンツファイルが未作成です。</p>' : '<p>このパスには該当するページが定義されていませんが、先行してコンテンツの制作を始めることができます。</p>')
-									+ '<p>次の中からコンテンツの種類を選択し、作成してください。</p>'
+									+ (current_page_info ? `<p>${px2ce.lb.get('page.not_exists.the_content_file_has_not_been_created')}</p>` : `<p>${px2ce.lb.get('page.not_exists.this_path_does_not_define_a_page_but_it_allows_you_to_start_creating_content_ahead_of_time')}</p>`)
+									+ `<p>${px2ce.lb.get('page.not_exists.please_select_one_of_the_following_content_types_and_create_it')}</p>`
 									+ '<div class="pickles2-contents-editor__notExists__list">'
 										+ '<ul>'
 											+ ((function(){
