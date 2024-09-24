@@ -49,14 +49,17 @@
 	.pickles2-contents-editor__notExists__list {
 		margin: 1em -30px;
 		padding: 10px 0;
-		overflow: auto;
+		overflow: hidden;
 		ul {
 			margin: 0;
 			padding: 0 30px;
 			display: flex;
 			flex-direction: row;
-			gap: 10px;
-            width: fit-content;
+            width: 100%;
+            box-sizing: border-box;
+			overflow: hidden;
+			user-select: none;
+
 			li {
 				list-style-type: none;
 				padding: 0;
@@ -71,6 +74,9 @@
 						visibility: none;
 						display: none;
 					}
+				}
+				&:last-child {
+					padding-right: 70px;
 				}
 			}
 		}
