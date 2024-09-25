@@ -150,6 +150,7 @@ pickles2ContentsEditor.init(
 - Pickles Framework の言語設定で初期化するようになった。
 - 一部UIの多言語対応。
 - その他の細かいUI改善と内部コードの修正。
+- コンテンツ編集時、`$px->path_files()` によるリソースの参照は、`server_side_scripting` 権限がないユーザーにも認められるようになった。
 
 ### pickles2/lib-px2-contents-editor v2.2.5 (2024年9月10日)
 

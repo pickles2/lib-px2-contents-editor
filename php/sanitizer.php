@@ -34,6 +34,12 @@ class sanitizer {
 			'pattern' => '/\?\>/',
 			'replace_to' => '? -->',
 		),
+
+		// NOTE: server_side_scripting 権限がなくても許容する記述を除外する
+		array(
+			'pattern' => '/\<\!\-\- (\?\= \$px\-\>h\(\$px\-\>path_files\(\"[a-zA-Z0-9\/\-\.]+\"\)\) \?) \-\-\>/',
+			'replace_to' => '<'.'$1'.'>',
+		),
 	);
 
 	/**
