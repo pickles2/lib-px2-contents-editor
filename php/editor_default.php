@@ -16,11 +16,22 @@ class editor_default{
 	 */
 	private $px2ce;
 
+	private $sanitizer;
+	private $is_authorized_server_side_scripting;
+
+
 	/**
 	 * Constructor
 	 */
 	public function __construct( $px2ce ){
 		$this->px2ce = $px2ce;
+
+		$this->is_authorized_server_side_scripting = (
+			is_object($this->px2ce->px()->authorizer)
+				? $this->px2ce->px()->authorizer->is_authorized('server_side_scripting')
+				: true
+		);
+		$this->sanitizer = new sanitizer($this->px2ce);
 	}
 
 	/**
@@ -70,13 +81,6 @@ class editor_default{
 	 * コンテンツのソースを保存する
 	 */
 	public function saveContentsSrc($codes){
-		$is_authorized_server_side_scripting = (
-			is_object($this->px2ce->px()->authorizer)
-				? $this->px2ce->px()->authorizer->is_authorized('server_side_scripting')
-				: true
-		);
-		$sanitizer = new sanitizer($this->px2ce);
-
 		$result = array(
 			'result' => true,
 			'message' => 'OK'
@@ -93,8 +97,8 @@ class editor_default{
 
 		// HTMLファイルを保存
 		if( array_key_exists('html', $codes) ){
-			if( !$is_authorized_server_side_scripting ){
-				$codes['html'] = $sanitizer->sanitize_contents($codes['html']);
+			if( !$this->is_authorized_server_side_scripting ){
+				$codes['html'] = $this->sanitizer->sanitize_contents($codes['html']);
 			}
 
 			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
@@ -120,8 +124,8 @@ class editor_default{
 
 		// CSSファイルを保存
 		if( array_key_exists('css', $codes) ){
-			if( !$is_authorized_server_side_scripting ){
-				$codes['css'] = $sanitizer->sanitize_contents($codes['css']);
+			if( !$this->is_authorized_server_side_scripting ){
+				$codes['css'] = $this->sanitizer->sanitize_contents($codes['css']);
 			}
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
@@ -134,8 +138,8 @@ class editor_default{
 
 		// JSファイルを保存
 		if( array_key_exists('js', $codes) ){
-			if( !$is_authorized_server_side_scripting ){
-				$codes['js'] = $sanitizer->sanitize_contents($codes['js']);
+			if( !$this->is_authorized_server_side_scripting ){
+				$codes['js'] = $this->sanitizer->sanitize_contents($codes['js']);
 			}
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );

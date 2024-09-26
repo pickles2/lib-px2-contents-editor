@@ -16,30 +16,35 @@ class editor_broccoli{
 	 */
 	private $px2ce;
 
+	private $sanitizer;
+	private $is_authorized_server_side_scripting;
+
 	/**
 	 * Constructor
 	 */
 	public function __construct( $px2ce ){
 		$this->px2ce = $px2ce;
+
+		$this->is_authorized_server_side_scripting = (
+			is_object($this->px2ce->px()->authorizer)
+				? $this->px2ce->px()->authorizer->is_authorized('server_side_scripting')
+				: true
+		);
+
+		$this->sanitizer = new sanitizer($this->px2ce);
 	}
 
 	/**
 	 * broccoliBridge
 	 */
 	public function bridge($data){
-		$is_authorized_server_side_scripting = (
-			is_object($this->px2ce->px()->authorizer)
-				? $this->px2ce->px()->authorizer->is_authorized('server_side_scripting')
-				: true
-		);
-		$sanitizer = new sanitizer($this->px2ce);
 
 		// --------------------------------------
-		// 権限がない場合に、危険なコードを無害化する
+		// 保存時: 権限がない場合に、危険なコードを無害化する
 		if( $data['forBroccoli']['api'] == 'saveContentsData' ){
-			if( !$is_authorized_server_side_scripting ){
+			if( !$this->is_authorized_server_side_scripting ){
 				$tmp_data_json = json_encode($data['forBroccoli']['options']['data'], JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-				$tmp_data_json = $sanitizer->sanitize_contents($tmp_data_json);
+				$tmp_data_json = $this->sanitizer->sanitize_contents($tmp_data_json);
 				$data['forBroccoli']['options']['data'] = json_decode($tmp_data_json, true);
 			}
 		}
