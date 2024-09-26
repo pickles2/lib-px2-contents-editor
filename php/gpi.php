@@ -84,6 +84,41 @@ class gpi{
 					);
 				}
 
+				// 編集権限をチェック
+				$bootup['permission'] = true;
+				$src_check_target = array();
+				switch( $src_check_target ){
+					case '.page_not_exists':
+					case '.not_exists':
+						$bootup['permission'] = false;
+						break;
+					case 'html.gui':
+						$realpath_data_json = $this->px2ce->fs()->get_realpath($this->px2ce->get_realpath_files().'guieditor.ignore/data.json');
+						if( is_file($realpath_data_json) ){
+							$src_check_target['html'] = file_get_contents($realpath_data_json);
+						}
+						break;
+					default:
+						$defaultEditor = new \pickles2\libs\contentsEditor\editor_default($this->px2ce);
+						$src_check_target = $defaultEditor->getContentsSrc();
+						break;
+				}
+
+				$is_authorized_server_side_scripting = (
+					is_object($this->px2ce->px()->authorizer)
+						? $this->px2ce->px()->authorizer->is_authorized('server_side_scripting')
+						: true
+				);
+				if(!$is_authorized_server_side_scripting){
+					$sanitizer = new sanitizer($this->px2ce);
+					foreach($src_check_target as $src){
+						if( $sanitizer->is_sanitize_desired($src) ){
+							$bootup['permission'] = false;
+							break;
+						}
+					}
+				}
+
 				return $bootup;
 
 			case "getConfig":

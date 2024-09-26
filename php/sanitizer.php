@@ -59,12 +59,13 @@ class sanitizer {
 		$src_check = $src;
 
 		// NOTE: server_side_scripting 権限がなくても許容する記述を除外する
-		$src_check = preg_replace('/\<(\?\= \$px\-\>h\(\$px\-\>path_files\(\"[a-zA-Z0-9\/\-\_\.]+\"\)\) \?)\>/', '<!-- $1 -->', $src_check);
+		$src_check = preg_replace('/\<(\?\= \$px\-\>h\(\$px\-\>path_files\(\"[a-zA-Z0-9\/\-\_\.]+\"\)\) \?)\>/', '', $src_check);
 
 		$result = false;
 		foreach($this->patterns as $pattern){
 			if( preg_match($pattern['pattern'], $src_check) ){
 				$result = true;
+				break;
 			}
 		}
 		return $result;

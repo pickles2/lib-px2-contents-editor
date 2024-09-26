@@ -51,6 +51,11 @@
 
 
 // --------------------------------------
+// 権限が不足している
+@import "./editor/not_permitted/not_permitted.css.scss";
+
+
+// --------------------------------------
 // コンテンツが存在しない
 @import "./editor/not_exists/not_exists.css.scss";
 

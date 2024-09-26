@@ -1,0 +1,40 @@
+// --------------------------------------
+// 権限が不足している
+.pickles2-contents-editor__notPermitted {
+	border: 1px solid #eee;
+    border-radius: 13px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
+	background-color: #fff;
+	padding: 30px;
+	margin: 30px auto;
+	box-sizing: border-box;
+    width: 690px;
+    max-width: calc(100% - 40px);
+    max-height: calc(100vh - 40px);
+	overflow: auto;
+
+	label {
+		cursor: pointer;
+	}
+
+	&__title {
+		text-align: center;
+		font-weight: bold;
+		font-size: 120%;
+	}
+
+	ul {
+		margin: 1.5em 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		li {
+			list-style-type: none;
+			label {
+				display: block;
+				padding: 5px 10px;
+			}
+		}
+	}
+}

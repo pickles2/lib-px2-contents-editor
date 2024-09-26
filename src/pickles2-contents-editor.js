@@ -124,6 +124,17 @@
 							'editorMode': editorMode,
 							'serverConfig': serverConfig
 						};
+
+						if( !bootupInfomations.permission ){
+							// 権限が不足している場合
+							$canvas.html('<p>権限が不足しています。</p>');
+							editor = new (require('./editor/not_permitted/not_permitted.js'))(_this);
+							editor.init(editorOption, function(){
+								it1.next(data);
+							});
+							return;
+						}
+
 						switch(editorMode){
 							case '.page_not_exists':
 								// ページ自体が存在しない場合
