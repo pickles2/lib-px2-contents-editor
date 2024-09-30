@@ -111,6 +111,10 @@ module.exports = function(px2ce){
 				it.next();
 			},
 			function(it){
+				if( !$('.pickles2-contents-editor__notExists--has-thumb').length ){
+					it.next();
+					return;
+				}
 				const keenSlider = new KeenSlider(
 					$('.pickles2-contents-editor__notExists__list').get(0),
 					{
