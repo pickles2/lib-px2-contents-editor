@@ -8,7 +8,7 @@
 	padding: 30px;
 	margin: 30px auto;
 	box-sizing: border-box;
-    width: 690px;
+    width: 590px;
     max-width: calc(100% - 40px);
     max-height: calc(100vh - 40px);
 	overflow: auto;
@@ -46,6 +46,8 @@
 
 // サムネイルがある場合のレイアウト
 .pickles2-contents-editor__notExists.pickles2-contents-editor__notExists--has-thumb {
+    width: 1024px;
+
 	.pickles2-contents-editor__notExists__list {
 		margin: 1em -30px;
 		padding: 10px 0;
@@ -54,7 +56,9 @@
 			margin: 0;
 			padding: 0 30px;
 			display: flex;
+			gap: 10px;
 			flex-direction: row;
+			flex-wrap: wrap;
             width: 100%;
             box-sizing: border-box;
 			overflow: hidden;
@@ -65,9 +69,19 @@
 				padding: 0;
 				margin: 0;
 				display: flex;
+
+				width: calc(25% - (10px * 3 / 4));
+				@media all and (max-width: 900px) {
+					width: calc(33.3% - (10px * 2 / 3));
+				}
+				@media all and (max-width: 650px) {
+					width: calc(50% - (10px * 1 / 2));
+				}
+
 				label {
 					display: flex;
 					padding: 0;
+					flex-grow: 1;
 
 					input[type=radio] {
 						position: absolute;
@@ -75,19 +89,18 @@
 						display: none;
 					}
 				}
-				&:last-child {
-					padding-right: 70px;
-				}
 			}
 		}
 	}
 	.pickles2-contents-editor__notExists__cassette {
+		flex-grow: 1;
 		border: 4px solid #9994;
 		border-radius: 13px;
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
 		background-color: #ddd1;
+		position: relative;
         transform: scale(0.97);
         transition:
 			transform 0.1s linear,
@@ -95,18 +108,31 @@
 			border-color 0.1s linear,
 			background-color 0.1s linear;
 	}
+
 	input[type=radio]:checked + .pickles2-contents-editor__notExists__cassette {
 		border: 4px solid #66f;
 		background-color: #ddf;
 		color: #33f;
         transform: scale(1);
+		.pickles2-contents-editor__notExists__name {
+			background-color: #fff6;
+		}
 	}
 
 	.pickles2-contents-editor__notExists__thumb {
-		width: 280px;
-		max-width: calc(100vw - 130px);
+		width: 100%;
+
 		min-height: 200px;
-		max-height: 360px;
+		max-height: 240px;
+		@media all and (max-width: 900px) {
+			min-height: 175px;
+			max-height: 200px;
+		}
+		@media all and (max-width: 650px) {
+			min-height: 160px;
+			max-height: 180px;
+		}
+
 		overflow: auto;
 		flex-grow: 1;
 		display: flex;
@@ -115,7 +141,7 @@
 		align-items: center;
 		background-color: #9993;
 		font-weight: bold;
-		font-size: 34px;
+		font-size: 22px;
 		word-break: break-all;
 		box-sizing: border-box;
 
@@ -141,5 +167,12 @@
 	.pickles2-contents-editor__notExists__name {
 		display: block;
 		padding: 0.5em 5px;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		box-sizing: border-box;
+		background-color: #fff6;
+		color: inherit;
 	}
 }

@@ -7,7 +7,6 @@ module.exports = function(px2ce){
 	var utils79 = require('utils79');
 	var $canvas = $(px2ce.getElmCanvas());
 	var page_path = px2ce.page_path;
-	const KeenSlider = require('keen-slider').default;
 
 	this.init = function( editorOption, callback ){
 		callback = callback || function(){};
@@ -108,31 +107,6 @@ module.exports = function(px2ce){
 					})
 				;
 
-				it.next();
-			},
-			function(it){
-				if( !$('.pickles2-contents-editor__notExists--has-thumb').length ){
-					it.next();
-					return;
-				}
-				const keenSlider = new KeenSlider(
-					$('.pickles2-contents-editor__notExists__list').get(0),
-					{
-						loop: false,
-						mode: "free",
-						selector: "li",
-						slides: {
-							origin: "auto",
-							perView: "auto",
-							spacing: 10,
-						},
-						slideChanged: (slide) => {
-						},
-						created: () => {
-						},
-					},
-					[]
-				);
 				it.next();
 			},
 			function(){
