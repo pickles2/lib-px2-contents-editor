@@ -145,7 +145,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.6 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.6 (2024年11月1日)
 
 - Pickles Framework の言語設定で初期化するようになった。
 - 一部UIの多言語対応。
