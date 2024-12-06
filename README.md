@@ -145,6 +145,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.7 (リリース日未定)
+
+- 画像フィールドのプレースホルダ画像を更新した。
+
 ### pickles2/lib-px2-contents-editor v2.2.6 (2024年11月1日)
 
 - Pickles Framework の言語設定で初期化するようになった。
