@@ -539,8 +539,8 @@ module.exports = function(px2ce){
 			var fileSrc = fileInfo.src;
 			var fileMimeType = fileInfo.mimeType;
 			if( !fileInfo || !fileInfo.src || !fileInfo.ext || !fileInfo.size){
-				fileSrc = _imgDummy;
-				fileMimeType = 'image/png';
+				fileSrc = px2ce.getNoimagePlaceholder() || _imgDummy;
+				fileMimeType = 'image/svg+xml';
 			}
 			$imgPreview
 				.attr({

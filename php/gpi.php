@@ -119,6 +119,8 @@ class gpi{
 					}
 				}
 
+				$bootup['noimagePlaceholder'] = $this->px2ce->getNoimagePlaceholder();
+
 				return $bootup;
 
 			case "getConfig":

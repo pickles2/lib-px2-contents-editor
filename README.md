@@ -35,9 +35,10 @@ $px2ce->init(array(
 			// PHPコマンドのパスを表すオブジェクト
 			// または、 文字列で '/path/to/php' とすることも可 (この場合、 php.ini のパスは指定されない)
 			'bin' => '/path/to/php',
-			'ini' => '/path/to/php.ini'
-		)
-	)
+			'ini' => '/path/to/php.ini',
+		),
+	),
+	'noimagePlaceholder' => '/path/to/noimage-placeholder.png',
 ));
 
 if($_GET['client_resources'] ?? null){
@@ -118,7 +119,7 @@ pickles2ContentsEditor.init(
 			},
 			'get': function( type ){
 				// クリップボードからデータを取得する機能を実装してください。
-			}
+			},
 		},
 		'complete': function(){
 			alert('完了しました。');
@@ -132,7 +133,7 @@ pickles2ContentsEditor.init(
 		'onMessage': function( message ){
 			// ユーザーへ知らせるメッセージを表示する
 			console.info('message: '+message);
-		}
+		},
 	},
 	function(){
 		// スタンバイ完了したら呼び出されるコールバックメソッドです。
@@ -147,7 +148,8 @@ pickles2ContentsEditor.init(
 
 ### pickles2/lib-px2-contents-editor v2.2.7 (リリース日未定)
 
-- 画像フィールドのプレースホルダ画像を更新した。
+- デフォルトの画像フィールドのプレースホルダ画像を更新した。
+- `noimagePlaceholder` オプションを追加した。
 
 ### pickles2/lib-px2-contents-editor v2.2.6 (2024年11月1日)
 

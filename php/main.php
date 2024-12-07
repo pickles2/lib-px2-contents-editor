@@ -100,6 +100,8 @@ class main {
 			$options['log'] = function($msg){
 			};
 		}
+		$options['noimagePlaceholder'] = $options['noimagePlaceholder'] ?? null;
+
 		$this->php_command = array(
 			'php'=>'php',
 			'php_ini'=>null,
@@ -489,6 +491,35 @@ class main {
 			exec(escapeshellcmd('explorer '.escapeshellarg($realpath_target)));
 		}
 		return true;
+	}
+
+	/**
+	 * 画像のプレースホルダーを取得する
+	 * @return string プレースホルダ画像のデータURL
+	 */
+	public function getNoimagePlaceholder(){
+		$rtn = null;
+		$noimagePlaceholder = $this->options['noimagePlaceholder'];
+		if( strlen($noimagePlaceholder ?? '') ){
+			if( is_file($noimagePlaceholder) && is_readable($noimagePlaceholder) ){
+				$mimetype = mime_content_type($noimagePlaceholder);
+				if(!$mimetype){
+					$mimetype = 'image/png';
+				}
+				$rtn = 'data:'.$mimetype.';base64,'.base64_encode(file_get_contents( $noimagePlaceholder ));
+			}elseif( preg_match('/^https?\:\/\//', $noimagePlaceholder) ){
+				$rtn = $noimagePlaceholder;
+			}
+		}
+		if( !strlen($rtn ?? '') ){
+			$noimagePlaceholder = __DIR__.'/../data/noimage-placeholder.svg';
+			$mimetype = mime_content_type($noimagePlaceholder);
+			if(!$mimetype){
+				$mimetype = 'image/svg+xml';
+			}
+			$rtn = 'data:'.$mimetype.';base64,'.base64_encode(file_get_contents( $noimagePlaceholder ));
+		}
+		return $rtn;
 	}
 
 	/**
@@ -917,7 +948,8 @@ class main {
 			'log' => function($msg){
 				// エラー発生時にコールされます。
 				// px2ce.log(msg);
-			}
+			},
+			'noimagePlaceholder' => $this->options['noimagePlaceholder'] ?? null,
 		);
 
 		return $broccoliInitializeOptions;
