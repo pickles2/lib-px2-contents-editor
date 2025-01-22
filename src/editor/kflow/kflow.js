@@ -39,19 +39,34 @@ module.exports = function(px2ce){
 					rlv();
 				});
 			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				$canvas.append((function(){
-					var fin = '';
-					fin += '<div class="pickles2-contents-editor__kflow"></div>';
-					return fin;
-				})());
+			.then(() => {
+				return new Promise((resolve, reject) => {
+					$canvas.append((() => {
+						var fin = '';
+						fin += '<div class="pickles2-contents-editor__kflow"></div>';
+						return fin;
+					})());
 
-				const container = $canvas.find('.pickles2-contents-editor__kflow').get(0);
-				kaleflower = new Kaleflower(container, {});
-				kaleflower.load('../kflows/general.kflow');
+					const container = $canvas.find('.pickles2-contents-editor__kflow').get(0);
+					kaleflower = new Kaleflower(container, {});
 
-				rlv();
-			}); })
+					resolve();
+				});
+			})
+			.then(() => {
+				return new Promise((resolve, reject) => {
+					px2ce.gpiBridge(
+						{
+							'api': 'getContentsSrc',
+							'page_path': px2ce.page_path,
+						},
+						function(codes){
+							kaleflower.loadXml(codes.html);
+							resolve();
+						}
+					);
+				});
+			})
 			.then(function(){ return new Promise(function(rlv, rjt){
 				callback();
 			}); })
