@@ -226,6 +226,16 @@ class main {
 			array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/broccoli.css'));
 		}
 
+		// kaleflower
+		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
+			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/kaleflower/dist/', $realpath_dist.'/kaleflower/');
+			array_push($rtn->js, 'kaleflower/kaleflower.js');
+			array_push($rtn->css, 'kaleflower/kaleflower.css');
+		}else{
+			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/kaleflower/dist/kaleflower.js'));
+			array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/kaleflower/dist/kaleflower.css'));
+		}
+
 		// px2ce
 		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
 			$this->fs->copy_r(__DIR__.'/../dist/', $realpath_dist.'/px2ce/');
