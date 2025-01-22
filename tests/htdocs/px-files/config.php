@@ -215,6 +215,14 @@ return call_user_func( function(){
 		$conf->funcs->processor->html ,
 	];
 
+	$conf->funcs->processor->kflow = array(
+		// kflow文法を処理する
+		'pickles2\px2kflow\kflow::processor',
+
+		// html のデフォルトの処理を追加
+		$conf->funcs->processor->html,
+	);
+
 	$conf->funcs->processor->scss = [
 		// SCSS文法を処理する
 		'picklesFramework2\processors\scss\ext::exec' ,

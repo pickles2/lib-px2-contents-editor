@@ -36,6 +36,7 @@
         "php": ">=7.3.0",
         "broccoli-html-editor/broccoli-html-editor": "~1.0",
         "broccoli-html-editor/broccoli-field-table": "~0.3",
+        "broccoli-html-editor/kaleflower": "^0.1",
         "tomk79/langbank": "~0.3"
     },
     "require-dev": {
@@ -49,6 +50,7 @@
         "pickles2/px2-px2dthelper": "~2.0",
         "pickles2/px2-remove-attr": "~2.0",
         "pickles2/px2-sitemapexcel": "~2.0||~2.1",
+        "pickles2/px2-kflow": "~0.1",
         "tomk79/broccoli-module-lp": "~0.1",
         "tomk79/px2-serve": "~0.1.3",
         "phpunit/phpunit": "~9.5",
