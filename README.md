@@ -148,6 +148,8 @@ pickles2ContentsEditor.init(
 
 ### pickles2/lib-px2-contents-editor v2.3.0 (リリース日未定)
 
+- Kaleflowerコンテンツの編集機能を追加した。
+
 ### pickles2/lib-px2-contents-editor v2.2.7 (2024年12月25日)
 
 - デフォルトの画像フィールドのプレースホルダ画像を更新した。

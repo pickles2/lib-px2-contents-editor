@@ -62,4 +62,5 @@ mix
 	// Static Frontend Libraries
 	.copyDirectory('src/editor/broccoli/canvas.pass.html', 'dist/editor/broccoli/canvas.pass.html')
 	.copyDirectory('node_modules/broccoli-field-table/dist', 'dist/libs/broccoli-field-table/dist')
+	.copyDirectory('src/editor/kflow/canvas.pass.html', 'dist/editor/kflow/canvas.pass.html')
 ;

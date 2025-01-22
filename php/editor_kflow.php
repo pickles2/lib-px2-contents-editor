@@ -5,11 +5,11 @@
 namespace pickles2\libs\contentsEditor;
 
 /**
- * Default Editor
+ * Kaleflower Editor
  *
  * @author Tomoya Koyanagi <tomk79@gmail.com>
  */
-class editor_default{
+class editor_kflow{
 
 	/**
 	 * $px2ce

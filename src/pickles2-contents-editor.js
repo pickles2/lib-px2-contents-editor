@@ -163,6 +163,15 @@
 								});
 								break;
 
+							case 'kflow':
+								// ブロックエディタ(kflow)を起動
+								$canvas.html('<p>ブロックエディタ Kaleflower を起動します。</p>');
+								editor = new (require('./editor/kflow/kflow.js'))(_this);
+								editor.init(editorOption, function(){
+									it1.next(data);
+								});
+								break;
+
 							case 'html':
 							case 'md':
 							default:

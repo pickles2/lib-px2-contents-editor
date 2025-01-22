@@ -9,5 +9,6 @@
     "/dist/fonts/bootstrap-icons.woff2": "/dist/fonts/bootstrap-icons.woff2",
     "/dist/editor/broccoli/canvas.pass.html": "/dist/editor/broccoli/canvas.pass.html",
     "/dist/libs/broccoli-field-table/dist/broccoli-field-table.js": "/dist/libs/broccoli-field-table/dist/broccoli-field-table.js",
-    "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js": "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js"
+    "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js": "/dist/libs/broccoli-field-table/dist/broccoli-field-table.min.js",
+    "/dist/editor/kflow/canvas.pass.html": "/dist/editor/kflow/canvas.pass.html"
 }
