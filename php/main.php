@@ -217,7 +217,7 @@ class main {
 
 
 		// broccoli-html-editor
-		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
+		if(is_string($realpath_dist) && is_dir($realpath_dist ?? '')){
 			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-html-editor/client/dist/', $realpath_dist.'/broccoli/');
 			array_push($rtn->js, 'broccoli/broccoli.js');
 			array_push($rtn->css, 'broccoli/broccoli.css');
@@ -227,17 +227,15 @@ class main {
 		}
 
 		// kaleflower
-		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
+		if(is_string($realpath_dist) && is_dir($realpath_dist ?? '')){
 			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/kaleflower/dist/', $realpath_dist.'/kaleflower/');
 			array_push($rtn->js, 'kaleflower/kaleflower.js');
-			array_push($rtn->css, 'kaleflower/kaleflower.css');
 		}else{
 			array_push($rtn->js, realpath($path_vendor.'/broccoli-html-editor/kaleflower/dist/kaleflower.js'));
-			array_push($rtn->css, realpath($path_vendor.'/broccoli-html-editor/kaleflower/dist/kaleflower.css'));
 		}
 
 		// px2ce
-		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
+		if(is_string($realpath_dist) && is_dir($realpath_dist ?? '')){
 			$this->fs->copy_r(__DIR__.'/../dist/', $realpath_dist.'/px2ce/');
 			array_push($rtn->js, 'px2ce/pickles2-contents-editor.js');
 			array_push($rtn->css, 'px2ce/pickles2-contents-editor.css');
@@ -257,7 +255,7 @@ class main {
 		}
 
 		// broccoli-field-table
-		if(is_string($realpath_dist) && is_dir(''.$realpath_dist)){
+		if(is_string($realpath_dist) && is_dir($realpath_dist ?? '')){
 			$this->fs->copy_r($path_vendor.'/broccoli-html-editor/broccoli-field-table/dist/', $realpath_dist.'/broccoli-field-table/');
 			array_push($rtn->js, 'broccoli-field-table/broccoli-field-table.js');
 			array_push($rtn->css, 'broccoli-field-table/broccoli-field-table.css');
@@ -290,7 +288,7 @@ class main {
 						preg_match( '/\.([a-zA-Z0-9]*)$/', $path_client_lib, $matched );
 						$ext = strtolower($matched[1] ?? '');
 
-						if(is_string($realpath_dist) && is_dir(''.$realpath_dist) ){
+						if(is_string($realpath_dist) && is_dir($realpath_dist ?? '') ){
 							if( $confCustomFields->{$fieldName}->frontend->dir ?? null ){
 								if( $ext == 'css' ){
 									array_push($rtn->css, 'custom_fields/'.urlencode($fieldName).'/'.$path_client_lib);
