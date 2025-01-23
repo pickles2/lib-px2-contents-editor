@@ -14,6 +14,42 @@ module.exports = function(px2ce){
 
 	var kaleflower;
 
+	function getCanvasPageUrl(){
+		var rtn = getPreviewUrl();
+		var hash = '';
+		var query = '';
+		if(rtn.match(/^([\s\S]*?)\#([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			hash = RegExp.$2;
+		}
+		if(rtn.match(/^([\s\S]*?)\?([\s\S]*)$/g)){
+			rtn = RegExp.$1;
+			query = RegExp.$2;
+		}
+		var PICKLES2_CONTENTS_EDITOR = (px2ce.target_mode == 'theme_layout' ? 'broccoli.layout' : 'broccoli');
+		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=' + PICKLES2_CONTENTS_EDITOR;
+		rtn += (hash.length ? '#'+hash : '');
+		return rtn;
+	}
+	function getPreviewUrl(){
+		if( px2ce.target_mode == 'theme_layout' ){
+			var page_path = '/index.html';
+			if( pagesByLayout.length ){
+				page_path = pagesByLayout[0].path;
+			}
+			var pathname = px2conf.path_controot + page_path;
+			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
+			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
+			return px2ce.options.preview.origin + pathname;
+		}
+
+		var pathname = px2conf.path_controot + px2ce.page_path;
+		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
+		var rtn = px2ce.options.preview.origin + pathname;
+		return rtn;
+	}
+
 	/**
 	 * 初期化
 	 */
@@ -51,7 +87,12 @@ module.exports = function(px2ce){
 					})());
 
 					const container = $canvas.find('.pickles2-contents-editor__kflow').get(0);
-					kaleflower = new Kaleflower(container, {});
+					kaleflower = new Kaleflower(container, {
+						"urlLayoutViewPage": getCanvasPageUrl(),
+						"scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
+						"contentsAreaSelector": px2conf.plugins.px2dt.contents_area_selector,
+						"contentsContainerNameBy": px2conf.plugins.px2dt.contents_bowl_name_by,
+					});
 
 					resolve();
 				});
