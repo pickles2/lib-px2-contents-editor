@@ -10,22 +10,23 @@ overflow: hidden;
 		</style>
 		<style class="paragraph">margin: 1em 0;</style>
 		<style class="test-div-class-001" width="110px" height="80px">/* div class test */</style>
+		<style class="cont-horizontal" contents-direction="horizontal">gap: 10px;</style>
 	</styles>
 	<contents>
-		<content><div>
+		<content><div class="cont-horizontal">
     <p>kflow main contents sample</p>
     <p>kflow main contents sample</p>
     <p>kflow main contents sample</p>
-<custom-component-001 width="100%" image="{&quot;assetId&quot;:&quot;e6fc4809-2ea8-4278-b1af-e6f67ca75d10&quot;,&quot;upload-file&quot;:&quot;C:\\fakepath\\photo001_thumb.jpg&quot;}"><div/></custom-component-001><custom-component-002/></div>
+</div><custom-component-002/><custom-component-001 width="100%" image="{&quot;assetId&quot;:&quot;e6fc4809-2ea8-4278-b1af-e6f67ca75d10&quot;,&quot;upload-file&quot;:&quot;C:\\fakepath\\photo001_thumb.jpg&quot;}"><div/></custom-component-001>
 <div>
-	<p class="paragraph">
-		<img class="test-image-sample" alt="{&quot;text&quot;:&quot;1つめのaltテキスト&quot;}" image="{&quot;assetId&quot;:&quot;95a0cd90-0468-4f12-806f-4a13a9327a8b&quot;,&quot;upload-file&quot;:&quot;C:\\fakepath\\photo009_thumb.jpg&quot;}"/>
-		<div class="test-div-class-001"/>
-		<img alt="{&quot;text&quot;:&quot;2つめのaltテキスト \&quot;escape HTML\&quot;&quot;}" image="{&quot;assetId&quot;:&quot;1e7b6006-3fb3-4eef-9762-31938013db64&quot;,&quot;upload-file&quot;:&quot;C:\\fakepath\\photo010_thumb.jpg&quot;}"/>
-		<hr/>
-		<div>
+	<div><img class="test-image-sample" alt="{&quot;text&quot;:&quot;1つめのaltテキスト&quot;}" image="{&quot;assetId&quot;:&quot;95a0cd90-0468-4f12-806f-4a13a9327a8b&quot;,&quot;upload-file&quot;:&quot;C:\\fakepath\\photo009_thumb.jpg&quot;}"/><div>
 			<p>テスト文字列</p>
-		</div>
+		</div><div class="test-div-class-001"/><img alt="{&quot;text&quot;:&quot;2つめのaltテキスト \&quot;escape HTML\&quot;&quot;}" image="{&quot;assetId&quot;:&quot;1e7b6006-3fb3-4eef-9762-31938013db64&quot;,&quot;upload-file&quot;:&quot;C:\\fakepath\\photo010_thumb.jpg&quot;}"/><hr/></div><p class="paragraph">
+		
+		
+		
+		
+		
 	</p>
 </div></content>
 		<content name="sidebar"><div>
@@ -40,7 +41,7 @@ overflow: hidden;
 	<fields>
 	</fields>
 	<components>
-		<component name="custom-component-001" is-void-element="false" can-set-class="true" can-set-width="true" can-set-height="true">
+		<component name="custom-component-001" is-void-element="false" can-set-class="true" can-set-width="true" can-set-height="true" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false">
 			<fields>
 				<field type="image" name="image" label="Image" />
 			</fields>
@@ -58,7 +59,7 @@ overflow: hidden;
 	</div>
 </div>]]></template>
 </component>
-		<component name="custom-component-002" is-void-element="true" can-set-class="false" can-set-width="false" can-set-height="false">
+		<component name="custom-component-002" is-void-element="true" can-set-class="false" can-set-width="false" can-set-height="false" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false">
 			<template><![CDATA[<div class="custom-component-002">
 	<div class="custom-component-002__content">
 		<div class="custom-component-002__content-inner">
