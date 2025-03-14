@@ -146,6 +146,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.8 (リリース日未定)
+
+- デフォルトエディタ: 画像以外のファイルを挿入できるようになった。
+
 ### pickles2/lib-px2-contents-editor v2.2.7 (2024年12月25日)
 
 - デフォルトの画像フィールドのプレースホルダ画像を更新した。
