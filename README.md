@@ -17,6 +17,8 @@ $px2ce = new pickles2\libs\contentsEditor\main();
 $px2ce->init(array(
 	'target_mode' => 'page_content', // <- 編集対象のモード ('page_content' (default) or 'theme_layout')
 	'page_path' => '/path/to/page.html', // <- 編集対象ページのパス (target_mode=theme_layout のとき、 `/{theme_id}/{layout_id}.html` の形式)
+	'theme_id' => 'your_target_theme', // <- (target_mode=theme_layout のとき) 編集対象のテーマID
+	'layout_id' => 'your_target_layout', // <- (target_mode=theme_layout のとき) 編集対象のレイアウトID
 	'appMode' => 'web', // 'web' or 'desktop'. default to 'web'
 	'entryScript' => '/realpath/to/.px_execute.php', // Pickles 2 のエンドポイント
 	'customFields' => array(
@@ -153,6 +155,7 @@ pickles2ContentsEditor.init(
 ### pickles2/lib-px2-contents-editor v2.2.8 (リリース日未定)
 
 - デフォルトエディタ: 画像以外のファイルを挿入できるようになった。
+- `theme_id` オプション、 `layout_id` オプションを追加した。(`target_mode=theme_layout` のときに、 `page_path` オプションから指定することは非推奨になった)
 
 ### pickles2/lib-px2-contents-editor v2.2.7 (2024年12月25日)
 
