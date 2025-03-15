@@ -120,9 +120,18 @@ class main {
 		$this->entryScript = $options['entryScript'];
 		$this->target_mode = (strlen($options['target_mode'] ?? '') ? $options['target_mode'] : 'page_content');
 		$this->page_path = $options['page_path'] ?? null;
-		if( !is_string($this->page_path) ){
-			// 編集対象ページが指定されていない場合
-			return;
+		$this->theme_id = $options['theme_id'] ?? null;
+		$this->layout_id = $options['layout_id'] ?? null;
+		if( $this->target_mode == 'theme_layout' ){
+			if( (!strlen($this->theme_id ?? '') || !strlen($this->layout_id ?? '')) && !preg_match('/^\/([\s\S]+?)\/([\s\S]+)\.html$/', $this->page_path ?? '') ){
+				// 編集対象テーマレイアウトが指定されていない場合
+				return;
+			}
+		}else{
+			if( !strlen($this->page_path ?? '') ){
+				// 編集対象ページが指定されていない場合
+				return;
+			}
 		}
 
 		$this->options = $options;
@@ -143,9 +152,14 @@ class main {
 		$this->find_autoload_custom_fields();
 
 		if( $this->target_mode == 'theme_layout' ){
-			if( preg_match('/^\/([\s\S]+?)\/([\s\S]+)\.html$/', $this->page_path, $matched) ){
-				$this->theme_id = $matched[1];
-				$this->layout_id = $matched[2];
+			if( !strlen($this->theme_id ?? '') && !strlen($this->layout_id ?? '') ){
+				if( preg_match('/^\/([\s\S]+?)\/([\s\S]+)\.html$/', $this->page_path, $matched) ){
+					// ページパスからテーマIDとレイアウトIDを取得
+					// これは古い方法であり、互換性維持のため残している。
+					// $options['theme_id'], $options['layout_id'] から明示する方法を推奨する。
+					$this->theme_id = $matched[1];
+					$this->layout_id = $matched[2];
+				}
 			}
 			$this->documentRoot = $pjInfo['realpathThemeCollectionDir'];
 			$this->contRoot = '/';
