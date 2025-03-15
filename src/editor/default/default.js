@@ -516,6 +516,7 @@ module.exports = function(px2ce){
 					</li>
 				</ul>
 			</div>
+			<input type="hidden" id="insert-image-original-file-name" name="insert-image-original-file-name" value="" />
 		</div>`);
 		var $imgPreview = $body.find('.pickles2-contents-editor__default-image-preview-image');
 		var $imgNotImage = $body.find('.pickles2-contents-editor__default-image-preview-no-image');
@@ -565,6 +566,7 @@ module.exports = function(px2ce){
 				"submit": function(){
 					var $inputFile = $body.find('input[name=insert-image-file]');
 					var $inputFileName = $body.find('input[name=insert-image-file-name]');
+					var $inputOriginalFileName = $body.find('input[name=insert-image-original-file-name]');
 					var fileInfoJSON = $inputFile.attr('data-upload-file');
 					if( !fileInfoJSON ){
 						return;
@@ -586,7 +588,7 @@ module.exports = function(px2ce){
 						return $inputFileName.val();
 					})();
 
-					insertUploadFile(fileInfo);
+					insertUploadFile(fileInfo, $inputOriginalFileName.val());
 					modalObj.close();
 				}
 			},
@@ -596,6 +598,7 @@ module.exports = function(px2ce){
 		}, function(){
 			var $inputFile = $body.find('input[name=insert-image-file]');
 			var $inputFileName = $body.find('input[name=insert-image-file-name]');
+			var $inputOriginalFileName = $body.find('input[name=insert-image-original-file-name]');
 
 			setImagePreview({});
 
@@ -628,6 +631,8 @@ module.exports = function(px2ce){
 					var $this = $(this);
 					var fileInfo = e.target.files[0];
 					var realpathSelected = $this.val();
+
+					$inputOriginalFileName.val(fileInfo.name);
 
 					if( realpathSelected ){
 						readSelectedLocalFile(fileInfo, function(dataUri){
@@ -662,38 +667,37 @@ module.exports = function(px2ce){
 					var items = e.originalEvent.clipboardData.items;
 					for (var i = 0 ; i < items.length ; i++) {
 						var item = items[i];
-						// console.log(item);
-						if(item.type.indexOf("image") != -1){
-							var fileInfo = item.getAsFile();
-							fileInfo.name = fileInfo.name||'clipboard.'+(function(type){
-								if(type.match(/png$/i)){return 'png';}
-								if(type.match(/gif$/i)){return 'gif';}
-								if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
-								if(type.match(/svg/i)){return 'svg';}
-								return 'txt';
-							})(fileInfo.type);
+						var fileInfo = item.getAsFile();
 
-							// mod.filename
-							readSelectedLocalFile(fileInfo, function(dataUri){
-								setImagePreview({
-									'src': dataUri,
+						$inputOriginalFileName.val(fileInfo.name);
+
+						fileInfo.name = fileInfo.name||'clipboard.'+(function(type){
+							if(type.match(/png$/i)){return 'png';}
+							if(type.match(/gif$/i)){return 'gif';}
+							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
+							if(type.match(/svg/i)){return 'svg';}
+							return getExtension(fileInfo.name);
+						})(fileInfo.type);
+
+						// mod.filename
+						readSelectedLocalFile(fileInfo, function(dataUri){
+							setImagePreview({
+								'src': dataUri,
+								'ext': getExtension(fileInfo.name),
+								'size': fileInfo.size,
+								'mimeType': fileInfo.type,
+							});
+							$inputFile.attr({
+								'data-upload-file': JSON.stringify({
+									'name': fileInfo.name,
 									'ext': getExtension(fileInfo.name),
 									'size': fileInfo.size,
-									'mimeType': fileInfo.type,
-								});
-								$inputFile.attr({
-									'data-upload-file': JSON.stringify({
-										'name': fileInfo.name,
-										'ext': getExtension(fileInfo.name),
-										'size': fileInfo.size,
-										'type': fileInfo.type,
-										'base64': dataUri,
-									})
-								});
-								$inputFileName.val( generateAutoFilename(fileInfo.name) );
+									'type': fileInfo.type,
+									'base64': dataUri,
+								})
 							});
-
-						}
+							$inputFileName.val( generateAutoFilename(fileInfo.name) );
+						});
 					}
 				});
 
@@ -703,7 +707,7 @@ module.exports = function(px2ce){
 	/**
 	 * アップロードしたファイルをコンテンツに挿入する
 	 */
-	function insertUploadFile(fileInfo, callback){
+	function insertUploadFile(fileInfo, originalFileName, callback){
 		var path_resource;
 
 		it79.fnc({}, [
@@ -729,7 +733,7 @@ module.exports = function(px2ce){
 				// var uploadFileName = './'+path_resource+'/'+fileName;
 				var uploadFileName = '<'; // NOTE: minifyされたあと、PHPコードとして成立してしまわないように、複数行に分解している。
 				uploadFileName += '?';
-				uploadFileName += '= $px->h($px->path_files("/'+fileName+'")) ?';
+				uploadFileName += `= $px->h($px->path_files("/${fileName}")) ?`;
 				uploadFileName += '>';
 				var insertString = '';
 
@@ -738,17 +742,17 @@ module.exports = function(px2ce){
 				// 挿入する文字列を出し分ける。
 				switch(current_tab){
 					case 'css':
-						insertString = 'url("'+uploadFileName+'")';
+						insertString = `url("${uploadFileName}")`;
 						break;
 					case 'js':
-						insertString = '"'+uploadFileName+'"';
+						insertString = `"${uploadFileName}"`;
 						break;
 					case 'html':
 					default:
 						if( fileInfo.type.match(/^image\//) ){
-							insertString = '<img src="'+uploadFileName+'" alt="" />'+"\n";
+							insertString = `<img src="${uploadFileName}" alt="${originalFileName || fileName}" />`+"\n";
 						}else{
-							insertString = '<a href="'+uploadFileName+'" download="'+fileName+'">'+fileName+'</a>'+"\n";
+							insertString = `<a href="${uploadFileName}" download="${fileName}">${originalFileName || fileName}</a>`+"\n";
 						}
 						break;
 				}
