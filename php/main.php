@@ -754,7 +754,7 @@ class main {
 		if( $this->target_mode == 'theme_layout' ){
 			// ドキュメントルートの設定上書きがある場合
 			// テーマレイアウトの編集等に利用するモード
-			if( !is_file( $this->documentRoot . $this->page_path ) ){
+			if( !is_file( $this->documentRoot.'/'.urlencode($this->theme_id).'/'.urlencode($this->layout_id).'.html' ) ){
 				return '.not_exists';
 			}
 			if( is_file( $this->realpathDataDir . 'data.json' ) ){
