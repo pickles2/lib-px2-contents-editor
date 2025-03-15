@@ -127,6 +127,7 @@ class main {
 				// 編集対象テーマレイアウトが指定されていない場合
 				return;
 			}
+			$this->page_path = '/'.urlencode($this->theme_id).'/'.urlencode($this->layout_id).'.html';
 		}else{
 			if( !strlen($this->page_path ?? '') ){
 				// 編集対象ページが指定されていない場合
