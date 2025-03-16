@@ -164,9 +164,9 @@ class main {
 			}
 			$this->documentRoot = $pjInfo['realpathThemeCollectionDir'];
 			$this->contRoot = '/';
-			$this->realpathFiles = $pjInfo['realpathThemeCollectionDir'].$this->theme_id.'/theme_files/layouts/'.$this->layout_id.'/';
-			$this->pathResourceDir = '/'.$this->theme_id.'/theme_files/layouts/'.$this->layout_id.'/resources/';
-			$this->realpathDataDir = $pjInfo['realpathThemeCollectionDir'].$this->theme_id.'/guieditor.ignore/'.$this->layout_id.'/data/';
+			$this->realpathFiles = $pjInfo['realpathThemeCollectionDir'].urlencode($this->theme_id).'/theme_files/layouts/'.urlencode($this->layout_id).'/';
+			$this->pathResourceDir = '/'.urlencode($this->theme_id).'/theme_files/layouts/'.urlencode($this->layout_id).'/resources/';
+			$this->realpathDataDir = $pjInfo['realpathThemeCollectionDir'].urlencode($this->theme_id).'/guieditor.ignore/'.urlencode($this->layout_id).'/data/';
 		}
 
 		return;
@@ -766,7 +766,9 @@ class main {
 			if( !is_file( $this->documentRoot.'/'.urlencode($this->theme_id).'/'.urlencode($this->layout_id).'.html' ) ){
 				return '.not_exists';
 			}
-			if( is_file( $this->realpathDataDir . 'data.json' ) ){
+			if( is_file( $this->realpathDataDir.'data.kflow' ) ){
+				return 'kflow';
+			}elseif( is_file( $this->realpathDataDir.'data.json' ) ){
 				return 'html.gui';
 			}
 			return 'html';

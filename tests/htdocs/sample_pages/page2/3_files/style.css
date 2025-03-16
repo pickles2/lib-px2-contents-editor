@@ -1,22 +1,22 @@
-.cont-__test-image-sample {
+.cont__test-image-sample {
 border: 1px solid #000;
 border-radius: 5px;
 overflow: hidden;
 		}
-.cont-__paragraph {
+.cont__paragraph {
 margin: 1em 0;}
-.cont-__test-div-class-001 {
+.cont__test-div-class-001 {
 width: 110px;
 height: 80px;
 /* div class test */}
-.cont-__cont-horizontal {
+.cont__cont-horizontal {
 display: flex;
 flex-direction: row;
 gap: 10px;}
-.cont-__px2-p {
+.cont__px2-p {
 width: 85%;
 }
-.cont-__kf-kf1928bb222858994f-0 {
+.cont__kf-kf1928bb222858994f-0 {
 width: 100%;
 
 }
