@@ -8,7 +8,8 @@ module.exports = function(px2ce){
 	var px2style = px2ce.px2style;
 	var $canvas = $(px2ce.getElmCanvas());
 	var Promise = require('es6-promise').Promise;
-	var px2conf = {};
+	var px2conf = {},
+		pagesByLayout = [];
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -59,6 +60,15 @@ module.exports = function(px2ce){
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
 				px2conf = px2ce.getBootupInfomations().projectConf;
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				pagesByLayout = [];
+				if( px2ce.target_mode != 'theme_layout' ){
+					rlv();
+					return;
+				}
+				pagesByLayout = px2ce.getBootupInfomations().pagesByLayout;
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
