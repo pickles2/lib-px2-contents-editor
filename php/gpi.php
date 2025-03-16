@@ -186,6 +186,20 @@ class gpi{
 				return $result;
 				break;
 
+			case "kflowGetContentsSrc":
+				// コンテンツのソースを取得する
+				$defaultEditor = new editor_kflow($this->px2ce);
+				$contentsCodes = $defaultEditor->getContentsSrc();
+				return $contentsCodes;
+				break;
+
+			case "kflowSaveContentsSrc":
+				// コンテンツのソースを保存する
+				$defaultEditor = new editor_kflow($this->px2ce);
+				$result = $defaultEditor->saveContentsSrc($data['codes']);
+				return $result;
+				break;
+
 			case "getPathResources":
 				// リソースディレクトリのパスを得る
 				// これは、コンテンツにリソースへのリンクを埋め込むために使用する。

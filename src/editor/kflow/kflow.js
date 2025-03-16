@@ -111,7 +111,7 @@ module.exports = function(px2ce){
 				return new Promise((resolve, reject) => {
 					px2ce.gpiBridge(
 						{
-							'api': 'getContentsSrc',
+							'api': 'kflowGetContentsSrc',
 							'page_path': px2ce.page_path,
 						},
 						function(codes){
@@ -143,7 +143,7 @@ module.exports = function(px2ce){
 
 		px2ce.gpiBridge(
 			{
-				'api': 'saveContentsSrc',
+				'api': 'kflowSaveContentsSrc',
 				'page_path': px2ce.page_path,
 				'codes': codes,
 			},
