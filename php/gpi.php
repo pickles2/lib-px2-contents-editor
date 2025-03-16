@@ -87,7 +87,7 @@ class gpi{
 				// 編集権限をチェック
 				$bootup['permission'] = true;
 				$src_check_target = array();
-				switch( $src_check_target ){
+				switch( $bootup['editorMode'] ){
 					case '.page_not_exists':
 					case '.not_exists':
 						$bootup['permission'] = false;
