@@ -118,31 +118,45 @@ class editor_kflow{
 			}
 		}
 
+		$kaleflower = new \kaleflower\kaleflower();
+		$kflow_built = $kaleflower->build(
+			$_kflowPath,
+			array(
+				'assetsPrefix' => './main_files/',
+			)
+		);
+
+		// HTMLファイルを保存
+		if( !$this->is_authorized_server_side_scripting ){
+			$kflow_built->html->main = $this->sanitizer->sanitize_contents($kflow_built->html->main);
+		}
+		$this->px2ce->fs()->save_file( $_contentsPath, $kflow_built->html->main );
+
 		// CSSファイルを保存
-		if( array_key_exists('css', $codes) ){
+		if( property_exists($kflow_built, 'css') ){
 			if( !$this->is_authorized_server_side_scripting ){
-				$codes['css'] = $this->sanitizer->sanitize_contents($codes['css']);
+				$kflow_built->css = $this->sanitizer->sanitize_contents($kflow_built->css);
 			}
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-			if( !strlen($codes['css']) ){
+			if( !strlen($kflow_built->css) ){
 				$this->px2ce->fs()->rm( $realpath_resource_dir.'/style.css' );
 			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/style.css', $codes['css'] );
+				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/style.css', $kflow_built->css );
 			}
 		}
 
 		// JSファイルを保存
-		if( array_key_exists('js', $codes) ){
+		if( property_exists($kflow_built, 'js') ){
 			if( !$this->is_authorized_server_side_scripting ){
-				$codes['js'] = $this->sanitizer->sanitize_contents($codes['js']);
+				$kflow_built->js = $this->sanitizer->sanitize_contents($kflow_built->js);
 			}
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-			if( !strlen($codes['js']) ){
+			if( !strlen($kflow_built->js) ){
 				$this->px2ce->fs()->rm( $realpath_resource_dir.'/script.js' );
 			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/script.js', $codes['js'] );
+				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/script.js', $kflow_built->js );
 			}
 		}
 

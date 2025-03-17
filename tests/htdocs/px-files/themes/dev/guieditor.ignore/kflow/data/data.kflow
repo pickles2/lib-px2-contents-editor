@@ -5,6 +5,8 @@
 		<config name="module-name-prefix" value="cont" />
 		<config name="break-points">
 		</config>
+		<config name="color-palettes">
+		</config>
 	</configs>
 	<styles>
 		<style class="test-image-sample">border: 1px solid #000;
