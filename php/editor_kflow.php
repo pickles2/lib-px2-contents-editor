@@ -91,72 +91,61 @@ class editor_kflow{
 			$_kflowPath = $this->px2ce->get_realpath_data_dir().'data.kflow';
 		}
 
-		// HTMLファイルを保存
-		if( array_key_exists('kflow', $codes) ){
+
+		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+
+			// HTMLファイルを保存
+			$this->px2ce->fs()->save_file($_kflowPath, $codes['kflow']);
+
+			$kaleflower = new \kaleflower\kaleflower();
+			$kflow_built = $kaleflower->build(
+				$_kflowPath,
+				array(
+					'assetsPrefix' => './main_files/',
+				)
+			);
+
 			if( !$this->is_authorized_server_side_scripting ){
-				$codes['kflow'] = $this->sanitizer->sanitize_contents($codes['kflow']);
+				$kflow_built->html->main = $this->sanitizer->sanitize_contents($kflow_built->html->main);
+			}
+			$kflow_built->html->main = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $kflow_built->html->main );
+			$this->px2ce->fs()->save_file( $_contentsPath, $kflow_built->html->main );
+
+			// CSSファイルを保存
+			if( property_exists($kflow_built, 'css') ){
+				if( !$this->is_authorized_server_side_scripting ){
+					$kflow_built->css = $this->sanitizer->sanitize_contents($kflow_built->css);
+				}
+
+				$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
+				if( !strlen($kflow_built->css) ){
+					$this->px2ce->fs()->rm( $realpath_resource_dir.'/style.css.scss' );
+				}else{
+					$this->px2ce->fs()->save_file( $realpath_resource_dir.'/style.css.scss', $kflow_built->css );
+				}
 			}
 
-			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
-			$strLoaderJS = $_targetPaths['strLoaderJS'];
+			// JSファイルを保存
+			if( property_exists($kflow_built, 'js') ){
+				if( !$this->is_authorized_server_side_scripting ){
+					$kflow_built->js = $this->sanitizer->sanitize_contents($kflow_built->js);
+				}
 
-			$codes['kflow'] = str_replace( $strLoaderCSS, '', $codes['kflow'] );
-			$codes['kflow'] = str_replace( $strLoaderJS, '', $codes['kflow'] );
-
-			if( !strlen($codes['css'] ?? '') ){
-				$strLoaderCSS = '';
+				$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
+				if( !strlen($kflow_built->js) ){
+					$this->px2ce->fs()->rm( $realpath_resource_dir.'/script.js' );
+				}else{
+					$this->px2ce->fs()->save_file( $realpath_resource_dir.'/script.js', $kflow_built->js );
+				}
 			}
-			if( !strlen($codes['js'] ?? '') ){
-				$strLoaderJS = '';
-			}
+		}else{
 
-			if( $this->px2ce->get_target_mode() == 'theme_layout' ){
-				$codes['kflow'] = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $codes['kflow'] );
+			// HTMLファイルを保存
+			if( array_key_exists('kflow', $codes) ){
+				if( !$this->is_authorized_server_side_scripting ){
+					$codes['kflow'] = $this->sanitizer->sanitize_contents($codes['kflow']);
+				}
 				$this->px2ce->fs()->save_file($_kflowPath, $codes['kflow']);
-			}else{
-				$this->px2ce->fs()->save_file($_kflowPath, $strLoaderCSS.$strLoaderJS.$codes['kflow']);
-			}
-		}
-
-		$kaleflower = new \kaleflower\kaleflower();
-		$kflow_built = $kaleflower->build(
-			$_kflowPath,
-			array(
-				'assetsPrefix' => './main_files/',
-			)
-		);
-
-		// HTMLファイルを保存
-		if( !$this->is_authorized_server_side_scripting ){
-			$kflow_built->html->main = $this->sanitizer->sanitize_contents($kflow_built->html->main);
-		}
-		$this->px2ce->fs()->save_file( $_contentsPath, $kflow_built->html->main );
-
-		// CSSファイルを保存
-		if( property_exists($kflow_built, 'css') ){
-			if( !$this->is_authorized_server_side_scripting ){
-				$kflow_built->css = $this->sanitizer->sanitize_contents($kflow_built->css);
-			}
-
-			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-			if( !strlen($kflow_built->css) ){
-				$this->px2ce->fs()->rm( $realpath_resource_dir.'/style.css' );
-			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/style.css', $kflow_built->css );
-			}
-		}
-
-		// JSファイルを保存
-		if( property_exists($kflow_built, 'js') ){
-			if( !$this->is_authorized_server_side_scripting ){
-				$kflow_built->js = $this->sanitizer->sanitize_contents($kflow_built->js);
-			}
-
-			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
-			if( !strlen($kflow_built->js) ){
-				$this->px2ce->fs()->rm( $realpath_resource_dir.'/script.js' );
-			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/script.js', $kflow_built->js );
 			}
 		}
 
