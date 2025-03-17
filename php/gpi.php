@@ -187,15 +187,15 @@ class gpi{
 
 			case "kflowGetContentsSrc":
 				// コンテンツのソースを取得する
-				$defaultEditor = new editor_kflow($this->px2ce);
-				$contentsCodes = $defaultEditor->getContentsSrc();
+				$kflowEditor = new editor_kflow($this->px2ce);
+				$contentsCodes = $kflowEditor->getContentsSrc();
 				return $contentsCodes;
 				break;
 
 			case "kflowSaveContentsSrc":
 				// コンテンツのソースを保存する
-				$defaultEditor = new editor_kflow($this->px2ce);
-				$result = $defaultEditor->saveContentsSrc($data['codes']);
+				$kflowEditor = new editor_kflow($this->px2ce);
+				$result = $kflowEditor->saveContentsSrc($data['codes']);
 				return $result;
 				break;
 

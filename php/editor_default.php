@@ -118,7 +118,7 @@ class editor_default{
 				$codes['html'] = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $codes['html'] );
 				$this->px2ce->fs()->save_file($_contentsPath, $codes['html']);
 			}else{
-				$this->px2ce->fs()->save_file($_contentsPath, $strLoaderCSS . $strLoaderJS . $codes['html']);
+				$this->px2ce->fs()->save_file($_contentsPath, $strLoaderCSS.$strLoaderJS.$codes['html']);
 			}
 		}
 
@@ -130,9 +130,9 @@ class editor_default{
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 			if( !strlen($codes['css']) ){
-				$this->px2ce->fs()->rm( $realpath_resource_dir . '/style.css.scss' );
+				$this->px2ce->fs()->rm( $realpath_resource_dir.'/style.css.scss' );
 			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/style.css.scss', $codes['css'] );
+				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/style.css.scss', $codes['css'] );
 			}
 		}
 
@@ -144,9 +144,9 @@ class editor_default{
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 			if( !strlen($codes['js']) ){
-				$this->px2ce->fs()->rm( $realpath_resource_dir . '/script.js' );
+				$this->px2ce->fs()->rm( $realpath_resource_dir.'/script.js' );
 			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
+				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/script.js', $codes['js'] );
 			}
 		}
 

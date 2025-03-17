@@ -83,7 +83,6 @@ module.exports = function(px2ce){
 	}
 	function setWordWrapMode(wrapTo){
 		useWrapMode = !!wrapTo;
-		console.info(useWrapMode);
 		if( editorLib == 'ace' ){
 			for(var i in $elmTextareas){
 				$elmTextareas[i].getSession().setUseWrapMode(useWrapMode);
@@ -308,7 +307,6 @@ module.exports = function(px2ce){
 				$elmCanvas.html('').append($iframe);
 				$iframe
 					.on('load', function(){
-						console.info('pickles2-contents-editor: preview loaded');
 						onPreviewLoad( callback );
 					})
 				;

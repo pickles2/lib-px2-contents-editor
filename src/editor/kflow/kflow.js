@@ -115,7 +115,7 @@ module.exports = function(px2ce){
 							'page_path': px2ce.page_path,
 						},
 						function(codes){
-							kaleflower.loadXml(codes.html);
+							kaleflower.loadXml(codes.kflow);
 							resolve();
 						}
 					);
@@ -132,11 +132,8 @@ module.exports = function(px2ce){
 	 * 編集したコンテンツを保存する
 	 */
 	function saveContentsSrc(callback){
-		let data = kaleflower.get();
-		console.info(data);
-
 		const codes = {
-			'html': kaleflower.get(),
+			'kflow': kaleflower.get(),
 			'css': '',
 			'js': '',
 		};
@@ -149,28 +146,6 @@ module.exports = function(px2ce){
 			},
 			function(result){
 				callback(result);
-
-				// it79.ary(
-				// 	droppedFileList,
-				// 	function(itAry1, row, idx){
-				// 		px2ce.gpiBridge(
-				// 			{
-				// 				'api': 'savePageResources',
-				// 				'page_path': px2ce.page_path,
-				// 				'filename': row.name,
-				// 				'base64': row.base64,
-				// 			},
-				// 			function(result){
-				// 				itAry1.next();
-				// 			}
-				// 		);
-				// 	},
-				// 	function(){
-				// 		droppedFileList = []; // アップロードしたら忘れて良い。
-				// 		callback(result);
-				// 	}
-				// );
-
 			}
 		);
 	}

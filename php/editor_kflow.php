@@ -40,9 +40,7 @@ class editor_kflow{
 	public function getContentsSrc(){
 
 		$rtn = array(
-			'html' => '',
-			'css' => '',
-			'js' => ''
+			'kflow' => '',
 		);
 
 		$custom_css_js = new custom_css_js($this->px2ce);
@@ -52,26 +50,19 @@ class editor_kflow{
 		}
 
 		$_contentsPath = $_targetPaths['contentsPath'];
+		$_kflowPath = $_targetPaths['contentsPath'];
 		$realpath_resource_dir = $_targetPaths['realpathFiles'];
 		$strLoaderCSS = $_targetPaths['strLoaderCSS'];
 		$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-		if( is_file( $_contentsPath ) ){
-			$rtn['html'] = file_get_contents($_contentsPath);
-			$rtn['html'] = str_replace( $strLoaderCSS, '', $rtn['html'] );
-			$rtn['html'] = str_replace( $strLoaderJS, '', $rtn['html'] );
-
-			// ↓古いメソッド名も削除
-			$rtn['html'] = str_replace( '<'.'?php ob_start(); ?'.'><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files(\'/style.css\') ) ?'.'>" /><'.'?php $px->bowl()->send( ob_get_clean(), \'head\' );?'.'>'."\n", '', $rtn['html'] );
-			$rtn['html'] = str_replace( '<'.'?php ob_start(); ?'.'><script src="<?= htmlspecialchars( $px->path_files(\'/script.js\') ) ?'.'>"></script><'.'?php $px->bowl()->send( ob_get_clean(), \'foot\' );?'.'>'."\n", '', $rtn['html'] );
+		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+			$_kflowPath = $this->px2ce->get_realpath_data_dir().'data.kflow';
 		}
 
-		if( is_file( $realpath_resource_dir . '/style.css.scss' ) ){
-			$rtn['css'] = file_get_contents( $realpath_resource_dir . '/style.css.scss' );
-		}
-
-		if( is_file( $realpath_resource_dir . '/script.js' ) ){
-			$rtn['js'] = file_get_contents( $realpath_resource_dir . '/script.js' );
+		if( is_file( $_kflowPath ) ){
+			$rtn['kflow'] = file_get_contents($_kflowPath);
+			$rtn['kflow'] = str_replace( $strLoaderCSS, '', $rtn['kflow'] );
+			$rtn['kflow'] = str_replace( $strLoaderJS, '', $rtn['kflow'] );
 		}
 
 		return $rtn;
@@ -93,19 +84,24 @@ class editor_kflow{
 		}
 
 		$_contentsPath = $_targetPaths['contentsPath'];
+		$_kflowPath = $_targetPaths['contentsPath'];
 		$realpath_resource_dir = $_targetPaths['realpathFiles'];
 
+		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+			$_kflowPath = $this->px2ce->get_realpath_data_dir().'data.kflow';
+		}
+
 		// HTMLファイルを保存
-		if( array_key_exists('html', $codes) ){
+		if( array_key_exists('kflow', $codes) ){
 			if( !$this->is_authorized_server_side_scripting ){
-				$codes['html'] = $this->sanitizer->sanitize_contents($codes['html']);
+				$codes['kflow'] = $this->sanitizer->sanitize_contents($codes['kflow']);
 			}
 
 			$strLoaderCSS = $_targetPaths['strLoaderCSS'];
 			$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-			$codes['html'] = str_replace( $strLoaderCSS, '', $codes['html'] );
-			$codes['html'] = str_replace( $strLoaderJS, '', $codes['html'] );
+			$codes['kflow'] = str_replace( $strLoaderCSS, '', $codes['kflow'] );
+			$codes['kflow'] = str_replace( $strLoaderJS, '', $codes['kflow'] );
 
 			if( !strlen($codes['css'] ?? '') ){
 				$strLoaderCSS = '';
@@ -115,10 +111,10 @@ class editor_kflow{
 			}
 
 			if( $this->px2ce->get_target_mode() == 'theme_layout' ){
-				$codes['html'] = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $codes['html'] );
-				$this->px2ce->fs()->save_file($_contentsPath, $codes['html']);
+				$codes['kflow'] = preg_replace( '/(\s*\<\/head\>)/s', $strLoaderCSS.$strLoaderJS.'$1', $codes['kflow'] );
+				$this->px2ce->fs()->save_file($_kflowPath, $codes['kflow']);
 			}else{
-				$this->px2ce->fs()->save_file($_contentsPath, $strLoaderCSS . $strLoaderJS . $codes['html']);
+				$this->px2ce->fs()->save_file($_kflowPath, $strLoaderCSS.$strLoaderJS.$codes['kflow']);
 			}
 		}
 
@@ -130,9 +126,9 @@ class editor_kflow{
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 			if( !strlen($codes['css']) ){
-				$this->px2ce->fs()->rm( $realpath_resource_dir . '/style.css.scss' );
+				$this->px2ce->fs()->rm( $realpath_resource_dir.'/style.css' );
 			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/style.css.scss', $codes['css'] );
+				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/style.css', $codes['css'] );
 			}
 		}
 
@@ -144,9 +140,9 @@ class editor_kflow{
 
 			$this->px2ce->fs()->mkdir_r( $realpath_resource_dir );
 			if( !strlen($codes['js']) ){
-				$this->px2ce->fs()->rm( $realpath_resource_dir . '/script.js' );
+				$this->px2ce->fs()->rm( $realpath_resource_dir.'/script.js' );
 			}else{
-				$this->px2ce->fs()->save_file( $realpath_resource_dir . '/script.js', $codes['js'] );
+				$this->px2ce->fs()->save_file( $realpath_resource_dir.'/script.js', $codes['js'] );
 			}
 		}
 

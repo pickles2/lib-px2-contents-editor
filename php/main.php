@@ -454,6 +454,13 @@ class main {
 	}
 
 	/**
+	 * $realpathDataDir
+	 */
+	public function get_realpath_data_dir(){
+		return $this->realpathDataDir;
+	}
+
+	/**
 	 * $page_path
 	 */
 	public function get_page_path(){
