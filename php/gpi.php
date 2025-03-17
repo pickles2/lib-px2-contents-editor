@@ -90,7 +90,6 @@ class gpi{
 				switch( $bootup['editorMode'] ){
 					case '.page_not_exists':
 					case '.not_exists':
-						$bootup['permission'] = false;
 						break;
 					case 'html.gui':
 						$realpath_data_json = $this->px2ce->fs()->get_realpath($this->px2ce->get_realpath_files().'guieditor.ignore/data.json');
