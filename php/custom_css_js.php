@@ -51,6 +51,7 @@ class custom_css_js {
 		}
 
 		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+			$rtn['contentsPath'] = $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$this->px2ce->get_theme_id().'/'.$this->px2ce->get_layout_id().'.html');
 			$tmpPathThemeLayoutDir = '/layouts/'.urlencode($this->px2ce->get_layout_id()).'/';
 			$rtn['strLoaderCSS'] = '<link rel="stylesheet" href="<?= htmlspecialchars( $theme->files(\''.$tmpPathThemeLayoutDir.'style.css\') ) ?'.'>" />'."\n";
 			$rtn['strLoaderJS'] = '<script src="<?= htmlspecialchars( $theme->files(\''.$tmpPathThemeLayoutDir.'script.js\') ) ?'.'>"></script>'."\n";
@@ -62,11 +63,12 @@ class custom_css_js {
 				return false;
 			}
 		}
-		$contPath = $this->px2ce->px2query($page_path.'?PX=api.get.path_content', array('output'=>'json'));
 
 		if( !is_file($rtn['contentsPath']) ){
+			$contPath = $this->px2ce->px2query($page_path.'?PX=api.get.path_content', array('output'=>'json'));
 			$rtn['contentsPath'] = $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$contPath);
 		}
+
 		return $rtn;
 	}
 }
