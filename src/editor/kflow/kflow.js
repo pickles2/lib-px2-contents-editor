@@ -100,8 +100,8 @@ module.exports = function(px2ce){
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
 						"scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
-						"contentsAreaSelector": px2conf.plugins.px2dt.contents_area_selector,
-						"contentsContainerNameBy": px2conf.plugins.px2dt.contents_bowl_name_by,
+						"contentsAreaSelector": (px2ce.target_mode == 'theme_layout' ? '[data-pickles2-theme-editor-contents-area]' : px2conf.plugins.px2dt.contents_area_selector),
+						"contentsContainerNameBy": (px2ce.target_mode == 'theme_layout' ? 'data-pickles2-theme-editor-contents-area' : px2conf.plugins.px2dt.contents_bowl_name_by),
 					});
 
 					resolve();
