@@ -52,6 +52,17 @@ class custom_css_js {
 
 		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
 			$rtn['contentsPath'] = $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$this->px2ce->get_theme_id().'/'.$this->px2ce->get_layout_id().'.html');
+			if( !is_file($rtn['contentsPath']) ){
+				// 2重拡張子の検索
+				$tmp_ary_exts = array('kflow');
+				foreach( $tmp_ary_exts as $tmpExt ){
+					if( is_file($rtn['contentsPath'].'.'.$tmpExt) ){
+						$rtn['contentsPath'] = $rtn['contentsPath'].'.'.$tmpExt;
+						break;
+					}
+				}
+			}
+
 			$tmpPathThemeLayoutDir = '/layouts/'.urlencode($this->px2ce->get_layout_id()).'/';
 			$rtn['strLoaderCSS'] = '<link rel="stylesheet" href="<?= htmlspecialchars( $theme->files(\''.$tmpPathThemeLayoutDir.'style.css\') ) ?'.'>" />'."\n";
 			$rtn['strLoaderJS'] = '<script src="<?= htmlspecialchars( $theme->files(\''.$tmpPathThemeLayoutDir.'script.js\') ) ?'.'>"></script>'."\n";
