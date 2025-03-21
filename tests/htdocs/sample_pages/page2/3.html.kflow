@@ -14,7 +14,7 @@ border-radius: 5px;
 overflow: hidden;
 		</style>
 		<style class="paragraph">margin: 1em 0;</style>
-		<style class="test-div-class-001" width="110px" height="80px">/* div class test */</style>
+		<style class="test-div-class-001" width="310px" height="180px">/* div class test */</style>
 		<style class="cont-horizontal" contents-direction="horizontal">gap: 10px;</style>
 		<style class="px2-p" width="85%"/>
 	</styles>

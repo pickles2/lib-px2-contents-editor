@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kflow>
+	<components>
+		<component name="custom-component-001" is-void-element="false" can-set-class="true" can-set-width="true" can-set-height="true" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false">
+			<fields>
+				<field type="image" name="image" label="Image" />
+			</fields>
+			<template><![CDATA[
+{% set image = json_decode(attributes.image) %}
+<div class="custom-component-001 {{ attributes.class }}">
+	<div class="custom-component-001__content">
+		<p>custom component 001</p>
+		<p>custom component 001</p>
+		<p>custom component 001</p>
+		<img src="{{ assets[image.assetId].path }}" alt="" />
+		<div class="custom-component-001__content-inner">
+			{{ innerHTML | raw }}
+		</div>
+	</div>
+</div>]]></template>
+</component>
+		<component name="custom-component-002" is-void-element="true" can-set-class="false" can-set-width="false" can-set-height="false" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false">
+			<template><![CDATA[<div class="custom-component-002">
+	<div class="custom-component-002__content">
+		<div class="custom-component-002__content-inner">
+			<p>custom-component-002</p>
+		</div>
+	</div>
+</div>]]></template>
+</component>
+	</components>
+</kflow>

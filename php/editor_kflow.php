@@ -58,6 +58,35 @@ class editor_kflow{
 			$rtn['kflow'] = file_get_contents($_contentsPath);
 		}
 
+		$kaleflower = new \kaleflower\kaleflower();
+		$kaleflower->loadXml( $rtn['kflow'] );
+
+		// Contents modules for Kaleflower
+		$realpath_kflow_components_dir = $this->px2ce->fs()->get_realpath($this->px2ce->px()->get_realpath_homedir().'kflow/modules/');
+		if( is_dir($realpath_kflow_components_dir) ){
+			$kflow_component_files = $this->px2ce->fs()->ls($realpath_kflow_components_dir);
+			foreach( $kflow_component_files as $kflow_component_file ){
+				if( is_file($realpath_kflow_components_dir.$kflow_component_file) ){
+					$kaleflower->load( $realpath_kflow_components_dir.$kflow_component_file );
+				}
+			}
+		}
+
+		// Theme modules for Kaleflower
+		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
+			$realpath_kflow_components_dir = $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$this->px2ce->get_theme_id().'/kflow/modules/');
+			if( is_dir($realpath_kflow_components_dir) ){
+				$kflow_component_files = $this->px2ce->fs()->ls($realpath_kflow_components_dir);
+				foreach( $kflow_component_files as $kflow_component_file ){
+					if( is_file($realpath_kflow_components_dir.$kflow_component_file) ){
+						$kaleflower->load( $realpath_kflow_components_dir.$kflow_component_file );
+					}
+				}
+			}
+		}
+
+		$rtn['kflow'] = $kaleflower->getXml();
+
 		return $rtn;
 	}
 
