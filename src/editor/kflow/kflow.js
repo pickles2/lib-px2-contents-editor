@@ -15,7 +15,8 @@ module.exports = function(px2ce){
 
 	var kaleflower;
 
-	const autoSaveStatur = {
+	let timer_autoSave;
+	const saveStatus = {
 		isProgress: false,
 		callbackPool: [],
 	};
@@ -85,6 +86,7 @@ module.exports = function(px2ce){
 					"btns": btns,
 					"onFinish": function(){
 						// 完了イベント
+						clearTimeout(timer_autoSave);
 						saveContentsSrc(() => {
 							px2ce.finish();
 						});
@@ -110,7 +112,10 @@ module.exports = function(px2ce){
 					});
 					kaleflower.on('change', (event) => {
 						// 自動保存
-						saveContentsSrc(() => {});
+						clearTimeout(timer_autoSave);
+						timer_autoSave = setTimeout(() => {
+							saveContentsSrc(() => {});
+						}, 5000);
 					});
 
 					resolve();
@@ -142,18 +147,18 @@ module.exports = function(px2ce){
 	 */
 	function saveContentsSrc(callback){
 		callback = callback || function(){};
-		autoSaveStatur.callbackPool.push(callback);
+		saveStatus.callbackPool.push(callback);
 
-		if(autoSaveStatur.isProgress){
+		if(saveStatus.isProgress){
 			return;
 		}
 
 		function saveContentsSrcExecute(){
 
-			autoSaveStatur.isProgress = true;
+			saveStatus.isProgress = true;
 
-			const currentCallbacks = autoSaveStatur.callbackPool;
-			autoSaveStatur.callbackPool = [];
+			const currentCallbacks = saveStatus.callbackPool;
+			saveStatus.callbackPool = [];
 
 			const codes = {
 				'kflow': kaleflower.get(),
@@ -169,14 +174,14 @@ module.exports = function(px2ce){
 				},
 				function(result){
 					setTimeout(() => {
-						autoSaveStatur.isProgress = false;
+						saveStatus.isProgress = false;
 						currentCallbacks.forEach(currentCallback => currentCallback(result) );
 
-						if(autoSaveStatur.callbackPool.length){
+						if(saveStatus.callbackPool.length){
 							saveContentsSrcExecute();
 							return;
 						}
-					}, 2000); // クールダウンタイム
+					}, 500); // クールダウンタイム
 				}
 			);
 		}
