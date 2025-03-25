@@ -15,6 +15,11 @@ module.exports = function(px2ce){
 
 	var kaleflower;
 
+	const autoSaveStatur = {
+		isProgress: false,
+		callbackPool: [],
+	};
+
 	function getCanvasPageUrl(){
 		var rtn = getPreviewUrl();
 		var hash = '';
@@ -103,6 +108,10 @@ module.exports = function(px2ce){
 						"contentsAreaSelector": (px2ce.target_mode == 'theme_layout' ? '[data-pickles2-theme-editor-contents-area]' : px2conf.plugins.px2dt.contents_area_selector),
 						"contentsContainerNameBy": (px2ce.target_mode == 'theme_layout' ? 'data-pickles2-theme-editor-contents-area' : px2conf.plugins.px2dt.contents_bowl_name_by),
 					});
+					kaleflower.on('change', (event) => {
+						// 自動保存
+						saveContentsSrc(() => {});
+					});
 
 					resolve();
 				});
@@ -132,21 +141,45 @@ module.exports = function(px2ce){
 	 * 編集したコンテンツを保存する
 	 */
 	function saveContentsSrc(callback){
-		const codes = {
-			'kflow': kaleflower.get(),
-			'css': '',
-			'js': '',
-		};
+		callback = callback || function(){};
+		autoSaveStatur.callbackPool.push(callback);
 
-		px2ce.gpiBridge(
-			{
-				'api': 'kflowSaveContentsSrc',
-				'page_path': px2ce.page_path,
-				'codes': codes,
-			},
-			function(result){
-				callback(result);
-			}
-		);
+		if(autoSaveStatur.isProgress){
+			return;
+		}
+
+		function saveContentsSrcExecute(){
+
+			autoSaveStatur.isProgress = true;
+
+			const currentCallbacks = autoSaveStatur.callbackPool;
+			autoSaveStatur.callbackPool = [];
+
+			const codes = {
+				'kflow': kaleflower.get(),
+				'css': '',
+				'js': '',
+			};
+
+			px2ce.gpiBridge(
+				{
+					'api': 'kflowSaveContentsSrc',
+					'page_path': px2ce.page_path,
+					'codes': codes,
+				},
+				function(result){
+					setTimeout(() => {
+						autoSaveStatur.isProgress = false;
+						currentCallbacks.forEach(currentCallback => currentCallback(result) );
+
+						if(autoSaveStatur.callbackPool.length){
+							saveContentsSrcExecute();
+							return;
+						}
+					}, 2000); // クールダウンタイム
+				}
+			);
+		}
+		saveContentsSrcExecute();
 	}
 }
