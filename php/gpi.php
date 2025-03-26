@@ -71,8 +71,21 @@ class gpi{
 
 				$bootup['current_page_info'] = $this->current_page_info;
 
-				// コンテンツテンプレート
+				// navigationInfo
 				$px = $this->px2ce->px();
+				if( is_object($px) ){
+					$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $px );
+					$bootup['navigationInfo'] = $px2dthelper->get_navigation_info( $this->current_page_info->path );
+				}else{
+					$bootup['navigationInfo'] = $this->px2query(
+						$this->current_page_info->path.'?PX=px2dthelper.get.navigation_info',
+						array(
+							"output" => "json"
+						)
+					);
+				}
+
+				// コンテンツテンプレート
 				if( is_object($px) ){
 					$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $px );
 					$cTpl = new \tomk79\pickles2\px2dthelper\fncs\contentsTemplate\contentsTemplate( $px2dthelper, $px );

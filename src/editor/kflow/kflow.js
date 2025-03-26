@@ -104,11 +104,20 @@ module.exports = function(px2ce){
 					})());
 
 					const container = $canvas.find('.pickles2-contents-editor__kflow').get(0);
+					const navigationInfo = px2ce.getBootupInfomations().navigationInfo;
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
 						"scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
 						"contentsAreaSelector": (px2ce.target_mode == 'theme_layout' ? '[data-pickles2-theme-editor-contents-area]' : px2conf.plugins.px2dt.contents_area_selector),
 						"contentsContainerNameBy": (px2ce.target_mode == 'theme_layout' ? 'data-pickles2-theme-editor-contents-area' : px2conf.plugins.px2dt.contents_bowl_name_by),
+						"extra": {
+							'config': px2conf,
+							'pageInfo': navigationInfo.page_info,
+							'breadcrumb': navigationInfo.breadcrumb_info,
+							'parent': navigationInfo.parent_info,
+							'bros': navigationInfo.bros_info,
+							'children': navigationInfo.children_info,
+						},
 					});
 					kaleflower.on('change', (event) => {
 						// 自動保存
