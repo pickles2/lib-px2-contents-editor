@@ -55,7 +55,8 @@ class main {
 	private $php_command;
 
 	/** Pickles 2 プロジェクト環境情報 */
-	private $pjInfo;
+	private $pjInfo,
+		$navigationInfo;
 	private $px2conf,
 		$pageInfo,
 		$documentRoot,
@@ -143,6 +144,7 @@ class main {
 		$this->pjInfo = $pjInfo;
 		$this->px2conf = $pjInfo['conf'];
 		$this->pageInfo = $pjInfo['pageInfo'];
+		$this->navigationInfo = $pjInfo['navigationInfo'];
 		$this->documentRoot = $pjInfo['documentRoot'];
 		$this->contRoot = $pjInfo['contRoot'];
 		$this->realpathDataDir = $pjInfo['realpathDataDir'];
@@ -571,6 +573,7 @@ class main {
 			$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $this->px );
 			$pjInfo['conf'] = $this->px->conf();
 			$pjInfo['pageInfo'] = $this->px->site()->get_page_info( $this->page_path );
+			$pjInfo['navigationInfo'] = $px2dthelper->get_navigation_info( $this->page_path );
 			$pjInfo['contRoot'] = $this->px->get_path_controot();
 			$pjInfo['documentRoot'] = $this->px->get_realpath_docroot();
 			$pjInfo['realpathFiles'] = $px2dthelper->realpath_files( $this->page_path );
@@ -593,6 +596,7 @@ class main {
 			if( is_object($allData) ){
 				$pjInfo['conf'] = $allData->config;
 				$pjInfo['pageInfo'] = $allData->page_info;
+				$pjInfo['navigationInfo'] = $allData->navigation_info ?? null;
 				$pjInfo['contRoot'] = $allData->path_controot;
 				$pjInfo['documentRoot'] = $allData->realpath_docroot;
 				$pjInfo['realpathFiles'] = $allData->realpath_files;
@@ -982,6 +986,14 @@ class main {
 				// px2ce.log(msg);
 			},
 			'noimagePlaceholder' => $this->options['noimagePlaceholder'] ?? null,
+			'extra' => array(
+				'config' => $this->px2conf,
+				'pageInfo' => $this->pageInfo,
+				'breadcrumb' => $this->navigationInfo->breadcrumb_info,
+				'parent' => $this->navigationInfo->parent_info,
+				'bros' => $this->navigationInfo->bros_info,
+				'children' => $this->navigationInfo->children_info,
+			),
 		);
 
 		return $broccoliInitializeOptions;

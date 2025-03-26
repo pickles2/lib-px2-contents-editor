@@ -156,6 +156,7 @@ pickles2ContentsEditor.init(
 
 - デフォルトエディタ: 画像以外のファイルを挿入できるようになった。
 - `theme_id` オプション、 `layout_id` オプションを追加した。(`target_mode=theme_layout` のときに、 `page_path` オプションから指定することは非推奨になった)
+- Broccoli編集時に、モジュールから `_ENV.extra.config`、 `_ENV.extra.pageInfo`、 `_ENV.extra.breadcrumb`、 `_ENV.extra.parent`、 `_ENV.extra.bros`、 `_ENV.extra.children` を参照できるようになった。
 - その他のいくつかの不具合の修正。
 
 ### pickles2/lib-px2-contents-editor v2.2.7 (2024年12月25日)
