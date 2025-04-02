@@ -148,7 +148,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.8 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.8 (2025年4月3日)
 
 - デフォルトエディタ: 画像以外のファイルを挿入できるようになった。
 - `theme_id` オプション、 `layout_id` オプションを追加した。(`target_mode=theme_layout` のときに、 `page_path` オプションから指定することは非推奨になった)
