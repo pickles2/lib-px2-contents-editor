@@ -5,6 +5,8 @@ module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
 	var it79 = require('iterate79');
+	const Twig = require('twig');
+
 	var px2style = px2ce.px2style;
 	var $canvas = $(px2ce.getElmCanvas());
 	var Promise = require('es6-promise').Promise;
@@ -58,6 +60,34 @@ module.exports = function(px2ce){
 	}
 
 	/**
+	 * Twig テンプレートにデータをバインドする
+	 */
+	function bindTwig(tpl, data, funcs){
+		let rtn = '';
+		let twig;
+		try {
+			twig = Twig.twig;
+
+			if(funcs && typeof(funcs) == typeof({})){
+				Object.keys(funcs).forEach( ($fncName, index) => {
+					const $callback = funcs[$fncName];
+					Twig.extendFunction($fncName, $callback);
+				});
+			}
+
+			rtn = new twig({
+				'data': tpl,
+				'autoescape': true,
+			}).render(data);
+		} catch(e) {
+			const errorMessage = 'TemplateEngine "Twig" Rendering ERROR.';
+			console.error( errorMessage );
+			rtn = errorMessage;
+		}
+		return rtn;
+	}
+
+	/**
 	 * 初期化
 	 */
 	this.init = function(editorOption, callback){
@@ -105,18 +135,27 @@ module.exports = function(px2ce){
 
 					const container = $canvas.find('.pickles2-contents-editor__kflow').get(0);
 					const navigationInfo = px2ce.getBootupInfomations().navigationInfo;
+					const extraValues = {
+						'site': {
+							'name': px2conf.name,
+						},
+						'pageInfo': navigationInfo.page_info,
+						'breadcrumb': navigationInfo.breadcrumb_info,
+						'parent': navigationInfo.parent_info,
+						'bros': navigationInfo.bros_info,
+						'children': navigationInfo.children_info,
+					};
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
 						"scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
 						"contentsAreaSelector": (px2ce.target_mode == 'theme_layout' ? '[data-pickles2-theme-editor-contents-area]' : px2conf.plugins.px2dt.contents_area_selector),
 						"contentsContainerNameBy": (px2ce.target_mode == 'theme_layout' ? 'data-pickles2-theme-editor-contents-area' : px2conf.plugins.px2dt.contents_bowl_name_by),
-						"extra": {
-							'config': px2conf,
-							'pageInfo': navigationInfo.page_info,
-							'breadcrumb': navigationInfo.breadcrumb_info,
-							'parent': navigationInfo.parent_info,
-							'bros': navigationInfo.bros_info,
-							'children': navigationInfo.children_info,
+						"extra": extraValues,
+						"finalize": (contents) => {
+							Object.keys(contents.html).forEach((key) => {
+								contents.html[key] = bindTwig(contents.html[key], extraValues);
+							});
+							return contents;
 						},
 					});
 					kaleflower.on('change', (event) => {

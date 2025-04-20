@@ -23,7 +23,7 @@
 			<template><![CDATA[<div class="custom-component-002">
 	<div class="custom-component-002__content">
 		<div class="custom-component-002__content-inner">
-			<p>custom-component-002 ({{_ENV.extra.config.name}}/{{_ENV.extra.pageInfo.title}})</p>
+			<p>custom-component-002 ({{_ENV.extra.site.name}}/{{_ENV.extra.pageInfo.title}})</p>
 		</div>
 	</div>
 </div>]]></template>
