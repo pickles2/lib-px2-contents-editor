@@ -75,10 +75,10 @@ class gpi{
 				$px = $this->px2ce->px();
 				if( is_object($px) ){
 					$px2dthelper = new \tomk79\pickles2\px2dthelper\main( $px );
-					$bootup['navigationInfo'] = $px2dthelper->get_navigation_info( $this->current_page_info->path ?? '/' );
+					$bootup['navigationInfo'] = $px2dthelper->get_navigation_info( $this->current_page_info->path ?? '/', array('filter' => false,) );
 				}else{
 					$bootup['navigationInfo'] = $this->px2query(
-						($this->current_page_info->path ?? '/').'?PX=px2dthelper.get.navigation_info',
+						($this->current_page_info->path ?? '/').'?PX=px2dthelper.get.navigation_info&filter=false',
 						array(
 							"output" => "json"
 						)
