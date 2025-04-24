@@ -136,9 +136,7 @@ module.exports = function(px2ce){
 					const container = $canvas.find('.pickles2-contents-editor__kflow').get(0);
 					const navigationInfo = px2ce.getBootupInfomations().navigationInfo;
 					const extraValues = {
-						'site': {
-							'name': px2conf.name,
-						},
+						'config': px2conf,
 						'pageInfo': navigationInfo.page_info,
 						'breadcrumb': navigationInfo.breadcrumb_info,
 						'parent': navigationInfo.parent_info,
