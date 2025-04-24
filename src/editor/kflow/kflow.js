@@ -138,10 +138,6 @@ module.exports = function(px2ce){
 					const extraValues = {
 						'site': {
 							'name': px2conf.name,
-							'tagline': px2conf.tagline,
-							'copyright': px2conf.copyright,
-							'scheme': px2conf.scheme,
-							'domain': px2conf.domain,
 						},
 						'pageInfo': navigationInfo.page_info,
 						'breadcrumb': navigationInfo.breadcrumb_info,

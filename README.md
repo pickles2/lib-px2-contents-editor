@@ -151,7 +151,6 @@ pickles2ContentsEditor.init(
 ### pickles2/lib-px2-contents-editor v2.3.0 (リリース日未定)
 
 - Kaleflowerコンテンツの編集機能を追加した。
-- Broccoli編集時に、モジュールから `_ENV.extra.site` を参照できるようになった。
 
 ### pickles2/lib-px2-contents-editor v2.2.8 (2025年4月3日)
 

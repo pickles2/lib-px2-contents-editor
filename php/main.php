@@ -988,13 +988,6 @@ class main {
 			'noimagePlaceholder' => $this->options['noimagePlaceholder'] ?? null,
 			'extra' => array(
 				'config' => $this->px2conf,
-				'site' => (object) array(
-					'name' => $this->px2conf->name ?? '',
-					'tagline' => $this->px2conf->tagline ?? '',
-					'copyright' => $this->px2conf->copyright ?? '',
-					'scheme' => $this->px2conf->scheme ?? '',
-					'domain' => $this->px2conf->domain ?? '',
-				),
 				'pageInfo' => $this->pageInfo,
 				'breadcrumb' => $this->navigationInfo->breadcrumb_info,
 				'parent' => $this->navigationInfo->parent_info,
