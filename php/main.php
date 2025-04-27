@@ -975,6 +975,10 @@ class main {
 				'parent' => $this->navigationInfo->parent_info,
 				'bros' => $this->navigationInfo->bros_info,
 				'children' => $this->navigationInfo->children_info,
+				'globalMenu' => $this->navigationInfo->global_menu_info ?? null,
+				'shoulderMenu' => $this->navigationInfo->shoulder_menu_info ?? null,
+				'categoryTop' => $this->navigationInfo->category_top_info ?? null,
+				'categorySubMenu' => $this->navigationInfo->category_sub_menu_info ?? null,
 			),
 		);
 
