@@ -137,6 +137,7 @@ module.exports = function(px2ce){
 					const navigationInfo = px2ce.getBootupInfomations().navigationInfo;
 					const extraValues = {
 						'config': px2conf,
+						'topPageInfo': navigationInfo.top_page_info,
 						'pageInfo': navigationInfo.page_info,
 						'breadcrumb': navigationInfo.breadcrumb_info,
 						'parent': navigationInfo.parent_info,
