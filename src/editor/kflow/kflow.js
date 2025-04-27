@@ -142,6 +142,10 @@ module.exports = function(px2ce){
 						'parent': navigationInfo.parent_info,
 						'bros': navigationInfo.bros_info,
 						'children': navigationInfo.children_info,
+						'globalMenu': navigationInfo.global_menu_info || null,
+						'shoulderMenu': navigationInfo.shoulder_menu_info || null,
+						'categoryTop': navigationInfo.category_top_info || null,
+						'categorySubMenu': navigationInfo.category_sub_menu_info || null,
 					};
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
