@@ -148,6 +148,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.9 (リリース日未定)
+
+- 依存パッケージの更新。
+
 ### pickles2/lib-px2-contents-editor v2.2.8 (2025年4月3日)
 
 - デフォルトエディタ: 画像以外のファイルを挿入できるようになった。
