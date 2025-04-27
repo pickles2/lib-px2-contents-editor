@@ -988,6 +988,7 @@ class main {
 			'noimagePlaceholder' => $this->options['noimagePlaceholder'] ?? null,
 			'extra' => array(
 				'config' => $this->px2conf,
+				'topPageInfo' => $this->navigationInfo->top_page_info,
 				'pageInfo' => $this->pageInfo,
 				'breadcrumb' => $this->navigationInfo->breadcrumb_info,
 				'parent' => $this->navigationInfo->parent_info,
