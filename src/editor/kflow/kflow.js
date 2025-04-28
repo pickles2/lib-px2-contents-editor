@@ -147,6 +147,9 @@ module.exports = function(px2ce){
 						'shoulderMenu': navigationInfo.shoulder_menu_info || null,
 						'categoryTop': navigationInfo.category_top_info || null,
 						'categorySubMenu': navigationInfo.category_sub_menu_info || null,
+						'href': function(path){
+							return path.replace(/^\/*/, '/');
+						},
 					};
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
