@@ -150,6 +150,53 @@ module.exports = function(px2ce){
 						'href': function(path){
 							return path.replace(/^\/*/, '/');
 						},
+						'getCurrentPageInfo': function(){
+							return navigationInfo.page_info;
+						},
+						'getPageInfo': function($path){
+							const newPage = {
+								...navigationInfo.page_info,
+								title: 'my page',
+								title_label: 'my page',
+								title_h1: 'my page',
+								title_breadcrumb: 'my page',
+								title_full: 'my page',
+							};
+							return newPage;
+						},
+						'getBros': function($path, $options){
+							return [
+								navigationInfo.page_info.id,
+								navigationInfo.page_info.id + 1,
+								navigationInfo.page_info.id + 2,
+								navigationInfo.page_info.id + 3,
+							];
+						},
+						'getChildren': function($path, $options){
+							return [
+								navigationInfo.page_info.id,
+								navigationInfo.page_info.id + 1,
+								navigationInfo.page_info.id + 2,
+								navigationInfo.page_info.id + 3,
+							];
+						},
+						'getCategoryTop': function($path){
+							return navigationInfo.category_top_info;
+						},
+						'getGlobalMenu': function(){
+							const globalMenu = [];
+							navigationInfo.global_menu_info.forEach((item) => {
+								globalMenu.push(item.id);
+							});
+							return globalMenu;
+						},
+						'getShoulderMenu': function(){
+							const shoulderMenu = [];
+							navigationInfo.shoulder_menu_info.forEach((item) => {
+								shoulderMenu.push(item.id);
+							});
+							return shoulderMenu;
+						},
 					};
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
