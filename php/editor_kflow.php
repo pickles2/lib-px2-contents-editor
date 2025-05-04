@@ -74,7 +74,7 @@ class editor_kflow{
 
 		// Theme modules for Kaleflower
 		if( $this->px2ce->get_target_mode() == 'theme_layout' ){
-			$realpath_kflow_components_dir = $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$this->px2ce->get_theme_id().'/kflow/modules/');
+			$realpath_kflow_components_dir = $this->px2ce->fs()->get_realpath($this->px2ce->get_document_root().$this->px2ce->get_cont_root().$this->px2ce->get_theme_id().'/theme_settings/kflow/modules/');
 			if( is_dir($realpath_kflow_components_dir) ){
 				$kflow_component_files = $this->px2ce->fs()->ls($realpath_kflow_components_dir);
 				foreach( $kflow_component_files as $kflow_component_file ){
