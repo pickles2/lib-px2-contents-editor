@@ -148,7 +148,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.2.9 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.2.9 (2025年5月9日)
 
 - Broccoli編集時に、モジュールから `_ENV.extra.topPageInfo`、 `_ENV.extra.globalMenu`、 `_ENV.extra.shoulderMenu`、 `_ENV.extra.categoryTop`、 `_ENV.extra.categorySubMenu` を参照できるようになった。
 - テーマレイアウトをBroccoli編集した場合に、HTMLが更新されない不具合を修正。
