@@ -842,7 +842,7 @@ class main {
 		$pathModuleDir = $px2conf->plugins->px2dt->path_module_templates_dir ?? null;
 		if( $this->target_mode == 'theme_layout' ){
 			// テーマ編集では `broccoli_module_packages` をロードする。
-			$pathModuleDir = $this->documentRoot.$this->theme_id.'/broccoli_module_packages/';
+			$pathModuleDir = $this->documentRoot.urlencode($this->theme_id).'/broccoli_module_packages/';
 		}
 		if( !is_string($pathModuleDir) ){
 			// モジュールフォルダの指定がない場合
@@ -905,7 +905,7 @@ class main {
 					}
 				}
 				$template = '<'.'%- body %'.'>';
-				$pathThemeLayout = $this->documentRoot.$this->theme_id.'/broccoli_module_packages/_layout.html';
+				$pathThemeLayout = $this->documentRoot.urlencode($this->theme_id).'/broccoli_module_packages/_layout.html';
 				if(is_file($pathThemeLayout)){
 					$template = file_get_contents( $pathThemeLayout );
 				}else{
@@ -915,7 +915,7 @@ class main {
 				// $fin = $ejs.render($template, {'body': $fin}, {'delimiter': '%'});
 				$fin = str_replace('<'.'%- body %'.'>', $fin, $template);
 
-				$baseDir = $this->documentRoot.$this->theme_id.'/theme_files/';
+				$baseDir = $this->documentRoot.urlencode($this->theme_id).'/theme_files/';
 				$this->fs()->mkdir_r( $baseDir );
 				$CssJs = $this->getModuleCssJsSrc($this->theme_id);
 
@@ -951,11 +951,18 @@ class main {
 			};
 		}
 
+		// --------------------------------------
+		// $pathHtml
+		$pathHtml = $this->fs()->get_realpath($this->contRoot.'/'.$page_content);
+		if( $this->target_mode == 'theme_layout' ){
+			$pathHtml = $this->fs()->get_realpath('/'.urlencode($this->theme_id).'/'.urlencode($this->layout_id).'.html');
+		}
+
 		$broccoliInitializeOptions = array(
 			'appMode' => $this->get_app_mode() ,
 			'paths_module_template' => $pathsModuleTemplate ,
 			'documentRoot' => $documentRoot,// realpath
-			'pathHtml' => $this->fs()->get_realpath($this->contRoot.'/'.$page_content),
+			'pathHtml' => $pathHtml,
 			'pathResourceDir' => $this->pathResourceDir,
 			'realpathDataDir' =>  $this->realpathDataDir,
 			'contents_bowl_name_by' => $px2conf->plugins->px2dt->contents_bowl_name_by ?? null,
