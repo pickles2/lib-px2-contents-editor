@@ -505,7 +505,7 @@ module.exports = function(px2ce){
 								<img class="pickles2-contents-editor__default-image-preview-image" />
 								<div class="pickles2-contents-editor__default-image-preview-no-image"></div>
 							</div>
-							<input type="file" id="insert-image-file" name="insert-image-file" value="" accept="image/png, image/jpeg, image/gif" />
+							<input type="file" id="insert-image-file" name="insert-image-file" value="" />
 						</div>
 					</li>
 					<li class="px2-form-input-list__li">

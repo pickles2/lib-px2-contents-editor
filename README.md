@@ -148,6 +148,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.2.10 (リリース日未定)
+
+- デフォルトエディタ: 画像以外のファイルを挿入できない場合がる不具合を修正した。
+
 ### pickles2/lib-px2-contents-editor v2.2.9 (2025年5月9日)
 
 - Broccoli編集時に、モジュールから `_ENV.extra.topPageInfo`、 `_ENV.extra.globalMenu`、 `_ENV.extra.shoulderMenu`、 `_ENV.extra.categoryTop`、 `_ENV.extra.categorySubMenu` を参照できるようになった。

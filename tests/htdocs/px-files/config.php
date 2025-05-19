@@ -275,8 +275,17 @@ return call_user_func( function(){
 	//     例: "128M" (128 mega bytes)
 	// -1 を与えた場合、無限(システムリソースの上限まで)に設定されます。
 	// サイトマップやコンテンツなどで、容量の大きなデータを扱う場合に調整してください。
-	// @ini_set( 'memory_limit' , -1 );
+	@ini_set( 'memory_limit' , -1 );
 
+	// [upload_max_filesize], [post_max_size]
+	// PHPのアップロードサイズの上限を設定します。
+	// 正の整数値で上限値(byte)を与えます。
+	//     例: 1000000 (1,000,000 bytes)
+	//     例: "128K" (128 kilo bytes)
+	//     例: "128M" (128 mega bytes)
+	// -1 を与えた場合、無限(システムリソースの上限まで)に設定されます。
+	@ini_set('upload_max_filesize', '50M');
+	@ini_set('post_max_size', '50M');
 
 	return $conf;
 } );
