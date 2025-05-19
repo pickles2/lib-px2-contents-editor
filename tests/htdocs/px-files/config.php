@@ -283,8 +283,7 @@ return call_user_func( function(){
 	//     例: "128M" (128 mega bytes)
 	// -1 を与えた場合、無限(システムリソースの上限まで)に設定されます。
 	// サイトマップやコンテンツなどで、容量の大きなデータを扱う場合に調整してください。
-	// @ini_set( 'memory_limit' , -1 );
-
+	@ini_set( 'memory_limit' , -1 );
 
 	return $conf;
 } );
