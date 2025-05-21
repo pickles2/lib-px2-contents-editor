@@ -36,7 +36,7 @@
         "php": ">=7.3.0",
         "broccoli-html-editor/broccoli-html-editor": "~1.0",
         "broccoli-html-editor/broccoli-field-table": "~0.3",
-        "broccoli-html-editor/kaleflower": "^0.1",
+        "broccoli-html-editor/kaleflower": "~0.2",
         "tomk79/langbank": "~0.3"
     },
     "require-dev": {
