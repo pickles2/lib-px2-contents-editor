@@ -198,6 +198,9 @@ module.exports = function(px2ce){
 							});
 							return shoulderMenu;
 						},
+						'isPageInBreadcrumb': function($page_id){
+							return false;
+						},
 					};
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
