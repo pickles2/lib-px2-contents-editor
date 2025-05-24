@@ -138,6 +138,7 @@ module.exports = function(px2ce){
 					const extraValues = {
 						'config': px2conf,
 						'topPageInfo': navigationInfo.top_page_info,
+						'currentPageInfo': navigationInfo.page_info,
 						'pageInfo': navigationInfo.page_info,
 						'breadcrumb': navigationInfo.breadcrumb_info,
 						'parent': navigationInfo.parent_info,
