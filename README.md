@@ -150,6 +150,7 @@ pickles2ContentsEditor.init(
 
 ### pickles2/lib-px2-contents-editor v2.2.10 (リリース日未定)
 
+- Broccoli編集時に、モジュールから `_ENV.extra.currentPageInfo` を参照できるようになった。
 - デフォルトエディタ: 画像以外のファイルを挿入できない場合がる不具合を修正した。
 
 ### pickles2/lib-px2-contents-editor v2.2.9 (2025年5月9日)
