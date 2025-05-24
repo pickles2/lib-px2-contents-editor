@@ -996,6 +996,7 @@ class main {
 			'extra' => array(
 				'config' => $this->px2conf,
 				'topPageInfo' => $this->navigationInfo->top_page_info,
+				'currentPageInfo' => $this->pageInfo,
 				'pageInfo' => $this->pageInfo,
 				'breadcrumb' => $this->navigationInfo->breadcrumb_info,
 				'parent' => $this->navigationInfo->parent_info,
