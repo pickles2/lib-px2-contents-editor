@@ -22,6 +22,7 @@
 		this.__dirname = __dirname;
 		this.options = {};
 		this.page_path;
+		this.module_id;
 		this.target_mode;
 		this.theme_id;
 		this.layout_id;
@@ -59,13 +60,19 @@
 			this.options.clipboard.get = this.options.clipboard.get || null;
 
 			this.page_path = this.options.page_path;
+			this.module_id = this.options.module_id;
 
 			try {
 				this.page_path = this.page_path.replace( new RegExp('^(alias[0-9]*\\:)?\\/+'), '/' );
 				this.page_path = this.page_path.replace( new RegExp('\\{(?:\\*|\\$)[\s\S]*\\}'), '' );
 			} catch (e) {
 			}
-			if(!this.page_path){
+			if((this.options.target_mode == 'module')){
+				if(!this.module_id){
+					// module_id option is required
+					return false;
+				}
+			}else if(!this.page_path){
 				// page_path option is required
 				return false;
 			}

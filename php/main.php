@@ -35,6 +35,13 @@ class main {
 	 */
 	private $page_path;
 
+	/**
+	 * モジュールID
+	 * `target_mode` が `module` の場合、
+	 * `page_path` の代わりに `$module_id` を受け取る
+	 */
+	private $module_id;
+
 	/** Entry Script path */
 	private $entryScript;
 
@@ -121,11 +128,17 @@ class main {
 		$this->entryScript = $options['entryScript'];
 		$this->target_mode = (strlen($options['target_mode'] ?? '') ? $options['target_mode'] : 'page_content');
 		$this->page_path = $options['page_path'] ?? null;
+		$this->module_id = $options['module_id'] ?? null;
 		$this->theme_id = $options['theme_id'] ?? null;
 		$this->layout_id = $options['layout_id'] ?? null;
 		if( $this->target_mode == 'theme_layout' ){
 			if( (!strlen($this->theme_id ?? '') || !strlen($this->layout_id ?? '')) && !preg_match('/^\/([\s\S]+?)\/([\s\S]+)\.html$/', $this->page_path ?? '') ){
 				// 編集対象テーマレイアウトが指定されていない場合
+				return;
+			}
+		}elseif( $this->target_mode == 'module' ){
+			if( !strlen($this->module_id ?? '') && !preg_match('/^([a-zA-Z0-9\_\-]+?)\:([a-zA-Z0-9\_\-]+?)\/([a-zA-Z0-9\_\-]+?)$/', $this->module_id ?? '') ){
+				// 編集対象モジュールIDが指定されていない場合
 				return;
 			}
 		}else{
