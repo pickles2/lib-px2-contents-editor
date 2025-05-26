@@ -500,20 +500,6 @@ class main {
 	}
 
 	/**
-	 * $pathModuleTemplatesDir
-	 */
-	public function get_path_module_templates_dir(){
-		return $this->pathModuleTemplatesDir;
-	}
-
-	/**
-	 * $pathsModuleTemplate
-	 */
-	public function get_paths_module_template(){
-		return $this->pathsModuleTemplate;
-	}
-
-	/**
 	 * $options
 	 */
 	public function options(){
@@ -823,24 +809,15 @@ class main {
 			return 'html';
 		}
 		if( $this->target_mode == 'module' ){
-			if(!preg_match('/^([a-zA-Z0-9\-\_]*?)\:([a-zA-Z0-9\-\_]*?)\/([a-zA-Z0-9\-\_]*?)$/si', $this->module_id, $matched)){
+			$module_info = $this->get_broccoli_module_info($this->module_id);
+			if(!$module_info){
 				return '.not_exists';
 			}
-			$module_package_id = $matched[1];
-			$module_category_id = $matched[2];
-			$module_module_id = $matched[3];
-			$module_base_dir = null;
-			$path_module_templates_dir = $this->get_path_module_templates_dir();
-			$paths_module_template = $this->get_paths_module_template();
 
-			if($paths_module_template && $paths_module_template->{$module_package_id} ?? null && is_dir($paths_module_template->{$module_package_id} ?? null)){
-				$module_base_dir = $this->px->fs()->get_realpath($paths_module_template->{$module_package_id}.'/');
-			}elseif($path_module_templates_dir && is_dir($path_module_templates_dir.'/'.urlencode($module_package_id).'/')){
-				$module_base_dir = $this->px->fs()->get_realpath($path_module_templates_dir.'/'.urlencode($module_package_id).'/');
-			}else{
+			if(!$module_info->realpath ?? null || !is_dir($module_info->realpath)){
 				return '.not_exists';
 			}
-			$path_module_dir = $this->px->fs()->get_realpath($module_base_dir.'/'.urlencode($module_category_id).'/'.urlencode($module_module_id).'/');
+			$path_module_dir = $this->px->fs()->get_realpath($module_info->realpath.'/'.urlencode($module_info->category_id).'/'.urlencode($module_info->module_id).'/');
 			if(!is_dir($path_module_dir)){
 				return '.not_exists';
 			}
@@ -860,6 +837,31 @@ class main {
 			)
 		);
 		return $data;
+	}
+
+	/**
+	 * Broccoliモジュール情報を取得する
+	 * @param string $module_id モジュールID
+	 * @return object Broccoliモジュール情報
+	 * @note モジュールIDは 'package_id:category_id/module_id' の形式で指定する。
+	 * @note 例: 'my_package:my_category/my_module'
+	 */
+	private function get_broccoli_module_info($module_id){
+		$rtn = (object) array();
+		if(!preg_match('/^([a-zA-Z0-9\-\_]*?)\:([a-zA-Z0-9\-\_]*?)\/([a-zA-Z0-9\-\_]*?)$/si', $module_id, $matched)){
+			return false;
+		}
+		$rtn->package_id = $matched[1];
+		$rtn->category_id = $matched[2];
+		$rtn->module_id = $matched[3];
+		$broccoliInitOptions = $this->createBroccoliInitOptions();
+		$broccoliModulePaths = $broccoliInitOptions['paths_module_template'] ?? null;
+
+		if($broccoliModulePaths[$rtn->package_id] ?? null && is_dir($broccoliModulePaths[$rtn->package_id])){
+			$rtn->realpath = $this->px->fs()->get_realpath($broccoliModulePaths[$rtn->package_id].'/');
+		}
+
+		return $rtn;
 	}
 
 	/**
