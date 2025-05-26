@@ -70,7 +70,9 @@ class main {
 		$contRoot,
 		$realpathDataDir,
 		$pathResourceDir,
-		$realpathFiles;
+		$realpathFiles,
+		$pathModuleTemplatesDir,
+		$pathsModuleTemplate;
 
 	/** オプション */
 	private $options;
@@ -163,6 +165,8 @@ class main {
 		$this->realpathDataDir = $pjInfo['realpathDataDir'];
 		$this->pathResourceDir = $pjInfo['pathResourceDir'];
 		$this->realpathFiles = $pjInfo['realpathFiles'];
+		$this->pathModuleTemplatesDir = $pjInfo['conf']->plugins->px2dt->path_module_templates_dir ?? null;
+		$this->pathsModuleTemplate = $pjInfo['conf']->plugins->px2dt->paths_module_template ?? null;
 
 		$this->find_autoload_custom_fields();
 
@@ -496,6 +500,20 @@ class main {
 	}
 
 	/**
+	 * $pathModuleTemplatesDir
+	 */
+	public function get_path_module_templates_dir(){
+		return $this->pathModuleTemplatesDir;
+	}
+
+	/**
+	 * $pathsModuleTemplate
+	 */
+	public function get_paths_module_template(){
+		return $this->pathsModuleTemplate;
+	}
+
+	/**
 	 * $options
 	 */
 	public function options(){
@@ -803,6 +821,37 @@ class main {
 				return 'html.gui';
 			}
 			return 'html';
+		}
+		if( $this->target_mode == 'module' ){
+			if(!preg_match('/^([a-zA-Z0-9\-\_]*?)\:([a-zA-Z0-9\-\_]*?)\/([a-zA-Z0-9\-\_]*?)$/si', $this->module_id, $matched)){
+				return '.not_exists';
+			}
+			$module_package_id = $matched[1];
+			$module_category_id = $matched[2];
+			$module_module_id = $matched[3];
+			$module_base_dir = null;
+			$path_module_templates_dir = $this->get_path_module_templates_dir();
+			$paths_module_template = $this->get_paths_module_template();
+
+			if($paths_module_template && $paths_module_template->{$module_package_id} ?? null && is_dir($paths_module_template->{$module_package_id} ?? null)){
+				$module_base_dir = $this->px->fs()->get_realpath($paths_module_template->{$module_package_id}.'/');
+			}elseif($path_module_templates_dir && is_dir($path_module_templates_dir.'/'.urlencode($module_package_id).'/')){
+				$module_base_dir = $this->px->fs()->get_realpath($path_module_templates_dir.'/'.urlencode($module_package_id).'/');
+			}else{
+				return '.not_exists';
+			}
+			$path_module_dir = $this->px->fs()->get_realpath($module_base_dir.'/'.urlencode($module_category_id).'/'.urlencode($module_module_id).'/');
+			if(!is_dir($path_module_dir)){
+				return '.not_exists';
+			}
+			if(is_file($path_module_dir.'src/template.html.kflow')){
+				return 'kflow';
+			}elseif(is_file($path_module_dir.'template.html.twig')){
+				return 'twig';
+			}elseif(is_file($path_module_dir.'template.html')){
+				return 'html';
+			}
+			return '.not_exists';
 		}
 		$data = $this->px2query(
 			$this->page_path.'?PX=px2dthelper.check_editor_mode',
