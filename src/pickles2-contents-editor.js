@@ -67,12 +67,7 @@
 				this.page_path = this.page_path.replace( new RegExp('\\{(?:\\*|\\$)[\s\S]*\\}'), '' );
 			} catch (e) {
 			}
-			if((this.options.target_mode == 'module')){
-				if(!this.module_id){
-					// module_id option is required
-					return false;
-				}
-			}else if(!this.page_path){
+			if(!this.page_path){
 				// page_path option is required
 				return false;
 			}
@@ -114,6 +109,7 @@
 						// config
 						serverConfig = bootupInfomations.conf;
 						_this.target_mode = serverConfig.target_mode;
+						_this.module_id = serverConfig.module_id;
 						_this.theme_id = serverConfig.theme_id;
 						_this.layout_id = serverConfig.layout_id;
 						it1.next(data);
@@ -134,7 +130,7 @@
 
 						if( !bootupInfomations.permission ){
 							// 権限が不足している場合
-							$canvas.html('<p>権限が不足しています。</p>');
+							$canvas.html('<p>Insufficient permissions.</p>');
 							editor = new (require('./editor/not_permitted/not_permitted.js'))(_this);
 							editor.init(editorOption, function(){
 								it1.next(data);
@@ -142,53 +138,87 @@
 							return;
 						}
 
-						switch(editorMode){
-							case '.page_not_exists':
-								// ページ自体が存在しない場合
-								$canvas.html('<p>ページが存在しません。</p>');
-								editor = new (require('./editor/not_exists/not_exists.js'))(_this);
-								editor.init(editorOption, function(){
-									it1.next(data);
-								});
-								break;
+						if(_this.target_mode == 'module'){
+							switch(editorMode){
+								case '.page_not_exists':
+								case '.not_exists':
+									// コンテンツが存在しない場合
+									$canvas.html('<p>Content does not exist.</p>');
+									editor = new (require('./moduleEditor/not_exists/not_exists.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
 
-							case '.not_exists':
-								// コンテンツが存在しない場合
-								$canvas.html('<p>コンテンツが存在しません。</p>');
-								editor = new (require('./editor/not_exists/not_exists.js'))(_this);
-								editor.init(editorOption, function(){
-									it1.next(data);
-								});
-								break;
+								case 'kflow':
+									// ビジュアルエディタ(kflow)を起動
+									$canvas.html('<p>Start the visual editor.</p>');
+									editor = new (require('./moduleEditor/kflow/kflow.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
 
-							case 'html.gui':
-								// ブロックエディタを起動
-								$canvas.html('<p>ブロックエディタを起動します。</p>');
-								editor = new (require('./editor/broccoli/broccoli.js'))(_this);
-								editor.init(editorOption, function(){
-									it1.next(data);
-								});
-								break;
+								case 'html':
+								case 'twig':
+								default:
+									// defaultテキストエディタを起動
+									$canvas.html('<p>Start the text editor.</p>');
+									editor = new (require('./moduleEditor/default/default.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
+							}
+						}else{
+							switch(editorMode){
+								case '.page_not_exists':
+									// ページ自体が存在しない場合
+									$canvas.html('<p>Page does not exist.</p>');
+									editor = new (require('./editor/not_exists/not_exists.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
 
-							case 'kflow':
-								// ブロックエディタ(kflow)を起動
-								$canvas.html('<p>ブロックエディタ Kaleflower を起動します。</p>');
-								editor = new (require('./editor/kflow/kflow.js'))(_this);
-								editor.init(editorOption, function(){
-									it1.next(data);
-								});
-								break;
+								case '.not_exists':
+									// コンテンツが存在しない場合
+									$canvas.html('<p>Content does not exist.</p>');
+									editor = new (require('./editor/not_exists/not_exists.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
 
-							case 'html':
-							case 'md':
-							default:
-								// defaultテキストエディタを起動
-								$canvas.html('<p>テキストエディタを起動します。</p>');
-								editor = new (require('./editor/default/default.js'))(_this);
-								editor.init(editorOption, function(){
-									it1.next(data);
-								});
-								break;
+								case 'html.gui':
+									// ブロックエディタを起動
+									$canvas.html('<p>Start the block editor.</p>');
+									editor = new (require('./editor/broccoli/broccoli.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
+
+								case 'kflow':
+									// ビジュアルエディタ(kflow)を起動
+									$canvas.html('<p>Start the visual editor.</p>');
+									editor = new (require('./editor/kflow/kflow.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
+
+								case 'html':
+								case 'md':
+								default:
+									// defaultテキストエディタを起動
+									$canvas.html('<p>Start the text editor.</p>');
+									editor = new (require('./editor/default/default.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
+							}
 						}
 					} ,
 					function(it1, data){

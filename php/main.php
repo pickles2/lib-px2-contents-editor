@@ -35,13 +35,6 @@ class main {
 	 */
 	private $page_path;
 
-	/**
-	 * モジュールID
-	 * `target_mode` が `module` の場合、
-	 * `page_path` の代わりに `$module_id` を受け取る
-	 */
-	private $module_id;
-
 	/** Entry Script path */
 	private $entryScript;
 
@@ -57,6 +50,13 @@ class main {
 	 * `this.page_path` をパースして生成。
 	 */
 	private $layout_id;
+
+	/**
+	 * モジュールID
+	 * `target_mode` が `module` の場合、
+	 * `page_path` の代わりに `$module_id` を受け取る
+	 */
+	private $module_id;
 
 	/** PHPコマンド設定 */
 	private $php_command;
@@ -226,6 +226,13 @@ class main {
 	 */
 	public function get_layout_id(){
 		return $this->layout_id;
+	}
+
+	/**
+	 * $module_id を取得
+	 */
+	public function get_module_id(){
+		return $this->module_id;
 	}
 
 	/**

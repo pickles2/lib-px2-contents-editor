@@ -45,6 +45,8 @@ class gpi{
 				if($bootup['conf']['target_mode'] == 'theme_layout'){
 					$bootup['conf']['theme_id'] = $this->px2ce->get_theme_id();
 					$bootup['conf']['layout_id'] = $this->px2ce->get_layout_id();
+				}elseif($bootup['conf']['target_mode'] == 'module'){
+					$bootup['conf']['module_id'] = $this->px2ce->get_module_id();
 				}
 
 				$bootup['languageCsv'] = file_get_contents( __DIR__.'/../data/language.csv' );
