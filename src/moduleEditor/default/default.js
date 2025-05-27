@@ -7,7 +7,7 @@ module.exports = function(px2ce){
 	var dateformat = require('dateformat');
 	var it79 = require('iterate79');
 	var $canvas = $(px2ce.getElmCanvas());
-	var page_path = px2ce.page_path;
+	var module_id = px2ce.module_id;
 	var current_tab = 'html';
 	var _imgDummy = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYyMCIgaGVpZ2h0PSIxMDgwIiB2aWV3Qm94PSIwIDAgMTYyMCAxMDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTYyMCIgaGVpZ2h0PSIxMDgwIiBmaWxsPSIjOTk5OTk5IiBmaWxsLW9wYWNpdHk9IjAuMyIvPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfMjExMF80NDYzKSI+CjxwYXRoIGQ9Ik03NzIuMjg4IDQ5Mi44MTJDNzcyLjI4OCA1MDAuMzIxIDc2OS4zMDUgNTA3LjUyMyA3NjMuOTk1IDUxMi44MzJDNzU4LjY4NiA1MTguMTQyIDc1MS40ODQgNTIxLjEyNSA3NDMuOTc1IDUyMS4xMjVDNzM2LjQ2NiA1MjEuMTI1IDcyOS4yNjUgNTE4LjE0MiA3MjMuOTU1IDUxMi44MzJDNzE4LjY0NiA1MDcuNTIzIDcxNS42NjMgNTAwLjMyMSA3MTUuNjYzIDQ5Mi44MTJDNzE1LjY2MyA0ODUuMzA0IDcxOC42NDYgNDc4LjEwMiA3MjMuOTU1IDQ3Mi43OTNDNzI5LjI2NSA0NjcuNDgzIDczNi40NjYgNDY0LjUgNzQzLjk3NSA0NjQuNUM3NTEuNDg0IDQ2NC41IDc1OC42ODYgNDY3LjQ4MyA3NjMuOTk1IDQ3Mi43OTNDNzY5LjMwNSA0NzguMTAyIDc3Mi4yODggNDg1LjMwNCA3NzIuMjg4IDQ5Mi44MTJaIiBmaWxsPSIjQUFBQUFBIiBmaWxsLW9wYWNpdHk9IjAuNyIvPgo8cGF0aCBkPSJNNjk2Ljc4OCA0MDcuODc1QzY4Ni43NzYgNDA3Ljg3NSA2NzcuMTc0IDQxMS44NTIgNjcwLjA5NCA0MTguOTMyQzY2My4wMTUgNDI2LjAxMSA2NTkuMDM4IDQzNS42MTMgNjU5LjAzOCA0NDUuNjI1VjYzNC4zNzVDNjU5LjAzOCA2NDQuMzg3IDY2My4wMTUgNjUzLjk4OSA2NzAuMDk0IDY2MS4wNjhDNjc3LjE3NCA2NjguMTQ4IDY4Ni43NzYgNjcyLjEyNSA2OTYuNzg4IDY3Mi4xMjVIOTIzLjI4OEM5MzMuMyA2NzIuMTI1IDk0Mi45MDIgNjY4LjE0OCA5NDkuOTgxIDY2MS4wNjhDOTU3LjA2MSA2NTMuOTg5IDk2MS4wMzggNjQ0LjM4NyA5NjEuMDM4IDYzNC4zNzVWNDQ1LjYyNUM5NjEuMDM4IDQzNS42MTMgOTU3LjA2MSA0MjYuMDExIDk0OS45ODEgNDE4LjkzMkM5NDIuOTAyIDQxMS44NTIgOTMzLjMgNDA3Ljg3NSA5MjMuMjg4IDQwNy44NzVINjk2Ljc4OFpNOTIzLjI4OCA0MjYuNzVDOTI4LjI5NCA0MjYuNzUgOTMzLjA5NSA0MjguNzM5IDkzNi42MzQgNDMyLjI3OEM5NDAuMTc0IDQzNS44MTggOTQyLjE2MyA0NDAuNjE5IDk0Mi4xNjMgNDQ1LjYyNVY1NjguMzEyTDg3MC44NzIgNTMxLjU2M0M4NjkuMTAyIDUzMC42NzYgODY3LjA5OCA1MzAuMzY5IDg2NS4xNDMgNTMwLjY4NEM4NjMuMTg5IDUzMC45OTkgODYxLjM4MyA1MzEuOTIgODU5Ljk4MSA1MzMuMzE4TDc4OS45NTUgNjAzLjM0NEw3MzkuNzQ3IDU2OS44OThDNzM3LjkzNCA1NjguNjkxIDczNS43NiA1NjguMTQ4IDczMy41OTMgNTY4LjM2MkM3MzEuNDI2IDU2OC41NzUgNzI5LjM5OSA1NjkuNTMxIDcyNy44NTYgNTcxLjA2OEw2NzcuOTEzIDYxNS41VjQ0NS42MjVDNjc3LjkxMyA0NDAuNjE5IDY3OS45MDEgNDM1LjgxOCA2ODMuNDQxIDQzMi4yNzhDNjg2Ljk4MSA0MjguNzM5IDY5MS43ODIgNDI2Ljc1IDY5Ni43ODggNDI2Ljc1SDkyMy4yODhaIiBmaWxsPSIjQUFBQUFBIiBmaWxsLW9wYWNpdHk9IjAuNyIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzIxMTBfNDQ2MyI+CjxyZWN0IHdpZHRoPSIzMDIiIGhlaWdodD0iMzAyIiBmaWxsPSJ3aGl0ZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjU5IDM4OSkiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K';
 	var droppedFileList = [];
@@ -25,10 +25,7 @@ module.exports = function(px2ce){
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
-	var $iframe,
-		$elmCanvas,
-		$elmEditor,
-		// $elmBtns,
+	var $elmEditor,
 		$elmTextareas,
 		$elmTabs;
 
@@ -38,64 +35,6 @@ module.exports = function(px2ce){
 	var isSaving = false,
 		isAutoSaveReserved = false;
 
-	function getCanvasPageUrl(){
-		var rtn = getPreviewUrl();
-		var hash = '';
-		var query = '';
-		if(rtn.match(/^([\s\S]*?)\#([\s\S]*)$/g)){
-			rtn = RegExp.$1;
-			hash = RegExp.$2;
-		}
-		if(rtn.match(/^([\s\S]*?)\?([\s\S]*)$/g)){
-			rtn = RegExp.$1;
-			query = RegExp.$2;
-		}
-		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=default';
-		rtn += (hash.length ? '#'+hash : '');
-		return rtn;
-	}
-	function getPreviewUrl(){
-		if( px2ce.target_mode == 'theme_layout' ){
-			var page_path = '/index.html';
-			if( pagesByLayout.length ){
-				page_path = pagesByLayout[0].path;
-			}
-			var pathname = px2conf.path_controot + page_path;
-			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
-			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
-			return px2ce.options.preview.origin + pathname;
-		}
-		var pathname = px2conf.path_controot + px2ce.page_path;
-		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-		var rtn = px2ce.options.preview.origin + pathname;
-		return rtn;
-	}
-	function toggleWordWrapMode(elmBtn){
-		useWrapMode = !useWrapMode;
-		if( useWrapMode ){
-			$(elmBtn).addClass('px2-btn--toggle-on');
-		}else{
-			$(elmBtn).removeClass('px2-btn--toggle-on');
-		}
-		setWordWrapMode(useWrapMode);
-		return;
-	}
-	function setWordWrapMode(wrapTo){
-		useWrapMode = !!wrapTo;
-		if( editorLib == 'ace' ){
-			for(var i in $elmTextareas){
-				$elmTextareas[i].getSession().setUseWrapMode(useWrapMode);
-			}
-		}else{
-			for(var i in $elmTextareas){
-				$elmTextareas[i].css({
-					'white-space': (useWrapMode ? 'pre-wrap' : 'pre')
-				});
-			}
-		}
-		return;
-	}
 	function autoSave(interval, finish){
 		if( isSaving ){
 			isAutoSaveReserved = {
@@ -108,7 +47,7 @@ module.exports = function(px2ce){
 		clearTimeout(timer_autoSave);
 		timer_autoSave = setTimeout(function(){
 			isSaving = true;
-			saveContentsSrc(
+			saveModuleSrc(
 				function(result){
 					isSaving = false;
 
@@ -153,23 +92,6 @@ module.exports = function(px2ce){
 				);
 			},
 			function(it1, arg){
-				pagesByLayout = [];
-				if( px2ce.target_mode != 'theme_layout' ){
-					it1.next(arg);
-					return;
-				}
-				px2ce.gpiBridge(
-					{
-						'api': 'getPagesByLayout',
-						'layout_id': px2ce.layout_id
-					},
-					function(pages){
-						pagesByLayout = pages;
-						it1.next(arg);
-					}
-				);
-			},
-			function(it1, arg){
 				$canvas.html('');
 				toolbar.init({
 					"onFinish": function(){
@@ -177,33 +99,6 @@ module.exports = function(px2ce){
 						autoSave(0, true);
 					}
 				},function(){
-					toolbar.addButton({
-						"label": "ブラウザでプレビュー",
-						"click": function(){
-							px2ce.openUrlInBrowser( getPreviewUrl() );
-						}
-					});
-					toolbar.addButton({
-						"label": "リソース",
-						"click": function(){
-							px2ce.openResourceDir();
-						}
-					});
-					toolbar.addButton({
-						"label": "画像ファイルを挿入",
-						"click": function(){
-							openInsertImageDialog();
-						}
-					});
-					toolbar.addButton({
-						"label": "折返し",
-						"click": function(){
-							toggleWordWrapMode(this);
-						},
-						"cssClass": [
-							"px2-btn--toggle-on"
-						]
-					});
 					it1.next(arg);
 				});
 			},
@@ -261,32 +156,6 @@ module.exports = function(px2ce){
 						});
 					});
 
-				$fileDropField
-					.on('drop', function(e){
-						// ファイルドロップへの対応
-						e.stopPropagation();
-						e.preventDefault();
-						var event = e.originalEvent;
-						var droppedFileInfo = event.dataTransfer.files[0];
-
-						// mod.filename
-						readSelectedLocalFile(droppedFileInfo, function(_dataUri){
-							var fileInfo = {
-								'name': droppedFileInfo.name,
-								'ext': getExtension( droppedFileInfo.name ),
-								'size': droppedFileInfo.size,
-								'type': droppedFileInfo.type,
-								"base64": _dataUri,
-							};
-
-							$fileDropField.css({
-								"display": "none",
-							});
-
-							openInsertImageDialog( fileInfo );
-						});
-					});
-
 				$elmTabs = $canvas.find('.pickles2-contents-editor__default-switch-tab [data-pickles2-contents-editor-switch]');
 				$elmTabs
 					.on('click', function(){
@@ -301,17 +170,6 @@ module.exports = function(px2ce){
 						$canvas.find('.pickles2-contents-editor__default-editor-body-'+tabFor).show();
 					})
 				;
-
-
-				$iframe = $('<iframe>');
-				$elmCanvas.html('').append($iframe);
-				$iframe
-					.on('load', function(){
-						onPreviewLoad( callback );
-					})
-				;
-				// $iframe.attr({"src":"about:blank"});
-				_this.postMessenger = new (require('../../apis/postMessenger.js'))(px2ce, $iframe.get(0));
 
 				clearTimeout(timer_onPreviewLoad);
 				var timeout = 30;
@@ -332,14 +190,10 @@ module.exports = function(px2ce){
 			function(it1, arg){
 				// --------------------------------------
 				// テキストエディタを初期化する
-				$elmCanvas.attr({
-					"data-pickles2-contents-editor-preview-url": getCanvasPageUrl()
-				});
-
 				px2ce.gpiBridge(
 					{
-						'api': 'getContentsSrc',
-						'page_path': page_path,
+						'api': 'getModuleSrc',
+						'module_id': module_id,
 					},
 					function(codes){
 
@@ -440,12 +294,6 @@ module.exports = function(px2ce){
 				});
 			},
 			function(it1, arg){
-				var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
-				$iframe
-					.attr({
-						'src': previewUrl,
-					})
-				;
 				it1.next(arg);
 			},
 		]);
@@ -487,220 +335,6 @@ module.exports = function(px2ce){
 		return;
 	}
 
-	/**
-	 * 画像挿入ダイアログを開く
-	 */
-	function openInsertImageDialog( presetInsertFileInfo ){
-
-		var $body = $(`<div>
-			<p>挿入する画像を選択してください。</p>
-			<div class="px2-form-input-list">
-				<ul class="px2-form-input-list__ul">
-					<li class="px2-form-input-list__li">
-						<div class="px2-form-input-list__label"><label for="insert-image-file">ファイル</label></div>
-						<div class="px2-form-input-list__input">
-							<div class="pickles2-contents-editor__default-image-preview" tabindex="0">
-								<img class="pickles2-contents-editor__default-image-preview-image" />
-								<div class="pickles2-contents-editor__default-image-preview-no-image"></div>
-							</div>
-							<input type="file" id="insert-image-file" name="insert-image-file" value="" />
-						</div>
-					</li>
-					<li class="px2-form-input-list__li">
-						<div class="px2-form-input-list__label"><label for="insert-image-file-name">ファイル名</label></div>
-						<div class="px2-form-input-list__input">
-							<input type="text" id="insert-image-file-name" name="insert-image-file-name" value="" class="px2-input px2-input--block" required />
-						</div>
-					</li>
-				</ul>
-			</div>
-			<input type="hidden" id="insert-image-original-file-name" name="insert-image-original-file-name" value="" />
-		</div>`);
-		var $imgPreview = $body.find('.pickles2-contents-editor__default-image-preview-image');
-		var $imgNotImage = $body.find('.pickles2-contents-editor__default-image-preview-no-image');
-
-		function isValidFilename(filename){
-			if( !filename.match(/^[a-z0-9\-\_]+\.[a-z0-9]+$/i) ){
-				return false;
-			}
-			return true;
-		}
-		function generateAutoFilename(filename){
-			var ext = filename.replace(/^[\s\S]*\./, '');
-			var today = new Date();
-			return dateformat(today, 'yyyy-mm-dd-hhMMss') + '.' + ext;
-		}
-
-		/**
-		 * 画像プレビューを更新する
-		 */
-		function setImagePreview(fileInfo){
-			var fileSrc = fileInfo.src;
-			var fileMimeType = fileInfo.mimeType;
-			if( !fileInfo || !fileInfo.src || !fileInfo.ext || !fileInfo.size){
-				fileSrc = px2ce.getNoimagePlaceholder() || _imgDummy;
-				fileMimeType = 'image/svg+xml';
-			}
-			$imgPreview
-				.attr({
-					"src": fileSrc,
-				})
-			;
-			$imgNotImage.text( fileInfo.ext );
-			if( canFilePreviewAsImage(fileMimeType, fileInfo.ext) ){
-				$imgPreview.show();
-				$imgNotImage.hide();
-			}else{
-				$imgPreview.hide();
-				$imgNotImage.show();
-			}
-			return;
-		}
-
-		var modalObj = px2style.modal({
-			"title": "画像を挿入",
-			"body": $body,
-			"form": {
-				"submit": function(){
-					var $inputFile = $body.find('input[name=insert-image-file]');
-					var $inputFileName = $body.find('input[name=insert-image-file-name]');
-					var $inputOriginalFileName = $body.find('input[name=insert-image-original-file-name]');
-					var fileInfoJSON = $inputFile.attr('data-upload-file');
-					if( !fileInfoJSON ){
-						return;
-					}
-					if( !$inputFileName.val() ){
-						return;
-					}
-
-					if( !isValidFilename($inputFileName.val()) ){
-						alert('ファイル名は、半角英数字、ハイフン、アンダースコアで構成してください。');
-						return;
-					}
-
-					var fileInfo = JSON.parse(fileInfoJSON);
-					fileInfo.name = (function(){
-						if( !isValidFilename($inputFileName.val()) ){
-							return generateAutoFilename($inputFileName.val());
-						}
-						return $inputFileName.val();
-					})();
-
-					insertUploadFile(fileInfo, $inputOriginalFileName.val());
-					modalObj.close();
-				}
-			},
-			"buttons": [
-				$(`<button type="submit" class="px2-btn px2-btn--primary">挿入する</button>`),
-			],
-		}, function(){
-			var $inputFile = $body.find('input[name=insert-image-file]');
-			var $inputFileName = $body.find('input[name=insert-image-file-name]');
-			var $inputOriginalFileName = $body.find('input[name=insert-image-original-file-name]');
-
-			setImagePreview({});
-
-			if( typeof(presetInsertFileInfo) == typeof({}) ){
-				setImagePreview({
-					'src': presetInsertFileInfo.base64,
-					'ext': getExtension(presetInsertFileInfo.name),
-					'size': presetInsertFileInfo.size,
-					'mimeType': presetInsertFileInfo.type,
-				});
-				$inputFile.attr({
-					'data-upload-file': JSON.stringify({
-						'name': presetInsertFileInfo.name,
-						'ext': getExtension(presetInsertFileInfo.name),
-						'size': presetInsertFileInfo.size,
-						'type': presetInsertFileInfo.type,
-						'base64': presetInsertFileInfo.base64,
-					})
-				});
-				$inputFileName.val((function(){
-					if( !isValidFilename(presetInsertFileInfo.name) ){
-						return generateAutoFilename(presetInsertFileInfo.name);
-					}
-					return presetInsertFileInfo.name;
-				})());
-			}
-
-			$inputFile
-				.on('change', function(e){
-					var $this = $(this);
-					var fileInfo = e.target.files[0];
-					var realpathSelected = $this.val();
-
-					$inputOriginalFileName.val(fileInfo.name);
-
-					if( realpathSelected ){
-						readSelectedLocalFile(fileInfo, function(dataUri){
-							setImagePreview({
-								'src': dataUri,
-								'ext': getExtension(fileInfo.name),
-								'size': fileInfo.size,
-								'mimeType': fileInfo.type,
-							});
-							$this.attr({
-								'data-upload-file': JSON.stringify({
-									'name': fileInfo.name,
-									'ext': getExtension(fileInfo.name),
-									'size': fileInfo.size,
-									'type': fileInfo.type,
-									'base64': dataUri,
-								})
-							});
-							$inputFileName.val((function(){
-								if( !isValidFilename(fileInfo.name) ){
-									return generateAutoFilename(fileInfo.name);
-								}
-								return fileInfo.name;
-							})());
-						});
-					}
-				});
-
-			var $imagePreviewArea = $body.find('.pickles2-contents-editor__default-image-preview');
-			$imagePreviewArea
-				.on('paste', function(e){
-					var items = e.originalEvent.clipboardData.items;
-					for (var i = 0 ; i < items.length ; i++) {
-						var item = items[i];
-						var fileInfo = item.getAsFile();
-
-						$inputOriginalFileName.val(fileInfo.name);
-
-						fileInfo.name = fileInfo.name||'clipboard.'+(function(type){
-							if(type.match(/png$/i)){return 'png';}
-							if(type.match(/gif$/i)){return 'gif';}
-							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
-							if(type.match(/svg/i)){return 'svg';}
-							return getExtension(fileInfo.name);
-						})(fileInfo.type);
-
-						// mod.filename
-						readSelectedLocalFile(fileInfo, function(dataUri){
-							setImagePreview({
-								'src': dataUri,
-								'ext': getExtension(fileInfo.name),
-								'size': fileInfo.size,
-								'mimeType': fileInfo.type,
-							});
-							$inputFile.attr({
-								'data-upload-file': JSON.stringify({
-									'name': fileInfo.name,
-									'ext': getExtension(fileInfo.name),
-									'size': fileInfo.size,
-									'type': fileInfo.type,
-									'base64': dataUri,
-								})
-							});
-							$inputFileName.val( generateAutoFilename(fileInfo.name) );
-						});
-					}
-				});
-
-		});
-	}
 
 	/**
 	 * アップロードしたファイルをコンテンツに挿入する
@@ -713,12 +347,12 @@ module.exports = function(px2ce){
 				px2ce.gpiBridge(
 					{
 						'api': 'getPathResources',
-						'page_path': page_path
+						'module_id': module_id
 					},
 					function(result){
 						var path = require('path');
 						var tmpPathControot = px2conf.path_controot;
-						tmpPathControot = tmpPathControot.replace(/\/+$/, '')+page_path;
+						tmpPathControot = tmpPathControot.replace(/\/+$/, '')+module_id;
 						tmpPathControot = tmpPathControot.replace(/[^\/]*$/, '');
 						var relative_path = path.relative(tmpPathControot, result);
 						path_resource = relative_path;
@@ -770,7 +404,7 @@ module.exports = function(px2ce){
 				it1.next();
 			},
 			function(it1){
-				saveContentsSrc(function(){
+				saveModuleSrc(function(){
 					it1.next();
 				});
 			},
@@ -831,12 +465,6 @@ module.exports = function(px2ce){
 		clearTimeout(timer_updatePreview);
 		timer_updatePreview = setTimeout(function(){
 			console.error('Reloading preview is too slow.');
-			var previewUrl = $elmCanvas.attr('data-pickles2-contents-editor-preview-url');
-			$iframe
-				.attr({
-					'src': previewUrl,
-				})
-			;
 		}, 1000);
 
 		it79.fnc({}, [
@@ -946,7 +574,7 @@ module.exports = function(px2ce){
 	/**
 	 * 編集したコンテンツを保存する
 	 */
-	function saveContentsSrc(callback){
+	function saveModuleSrc(callback){
 		var codes;
 		if( editorLib == 'ace' ){
 			codes = {
@@ -963,8 +591,8 @@ module.exports = function(px2ce){
 		}
 		px2ce.gpiBridge(
 			{
-				'api': 'saveContentsSrc',
-				'page_path': page_path,
+				'api': 'saveModuleSrc',
+				'module_id': module_id,
 				'codes': codes
 			},
 			function(result){
@@ -974,7 +602,7 @@ module.exports = function(px2ce){
 						px2ce.gpiBridge(
 							{
 								'api': 'savePageResources',
-								'page_path': page_path,
+								'module_id': module_id,
 								'filename': row.name,
 								'base64': row.base64
 							},

@@ -193,6 +193,20 @@ class gpi{
 				return $result;
 				break;
 
+			case "getModuleSrc":
+				// コンテンツのソースを取得する
+				$defaultEditor = new moduleEditor_default($this->px2ce);
+				$contentsCodes = $defaultEditor->getModuleSrc();
+				return $contentsCodes;
+				break;
+
+			case "saveModuleSrc":
+				// コンテンツのソースを保存する
+				$defaultEditor = new moduleEditor_default($this->px2ce);
+				$result = $defaultEditor->saveModuleSrc($data['codes']);
+				return $result;
+				break;
+
 			case "broccoliBridge":
 				// Broccoliへの中継
 				$broccoliBridge = new editor_broccoli($this->px2ce);

@@ -846,7 +846,7 @@ class main {
 	 * @note モジュールIDは 'package_id:category_id/module_id' の形式で指定する。
 	 * @note 例: 'my_package:my_category/my_module'
 	 */
-	private function get_broccoli_module_info($module_id){
+	public function get_broccoli_module_info($module_id){
 		$rtn = (object) array();
 		if(!preg_match('/^([a-zA-Z0-9\-\_]*?)\:([a-zA-Z0-9\-\_]*?)\/([a-zA-Z0-9\-\_]*?)$/si', $module_id, $matched)){
 			return false;
