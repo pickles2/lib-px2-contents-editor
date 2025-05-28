@@ -8,11 +8,8 @@ module.exports = function(px2ce){
 	var $canvas = $(px2ce.getElmCanvas());
 	var module_id = px2ce.module_id;
 	var droppedFileList = [];
-	var previewScrollPosition = {
-		top: 0,
-		left: 0,
-	};
-	var px2conf = {},
+	var editorMode = null,
+		px2conf = {},
 		pagesByLayout = [];
 		useWrapMode = true;
 	var editorLib = null;
@@ -26,9 +23,7 @@ module.exports = function(px2ce){
 		$elmTextareas,
 		$elmTabs;
 
-	var timer_onPreviewLoad,
-		timer_autoSave,
-		timer_updatePreview;
+	var timer_autoSave;
 	var isSaving = false,
 		isAutoSaveReserved = false;
 
@@ -62,8 +57,6 @@ module.exports = function(px2ce){
 
 					if( finish ){
 						px2ce.finish();
-					}else{
-						updatePreview();
 					}
 				}
 			);
@@ -75,12 +68,13 @@ module.exports = function(px2ce){
 	 */
 	this.init = function(editorOption, callback){
 		callback = callback || function(){};
+		editorMode = editorOption.editorMode || 'html';
 
 		it79.fnc({}, [
 			function(it1, arg){
 				px2ce.gpiBridge(
 					{
-						'api': 'getProjectConf'
+						'api': 'getProjectConf',
 					},
 					function(_px2conf){
 						px2conf = _px2conf;
@@ -110,7 +104,7 @@ module.exports = function(px2ce){
 										+'<div class="px2-input-group px2-input-group--fluid" role="group">'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="info">info</button>'
 											+'<button class="px2-btn px2-btn--sm px2-btn--toggle-on" data-pickles2-contents-editor-switch="html">HTML</button>'
-											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="css">CSS (SCSS)</button>'
+											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="css">CSS</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="js">JavaScript</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="finalize">finalize</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="clip">clip</button>'
@@ -176,15 +170,6 @@ module.exports = function(px2ce){
 					})
 				;
 
-				clearTimeout(timer_onPreviewLoad);
-				var timeout = 30;
-				timer_onPreviewLoad = setTimeout(function(){
-					// 何らかの理由で、 iframeの読み込み完了イベントが発生しなかった場合、
-					// 強制的にトリガーする。
-					console.error('Loading preview timeout ('+(timeout)+'sec): Force trigger onPreviewLoad();');
-					onPreviewLoad();
-				}, timeout*1000);
-
 				it1.next(arg);
 			},
 			function(it1, arg){
@@ -220,7 +205,11 @@ module.exports = function(px2ce){
 								$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-info div').text(codes['info.json']).css(aceCss).get(0)
 							);
 							$elmTextareas['html'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-html div').text(codes['template.html']).css(aceCss).get(0)
+								$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-html div').text(
+									editorOption.editorMode == 'twig'
+										? codes['template.html.twig']
+										: codes['template.html']
+								).css(aceCss).get(0)
 							);
 							$elmTextareas['css'] = ace.edit(
 								$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-css div').text(codes['module.css.scss']).css(aceCss).get(0)
@@ -256,7 +245,7 @@ module.exports = function(px2ce){
 							$elmTextareas['clip'].getSession().setMode("ace/mode/json");
 							switch(editorOption.editorMode){
 								case 'twig':
-									$elmTextareas['html'].setTheme("ace/theme/github");
+									$elmTextareas['html'].setTheme("ace/theme/monokai");
 									$elmTextareas['html'].getSession().setMode("ace/mode/twig");
 									$canvas.find('.pickles2-contents-editor__module-editor-default-switch-tab [data-pickles2-contents-editor-switch=html]').text('Twig');
 									break;
@@ -284,7 +273,11 @@ module.exports = function(px2ce){
 							$elmTextareas['clip'] = $canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-clip textarea');
 
 							$elmTextareas['info'].val(codes['info.json']);
-							$elmTextareas['html'].val(codes['template.html']);
+							$elmTextareas['html'].val(
+								editorOption.editorMode == 'twig'
+									? codes['template.html.twig']
+									: codes['template.html']
+							);
 							$elmTextareas['css'].val(codes['module.css.scss']);
 							$elmTextareas['js'].val(codes['module.js']);
 							$elmTextareas['finalize'].val(codes['finalize.php']);
@@ -377,99 +370,31 @@ module.exports = function(px2ce){
 	}
 
 	/**
-	 * プレビューを更新
-	 */
-	function updatePreview(){
-		clearTimeout(timer_updatePreview);
-		timer_updatePreview = setTimeout(function(){
-			console.error('Reloading preview is too slow.');
-		}, 1000);
-
-		it79.fnc({}, [
-			function(it){
-				if( _this.postMessenger===undefined ){
-					it.next();
-					return;
-				}
-				_this.postMessenger.send(
-					'getScrollPosition',
-					{},
-					function(position){
-						previewScrollPosition = position;
-						it.next();
-					}
-				);
-			},
-			function(it){
-				_this.postMessenger.send(
-					'reload',
-					{},
-					function(result){
-						if( !result ){
-							console.error('Failed to reload preview.');
-						}
-						it.next();
-					}
-				);
-			},
-			function(it){
-				clearTimeout(timer_updatePreview);
-			},
-		]);
-	}
-
-	/**
-	 * プレビューがロードされたら実行
-	 */
-	function onPreviewLoad( callback ){
-		callback = callback || function(){};
-		if(_this.postMessenger===undefined){return;}
-		clearTimeout(timer_onPreviewLoad);
-
-		it79.fnc({}, [
-			function( it1, data ){
-				// postMessageの送受信を行う準備
-				_this.postMessenger.init(function(){
-					it1.next(data);
-				});
-			} ,
-			function(it1, data){
-				// スクロール位置を復元
-				// NOTE: 子ウィンドウは、最初の通信で Origin を記憶する。
-				_this.postMessenger.send(
-					'setScrollPosition',
-					previewScrollPosition,
-					function(){
-						it1.next(data);
-					}
-				);
-			},
-			function(it1, data){
-				callback();
-				it1.next(data);
-			},
-		]);
-		return;
-	}
-
-	/**
 	 * 編集したコンテンツを保存する
 	 */
 	function saveModuleSrc(callback){
-		var codes;
+		var codes = {};
+		var templateFilename = 'template.html';
+		if( editorMode == 'twig' ){
+			templateFilename = 'template.html.twig';
+		}
+
 		if( editorLib == 'ace' ){
+			codes[templateFilename] = $elmTextareas['html'].getValue();
 			codes = {
-				'template.html': $elmTextareas['html'].getValue(),
+				...codes,
 				'module.css.scss': $elmTextareas['css'].getValue(),
 				'module.js': $elmTextareas['js'].getValue()
 			};
 		}else{
+			codes[templateFilename] = $elmTextareas['html'].val();
 			codes = {
-				'template.html': $elmTextareas['html'].val(),
+				...codes,
 				'module.css.scss': $elmTextareas['css'].val(),
 				'module.js': $elmTextareas['js'].val()
 			};
 		}
+
 		px2ce.gpiBridge(
 			{
 				'api': 'saveModuleSrc',

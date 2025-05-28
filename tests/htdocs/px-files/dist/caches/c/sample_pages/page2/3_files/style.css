@@ -6,17 +6,8 @@ overflow: hidden;
 .cont-paragraph {
 margin: 1em 0;}
 .cont-test-div-class-001 {
-width: 310px;
-height: 180px;
 /* div class test */}
 .cont-cont-horizontal {
-display: flex;
-flex-direction: row;
 gap: 10px;}
 .cont-px2-p {
-width: 85%;
-}
-.cont-kf-kf1928bb222858994f-0 {
-width: 100%;
-
 }

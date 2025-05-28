@@ -1,3 +1,3 @@
-$('.sample a').on('click', (event) => {
+$('.sample-sample a').on('click', (event) => {
     console.log(event);
 });

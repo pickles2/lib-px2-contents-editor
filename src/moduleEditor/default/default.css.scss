@@ -22,12 +22,4 @@
 			}
 		}
 	}
-	@media all and (max-width: 600px) {
-		&-canvas {
-			display: none;
-		}
-		&-editor {
-			width: 100%;
-		}
-	}
 }
