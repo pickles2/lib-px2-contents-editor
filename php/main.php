@@ -821,7 +821,7 @@ class main {
 			if(!is_dir($path_module_dir)){
 				return '.not_exists';
 			}
-			if(is_file($path_module_dir.'src/template.html.kflow')){
+			if(is_file($path_module_dir.'src/template.kflow')){
 				return 'kflow';
 			}elseif(is_file($path_module_dir.'template.html.twig')){
 				return 'twig';
