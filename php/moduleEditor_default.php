@@ -53,6 +53,8 @@ class moduleEditor_default{
 			'module.css.scss',
 			'module.js',
 			'finalize.php',
+			'finalize.js',
+			'clip.json',
 		);
 		$rtn = array();
 		foreach($filelist as $filename){
@@ -71,6 +73,7 @@ class moduleEditor_default{
 		$module_id = $this->px2ce->get_module_id();
 		$module_info = $this->px2ce->get_broccoli_module_info($module_id);
 		$realpath_module_dir = $module_info->realpath.urlencode($module_info->category_id).'/'.urlencode($module_info->module_id).'/';
+		$this->px2ce->fs()->mkdir_r( $realpath_module_dir );
 
 		$result = array(
 			'result' => true,
@@ -88,6 +91,8 @@ class moduleEditor_default{
 			'module.css.scss',
 			'module.js',
 			'finalize.php',
+			'finalize.js',
+			'clip.json',
 		);
 		$rtn = array();
 		foreach($filelist as $filename){
@@ -95,9 +100,7 @@ class moduleEditor_default{
 				if( !$this->is_authorized_server_side_scripting ){
 					$codes[$filename] = $this->sanitizer->sanitize_contents($codes[$filename]);
 				}
-
-				$this->px2ce->fs()->mkdir_r( $realpath_module_dir );
-				if( !strlen($codes[$filename]) ){
+				if( !strlen($codes[$filename] ?? '') ){
 					$this->px2ce->fs()->rm( $realpath_module_dir.$filename );
 				}else{
 					$this->px2ce->fs()->save_file( $realpath_module_dir.$filename, $codes[$filename] );
