@@ -209,13 +209,13 @@ module.exports = function(px2ce){
 							};
 							$elmTextareas = {};
 							$elmTextareas['html'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor__default-editor-body-html div').text(codes['html']).css(aceCss).get(0)
+								$canvas.find('.pickles2-contents-editor__default-editor-body-html div').text(codes['template.html']).css(aceCss).get(0)
 							);
 							$elmTextareas['css'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor__default-editor-body-css div').text(codes['css']).css(aceCss).get(0)
+								$canvas.find('.pickles2-contents-editor__default-editor-body-css div').text(codes['module.css.scss']).css(aceCss).get(0)
 							);
 							$elmTextareas['js'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor__default-editor-body-js div').text(codes['js']).css(aceCss).get(0)
+								$canvas.find('.pickles2-contents-editor__default-editor-body-js div').text(codes['module.js']).css(aceCss).get(0)
 							);
 							for(var i in $elmTextareas){
 								$elmTextareas[i].setFontSize(16);
@@ -259,9 +259,9 @@ module.exports = function(px2ce){
 							$elmTextareas['css'] = $canvas.find('.pickles2-contents-editor__default-editor-body-css textarea');
 							$elmTextareas['js'] = $canvas.find('.pickles2-contents-editor__default-editor-body-js textarea');
 
-							$elmTextareas['html'].val(codes['html']);
-							$elmTextareas['css'] .val(codes['css']);
-							$elmTextareas['js']  .val(codes['js']);
+							$elmTextareas['html'].val(codes['template.html']);
+							$elmTextareas['css'] .val(codes['module.css.scss']);
+							$elmTextareas['js']  .val(codes['module.js']);
 
 						}
 
@@ -333,115 +333,6 @@ module.exports = function(px2ce){
 
 		callback(true);
 		return;
-	}
-
-
-	/**
-	 * アップロードしたファイルをコンテンツに挿入する
-	 */
-	function insertUploadFile(fileInfo, originalFileName, callback){
-		var path_resource;
-
-		it79.fnc({}, [
-			function(it1){
-				px2ce.gpiBridge(
-					{
-						'api': 'getPathResources',
-						'module_id': module_id
-					},
-					function(result){
-						var path = require('path');
-						var tmpPathControot = px2conf.path_controot;
-						tmpPathControot = tmpPathControot.replace(/\/+$/, '')+module_id;
-						tmpPathControot = tmpPathControot.replace(/[^\/]*$/, '');
-						var relative_path = path.relative(tmpPathControot, result);
-						path_resource = relative_path;
-						it1.next();
-					}
-				);
-			},
-			function(it1){
-				var fileName = fileInfo.name;
-				// var uploadFileName = './'+path_resource+'/'+fileName;
-				var uploadFileName = '<'; // NOTE: minifyされたあと、PHPコードとして成立してしまわないように、複数行に分解している。
-				uploadFileName += '?';
-				uploadFileName += `= $px->h($px->path_files("/${fileName}")) ?`;
-				uploadFileName += '>';
-				var insertString = '';
-
-
-				// 開いているタブの種類に応じて、
-				// 挿入する文字列を出し分ける。
-				switch(current_tab){
-					case 'css':
-						insertString = `url("${uploadFileName}")`;
-						break;
-					case 'js':
-						insertString = `"${uploadFileName}"`;
-						break;
-					case 'html':
-					default:
-						if( fileInfo.type.match(/^image\//) ){
-							insertString = `<img src="${uploadFileName}" alt="${originalFileName || fileName}" />`+"\n";
-						}else{
-							insertString = `<a href="${uploadFileName}" download="${fileName}">${originalFileName || fileName}</a>`+"\n";
-						}
-						break;
-				}
-
-				// アップロードファイルを一時記憶
-				// ファイルは、次回保存時に保存されます。
-				droppedFileList.push({
-					'name': fileInfo.name,
-					'type': fileInfo.type,
-					'size': fileInfo.size,
-					'base64': fileInfo.base64,
-				});
-
-				// コンテンツに文字列を挿入する
-				insertText( insertString, current_tab );
-
-				it1.next();
-			},
-			function(it1){
-				saveModuleSrc(function(){
-					it1.next();
-				});
-			},
-			function(){
-				callback();
-			}
-		]);
-		return;
-	}
-
-	/**
-	 * アップロードファイルを読み込む
-	 */
-	function readSelectedLocalFile(fileInfo, callback){
-		var reader = new FileReader();
-		reader.onload = function(evt) {
-			callback( evt.target.result );
-		}
-		reader.readAsDataURL(fileInfo);
-	}
-
-	/**
-	 * エディタにテキストを挿入する
-	 */
-	function insertText( insertCode, targetTab ){
-		if( !targetTab ){
-			targetTab = current_tab;
-		}
-		var $currentTab = $elmTextareas[targetTab];
-
-		if( editorLib == 'ace' ){
-			$currentTab.insert(insertCode);
-		}else{
-			var curesorPosition = $currentTab.get(0).selectionStart;
-			var currentString = $currentTab.val();
-			$currentTab.val(currentString.slice(0, curesorPosition) + insertCode + currentString.slice(curesorPosition));
-		}
 	}
 
 	/**
@@ -535,58 +426,21 @@ module.exports = function(px2ce){
 	}
 
 	/**
-	 * パスから拡張子を取り出して返す
-	 */
-	function getExtension(path){
-		var ext = '';
-		try {
-			var ext = path.replace( new RegExp('^.*?\.([a-zA-Z0-9\_\-]+)$'), '$1' );
-			ext = ext.toLowerCase();
-		} catch (e) {
-			ext = false;
-		}
-		return ext;
-	}
-
-	/**
-	 * 画像としてプレビューできる種類か評価する
-	 */
-	function canFilePreviewAsImage(mimetype, ext){
-		if( mimetype ){
-			if( mimetype.match(/^image\//) ){
-				return true;
-			}
-		}else if( ext ){
-			switch( ext ){
-				case 'jpg':
-				case 'jpeg':
-				case 'jpe':
-				case 'png':
-				case 'gif':
-				case 'webp':
-					return true;
-					break;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * 編集したコンテンツを保存する
 	 */
 	function saveModuleSrc(callback){
 		var codes;
 		if( editorLib == 'ace' ){
 			codes = {
-				'html': $elmTextareas['html'].getValue(),
-				'css':  $elmTextareas['css'].getValue(),
-				'js':   $elmTextareas['js'].getValue()
+				'template.html': $elmTextareas['html'].getValue(),
+				'module.css.scss': $elmTextareas['css'].getValue(),
+				'module.js': $elmTextareas['js'].getValue()
 			};
 		}else{
 			codes = {
-				'html': $elmTextareas['html'].val(),
-				'css':  $elmTextareas['css'].val(),
-				'js':   $elmTextareas['js'].val()
+				'template.html': $elmTextareas['html'].val(),
+				'module.css.scss': $elmTextareas['css'].val(),
+				'module.js': $elmTextareas['js'].val()
 			};
 		}
 		px2ce.gpiBridge(
