@@ -254,13 +254,21 @@ module.exports = function(px2ce){
 				},
 				function(result){
 					setTimeout(() => {
-						saveStatus.isProgress = false;
-						currentCallbacks.forEach(currentCallback => currentCallback(result) );
+						px2ce.gpiBridge(
+							{
+								'api': 'buildKflowModule',
+								'module_id': px2ce.module_id,
+							},
+							function(result){
+								saveStatus.isProgress = false;
+								currentCallbacks.forEach(currentCallback => currentCallback(result) );
 
-						if(saveStatus.callbackPool.length){
-							saveContentsSrcExecute();
-							return;
-						}
+								if(saveStatus.callbackPool.length){
+									saveContentsSrcExecute();
+									return;
+								}
+							}
+						);
 					}, 500);
 				}
 			);

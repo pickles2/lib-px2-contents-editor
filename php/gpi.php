@@ -193,20 +193,6 @@ class gpi{
 				return $result;
 				break;
 
-			case "getModuleSrc":
-				// コンテンツのソースを取得する
-				$defaultEditor = new moduleEditor_default($this->px2ce);
-				$contentsCodes = $defaultEditor->getModuleSrc();
-				return $contentsCodes;
-				break;
-
-			case "saveModuleSrc":
-				// コンテンツのソースを保存する
-				$defaultEditor = new moduleEditor_default($this->px2ce);
-				$result = $defaultEditor->saveModuleSrc($data['codes']);
-				return $result;
-				break;
-
 			case "broccoliBridge":
 				// Broccoliへの中継
 				$broccoliBridge = new editor_broccoli($this->px2ce);
@@ -291,6 +277,27 @@ class gpi{
 				$code = 'data:text/javascript;base64,'.base64_encode($code);
 				array_push($codes, $code);
 				return $codes;
+				break;
+
+			case "getModuleSrc":
+				// モジュールのソースを取得する
+				$defaultEditor = new moduleEditor_default($this->px2ce);
+				$contentsCodes = $defaultEditor->getModuleSrc();
+				return $contentsCodes;
+				break;
+
+			case "saveModuleSrc":
+				// モジュールのソースを保存する
+				$defaultEditor = new moduleEditor_default($this->px2ce);
+				$result = $defaultEditor->saveModuleSrc($data['codes']);
+				return $result;
+				break;
+
+			case "buildKflowModule":
+				// Kflowモジュールをビルドする
+				$defaultEditor = new moduleEditor_kflow($this->px2ce);
+				$result = $defaultEditor->build();
+				return $result;
 				break;
 
 			default:
