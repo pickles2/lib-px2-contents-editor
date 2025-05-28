@@ -4,14 +4,12 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
-	var it79 = require('iterate79');
 	const Twig = require('twig');
 
 	var px2style = px2ce.px2style;
 	var $canvas = $(px2ce.getElmCanvas());
 	var Promise = require('es6-promise').Promise;
-	var px2conf = {},
-		pagesByLayout = [];
+	var px2conf = {};
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
 
@@ -35,24 +33,12 @@ module.exports = function(px2ce){
 			rtn = RegExp.$1;
 			query = RegExp.$2;
 		}
-		var PICKLES2_CONTENTS_EDITOR = (px2ce.target_mode == 'theme_layout' ? 'broccoli.layout' : 'broccoli');
+		var PICKLES2_CONTENTS_EDITOR = 'broccoli';
 		rtn += (query.length ? '?'+query+'&' : '?') + 'PICKLES2_CONTENTS_EDITOR=' + PICKLES2_CONTENTS_EDITOR;
 		rtn += (hash.length ? '#'+hash : '');
 		return rtn;
 	}
 	function getPreviewUrl(){
-		if( px2ce.target_mode == 'theme_layout' ){
-			var page_path = '/index.html';
-			if( pagesByLayout.length ){
-				page_path = pagesByLayout[0].path;
-			}
-			var pathname = px2conf.path_controot + page_path;
-			pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
-			pathname += '?THEME='+encodeURIComponent(px2ce.theme_id);
-			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
-			return px2ce.options.preview.origin + pathname;
-		}
-
 		var pathname = px2conf.path_controot + px2ce.page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		var rtn = px2ce.options.preview.origin + pathname;
@@ -99,15 +85,6 @@ module.exports = function(px2ce){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				pagesByLayout = [];
-				if( px2ce.target_mode != 'theme_layout' ){
-					rlv();
-					return;
-				}
-				pagesByLayout = px2ce.getBootupInfomations().pagesByLayout;
-				rlv();
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
 				var btns = [
 				];
 
@@ -129,11 +106,11 @@ module.exports = function(px2ce){
 				return new Promise((resolve, reject) => {
 					$canvas.append((() => {
 						var fin = '';
-						fin += '<div class="pickles2-contents-editor__kflow"></div>';
+						fin += '<div class="pickles2-contents-editor__module-editor-kflow"></div>';
 						return fin;
 					})());
 
-					const container = $canvas.find('.pickles2-contents-editor__kflow').get(0);
+					const container = $canvas.find('.pickles2-contents-editor__module-editor-kflow').get(0);
 					const navigationInfo = px2ce.getBootupInfomations().navigationInfo;
 					const extraValues = {
 						'config': px2conf,
@@ -203,10 +180,10 @@ module.exports = function(px2ce){
 						},
 					};
 					kaleflower = new Kaleflower(container, {
-						"urlLayoutViewPage": getCanvasPageUrl(),
-						"scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
-						"contentsAreaSelector": (px2ce.target_mode == 'theme_layout' ? '[data-pickles2-theme-editor-contents-area]' : px2conf.plugins.px2dt.contents_area_selector),
-						"contentsContainerNameBy": (px2ce.target_mode == 'theme_layout' ? 'data-pickles2-theme-editor-contents-area' : px2conf.plugins.px2dt.contents_bowl_name_by),
+						// "urlLayoutViewPage": getCanvasPageUrl(),
+						// "scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
+						// "contentsAreaSelector": (px2conf.plugins.px2dt.contents_area_selector),
+						// "contentsContainerNameBy": (px2conf.plugins.px2dt.contents_bowl_name_by),
 						"extra": extraValues,
 						"finalize": (contents) => {
 							Object.keys(contents.html).forEach((key) => {
@@ -230,11 +207,11 @@ module.exports = function(px2ce){
 				return new Promise((resolve, reject) => {
 					px2ce.gpiBridge(
 						{
-							'api': 'kflowGetContentsSrc',
-							'page_path': px2ce.page_path,
+							'api': 'getModuleSrc',
+							'module_id': px2ce.module_id,
 						},
 						function(codes){
-							kaleflower.loadXml(codes.kflow);
+							kaleflower.loadXml(codes['src/template.kflow']);
 							resolve();
 						}
 					);
@@ -266,15 +243,13 @@ module.exports = function(px2ce){
 			saveStatus.callbackPool = [];
 
 			const codes = {
-				'kflow': kaleflower.get(),
-				'css': '',
-				'js': '',
+				'src/template.kflow': kaleflower.get(),
 			};
 
 			px2ce.gpiBridge(
 				{
-					'api': 'kflowSaveContentsSrc',
-					'page_path': px2ce.page_path,
+					'api': 'saveModuleSrc',
+					'module_id': px2ce.module_id,
 					'codes': codes,
 				},
 				function(result){
@@ -286,10 +261,24 @@ module.exports = function(px2ce){
 							saveContentsSrcExecute();
 							return;
 						}
-					}, 500); // クールダウンタイム
+					}, 500);
 				}
 			);
 		}
 		saveContentsSrcExecute();
 	}
+
+	/**
+	 * 画面を再描画する
+	 */
+	this.redraw = function( callback ){
+		callback = callback || function(){};
+		callback();
+		return;
+	}
+
+	/**
+	 * 位置合わせ
+	 */
+	this.adjust = this.redraw;
 }

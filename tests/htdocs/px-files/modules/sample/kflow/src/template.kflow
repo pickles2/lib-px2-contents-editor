@@ -1,2 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <kflow>
+	<configs>
+		<config name="id" value="kf19717669e9596b3fb" />
+		<config name="break-points">
+		</config>
+		<config name="color-palettes">
+		</config>
+	</configs>
+	<styles>
+	</styles>
+	<contents>
+	</contents>
+	<assets>
+	</assets>
+	<fields>
+	</fields>
+	<components>
+	</components>
 </kflow>

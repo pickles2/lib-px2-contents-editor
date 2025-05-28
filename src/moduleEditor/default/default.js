@@ -384,14 +384,14 @@ module.exports = function(px2ce){
 			codes = {
 				...codes,
 				'module.css.scss': $elmTextareas['css'].getValue(),
-				'module.js': $elmTextareas['js'].getValue()
+				'module.js': $elmTextareas['js'].getValue(),
 			};
 		}else{
 			codes[templateFilename] = $elmTextareas['html'].val();
 			codes = {
 				...codes,
 				'module.css.scss': $elmTextareas['css'].val(),
-				'module.js': $elmTextareas['js'].val()
+				'module.js': $elmTextareas['js'].val(),
 			};
 		}
 
@@ -399,7 +399,7 @@ module.exports = function(px2ce){
 			{
 				'api': 'saveModuleSrc',
 				'module_id': module_id,
-				'codes': codes
+				'codes': codes,
 			},
 			function(result){
 				it79.ary(

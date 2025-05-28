@@ -292,4 +292,18 @@ module.exports = function(px2ce){
 		}
 		saveContentsSrcExecute();
 	}
+
+	/**
+	 * 画面を再描画する
+	 */
+	this.redraw = function( callback ){
+		callback = callback || function(){};
+		callback();
+		return;
+	}
+
+	/**
+	 * 位置合わせ
+	 */
+	this.adjust = this.redraw;
 }
