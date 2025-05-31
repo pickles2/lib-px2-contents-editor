@@ -180,10 +180,10 @@ module.exports = function(px2ce){
 						},
 					};
 					kaleflower = new Kaleflower(container, {
-						// "urlLayoutViewPage": getCanvasPageUrl(),
-						// "scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
-						// "contentsAreaSelector": (px2conf.plugins.px2dt.contents_area_selector),
-						// "contentsContainerNameBy": (px2conf.plugins.px2dt.contents_bowl_name_by),
+						"urlLayoutViewPage": getCanvasPageUrl(),
+						"scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
+						"contentsAreaSelector": (px2conf.plugins.px2dt.contents_area_selector),
+						"contentsContainerNameBy": (px2conf.plugins.px2dt.contents_bowl_name_by),
 						"extra": extraValues,
 						"finalize": (contents) => {
 							Object.keys(contents.html).forEach((key) => {
