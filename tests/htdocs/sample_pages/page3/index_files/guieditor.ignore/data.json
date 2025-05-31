@@ -65,6 +65,40 @@
                         },
                         "anchor": "",
                         "dec": ""
+                    },
+                    {
+                        "modId": "local:sample/kflow",
+                        "fields": {
+                            "main": {
+                                "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                "editor": "markdown"
+                            }
+                        },
+                        "anchor": "",
+                        "dec": "",
+                        "locked": {
+                            "contents": false,
+                            "children": false,
+                            "move": false,
+                            "delete": false
+                        }
+                    },
+                    {
+                        "modId": "local:sample/twig",
+                        "fields": {
+                            "main": {
+                                "src": "これは、Twigテンプレートのサンプル。",
+                                "editor": "markdown"
+                            }
+                        },
+                        "anchor": "",
+                        "dec": "",
+                        "locked": {
+                            "contents": false,
+                            "children": false,
+                            "move": false,
+                            "delete": false
+                        }
                     }
                 ]
             },

@@ -1,3 +1,12 @@
 {
-    "name": "Sample Module (kflow)"
+    "name": "Sample Module (kflow)",
+    "interface": {
+        "fields": {
+            "main": {
+                "fieldType": "input",
+                "type": "multitext",
+                "label": "テキスト"
+            }
+        }
+    }
 }

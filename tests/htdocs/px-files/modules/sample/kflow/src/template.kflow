@@ -10,6 +10,12 @@
 	<styles>
 	</styles>
 	<contents>
+		<content name="main">
+			<div>
+				
+				<div>これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;">{{ main }}</div><p>This is a sample KFlow template.</p>
+			</div>
+		</content>
 	</contents>
 	<assets>
 	</assets>
