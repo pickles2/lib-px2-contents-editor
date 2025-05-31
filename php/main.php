@@ -172,7 +172,7 @@ class main {
 		}
 
 		if( $this->target_mode == 'module' ){
-			if( !strlen($this->theme_id ?? '') && !strlen($this->layout_id ?? '') ){
+			if( !strlen($this->module_id ?? '') ){
 				if( preg_match('/^\/([\s\S]+?)\/([\s\S]+?)\/([\s\S]+)\.html$/', $this->page_path, $matched) ){
 					// ページパスからモジュールIDとレイアウトIDを取得
 					// これは古い方法であり、互換性維持のため残している。
