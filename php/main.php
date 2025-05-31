@@ -838,6 +838,8 @@ class main {
 				return 'twig';
 			}elseif(is_file($path_module_dir.'template.html')){
 				return 'html';
+			}elseif(is_file($path_module_dir.'clip.json')){
+				return '.clip';
 			}
 			return '.not_exists';
 		}

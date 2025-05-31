@@ -150,6 +150,15 @@
 									});
 									break;
 
+								case '.clip':
+									// クリップモジュール
+									$canvas.html('<p>Start the text editor.</p>');
+									editor = new (require('./moduleEditor/clip/clip.js'))(_this);
+									editor.init(editorOption, function(){
+										it1.next(data);
+									});
+									break;
+
 								case 'kflow':
 									// ビジュアルエディタ(kflow)を起動
 									$canvas.html('<p>Start the visual editor.</p>');

@@ -1,0 +1,41 @@
+{
+ "data": [
+  {
+   "modId": "PlainHTMLElements:PlainHTML/MultiText",
+   "fields": {
+    "main": {
+     "src": "テスト\n\nテスト\n",
+     "editor": "markdown"
+    }
+   },
+   "anchor": "",
+   "dec": ""
+  },
+  {
+   "modId": "FESS:parts/table_def",
+   "fields": {
+    "table": {
+     "resKey": "19b39f297be02fcf5c7164e127845a7a",
+     "output": "<thead>\n<tr>\n<th>カラムA</th>\n<th>カラムB</th>\n<th>カラムC</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<th>A2</th>\n<td>B2</td>\n<td>C2</td>\n</tr>\n<tr>\n<th>A3</th>\n<td>B3</td>\n<td>C3</td>\n</tr>\n<tr>\n<th>A4</th>\n<td>B4</td>\n<td>C4</td>\n</tr>\n<tr>\n<th>A5</th>\n<td>B5</td>\n<td>C5</td>\n</tr>\n</tbody>\n",
+     "header_row": "1",
+     "header_col": "1",
+     "cell_renderer": "text",
+     "renderer": "simplify"
+    }
+   },
+   "anchor": "",
+   "dec": ""
+  }
+ ],
+ "resources": {
+  "19b39f297be02fcf5c7164e127845a7a": {
+   "ext": "csv",
+   "size": 69,
+   "base64": "44Kr44Op44OgQSzjgqvjg6njg6BCLOOCq+ODqeODoEMKQTIsQjIsQzIKQTMsQjMsQzMKQTQsQjQsQzQKQTUsQjUsQzUK",
+   "isPrivateMaterial": true,
+   "publicFilename": "",
+   "type": "text/csv",
+   "md5": "4c25a257ed56e3e80a8b3bce2d878bb6"
+  }
+ }
+}
