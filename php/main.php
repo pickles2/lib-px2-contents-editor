@@ -832,21 +832,21 @@ class main {
 			if(!is_dir($path_module_dir)){
 				return '.not_exists';
 			}
-			if(is_file($path_module_dir.'src/template.kflow')){
+			if(is_file($path_module_dir.'clip.json')){
+				return '.clip';
+			}elseif(is_file($path_module_dir.'src/template.kflow')){
 				return 'kflow';
 			}elseif(is_file($path_module_dir.'template.html.twig')){
 				return 'twig';
 			}elseif(is_file($path_module_dir.'template.html')){
 				return 'html';
-			}elseif(is_file($path_module_dir.'clip.json')){
-				return '.clip';
 			}
 			return '.not_exists';
 		}
 		$data = $this->px2query(
 			$this->page_path.'?PX=px2dthelper.check_editor_mode',
 			array(
-				"output" => "json"
+				"output" => "json",
 			)
 		);
 		return $data;
