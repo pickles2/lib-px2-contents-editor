@@ -11,16 +11,16 @@
     ],
     "scripts":{
 		"start": [
-			"@php ./tests/htdocs/.px_execute.php \"/?PX=serve&S=localhost:8080\""
+			"@php ./tests/htdocs/.px_execute.php \"/?PX=serve&S=localhost:8088\""
 		],
 		"start-pub": [
-			"@php ./tests/htdocs/.px_execute.php \"/?PX=serve.pub&S=localhost:8081\""
+			"@php ./tests/htdocs/.px_execute.php \"/?PX=serve.pub&S=localhost:8089\""
 		],
         "start-no-px2": [
             "php tests/app/php_test_server/start.php"
         ],
         "preview": [
-            "open http://127.0.0.1:8088/tests/app/client_php/"
+            "open http://localhost:8088/"
         ],
         "test": [
             "php ./vendor/phpunit/phpunit/phpunit"
