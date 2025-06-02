@@ -66,6 +66,7 @@ module.exports = function(px2ce){
 			pathname += '&LAYOUT='+encodeURIComponent(px2ce.layout_id);
 			return px2ce.options.preview.origin + pathname;
 		}
+
 		var pathname = px2conf.path_controot + px2ce.page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		var rtn = px2ce.options.preview.origin + pathname;

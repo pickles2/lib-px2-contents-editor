@@ -4,7 +4,6 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
-	var it79 = require('iterate79');
 	const Twig = require('twig');
 
 	var px2style = px2ce.px2style;
@@ -122,6 +121,12 @@ module.exports = function(px2ce){
 						});
 					}
 				},function(){
+					toolbar.addButton({
+						"label": "ブラウザでプレビュー",
+						"click": function(){
+							px2ce.openUrlInBrowser( getPreviewUrl() );
+						}
+					});
 					rlv();
 				});
 			}); })
@@ -286,7 +291,7 @@ module.exports = function(px2ce){
 							saveContentsSrcExecute();
 							return;
 						}
-					}, 500); // クールダウンタイム
+					}, 500);
 				}
 			);
 		}

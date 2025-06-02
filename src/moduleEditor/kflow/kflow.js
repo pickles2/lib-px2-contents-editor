@@ -99,6 +99,12 @@ module.exports = function(px2ce){
 						});
 					}
 				},function(){
+					toolbar.addButton({
+						"label": "info.json",
+						"click": function(){
+							alert('TODO: info.json editor');
+						}
+					});
 					rlv();
 				});
 			}); })
