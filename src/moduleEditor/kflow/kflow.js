@@ -8,10 +8,10 @@ module.exports = function(px2ce){
 
 	var px2style = px2ce.px2style;
 	var $canvas = $(px2ce.getElmCanvas());
-	var Promise = require('es6-promise').Promise;
 	var px2conf = {};
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
+	var infoJsonEditor = new (require('../includes/InfoJsonEditor/InfoJsonEditor.js'))(px2ce);
 
 	var kaleflower;
 
@@ -101,8 +101,9 @@ module.exports = function(px2ce){
 				},function(){
 					toolbar.addButton({
 						"label": "info.json",
-						"click": function(){
-							alert('TODO: info.json editor');
+						"click": async function(){
+							const result = await infoJsonEditor.edit();
+							console.log('result:', result);
 						}
 					});
 					rlv();
