@@ -59,34 +59,6 @@ module.exports = function(px2ce){
 	}
 
 	/**
-	 * Twig テンプレートにデータをバインドする
-	 */
-	function bindTwig(tpl, data, funcs){
-		let rtn = '';
-		let twig;
-		try {
-			twig = Twig.twig;
-
-			if(funcs && typeof(funcs) == typeof({})){
-				Object.keys(funcs).forEach( ($fncName, index) => {
-					const $callback = funcs[$fncName];
-					Twig.extendFunction($fncName, $callback);
-				});
-			}
-
-			rtn = new twig({
-				'data': tpl,
-				'autoescape': true,
-			}).render(data);
-		} catch(e) {
-			const errorMessage = 'TemplateEngine "Twig" Rendering ERROR.';
-			console.error( errorMessage );
-			rtn = errorMessage;
-		}
-		return rtn;
-	}
-
-	/**
 	 * 初期化
 	 */
 	this.init = function(editorOption, callback){
@@ -215,7 +187,7 @@ module.exports = function(px2ce){
 						"extra": extraValues,
 						"finalize": (contents) => {
 							Object.keys(contents.html).forEach((key) => {
-								contents.html[key] = bindTwig(contents.html[key], extraValues);
+								contents.html[key] = px2ce.bindTwig(contents.html[key], extraValues);
 							});
 							return contents;
 						},

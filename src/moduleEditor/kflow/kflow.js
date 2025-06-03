@@ -21,6 +21,8 @@ module.exports = function(px2ce){
 		callbackPool: [],
 	};
 
+	let codeInfoJson = '';
+
 	function getCanvasPageUrl(){
 		var rtn = getPreviewUrl();
 		var hash = '';
@@ -42,34 +44,6 @@ module.exports = function(px2ce){
 		var pathname = px2conf.path_controot + px2ce.page_path;
 		pathname = pathname.replace( new RegExp('\/+', 'g'), '/' );
 		var rtn = px2ce.options.preview.origin + pathname;
-		return rtn;
-	}
-
-	/**
-	 * Twig テンプレートにデータをバインドする
-	 */
-	function bindTwig(tpl, data, funcs){
-		let rtn = '';
-		let twig;
-		try {
-			twig = Twig.twig;
-
-			if(funcs && typeof(funcs) == typeof({})){
-				Object.keys(funcs).forEach( ($fncName, index) => {
-					const $callback = funcs[$fncName];
-					Twig.extendFunction($fncName, $callback);
-				});
-			}
-
-			rtn = new twig({
-				'data': tpl,
-				'autoescape': true,
-			}).render(data);
-		} catch(e) {
-			const errorMessage = 'TemplateEngine "Twig" Rendering ERROR.';
-			console.error( errorMessage );
-			rtn = errorMessage;
-		}
 		return rtn;
 	}
 
@@ -102,8 +76,8 @@ module.exports = function(px2ce){
 					toolbar.addButton({
 						"label": "info.json",
 						"click": async function(){
-							const result = await infoJsonEditor.edit();
-							console.log('result:', result);
+							codeInfoJson = await infoJsonEditor.edit(codeInfoJson);
+							console.log('result:', codeInfoJson);
 						}
 					});
 					rlv();
@@ -194,7 +168,7 @@ module.exports = function(px2ce){
 						"extra": extraValues,
 						"finalize": (contents) => {
 							Object.keys(contents.html).forEach((key) => {
-								contents.html[key] = bindTwig(contents.html[key], extraValues);
+								contents.html[key] = px2ce.bindTwig(contents.html[key], extraValues);
 							});
 							return contents;
 						},
@@ -218,6 +192,7 @@ module.exports = function(px2ce){
 							'module_id': px2ce.module_id,
 						},
 						function(codes){
+							codeInfoJson = codes['info.json'] || '{}';
 							kaleflower.loadXml(codes['src/template.kflow']);
 							resolve();
 						}
@@ -250,6 +225,7 @@ module.exports = function(px2ce){
 			saveStatus.callbackPool = [];
 
 			const codes = {
+				'info.json': codeInfoJson,
 				'src/template.kflow': kaleflower.get(),
 			};
 

@@ -4,21 +4,25 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
-	const Twig = require('twig');
 	var px2style = window.px2style;
+	const template = require('-!text-loader!./includes/templates/form.twig');
 
 	this.edit = async function(prevValue){
 		return new Promise((resolve, reject) => {
+			const $body = $(px2ce.bindTwig(template, {
+				value: prevValue || '',
+			}));
 			const modal = px2style.modal({
 				title: 'Edit info.json',
-				body: `<div><p>TODO: info.json editor</p></div>`,
+				body: $body,
+				width: 700,
 				form: {
 					action: "javascript:void(0);",
 					method: "get",
 					submit: function(){
-						console.info('Form has submitted.');
+						const retouchedValue = $body.find('textarea[name="value"]').val();
 						modal.close();
-						resolve(prevValue);
+						resolve(retouchedValue);
 					},
 				},
 				buttons: [

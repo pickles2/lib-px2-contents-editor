@@ -15,10 +15,11 @@
 	})().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
 
 	window.Pickles2ContentsEditor = function(){
+		var _this = this;
 		var $ = require('jquery');
 		var it79 = require('iterate79');
+		const Twig = require('twig');
 		var $canvas;
-		var _this = this;
 		this.__dirname = __dirname;
 		this.options = {};
 		this.page_path;
@@ -529,6 +530,39 @@
 		 */
 		this.getNoimagePlaceholder = function(){
 			return bootupInfomations.noimagePlaceholder;
+		}
+
+		/**
+		 * Twig テンプレートにデータをバインドする
+		 */
+		this.bindTwig = function(tpl, data, funcs){
+			let rtn = '';
+			let twig;
+			try {
+				twig = Twig.twig;
+
+				if(funcs && typeof(funcs) == typeof({})){
+					Object.keys(funcs).forEach( ($fncName, index) => {
+						const $callback = funcs[$fncName];
+						Twig.extendFunction($fncName, $callback);
+					});
+				}
+
+				const bindData = {
+					...data,
+					lb: this.lb,
+				};
+
+				rtn = new twig({
+					'data': tpl,
+					'autoescape': true,
+				}).render(bindData);
+			} catch(e) {
+				const errorMessage = 'TemplateEngine "Twig" Rendering ERROR.';
+				console.error( errorMessage );
+				rtn = errorMessage;
+			}
+			return rtn;
 		}
 
 		/**
