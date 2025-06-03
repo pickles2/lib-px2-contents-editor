@@ -4,7 +4,10 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
+	const Twig = require('twig');
+	var infoJsonEditor = new (require('../includes/InfoJsonEditor/InfoJsonEditor.js'))(px2ce);
 	var it79 = require('iterate79');
+
 	var $canvas = $(px2ce.getElmCanvas());
 	var module_id = px2ce.module_id;
 	var droppedFileList = [];
@@ -26,6 +29,8 @@ module.exports = function(px2ce){
 	var timer_autoSave;
 	var isSaving = false,
 		isAutoSaveReserved = false;
+
+	let codeInfoJson = '';
 
 	function autoSave(interval, finish){
 		if( isSaving ){
@@ -90,6 +95,13 @@ module.exports = function(px2ce){
 						autoSave(0, true);
 					}
 				},function(){
+					toolbar.addButton({
+						"label": "info.json",
+						"click": async function(){
+							codeInfoJson = await infoJsonEditor.edit(codeInfoJson);
+							console.log('result:', codeInfoJson);
+						}
+					});
 					it1.next(arg);
 				});
 			},
@@ -102,7 +114,6 @@ module.exports = function(px2ce){
 								+'<div class="pickles2-contents-editor__module-editor-default-editor">'
 									+'<div class="pickles2-contents-editor__module-editor-default-switch-tab">'
 										+'<div class="px2-input-group px2-input-group--fluid" role="group">'
-											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="info">info</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="html">HTML</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="css">CSS</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="js">JavaScript</button>'
@@ -110,7 +121,6 @@ module.exports = function(px2ce){
 										+'</div>'
 									+'</div>'
 									+'<div class="pickles2-contents-editor__module-editor-default-editor-body">'
-										+'<div class="pickles2-contents-editor__module-editor-default-editor-body-info"></div>'
 										+'<div class="pickles2-contents-editor__module-editor-default-editor-body-html"></div>'
 										+'<div class="pickles2-contents-editor__module-editor-default-editor-body-css"></div>'
 										+'<div class="pickles2-contents-editor__module-editor-default-editor-body-js"></div>'
@@ -122,7 +132,6 @@ module.exports = function(px2ce){
 					return fin;
 				})());
 
-				$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-info').hide();
 				$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-html').hide();
 				$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-css').hide();
 				$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-js').hide();
@@ -186,9 +195,9 @@ module.exports = function(px2ce){
 						'module_id': module_id,
 					},
 					function(codes){
+						codeInfoJson = codes['info.json'] || '{}';
 
 						if( editorLib == 'ace' ){
-							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-info').append('<div>');
 							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-html').append('<div>');
 							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-css').append('<div>');
 							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-js').append('<div>');
@@ -200,9 +209,6 @@ module.exports = function(px2ce){
 								'height': '100%'
 							};
 							$elmTextareas = {};
-							$elmTextareas['info'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-info div').text(codes['info.json']).css(aceCss).get(0)
-							);
 							$elmTextareas['html'] = ace.edit(
 								$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-html div').text(
 									editorOption.editorMode == 'twig'
@@ -227,8 +233,6 @@ module.exports = function(px2ce){
 								$elmTextareas[i].setTheme("ace/theme/github");
 								$elmTextareas[i].getSession().setMode("ace/mode/html");
 							}
-							$elmTextareas['info'].setTheme("ace/theme/xcode");
-							$elmTextareas['info'].getSession().setMode("ace/mode/json");
 							$elmTextareas['html'].setTheme("ace/theme/monokai");
 							$elmTextareas['html'].getSession().setMode("ace/mode/php");
 							$elmTextareas['css'].setTheme("ace/theme/tomorrow");
@@ -251,20 +255,17 @@ module.exports = function(px2ce){
 							}
 
 						}else{
-							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-info').append('<textarea>');
 							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-html').append('<textarea>');
 							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-css').append('<textarea>');
 							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-js').append('<textarea>');
 							$canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-finalize').append('<textarea>');
 
 							$elmTextareas = {};
-							$elmTextareas['info'] = $canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-info textarea');
 							$elmTextareas['html'] = $canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-html textarea');
 							$elmTextareas['css'] = $canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-css textarea');
 							$elmTextareas['js'] = $canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-js textarea');
 							$elmTextareas['finalize'] = $canvas.find('.pickles2-contents-editor__module-editor-default-editor-body-finalize textarea');
 
-							$elmTextareas['info'].val(codes['info.json']);
 							$elmTextareas['html'].val(
 								editorOption.editorMode == 'twig'
 									? codes['template.html.twig']
@@ -373,7 +374,7 @@ module.exports = function(px2ce){
 			codes[templateFilename] = $elmTextareas['html'].getValue();
 			codes = {
 				...codes,
-				'info.json': $elmTextareas['info'].getValue(),
+				'info.json': codeInfoJson,
 				'module.css.scss': $elmTextareas['css'].getValue(),
 				'module.js': $elmTextareas['js'].getValue(),
 				'finalize.php': $elmTextareas['finalize'].getValue(),
@@ -382,7 +383,7 @@ module.exports = function(px2ce){
 			codes[templateFilename] = $elmTextareas['html'].val();
 			codes = {
 				...codes,
-				'info.json': $elmTextareas['info'].val(),
+				'info.json': codeInfoJson,
 				'module.css.scss': $elmTextareas['css'].val(),
 				'module.js': $elmTextareas['js'].val(),
 				'finalize.php': $elmTextareas['finalize'].val(),

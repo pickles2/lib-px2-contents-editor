@@ -5,15 +5,14 @@ module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
 	const Twig = require('twig');
+	var infoJsonEditor = new (require('../includes/InfoJsonEditor/InfoJsonEditor.js'))(px2ce);
 
-	var px2style = px2ce.px2style;
 	var $canvas = $(px2ce.getElmCanvas());
 	var px2conf = {};
 
 	var toolbar = new (require('../../apis/toolbar.js'))(px2ce);
-	var infoJsonEditor = new (require('../includes/InfoJsonEditor/InfoJsonEditor.js'))(px2ce);
 
-	var kaleflower;
+	let kaleflower;
 
 	let timer_autoSave;
 	const saveStatus = {
@@ -59,12 +58,8 @@ module.exports = function(px2ce){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				var btns = [
-				];
-
 				$canvas.html('');
 				toolbar.init({
-					"btns": btns,
 					"onFinish": function(){
 						// 完了イベント
 						clearTimeout(timer_autoSave);
