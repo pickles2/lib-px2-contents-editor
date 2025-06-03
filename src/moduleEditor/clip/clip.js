@@ -115,12 +115,10 @@ module.exports = function(px2ce){
 								+'<div class="pickles2-contents-editor__module-editor-clip-editor">'
 									+'<div class="pickles2-contents-editor__module-editor-clip-switch-tab">'
 										+'<div class="px2-input-group px2-input-group--fluid" role="group">'
-											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="info">info</button>'
 											+'<button class="px2-btn px2-btn--sm" data-pickles2-contents-editor-switch="clip">clip</button>'
 										+'</div>'
 									+'</div>'
 									+'<div class="pickles2-contents-editor__module-editor-clip-editor-body">'
-										+'<div class="pickles2-contents-editor__module-editor-clip-editor-body-info"></div>'
 										+'<div class="pickles2-contents-editor__module-editor-clip-editor-body-clip"></div>'
 									+'</div>'
 								+'</div>'
@@ -129,7 +127,6 @@ module.exports = function(px2ce){
 					return fin;
 				})());
 
-				$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-info').hide();
 				$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-clip').hide();
 
 				$elmEditor = $canvas.find('.pickles2-contents-editor__module-editor-clip-editor');
@@ -162,7 +159,6 @@ module.exports = function(px2ce){
 						$elmTabs.removeClass('px2-btn--toggle-on');
 						$this.addClass('px2-btn--toggle-on');
 						var tabFor = $this.attr('data-pickles2-contents-editor-switch');
-						$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-info').hide();
 						$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-clip').hide();
 						$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-'+tabFor).show();
 					})
@@ -190,7 +186,6 @@ module.exports = function(px2ce){
 						codeInfoJson = codes['info.json'] || '{}';
 
 						if( editorLib == 'ace' ){
-							$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-info').append('<div>');
 							$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-clip').append('<div>');
 
 							var aceCss = {
@@ -199,9 +194,6 @@ module.exports = function(px2ce){
 								'height': '100%'
 							};
 							$elmTextareas = {};
-							$elmTextareas['info'] = ace.edit(
-								$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-info div').text(codes['info.json']).css(aceCss).get(0)
-							);
 							$elmTextareas['clip'] = ace.edit(
 								$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-clip div').text(codes['clip.json']).css(aceCss).get(0)
 							);
@@ -213,20 +205,15 @@ module.exports = function(px2ce){
 								$elmTextareas[i].setTheme("ace/theme/github");
 								$elmTextareas[i].getSession().setMode("ace/mode/html");
 							}
-							$elmTextareas['info'].setTheme("ace/theme/xcode");
-							$elmTextareas['info'].getSession().setMode("ace/mode/json");
 							$elmTextareas['clip'].setTheme("ace/theme/xcode");
 							$elmTextareas['clip'].getSession().setMode("ace/mode/json");
 
 						}else{
-							$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-info').append('<textarea>');
 							$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-clip').append('<textarea>');
 
 							$elmTextareas = {};
-							$elmTextareas['info'] = $canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-info textarea');
 							$elmTextareas['clip'] = $canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-clip textarea');
 
-							$elmTextareas['info'].val(codes['info.json']);
 							$elmTextareas['clip'].val(codes['clip.json']);
 
 						}
@@ -321,11 +308,10 @@ module.exports = function(px2ce){
 	function saveModuleSrc(callback){
 		var codes = {};
 
+		codes['info.json'] = codeInfoJson;
 		if( editorLib == 'ace' ){
-			codes['info.json'] = codeInfoJson;
 			codes['clip.json'] = $elmTextareas['clip'].getValue();
 		}else{
-			codes['info.json'] = codeInfoJson;
 			codes['clip.json'] = $elmTextareas['clip'].val();
 		}
 
