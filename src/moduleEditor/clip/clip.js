@@ -4,7 +4,10 @@
 module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
+	const Twig = require('twig');
+	var jsonEditor = new (require('../includes/JsonEditor/JsonEditor.js'))(px2ce);
 	var it79 = require('iterate79');
+
 	var $canvas = $(px2ce.getElmCanvas());
 	var module_id = px2ce.module_id;
 	var droppedFileList = [];
@@ -26,6 +29,8 @@ module.exports = function(px2ce){
 	var timer_autoSave;
 	var isSaving = false,
 		isAutoSaveReserved = false;
+
+	let codeInfoJson = '';
 
 	function autoSave(interval, finish){
 		if( isSaving ){
@@ -90,6 +95,14 @@ module.exports = function(px2ce){
 						autoSave(0, true);
 					}
 				},function(){
+					toolbar.addButton({
+						"label": "info.json",
+						"click": async function(){
+							codeInfoJson = await jsonEditor.edit(codeInfoJson, {
+								title: 'info.json',
+							});
+						}
+					});
 					it1.next(arg);
 				});
 			},
@@ -174,6 +187,7 @@ module.exports = function(px2ce){
 						'module_id': module_id,
 					},
 					function(codes){
+						codeInfoJson = codes['info.json'] || '{}';
 
 						if( editorLib == 'ace' ){
 							$canvas.find('.pickles2-contents-editor__module-editor-clip-editor-body-info').append('<div>');
@@ -308,10 +322,10 @@ module.exports = function(px2ce){
 		var codes = {};
 
 		if( editorLib == 'ace' ){
-			codes['info.json'] = $elmTextareas['info'].getValue();
+			codes['info.json'] = codeInfoJson;
 			codes['clip.json'] = $elmTextareas['clip'].getValue();
 		}else{
-			codes['info.json'] = $elmTextareas['info'].val();
+			codes['info.json'] = codeInfoJson;
 			codes['clip.json'] = $elmTextareas['clip'].val();
 		}
 

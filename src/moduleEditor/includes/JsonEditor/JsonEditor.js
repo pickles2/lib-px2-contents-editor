@@ -7,13 +7,14 @@ module.exports = function(px2ce){
 	var px2style = window.px2style;
 	const template = require('-!text-loader!./includes/templates/form.twig');
 
-	this.edit = async function(prevValue){
+	this.edit = async function(prevValue, options = {}){
 		return new Promise((resolve, reject) => {
 			const $body = $(px2ce.bindTwig(template, {
 				value: prevValue || '',
+				title: options.title || 'JSON',
 			}));
 			const modal = px2style.modal({
-				title: 'Edit info.json',
+				title: options.title || 'Edit JSON',
 				body: $body,
 				width: 700,
 				form: {

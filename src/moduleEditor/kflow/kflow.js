@@ -5,7 +5,7 @@ module.exports = function(px2ce){
 	var _this = this;
 	var $ = require('jquery');
 	const Twig = require('twig');
-	var infoJsonEditor = new (require('../includes/InfoJsonEditor/InfoJsonEditor.js'))(px2ce);
+	var jsonEditor = new (require('../includes/JsonEditor/JsonEditor.js'))(px2ce);
 
 	var $canvas = $(px2ce.getElmCanvas());
 	var px2conf = {};
@@ -21,6 +21,7 @@ module.exports = function(px2ce){
 	};
 
 	let codeInfoJson = '';
+	let codeFinalizePhp = '';
 
 	function getCanvasPageUrl(){
 		var rtn = getPreviewUrl();
@@ -71,8 +72,17 @@ module.exports = function(px2ce){
 					toolbar.addButton({
 						"label": "info.json",
 						"click": async function(){
-							codeInfoJson = await infoJsonEditor.edit(codeInfoJson);
-							console.log('result:', codeInfoJson);
+							codeInfoJson = await jsonEditor.edit(codeInfoJson, {
+								title: 'info.json',
+							});
+						}
+					});
+					toolbar.addButton({
+						"label": "finalize.php",
+						"click": async function(){
+							codeFinalizePhp = await jsonEditor.edit(codeFinalizePhp, {
+								title: 'finalize.php',
+							});
 						}
 					});
 					rlv();
@@ -188,6 +198,7 @@ module.exports = function(px2ce){
 						},
 						function(codes){
 							codeInfoJson = codes['info.json'] || '{}';
+							codeFinalizePhp = codes['finalize.php'] || '';
 							kaleflower.loadXml(codes['src/template.kflow']);
 							resolve();
 						}
@@ -221,6 +232,7 @@ module.exports = function(px2ce){
 
 			const codes = {
 				'info.json': codeInfoJson,
+				'finalize.php': codeFinalizePhp,
 				'src/template.kflow': kaleflower.get(),
 			};
 
