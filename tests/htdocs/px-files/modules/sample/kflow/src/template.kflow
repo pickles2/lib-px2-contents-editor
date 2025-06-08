@@ -2,6 +2,7 @@
 <kflow>
 	<configs>
 		<config name="id" value="kf19717669e9596b3fb" />
+		<config name="module-name" value="local-sample-kflow" />
 		<config name="break-points">
 		</config>
 		<config name="color-palettes">
@@ -13,7 +14,7 @@
 		<content name="main">
 			<div style="margin-top: 1em;&#xA;margin-bottom: 1em;&#xA;">
 				
-				<div>これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;">{{ main }}</div><p>This is a sample KFlow template.</p>
+				<div>これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;">{{ main }}</div><p>This is a sample KFlow template. 2</p>
 			</div>
 		</content>
 	</contents>
