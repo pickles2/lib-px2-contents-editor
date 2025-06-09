@@ -293,6 +293,20 @@ class gpi{
 				return $result;
 				break;
 
+			case "getClipModuleSrc":
+				// モジュールのソースを取得する
+				$clipEditor = new moduleEditor_clip($this->px2ce);
+				$contentsCodes = $clipEditor->getModuleSrc();
+				return $contentsCodes;
+				break;
+
+			case "saveClipModuleSrc":
+				// モジュールのソースを保存する
+				$clipEditor = new moduleEditor_clip($this->px2ce);
+				$result = $clipEditor->saveModuleSrc($data['codes']);
+				return $result;
+				break;
+
 			case "getKflowModuleSrc":
 				// モジュールのソースを取得する
 				$kflowEditor = new moduleEditor_kflow($this->px2ce);

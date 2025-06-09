@@ -179,7 +179,7 @@ module.exports = function(px2ce){
 				// テキストエディタを初期化する
 				px2ce.gpiBridge(
 					{
-						'api': 'getModuleSrc',
+						'api': 'getClipModuleSrc',
 						'module_id': module_id,
 					},
 					function(codes){
@@ -317,7 +317,7 @@ module.exports = function(px2ce){
 
 		px2ce.gpiBridge(
 			{
-				'api': 'saveModuleSrc',
+				'api': 'saveClipModuleSrc',
 				'module_id': module_id,
 				'codes': codes,
 			},
