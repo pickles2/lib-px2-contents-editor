@@ -54,34 +54,34 @@ class editor_kflow{
 		$strLoaderCSS = $_targetPaths['strLoaderCSS'];
 		$strLoaderJS = $_targetPaths['strLoaderJS'];
 
-	if( is_file( $_contentsPath ) ){
-		$rtn['kflow'] = file_get_contents($_contentsPath);
-	}
+		if( is_file( $_contentsPath ) ){
+			$rtn['kflow'] = file_get_contents($_contentsPath);
+		}
 
-	// XMLをパースして module-name-prefix が存在しない場合は初期化
-	if( !empty($rtn['kflow']) ){
-		$dom = new \DOMDocument();
-		$dom->loadXML($rtn['kflow']);
+		// XMLをパースして module-name-prefix が存在しない場合は初期化
+		if( !empty($rtn['kflow']) ){
+			$dom = new \DOMDocument();
+			$dom->loadXML($rtn['kflow']);
 
-		// kflow > configs > config[name="module-name-prefix"] の存在をチェック
-		$xpath = new \DOMXPath($dom);
-		$moduleNamePrefixConfig = $xpath->query('//kflow/configs/config[@name="module-name-prefix"]');
+			// kflow > configs > config[name="module-name-prefix"] の存在をチェック
+			$xpath = new \DOMXPath($dom);
+			$moduleNamePrefixConfig = $xpath->query('//kflow/configs/config[@name="module-name-prefix"]');
 
-		if( $moduleNamePrefixConfig->length === 0 ){
-			// module-name-prefix が存在しない場合、初期化する
-			$configsNode = $xpath->query('//kflow/configs')->item(0);
-			if( $configsNode ){
-				$newConfig = $dom->createElement('config');
-				$newConfig->setAttribute('name', 'module-name-prefix');
-				$newConfig->setAttribute('value', 'cont');
-				$configsNode->appendChild($newConfig);
+			if( $moduleNamePrefixConfig->length === 0 ){
+				// module-name-prefix が存在しない場合、初期化する
+				$configsNode = $xpath->query('//kflow/configs')->item(0);
+				if( $configsNode ){
+					$newConfig = $dom->createElement('config');
+					$newConfig->setAttribute('name', 'module-name-prefix');
+					$newConfig->setAttribute('value', ($this->px2ce->get_target_mode() == 'theme_layout' ? 'theme' : 'cont'));
+					$configsNode->appendChild($newConfig);
 
-				$rtn['kflow'] = $dom->saveXML();
+					$rtn['kflow'] = $dom->saveXML();
+				}
 			}
 		}
-	}
 
-	$kaleflower = new \kaleflower\kaleflower();
+		$kaleflower = new \kaleflower\kaleflower();
 		$kaleflower->loadXml( $rtn['kflow'] );
 
 		// Contents modules for Kaleflower
