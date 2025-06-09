@@ -63,31 +63,6 @@ class moduleEditor_default{
 			}
 		}
 
-
-		// XMLをパースして module-name が存在しない場合は初期化
-		if( !empty($rtn['src/template.kflow']) ){
-			$dom = new \DOMDocument();
-			$dom->loadXML($rtn['src/template.kflow']);
-
-			// kflow > configs > config[name="module-name"] の存在をチェック
-			$xpath = new \DOMXPath($dom);
-			$moduleNameConfig = $xpath->query('//kflow/configs/config[@name="module-name"]');
-
-			if( $moduleNameConfig->length === 0 ){
-				// module-name が存在しない場合、初期化する
-				$configsNode = $xpath->query('//kflow/configs')->item(0);
-				if( $configsNode ){
-					$blockName = preg_replace('/[^a-zA-Z0-9]+/', '-', $module_id);
-					$newConfig = $dom->createElement('config');
-					$newConfig->setAttribute('name', 'module-name');
-					$newConfig->setAttribute('value', $blockName);
-					$configsNode->appendChild($newConfig);
-
-					$rtn['src/template.kflow'] = $dom->saveXML();
-				}
-			}
-		}
-
 		return $rtn;
 	}
 
