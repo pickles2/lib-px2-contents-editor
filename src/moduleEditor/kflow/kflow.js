@@ -193,7 +193,7 @@ module.exports = function(px2ce){
 				return new Promise((resolve, reject) => {
 					px2ce.gpiBridge(
 						{
-							'api': 'getModuleSrc',
+							'api': 'getKflowModuleSrc',
 							'module_id': px2ce.module_id,
 						},
 						function(codes){
@@ -238,28 +238,18 @@ module.exports = function(px2ce){
 
 			px2ce.gpiBridge(
 				{
-					'api': 'saveModuleSrc',
+					'api': 'saveKflowModuleSrc',
 					'module_id': px2ce.module_id,
 					'codes': codes,
 				},
 				function(result){
-					setTimeout(() => {
-						px2ce.gpiBridge(
-							{
-								'api': 'buildKflowModule',
-								'module_id': px2ce.module_id,
-							},
-							function(result){
-								saveStatus.isProgress = false;
-								currentCallbacks.forEach(currentCallback => currentCallback(result) );
+					saveStatus.isProgress = false;
+					currentCallbacks.forEach(currentCallback => currentCallback(result) );
 
-								if(saveStatus.callbackPool.length){
-									saveContentsSrcExecute();
-									return;
-								}
-							}
-						);
-					}, 500);
+					if(saveStatus.callbackPool.length){
+						saveContentsSrcExecute();
+						return;
+					}
 				}
 			);
 		}

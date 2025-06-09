@@ -14,7 +14,7 @@
 		<content name="main">
 			<div style="margin-top: 1em;&#xA;margin-bottom: 1em;&#xA;">
 				
-				<div>これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;">{{ main }}</div><p>This is a sample KFlow template. 2</p>
+				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;">{{ main }}</div><p>This is a sample KFlow template. 2</p>
 			</div>
 		</content>
 	</contents>

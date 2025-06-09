@@ -293,10 +293,18 @@ class gpi{
 				return $result;
 				break;
 
-			case "buildKflowModule":
+			case "getKflowModuleSrc":
+				// モジュールのソースを取得する
+				$kflowEditor = new moduleEditor_kflow($this->px2ce);
+				$contentsCodes = $kflowEditor->getModuleSrc();
+				return $contentsCodes;
+				break;
+
+			case "saveKflowModuleSrc":
 				// Kflowモジュールをビルドする
-				$defaultEditor = new moduleEditor_kflow($this->px2ce);
-				$result = $defaultEditor->build();
+				$kflowEditor = new moduleEditor_kflow($this->px2ce);
+				$result = $kflowEditor->saveModuleSrc($data['codes']);
+				$result = $kflowEditor->build();
 				return $result;
 				break;
 

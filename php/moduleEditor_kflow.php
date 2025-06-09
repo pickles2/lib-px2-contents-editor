@@ -35,6 +35,102 @@ class moduleEditor_kflow{
 	}
 
 	/**
+	 * コンテンツのソースを取得する
+	 */
+	public function getModuleSrc(){
+		$module_id = $this->px2ce->get_module_id();
+		$module_info = $this->px2ce->get_broccoli_module_info($module_id);
+		$realpath_module_dir = $module_info->realpath.urlencode($module_info->category_id).'/'.urlencode($module_info->module_id).'/';
+
+		$filelist = array(
+			'README.md',
+			'README.html',
+			'info.json',
+			'language.csv',
+			'src/template.kflow',
+			'module.css.scss',
+			'module.js',
+			'finalize.php',
+			'finalize.js',
+		);
+		$rtn = array();
+		foreach($filelist as $filename){
+			if( is_file( $realpath_module_dir.$filename ) ){
+				$rtn[$filename] = file_get_contents($realpath_module_dir.$filename);
+			}
+		}
+
+
+		// XMLをパースして module-name が存在しない場合は初期化
+		if( !empty($rtn['src/template.kflow']) ){
+			$dom = new \DOMDocument();
+			$dom->loadXML($rtn['src/template.kflow']);
+
+			// kflow > configs > config[name="module-name"] の存在をチェック
+			$xpath = new \DOMXPath($dom);
+			$moduleNameConfig = $xpath->query('//kflow/configs/config[@name="module-name"]');
+
+			if( $moduleNameConfig->length === 0 ){
+				// module-name が存在しない場合、初期化する
+				$configsNode = $xpath->query('//kflow/configs')->item(0);
+				if( $configsNode ){
+					$blockName = preg_replace('/[^a-zA-Z0-9]+/', '-', $module_id);
+					$newConfig = $dom->createElement('config');
+					$newConfig->setAttribute('name', 'module-name');
+					$newConfig->setAttribute('value', $blockName);
+					$configsNode->appendChild($newConfig);
+
+					$rtn['src/template.kflow'] = $dom->saveXML();
+				}
+			}
+		}
+
+		return $rtn;
+	}
+
+	/**
+	 * コンテンツのソースを保存する
+	 */
+	public function saveModuleSrc($codes){
+		$module_id = $this->px2ce->get_module_id();
+		$module_info = $this->px2ce->get_broccoli_module_info($module_id);
+		$realpath_module_dir = $module_info->realpath.urlencode($module_info->category_id).'/'.urlencode($module_info->module_id).'/';
+		$this->px2ce->fs()->mkdir_r( $realpath_module_dir );
+
+		$result = array(
+			'result' => true,
+			'message' => 'OK'
+		);
+
+		$filelist = array(
+			'README.md',
+			'README.html',
+			'info.json',
+			'language.csv',
+			'src/template.kflow',
+			'module.css.scss',
+			'module.js',
+			'finalize.php',
+			'finalize.js',
+		);
+		$rtn = array();
+		foreach($filelist as $filename){
+			if( array_key_exists($filename, $codes) ){
+				if( !$this->is_authorized_server_side_scripting ){
+					$codes[$filename] = $this->sanitizer->sanitize_contents($codes[$filename]);
+				}
+				if( !strlen($codes[$filename] ?? '') ){
+					$this->px2ce->fs()->rm( $realpath_module_dir.$filename );
+				}else{
+					$this->px2ce->fs()->save_file( $realpath_module_dir.$filename, $codes[$filename] );
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * モジュールをビルドする
 	 */
 	public function build(){
