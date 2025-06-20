@@ -84,6 +84,107 @@
                         }
                     },
                     {
+                        "modId": "FESS:units/cols2",
+                        "fields": {
+                            "column1": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "main": {
+                                            "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ],
+                            "column2": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "main": {
+                                            "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "modId": "FESS:units/cols5",
+                        "fields": {
+                            "column1": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "main": {
+                                            "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ],
+                            "column2": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "main": {
+                                            "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ],
+                            "column3": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "main": {
+                                            "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ],
+                            "column4": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "main": {
+                                            "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ],
+                            "column5": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "main": {
+                                            "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "modId": "local:sample/twig",
                         "fields": {
                             "main": {

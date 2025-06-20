@@ -66,11 +66,11 @@ class moduleEditor_kflow{
 			$dom = new \DOMDocument();
 			$dom->loadXML($rtn['src/template.kflow']);
 
-			// kflow > configs > config[name="module-name"] の存在をチェック
 			$xpath = new \DOMXPath($dom);
-			$moduleNameConfig = $xpath->query('//kflow/configs/config[@name="module-name"]');
+			$hasChanged = false;
 
-			if( $moduleNameConfig->length === 0 ){
+			if( $xpath->query('//kflow/configs/config[@name="module-name"]')->length === 0 ){
+				// kflow > configs > config[name="module-name"] の存在をチェック
 				// module-name が存在しない場合、初期化する
 				$configsNode = $xpath->query('//kflow/configs')->item(0);
 				if( $configsNode ){
@@ -79,9 +79,25 @@ class moduleEditor_kflow{
 					$newConfig->setAttribute('name', 'module-name');
 					$newConfig->setAttribute('value', $blockName);
 					$configsNode->appendChild($newConfig);
-
-					$rtn['src/template.kflow'] = $dom->saveXML();
+					$hasChanged = true;
 				}
+			}
+
+			if( $xpath->query('//kflow/configs/config[@name="break-point-query-type"]')->length === 0 ){
+				// kflow > configs > config[name="break-point-query-type"] の存在をチェック
+				// break-point-query-type が存在しない場合、初期化する
+				$configsNode = $xpath->query('//kflow/configs')->item(0);
+				if( $configsNode ){
+					$newConfig = $dom->createElement('config');
+					$newConfig->setAttribute('name', 'break-point-query-type');
+					$newConfig->setAttribute('value', 'container-query');
+					$configsNode->appendChild($newConfig);
+					$hasChanged = true;
+				}
+			}
+
+			if( $hasChanged ){
+				$rtn['src/template.kflow'] = $dom->saveXML();
 			}
 		}
 
