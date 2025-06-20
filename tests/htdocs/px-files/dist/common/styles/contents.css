@@ -478,9 +478,28 @@ html, body {
   padding: 1em 2em;
   box-sizing: border-box;
 }
+@container (max-width: 890px) {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+    background-color: #ffeaab;
+  }
+}
+@container (max-width: 520px) {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+    background-color: #94002c;
+  }
+}
+@container (max-width: 380px) {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+    background-color: #73ab91;
+  }
+}
+.contents .local-sample-kflow__kf-kf19717669e9596b3fb-2 {
+  font-size: 12px;
+}
 .contents .local-sample-kflow {
   margin-top: 1em;
   margin-bottom: 1em;
+  container-type: inline-size;
 }
 .contents .sample-sample {
   color: red;
