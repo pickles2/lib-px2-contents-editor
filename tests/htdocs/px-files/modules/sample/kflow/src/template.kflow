@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kflow>
 	<configs>
-		<config name="id" value="kf19717669e9596b3fb" />
-		<config name="module-name" value="local-sample-kflow" />
+		<config name="id" value="kf19717669e9596b3fb"/>
+		<config name="module-name" value="local-sample-kflow"/>
 		<config name="break-points">
-			<value name="md" max-width="890" />
-			<value name="sm" max-width="520" />
-			<value name="xs" max-width="380" />
+			<value name="md" max-width="890"/>
+			<value name="sm" max-width="520"/>
+			<value name="xs" max-width="380"/>
 		</config>
 		<config name="color-palettes">
 		</config>
-		<config name="break-point-query-type" value="container-query" />
-		<config name="module-name-prefix" value="" />
+		<config name="break-point-query-type" value="container-query"/>
+		<config name="module-name-prefix" value=""/>
 	</configs>
 	<styles>
 	</styles>

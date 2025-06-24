@@ -48,6 +48,39 @@ module.exports = function(px2ce){
 	}
 
 	/**
+	 * Twig テンプレートにデータをバインドする
+	 */
+	function bindTwig(tpl, data, funcs){
+		let rtn = '';
+		let twig;
+		try {
+			twig = Twig.twig;
+
+			if(funcs && typeof(funcs) == typeof({})){
+				Object.keys(funcs).forEach( ($fncName, index) => {
+					const $callback = funcs[$fncName];
+					Twig.extendFunction($fncName, $callback);
+				});
+			}
+
+			const bindData = {
+				...data,
+				lb: this.lb,
+			};
+
+			rtn = new twig({
+				'data': tpl,
+				'autoescape': false,
+			}).render(bindData);
+		} catch(e) {
+			const errorMessage = 'TemplateEngine "Twig" Rendering ERROR.';
+			console.error( errorMessage );
+			rtn = errorMessage;
+		}
+		return rtn;
+	}
+
+	/**
 	 * 初期化
 	 */
 	this.init = function(editorOption, callback){
@@ -172,8 +205,36 @@ module.exports = function(px2ce){
 						"contentsContainerNameBy": (px2conf.plugins.px2dt.contents_bowl_name_by),
 						"extra": extraValues,
 						"finalize": (contents) => {
+							const finalizeExtraValues = {
+								...extraValues,
+							};
+
+							// 定義されたフィールドからダミーコンテンツを作成し、Twigにバインドする
+							const infoJson = JSON.parse(codeInfoJson || '{}');
+							try {
+								if(infoJson.interface && infoJson.interface.fields){
+									Object.keys(infoJson.interface.fields).forEach((key) => {
+										const currentField = infoJson.interface.fields[key];
+										if(currentField.fieldType === 'module'){
+											finalizeExtraValues[key] = '<p>Dummy test.</p>';
+										}else if(currentField.fieldType === 'loop'){
+											// finalizeExtraValues[key] = '<p>Dummy test.</p>';
+										}else{
+											if(currentField.type === 'multitext'){
+												finalizeExtraValues[key] = '<p>Dummy test.</p>';
+											}else{
+												finalizeExtraValues[key] = '<p>Dummy test.</p>';
+											}
+										}
+									});
+								}
+							}
+							catch(e) {
+								console.error('Error parsing info.json:', e);
+							}
+							console.log(codeInfoJson);
 							Object.keys(contents.html).forEach((key) => {
-								contents.html[key] = px2ce.bindTwig(contents.html[key], extraValues);
+								contents.html[key] = bindTwig(contents.html[key], finalizeExtraValues);
 							});
 							return contents;
 						},
