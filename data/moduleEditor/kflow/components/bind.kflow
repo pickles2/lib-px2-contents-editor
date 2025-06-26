@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kflow>
+	<components>
+		<component name="bind"
+			is-void-element="true"
+			can-set-class="false"
+			can-set-width="false"
+			can-set-height="false"
+			can-set-contents-direction="false"
+			can-set-scrollable="false"
+			can-be-layer="false">
+			<fields>
+				<field type="text" name="fieldId" label="Field" />
+			</fields>
+			<template><![CDATA[{{ attributes.fieldId }}]]></template>
+</component>
+	</components>
+</kflow>
