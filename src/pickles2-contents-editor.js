@@ -259,7 +259,7 @@
 					'api':'openUrlInBrowser'
 				},
 				function(res){
-					console.log('open URL: ' + url);
+					// console.log('open URL: ' + url);
 				}
 			);
 			return;
@@ -284,7 +284,7 @@
 					'api':'openResourceDir'
 				},
 				function(res){
-					console.log('open resource directory of:', _this.page_path, res);
+					// console.log('open resource directory of:', _this.page_path, res);
 				}
 			);
 			return;

@@ -25,11 +25,21 @@
 	<assets>
 	</assets>
 	<fields>
+		<field type="broccoli-module-interface-field" format="plain">
+			<editor><![CDATA[<div class="px2ce-broccoli-module-interface-field">
+					<div class="px2ce-broccoli-module-interface-field__inner">
+						<input name="_" value="{{ _ }}" class="px2-input" />
+					</div>
+				</div>]]></editor>
+			<script function="onload"><![CDATA[function(dom, fieldHelper){
+					return;
+				}]]></script>
+		</field>
 	</fields>
 	<components>
 		<component name="bind" is-void-element="true" can-set-css="false" can-set-class="false" can-set-width="false" can-set-height="false" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false" can-set-onclick-event="false" can-set-onsubmit-event="false">
 			<fields>
-				<field type="text" name="fieldId" label="Field"/>
+				<field type="broccoli-module-interface-field" name="fieldId" label="Field"/>
 			</fields>
 
 			<template><![CDATA[{{ attributes.fieldId }}]]></template>

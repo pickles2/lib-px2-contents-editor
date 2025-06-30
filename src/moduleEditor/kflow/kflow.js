@@ -232,7 +232,6 @@ module.exports = function(px2ce){
 							catch(e) {
 								console.error('Error parsing info.json:', e);
 							}
-							console.log(codeInfoJson);
 							Object.keys(contents.html).forEach((key) => {
 								contents.html[key] = bindTwig(contents.html[key], finalizeExtraValues);
 							});
