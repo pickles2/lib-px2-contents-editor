@@ -7,7 +7,7 @@
 						<input name="_" value="{{ _ }}" class="px2-input" />
 					</div>
 				</div>]]></editor>
-			<script function="onload"><![CDATA[function(dom, fieldHelper){ console.log("bind.kflow onload",dom,fieldHelper);; return;}]]></script>
+			<script function="onload"><![CDATA[function(dom, fieldHelper){ {{___bindOnloadFunction___}}; return;}]]></script>
 		</field>
 	</fields>
 	<components>

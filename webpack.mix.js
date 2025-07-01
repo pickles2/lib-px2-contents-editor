@@ -59,6 +59,10 @@ mix
 	.copyDirectory('node_modules/bootstrap-icons/font/fonts', 'dist/fonts')
 
 	// --------------------------------------
+	// moduleEditor: kflow: bind field
+	.js('src/moduleEditor/kflow/components/bind/src/onload.js', 'src/moduleEditor/kflow/components/bind/tmp_dist/onload.js')
+
+	// --------------------------------------
 	// Static Frontend Libraries
 	.copyDirectory('src/editor/broccoli/canvas.pass.html', 'dist/editor/broccoli/canvas.pass.html')
 	.copyDirectory('node_modules/broccoli-field-table/dist', 'dist/libs/broccoli-field-table/dist')
