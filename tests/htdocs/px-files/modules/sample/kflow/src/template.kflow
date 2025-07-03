@@ -18,7 +18,7 @@
 	<contents>
 		<content name="main">
 			<div style="margin-top: 1em;&#xA;margin-bottom: 1em;&#xA;container-type: inline-size;&#xA;">
-				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><bind/>{{ main }}</div><p style="font-size: 12px;&#xA;">This is a sample KFlow template. 2</p>
+				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><bind fieldId="main"/></div><p style="font-size: 12px;&#xA;">This is a sample KFlow template. 2</p>
 			</div>
 		</content>
 	</contents>
@@ -28,12 +28,12 @@
 		<field type="broccoli-module-interface-field" format="plain">
 			<editor><![CDATA[<div class="px2ce-broccoli-module-interface-field">
 					<div class="px2ce-broccoli-module-interface-field__inner">
-						<input name="_" value="{{ _ }}" class="px2-input" />
+						<select class="px2-input px2-input--block">
+						</select>
+						<input type="hidden" name="_" value="{{ _ }}" />
 					</div>
 				</div>]]></editor>
-			<script function="onload"><![CDATA[function(dom, fieldHelper){
-					return;
-				}]]></script>
+			<script function="onload"><![CDATA[function(dom, fieldHelper){ (()=>{var e=fieldHelper.$,n=e(dom),t=n.find('input[name="_"]'),a=n.find("select"),i=fieldHelper.extra.__PX2CE_MODULE_EDITOR_GET_INFOJSON__();i||function(e){throw new TypeError('"'+e+'" is read-only')}("infoJson"),i.interface||(i.interface={}),i.interface.fields||(i.interface.fields={}),Object.keys(i.interface.fields).forEach((function(n){var r=i.interface.fields[n],c=e("<option></option>");c.attr("value",n),c.text("".concat(r.label||n," (").concat(n,")")),t.val()==n&&c.attr("selected",!0),a.append(c)})),a.on("change",(function(){t.val(e(this).val())})).trigger("change")})();; return;}]]></script>
 		</field>
 	</fields>
 	<components>
@@ -42,7 +42,7 @@
 				<field type="broccoli-module-interface-field" name="fieldId" label="Field"/>
 			</fields>
 
-			<template><![CDATA[{{ attributes.fieldId }}]]></template>
+			<template><![CDATA[{{'{{'}} {{ attributes.fieldId }} {{'}}'}}]]></template>
 </component>
 	</components>
 </kflow>

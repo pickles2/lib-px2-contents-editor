@@ -197,6 +197,12 @@ module.exports = function(px2ce){
 						'isPageInBreadcrumb': function($page_id){
 							return false;
 						},
+						'__PX2CE_MODULE_EDITOR_GET_INFOJSON__': function(){
+							return JSON.parse(codeInfoJson);
+						},
+						'__PX2CE_MODULE_EDITOR_UPDATE_INFOJSON__': function(updatedInfoJson){
+							codeInfoJson = JSON.stringify(updatedInfoJson, null, 2);
+						},
 					};
 					kaleflower = new Kaleflower(container, {
 						"urlLayoutViewPage": getCanvasPageUrl(),
