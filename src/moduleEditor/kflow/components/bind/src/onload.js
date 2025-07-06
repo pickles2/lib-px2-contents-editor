@@ -2,7 +2,7 @@
 const $ = fieldHelper.$;
 const $dom = $(dom);
 const $input = $dom.find('input[name="_"]');
-const $select = $dom.find('select');
+const $select = $dom.find('select[name="field-selector"]');
 const infoJson = fieldHelper.extra.__PX2CE_MODULE_EDITOR_GET_INFOJSON__();
 if(!infoJson){ infoJson = {}; }
 if(!infoJson.interface){ infoJson.interface = {}; }
@@ -20,4 +20,5 @@ Object.keys(infoJson.interface.fields).forEach((key) => {
 });
 $select.on('change', function(){
 	$input.val($(this).val());
+	$input.trigger('input');
 }).trigger('change');

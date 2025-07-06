@@ -4,7 +4,7 @@
 		<field type="broccoli-module-interface-field" format="plain">
 			<editor><![CDATA[<div class="px2ce-broccoli-module-interface-field">
 					<div class="px2ce-broccoli-module-interface-field__inner">
-						<select class="px2-input px2-input--block">
+						<select name="field-selector" class="px2-input px2-input--block">
 						</select>
 						<input type="hidden" name="_" value="{{ _ }}" />
 					</div>
@@ -25,7 +25,7 @@
 			<fields>
 				<field type="broccoli-module-interface-field" name="fieldId" label="Field" />
 			</fields>
-			<template><![CDATA[{{ '{{' }} {{ attributes.fieldId }} {{ '}}' }}]]></template>
+			<template><![CDATA[{{ '{{' }} {% if attributes.fieldId %}{{ attributes.fieldId }}{% else %}__notExists__{% endif %} {{ '}}' }}]]></template>
 </component>
 	</components>
 </kflow>
