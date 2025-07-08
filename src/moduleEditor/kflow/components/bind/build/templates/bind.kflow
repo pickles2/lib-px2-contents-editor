@@ -23,9 +23,9 @@
 			can-set-scrollable="false"
 			can-be-layer="false">
 			<fields>
-				<field type="broccoli-module-interface-field" name="fieldId" label="Field" />
+				<field type="broccoli-module-interface-field" name="field" label="Field" />
 			</fields>
-			<template><![CDATA[{{ '{{' }} {% if attributes.fieldId %}{{ attributes.fieldId }}{% else %}__notExists__{% endif %} {{ '}}' }}]]></template>
+			<template><![CDATA[{{ '{{' }} {% if attributes.field %}{{ attributes.field }}{% else %}__notExists__{% endif %} {{ '}}' }}]]></template>
 </component>
 	</components>
 </kflow>
