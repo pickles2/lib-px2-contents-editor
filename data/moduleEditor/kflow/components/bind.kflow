@@ -10,7 +10,7 @@
 					</div>
 				</div>]]></editor>
 			<style></style>
-			<script function="onload"><![CDATA[function(dom, fieldHelper){ (()=>{var e=fieldHelper.$,n=e(dom),t=n.find('input[name="_"]'),i=n.find('select[name="field-selector"]'),a=fieldHelper.extra.__PX2CE_MODULE_EDITOR_GET_INFOJSON__();a||function(e){throw new TypeError('"'+e+'" is read-only')}("infoJson"),a.interface||(a.interface={}),a.interface.fields||(a.interface.fields={}),Object.keys(a.interface.fields).forEach((function(n){var r=a.interface.fields[n],c=e("<option></option>");c.attr("value",n),c.text("".concat(r.label||n," (").concat(n,")")),t.val()==n&&c.attr("selected",!0),i.append(c)})),i.on("change",(function(){t.val(e(this).val()),t.trigger("input")})).trigger("change")})();; return;}]]></script>
+			<script function="onload"><![CDATA[function(dom, fieldHelper){ (()=>{var e=dom.querySelector('input[name="_"]'),n=dom.querySelector('select[name="field-selector"]'),t=fieldHelper.extra.__PX2CE_MODULE_EDITOR_GET_INFOJSON__();t||function(e){throw new TypeError('"'+e+'" is read-only')}("infoJson"),t.interface||(t.interface={}),t.interface.fields||(t.interface.fields={}),Object.keys(t.interface.fields).forEach((function(a){var c=t.interface.fields[a],i=document.createElement("option");i.value=a,i.textContent="".concat(c.label||a," (").concat(a,")"),e.value==a&&(i.selected=!0),n.appendChild(i)})),n.addEventListener("change",(function(){e.value=this.value,e.dispatchEvent(new Event("input"))})),n.dispatchEvent(new Event("change"))})();; return;}]]></script>
 		</field>
 	</fields>
 	<components>

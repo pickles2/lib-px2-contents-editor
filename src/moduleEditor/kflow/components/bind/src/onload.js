@@ -1,8 +1,6 @@
 // bind.kflow
-const $ = fieldHelper.$;
-const $dom = $(dom);
-const $input = $dom.find('input[name="_"]');
-const $select = $dom.find('select[name="field-selector"]');
+const $input = dom.querySelector('input[name="_"]');
+const $select = dom.querySelector('select[name="field-selector"]');
 const infoJson = fieldHelper.extra.__PX2CE_MODULE_EDITOR_GET_INFOJSON__();
 if(!infoJson){ infoJson = {}; }
 if(!infoJson.interface){ infoJson.interface = {}; }
@@ -10,15 +8,16 @@ if(!infoJson.interface.fields){ infoJson.interface.fields = {}; }
 
 Object.keys(infoJson.interface.fields).forEach((key) => {
 	const currentField = infoJson.interface.fields[key];
-	const $option = $('<option></option>');
-	$option.attr('value', key);
-	$option.text(`${currentField.label || key} (${key})`);
-	if($input.val() == key){
-		$option.attr('selected', true);
+	const $option = document.createElement('option');
+	$option.value = key;
+	$option.textContent = `${currentField.label || key} (${key})`;
+	if($input.value == key){
+		$option.selected = true;
 	}
-	$select.append($option);
+	$select.appendChild($option);
 });
-$select.on('change', function(){
-	$input.val($(this).val());
-	$input.trigger('input');
-}).trigger('change');
+$select.addEventListener('change', function(){
+	$input.value = this.value;
+	$input.dispatchEvent(new Event('input'));
+});
+$select.dispatchEvent(new Event('change'));
