@@ -60,7 +60,7 @@ mix
 
 	// --------------------------------------
 	// moduleEditor: kflow: bind field
-	.js('src/moduleEditor/kflow/components/bind/src/onload.js', 'src/moduleEditor/kflow/components/bind/tmp_dist/onload.js')
+	.js('src/moduleEditor/kflow/components/bind/onload.js', 'src/moduleEditor/kflow/components/tmp_dist/bind.js')
 
 	// --------------------------------------
 	// Static Frontend Libraries

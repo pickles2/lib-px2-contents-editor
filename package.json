@@ -7,7 +7,7 @@
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "hot": "mix watch --hot",
     "prod": "npm run production",
-    "production": "mix --production && php src/moduleEditor/kflow/components/bind/build/build.php"
+    "production": "mix --production && php src/moduleEditor/kflow/components/build.php"
   },
   "author": "Tomoya Koyanagi",
   "license": "MIT",
