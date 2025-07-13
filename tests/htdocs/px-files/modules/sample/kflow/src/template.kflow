@@ -42,7 +42,7 @@
 				<field type="broccoli-module-interface-field" name="field" label="Field"/>
 			</fields>
 
-			<template><![CDATA[{{ '{{' }} {% if attributes.field %}{{ attributes.field }}{% else %}__notExists__{% endif %} {{ '}}' }}]]></template>
+			<template><![CDATA[{% if _ENV.mode == "canvas" %}<div>{% endif %}{{ '{{' }} {% if attributes.field %}{{ attributes.field }}{% else %}__notExists__{% endif %} {{ '}}' }}{% if _ENV.mode == "canvas" %}</div>{% endif %}]]></template>
 </component>
 	</components>
 </kflow>
