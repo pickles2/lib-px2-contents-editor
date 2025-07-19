@@ -209,6 +209,7 @@ module.exports = function(px2ce){
 						"scriptReceiverSelector": "[data-broccoli-receive-message=yes]",
 						"contentsAreaSelector": (px2conf.plugins.px2dt.contents_area_selector),
 						"contentsContainerNameBy": (px2conf.plugins.px2dt.contents_bowl_name_by),
+						"previewWrapSelector": true,
 						"extra": extraValues,
 						"finalize": (contents) => {
 							const finalizeExtraValues = {
