@@ -72,6 +72,66 @@
                             "main": {
                                 "src": "これはテキスト入力欄。\nkflowで作ったモジュールです。",
                                 "editor": "markdown"
+                            },
+                            "loop": [
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "href": {
+                                            "src": "https://pickles2.com/"
+                                        },
+                                        "label": {
+                                            "src": "Pickles 2 Official Site"
+                                        },
+                                        "image": {
+                                            "resKey": "03bab1235fed6aa263c3dcc40a5d7e9f",
+                                            "path": "./index_files/resources/photo004_thumb.jpg",
+                                            "resType": "",
+                                            "webUrl": ""
+                                        }
+                                    },
+                                    "subModName": "loop",
+                                    "anchor": "",
+                                    "dec": "",
+                                    "locked": {
+                                        "contents": false,
+                                        "children": false,
+                                        "move": false,
+                                        "delete": false
+                                    }
+                                },
+                                {
+                                    "modId": "local:sample/kflow",
+                                    "fields": {
+                                        "href": {
+                                            "src": "/sample_pages/"
+                                        },
+                                        "label": {
+                                            "src": "Sample Pages"
+                                        },
+                                        "image": {
+                                            "resKey": "5a5480aaede02839b07c9979a5942d41",
+                                            "path": "./index_files/resources/photo010_thumb.jpg",
+                                            "resType": "",
+                                            "webUrl": ""
+                                        }
+                                    },
+                                    "subModName": "loop",
+                                    "anchor": "",
+                                    "dec": "",
+                                    "locked": {
+                                        "contents": false,
+                                        "children": false,
+                                        "move": false,
+                                        "delete": false
+                                    }
+                                }
+                            ],
+                            "image": {
+                                "resKey": "b77a781b5be03d8f4a0066028cc99935",
+                                "resType": "",
+                                "webUrl": "",
+                                "path": "./index_files/resources/photo001_thumb0.jpg"
                             }
                         },
                         "anchor": "",

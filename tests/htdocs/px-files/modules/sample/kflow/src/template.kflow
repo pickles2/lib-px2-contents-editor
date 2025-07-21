@@ -18,11 +18,18 @@
 	<contents>
 		<content name="main">
 			<div style="margin-top: 1em;&#xA;margin-bottom: 1em;&#xA;container-type: inline-size;&#xA;">
-				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><bind field="main"/></div><p style="font-size: 12px;&#xA;">This is a sample KFlow template.</p>
+				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><bind field="main"/><div>{% if image %}
+<img image="{&quot;assetId&quot;:&quot;ffc9e25c-69b9-474a-b2db-d1019ed61529&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ image | e }}&quot;}"/>
+{% endif %}</div></div><p style="font-size: 12px;&#xA;">This is a sample KFlow template.</p><div>{% for listItem in loop %}
+<div><p>This is a loop item.</p><a href="{{ listItem.href }}">{{ listItem.label }}<img image="{&quot;assetId&quot;:&quot;850a5f94-1806-4fc9-80c6-ec510a8a0ae3&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ listItem.image | e }}&quot;}" alt="{{ listItem.label | e }}"/></a></div>
+{% endfor  %}
+</div>
 			</div>
 		</content>
 	</contents>
 	<assets>
+		<asset id="850a5f94-1806-4fc9-80c6-ec510a8a0ae3" ext="txt" size="0" width="400" height="400" is-private-material="false" public-filename="850a5f94-1806-4fc9-80c6-ec510a8a0ae3.txt" field="" field-note="" base64="" />
+		<asset id="ffc9e25c-69b9-474a-b2db-d1019ed61529" ext="txt" size="0" width="400" height="400" is-private-material="false" public-filename="ffc9e25c-69b9-474a-b2db-d1019ed61529.txt" field="" field-note="" base64="" />
 	</assets>
 	<fields>
 		<field type="broccoli-module-interface-field" format="plain">

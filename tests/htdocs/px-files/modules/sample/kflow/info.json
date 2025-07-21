@@ -5,7 +5,39 @@
             "main": {
                 "fieldType": "input",
                 "type": "multitext",
-                "label": "テキスト"
+                "label": "Text"
+            },
+            "image": {
+                "fieldType": "input",
+                "type": "image",
+                "label": "Image"
+            },
+            "loop": {
+                "fieldType": "loop",
+                "label": "List items"
+            }
+        },
+        "subModule": {
+            "loop": {
+                "fields": {
+                    "href": {
+                        "fieldType": "input",
+                        "type": "href",
+                        "rows": 1,
+                        "label": "Link URL"
+                    },
+                    "label": {
+                        "fieldType": "input",
+                        "type": "text",
+                        "label": "Label",
+                        "rows": 1
+                    },
+                    "image": {
+                        "fieldType": "input",
+                        "type": "image",
+                        "label": "Image media"
+                    }
+                }
             }
         }
     }
