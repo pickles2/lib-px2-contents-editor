@@ -473,28 +473,41 @@ html, body {
   color: #f00;
   font-size: 18px;
 }
-.contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+@container (max-width: 890px) {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+    width: 50%;
+  }
+}
+.contents .local-sample-kflow__kf-kf19717669e9596b3fb-2 {
   background-color: #ababff;
   padding: 1em 2em;
   box-sizing: border-box;
 }
 @container (max-width: 890px) {
-  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-2 {
     background-color: #ffeaab;
   }
 }
 @container (max-width: 520px) {
-  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-2 {
     background-color: #94002c;
   }
 }
 @container (max-width: 380px) {
-  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-1 {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-2 {
     background-color: #73ab91;
   }
 }
-.contents .local-sample-kflow__kf-kf19717669e9596b3fb-2 {
+.contents .local-sample-kflow__kf-kf19717669e9596b3fb-3 {
   font-size: 12px;
+}
+@container (max-width: 890px) {
+  .contents .local-sample-kflow__kf-kf19717669e9596b3fb-4 {
+    width: 30%;
+  }
+}
+.contents .local-sample-kflow__kf-kf19717669e9596b3fb-5 {
+  display: block;
 }
 .contents .local-sample-kflow {
   margin-top: 1em;
