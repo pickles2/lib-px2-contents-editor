@@ -21,9 +21,10 @@
 				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><bind field="main"/><div>{% if image %}
 <img image="{&quot;assetId&quot;:&quot;ffc9e25c-69b9-474a-b2db-d1019ed61529&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ image | e }}&quot;}"/>
 {% endif %}</div></div><p style="font-size: 12px;&#xA;">This is a sample KFlow template.</p><div>{% for listItem in loop %}
-<div><p>This is a loop item.</p><a href="{{ listItem.href }}">{{ listItem.label }}<img image="{&quot;assetId&quot;:&quot;850a5f94-1806-4fc9-80c6-ec510a8a0ae3&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ listItem.image | e }}&quot;}" alt="{{ listItem.label | e }}"/></a></div>
+{{ loopitem_start('loop') }}
+<div><p>This is a loop item.</p><a href="{{ listItem.href }}">{{ listItem.label }}<img image="{&quot;assetId&quot;:&quot;850a5f94-1806-4fc9-80c6-ec510a8a0ae3&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ listItem.image | e }}&quot;}" alt="{{ listItem.label | e }}"/></a></div>{{ loopitem_end() }}
 {% endfor  %}
-</div>
+{{ appender('loop') }}</div>
 			</div>
 		</content>
 	</contents>
