@@ -59,8 +59,8 @@ mix
 	.copyDirectory('node_modules/bootstrap-icons/font/fonts', 'dist/fonts')
 
 	// --------------------------------------
-	// moduleEditor: kflow: bind field
-	.js('src/moduleEditor/kflow/components/bind/onload.js', 'src/moduleEditor/kflow/components/tmp_dist/bind.js')
+	// moduleEditor: kflow: mod-bind field
+	.js('src/moduleEditor/kflow/components/mod-bind/onload.js', 'src/moduleEditor/kflow/components/tmp_dist/mod-bind.js')
 
 	// --------------------------------------
 	// Static Frontend Libraries

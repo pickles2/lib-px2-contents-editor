@@ -14,7 +14,7 @@
 		</field>
 	</fields>
 	<components>
-		<component name="bind"
+		<component name="mod-bind"
 			is-void-element="true"
 			can-set-class="false"
 			can-set-width="false"

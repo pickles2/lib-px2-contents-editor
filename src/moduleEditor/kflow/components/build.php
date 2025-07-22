@@ -13,5 +13,5 @@ function build_component($component_name) {
 	}
 }
 
-build_component('bind');
+build_component('mod-bind');
 exit;

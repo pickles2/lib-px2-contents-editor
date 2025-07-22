@@ -18,7 +18,7 @@
 	<contents>
 		<content name="main">
 			<div style="margin-top: 1em;&#xA;margin-bottom: 1em;&#xA;container-type: inline-size;&#xA;">
-				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><bind field="main"/><div>{% if image %}
+				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><mod-bind field="main"/><div>{% if image %}
 <img image="{&quot;assetId&quot;:&quot;ffc9e25c-69b9-474a-b2db-d1019ed61529&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ image | e }}&quot;}" style--md="width: 50%;&#xA;"/>
 {% endif %}</div></div><p style="font-size: 12px;&#xA;">This is a sample KFlow template.</p><div>{% for listItem in loop %}
 {{ loopitem_start('loop') }}
@@ -45,7 +45,7 @@
 		</field>
 	</fields>
 	<components>
-		<component name="bind" is-void-element="true" can-set-css="false" can-set-class="false" can-set-width="false" can-set-height="false" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false" can-set-onclick-event="false" can-set-onsubmit-event="false">
+		<component name="mod-bind" is-void-element="true" can-set-css="false" can-set-class="false" can-set-width="false" can-set-height="false" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false" can-set-onclick-event="false" can-set-onsubmit-event="false">
 			<fields>
 				<field type="broccoli-module-interface-field" name="field" label="Field"/>
 			</fields>
