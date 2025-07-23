@@ -105,6 +105,7 @@ class moduleEditor_kflow{
 		$kaleflower = new \kaleflower\kaleflower();
 		$kaleflower->loadXml( $rtn['src/template.kflow'] );
 		$kaleflower->load( __DIR__.'/../data/moduleEditor/kflow/components/mod-bind.kflow' );
+		$kaleflower->load( __DIR__.'/../data/moduleEditor/kflow/components/mod-loop.kflow' );
 		$rtn['src/template.kflow'] = $kaleflower->getXml();
 
 		return $rtn;

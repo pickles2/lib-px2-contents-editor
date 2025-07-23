@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kflow>
+	<components>
+		<component name="mod-loop"
+			is-void-element="false"
+			can-set-class="false"
+			can-set-width="false"
+			can-set-height="false"
+			can-set-contents-direction="false"
+			can-set-scrollable="false"
+			can-be-layer="false">
+			<fields>
+				<field type="text" name="fieldId" label="Field" />
+				<field type="text" name="as" label="As" />
+			</fields>
+			<template><![CDATA[{% if _ENV.mode == "canvas" %}<div>{% endif %}{% if fieldId and as %}{{ "{% for " }}{{as}} in {{fieldId}}{{ "%}
+    {{ loopitem_start('" }}{{fieldId}}{{ "') }} " }}
+	{{ innerHTML | raw }}
+    {{ "{{ loopitem_end() }}
+{% endfor %}
+{{ appender('" }}{{fieldId}}{{ "') }}" }}{% endif %}{% if _ENV.mode == "canvas" %}</div>{% endif %}]]></template>
+</component>
+	</components>
+</kflow>

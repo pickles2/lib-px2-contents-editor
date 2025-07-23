@@ -24,7 +24,7 @@
 {{ loopitem_start('loop') }}
 <div><p>This is a loop item.</p><a href="{{ listItem.href }}" style="display: block;&#xA;">{{ listItem.label }}&lt;br /&gt;<img image="{&quot;assetId&quot;:&quot;850a5f94-1806-4fc9-80c6-ec510a8a0ae3&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ listItem.image | e }}&quot;}" alt="{{ listItem.label | e }}" style--md="width: 30%;&#xA;"/></a></div>{{ loopitem_end() }}
 {% endfor  %}
-{{ appender('loop') }}</div>
+{{ appender('loop') }}</div><mod-loop fieldId="loop" as="loopItem"><div>{{ loopItem.label }}</div></mod-loop>
 			</div>
 		</content>
 	</contents>
@@ -51,6 +51,19 @@
 			</fields>
 
 			<template><![CDATA[{% if _ENV.mode == "canvas" %}<div>{% endif %}{{ '{{' }} {% if attributes.field %}{{ attributes.field }}{% else %}__notExists__{% endif %} {{ '}}' }}{% if _ENV.mode == "canvas" %}</div>{% endif %}]]></template>
+</component>
+		<component name="mod-loop" is-void-element="false" can-set-css="false" can-set-class="false" can-set-width="false" can-set-height="false" can-set-contents-direction="false" can-set-scrollable="false" can-be-layer="false" can-set-onclick-event="false" can-set-onsubmit-event="false">
+			<fields>
+				<field type="text" name="fieldId" label="Field"/>
+				<field type="text" name="as" label="As"/>
+			</fields>
+
+			<template><![CDATA[{% if _ENV.mode == "canvas" %}<div>{% endif %}{% if fieldId and as %}{{ "{% for " }}{{as}} in {{fieldId}}{{ "%}
+    {{ loopitem_start('" }}{{fieldId}}{{ "') }} " }}
+	{{ innerHTML | raw }}
+    {{ "{{ loopitem_end() }}
+{% endfor %}
+{{ appender('" }}{{fieldId}}{{ "') }}" }}{% endif %}{% if _ENV.mode == "canvas" %}</div>{% endif %}]]></template>
 </component>
 	</components>
 </kflow>

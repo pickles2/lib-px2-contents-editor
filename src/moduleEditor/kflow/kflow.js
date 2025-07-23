@@ -230,7 +230,7 @@ module.exports = function(px2ce){
 
 							try {
 								function getDummyData(fieldId, currentField, index){
-									const indexSufix = (index !== undefined ? `_${index}` : '');
+									const indexSufix = (index !== undefined ? ` ${index}` : '');
 
 									if(currentField.fieldType === 'module'){
 										return `<p>Dummy text${indexSufix}.</p>`;
