@@ -20,11 +20,7 @@
 			<div style="margin-top: 1em;&#xA;margin-bottom: 1em;&#xA;container-type: inline-size;&#xA;">
 				<div style="color: #f00;&#xA;font-size: 18px;&#xA;">これは、kflow モジュールのテストです。</div><div style="background-color: #ababff;&#xA;padding: 1em 2em;&#xA;box-sizing: border-box;&#xA;" style--xs="background-color: #73ab91;&#xA;" style--sm="background-color: #94002c;&#xA;" style--md="background-color: #ffeaab;&#xA;"><mod-bind field="main"/><div>{% if image %}
 <img image="{&quot;assetId&quot;:&quot;ffc9e25c-69b9-474a-b2db-d1019ed61529&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ image | e }}&quot;}" style--md="width: 50%;&#xA;"/>
-{% endif %}</div></div><p style="font-size: 12px;&#xA;">This is a sample KFlow template.</p><div>{% for listItem in loop %}
-{{ loopitem_start('loop') }}
-<div><p>This is a loop item.</p><a href="{{ listItem.href }}" style="display: block;&#xA;">{{ listItem.label }}&lt;br /&gt;<img image="{&quot;assetId&quot;:&quot;850a5f94-1806-4fc9-80c6-ec510a8a0ae3&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ listItem.image | e }}&quot;}" alt="{{ listItem.label | e }}" style--md="width: 30%;&#xA;"/></a></div>{{ loopitem_end() }}
-{% endfor  %}
-{{ appender('loop') }}</div><mod-loop fieldId="loop" as="loopItem"><div>{{ loopItem.label }}</div></mod-loop>
+{% endif %}</div></div><p style="font-size: 12px;&#xA;">This is a sample KFlow template.</p><div><mod-loop fieldId="loop" as="listItem"><div><p>This is a loop item.</p><a href="{{ listItem.href }}" style="display: block;&#xA;">{{ listItem.label }}&lt;br /&gt;<img image="{&quot;assetId&quot;:&quot;850a5f94-1806-4fc9-80c6-ec510a8a0ae3&quot;,&quot;resourceType&quot;:&quot;web&quot;,&quot;webUrl&quot;:&quot;{{ listItem.image | e }}&quot;}" alt="{{ listItem.label | e }}" style--md="width: 30%;&#xA;"/></a></div></mod-loop></div>
 			</div>
 		</content>
 	</contents>
@@ -58,12 +54,20 @@
 				<field type="text" name="as" label="As"/>
 			</fields>
 
-			<template><![CDATA[{% if _ENV.mode == "canvas" %}<div>{% endif %}{% if fieldId and as %}{{ "{% for " }}{{as}} in {{fieldId}}{{ "%}
-    {{ loopitem_start('" }}{{fieldId}}{{ "') }} " }}
+			<template><![CDATA[{% if _ENV.mode == "canvas" %}
+<div>
+	{% verbatim %}{% for {% endverbatim %} {{attributes.as}} {% verbatim %} in {% endverbatim %} {{attributes.fieldId}} {% verbatim %} %}{% endverbatim %}
+	{% verbatim %}{{ loopitem_start("{% endverbatim %}{{attributes.fieldId}}{% verbatim %}") }}{% endverbatim %}
 	{{ innerHTML | raw }}
-    {{ "{{ loopitem_end() }}
-{% endfor %}
-{{ appender('" }}{{fieldId}}{{ "') }}" }}{% endif %}{% if _ENV.mode == "canvas" %}</div>{% endif %}]]></template>
+	{% verbatim %}{{ loopitem_end() }}{% endverbatim %}
+	{% verbatim %}{% endfor %}{% endverbatim %}
+	{% verbatim %}{{ appender("{% endverbatim %}{{attributes.fieldId}}{% verbatim %}") }}{% endverbatim %}
+</div>
+{% else %}
+{% verbatim %}{% for {% endverbatim %}{{attributes.as}}{% verbatim %} in {% endverbatim %}{{attributes.fieldId}}{% verbatim %} %}{{ loopitem_start({% endverbatim %}"{{attributes.fieldId}}"{% verbatim %}) }}
+{% endverbatim %}{{ innerHTML | raw }}{% verbatim %}
+{{ loopitem_end() }}{% endfor %}{{ appender({% endverbatim %}"{{attributes.fieldId}}"{% verbatim %}) }}{% endverbatim %}
+{% endif %}]]></template>
 </component>
 	</components>
 </kflow>

@@ -2,10 +2,9 @@
 			<div class="local-sample-kflow">
 				<div class="local-sample-kflow__kf-kf19717669e9596b3fb-0">これは、kflow モジュールのテストです。</div><div class="local-sample-kflow__kf-kf19717669e9596b3fb-2">{{ main }}<div>{% if image %}
 <img src="{{ image | e }}" width="400" height="400" alt="" class="local-sample-kflow__kf-kf19717669e9596b3fb-1" />
-{% endif %}</div></div><p class="local-sample-kflow__kf-kf19717669e9596b3fb-3">This is a sample KFlow template.</p><div>{% for listItem in loop %}
-{{ loopitem_start('loop') }}
-<div><p>This is a loop item.</p><a href="{{ listItem.href }}" class="local-sample-kflow__kf-kf19717669e9596b3fb-5">{{ listItem.label }}<br /><img src="{{ listItem.image | e }}" width="400" height="400" alt="{{ listItem.label | e }}" class="local-sample-kflow__kf-kf19717669e9596b3fb-4" /></a></div>{{ loopitem_end() }}
-{% endfor  %}
-{{ appender('loop') }}</div>
+{% endif %}</div></div><p class="local-sample-kflow__kf-kf19717669e9596b3fb-3">This is a sample KFlow template.</p><div>{% for listItem in loop %}{{ loopitem_start("loop") }}
+<div><p>This is a loop item.</p><a href="{{ listItem.href }}" class="local-sample-kflow__kf-kf19717669e9596b3fb-5">{{ listItem.label }}<br /><img src="{{ listItem.image | e }}" width="400" height="400" alt="{{ listItem.label | e }}" class="local-sample-kflow__kf-kf19717669e9596b3fb-4" /></a></div>
+{{ loopitem_end() }}{% endfor %}{{ appender("loop") }}
+</div>
 			</div>
 		

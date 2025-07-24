@@ -13,12 +13,20 @@
 				<field type="text" name="fieldId" label="Field" />
 				<field type="text" name="as" label="As" />
 			</fields>
-			<template><![CDATA[{% if _ENV.mode == "canvas" %}<div>{% endif %}{% if fieldId and as %}{{ "{% for " }}{{as}} in {{fieldId}}{{ "%}
-    {{ loopitem_start('" }}{{fieldId}}{{ "') }} " }}
+			<template><![CDATA[{% if _ENV.mode == "canvas" %}
+<div>
+	{% verbatim %}{% for {% endverbatim %} {{attributes.as}} {% verbatim %} in {% endverbatim %} {{attributes.fieldId}} {% verbatim %} %}{% endverbatim %}
+	{% verbatim %}{{ loopitem_start("{% endverbatim %}{{attributes.fieldId}}{% verbatim %}") }}{% endverbatim %}
 	{{ innerHTML | raw }}
-    {{ "{{ loopitem_end() }}
-{% endfor %}
-{{ appender('" }}{{fieldId}}{{ "') }}" }}{% endif %}{% if _ENV.mode == "canvas" %}</div>{% endif %}]]></template>
+	{% verbatim %}{{ loopitem_end() }}{% endverbatim %}
+	{% verbatim %}{% endfor %}{% endverbatim %}
+	{% verbatim %}{{ appender("{% endverbatim %}{{attributes.fieldId}}{% verbatim %}") }}{% endverbatim %}
+</div>
+{% else %}
+{% verbatim %}{% for {% endverbatim %}{{attributes.as}}{% verbatim %} in {% endverbatim %}{{attributes.fieldId}}{% verbatim %} %}{{ loopitem_start({% endverbatim %}"{{attributes.fieldId}}"{% verbatim %}) }}
+{% endverbatim %}{{ innerHTML | raw }}{% verbatim %}
+{{ loopitem_end() }}{% endfor %}{{ appender({% endverbatim %}"{{attributes.fieldId}}"{% verbatim %}) }}{% endverbatim %}
+{% endif %}]]></template>
 </component>
 	</components>
 </kflow>
