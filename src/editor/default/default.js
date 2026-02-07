@@ -665,7 +665,7 @@ module.exports = function(px2ce){
 						);
 					},
 					function(){
-						droppedFileList = []; // アップロードしたら忘れて良い。
+						droppedFileList.length = 0; // アップロードしたら忘れて良い。
 						callback(result);
 					}
 				);
