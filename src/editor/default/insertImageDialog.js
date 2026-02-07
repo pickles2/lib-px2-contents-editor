@@ -65,6 +65,43 @@ module.exports = function(options){
 	}
 
 	/**
+	 * 画像を圧縮する（WebP変換 + サイズ縮小）
+	 */
+	function compressImage(dataUri, callback){
+		var img = new Image();
+		img.onload = function(){
+			var canvas = document.createElement('canvas');
+			var ctx = canvas.getContext('2d');
+			
+			// サイズ計算（1900pxを超える場合は縮小）
+			var maxSize = 1900;
+			var width = img.width;
+			var height = img.height;
+			
+			if (width > maxSize || height > maxSize) {
+				if (width > height) {
+					height = Math.round((height * maxSize) / width);
+					width = maxSize;
+				} else {
+					width = Math.round((width * maxSize) / height);
+					height = maxSize;
+				}
+			}
+			
+			canvas.width = width;
+			canvas.height = height;
+			
+			// 画像を描画
+			ctx.drawImage(img, 0, 0, width, height);
+			
+			// WebP形式で出力（品質: 0.85）
+			var compressedDataUri = canvas.toDataURL('image/webp', 0.85);
+			callback(compressedDataUri);
+		};
+		img.src = dataUri;
+	}
+
+	/**
 	 * アップロードしたファイルをコンテンツに挿入する
 	 */
 	function insertUploadFile(fileInfo, originalFileName, callback){
@@ -170,6 +207,12 @@ module.exports = function(options){
 							<input type="text" id="insert-image-file-name" name="insert-image-file-name" value="" class="px2-input px2-input--block" required />
 						</div>
 					</li>
+					<li class="px2-form-input-list__li">
+						<div class="px2-form-input-list__label"></div>
+						<div class="px2-form-input-list__input">
+							<button type="button" class="px2-btn pickles2-contents-editor__default-image-trigger-compress-image" disabled>画像を圧縮 (WebP)</button>
+						</div>
+					</li>
 				</ul>
 			</div>
 			<input type="hidden" id="insert-image-original-file-name" name="insert-image-original-file-name" value="" />
@@ -252,19 +295,34 @@ module.exports = function(options){
 				$(`<button type="submit" class="px2-btn px2-btn--primary">${px2ce.lb.get('editor.default.insert_button')}</button>`),
 			],
 		}, function(){
+			/**
+			 * 画像圧縮ボタンの有効/無効を更新
+			 */
+			function updateCompressButtonState(fileInfo){
+				var $compressBtn = $body.find('.pickles2-contents-editor__default-image-trigger-compress-image');
+				if( fileInfo && fileInfo.ext && fileInfo.mimeType && canFilePreviewAsImage(fileInfo.mimeType, fileInfo.ext) ){
+					$compressBtn.prop('disabled', false);
+				}else{
+					$compressBtn.prop('disabled', true);
+				}
+			}
 			var $inputFile = $body.find('input[name=insert-image-file]');
 			var $inputFileName = $body.find('input[name=insert-image-file-name]');
 			var $inputOriginalFileName = $body.find('input[name=insert-image-original-file-name]');
+			var $compressBtn = $body.find('.pickles2-contents-editor__default-image-trigger-compress-image');
 
 			setImagePreview({});
+			updateCompressButtonState(null);
 
 			if( typeof(presetInsertFileInfo) == typeof({}) ){
-				setImagePreview({
+				var fileInfo = {
 					'src': presetInsertFileInfo.base64,
 					'ext': getExtension(presetInsertFileInfo.name),
 					'size': presetInsertFileInfo.size,
 					'mimeType': presetInsertFileInfo.type,
-				});
+				};
+				setImagePreview(fileInfo);
+				updateCompressButtonState(fileInfo);
 				$inputFile.attr({
 					'data-upload-file': JSON.stringify({
 						'name': presetInsertFileInfo.name,
@@ -292,12 +350,14 @@ module.exports = function(options){
 
 					if( realpathSelected ){
 						readSelectedLocalFile(fileInfo, function(dataUri){
-							setImagePreview({
+							var previewInfo = {
 								'src': dataUri,
 								'ext': getExtension(fileInfo.name),
 								'size': fileInfo.size,
 								'mimeType': fileInfo.type,
-							});
+							};
+							setImagePreview(previewInfo);
+							updateCompressButtonState(previewInfo);
 							$this.attr({
 								'data-upload-file': JSON.stringify({
 									'name': fileInfo.name,
@@ -338,12 +398,14 @@ module.exports = function(options){
 
 						// mod.filename
 						readSelectedLocalFile(fileInfo, function(dataUri){
-							setImagePreview({
+							var previewInfo = {
 								'src': dataUri,
 								'ext': getExtension(fileInfo.name),
 								'size': fileInfo.size,
 								'mimeType': fileInfo.type,
-							});
+							};
+							setImagePreview(previewInfo);
+							updateCompressButtonState(previewInfo);
 							$inputFile.attr({
 								'data-upload-file': JSON.stringify({
 									'name': fileInfo.name,
@@ -395,12 +457,14 @@ module.exports = function(options){
 							'type': droppedFileInfo.type,
 						};
 
-						setImagePreview({
+						var previewInfo = {
 							'src': _dataUri,
 							'ext': fileInfo.ext,
 							'size': fileInfo.size,
 							'mimeType': fileInfo.type,
-						});
+						};
+						setImagePreview(previewInfo);
+						updateCompressButtonState(previewInfo);
 						$inputFile.attr({
 							'data-upload-file': JSON.stringify({
 								'name': fileInfo.name,
@@ -418,6 +482,47 @@ module.exports = function(options){
 						})());
 					});
 				});
+
+			// 圧縮ボタンのクリックイベント
+			$compressBtn.on('click', function(){
+				var fileInfoJSON = $inputFile.attr('data-upload-file');
+				if( !fileInfoJSON ){
+					return;
+				}
+
+				var fileInfo = JSON.parse(fileInfoJSON);
+				if( !canFilePreviewAsImage(fileInfo.type, fileInfo.ext) ){
+					return;
+				}
+
+				// 圧縮処理
+				compressImage(fileInfo.base64, function(compressedDataUri){
+					// ファイル名を .webp に変更
+					var newFileName = fileInfo.name.replace(/\.[^.]+$/, '.webp');
+					
+					var compressedFileInfo = {
+						'name': newFileName,
+						'ext': 'webp',
+						'type': 'image/webp',
+						'base64': compressedDataUri,
+					};
+
+					// プレビューを更新
+					var previewInfo = {
+						'src': compressedDataUri,
+						'ext': 'webp',
+						'mimeType': 'image/webp',
+					};
+					setImagePreview(previewInfo);
+					updateCompressButtonState(previewInfo);
+
+					// データを更新
+					$inputFile.attr({
+						'data-upload-file': JSON.stringify(compressedFileInfo)
+					});
+					$inputFileName.val(newFileName);
+				});
+			});
 
 		});
 	}
