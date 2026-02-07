@@ -119,7 +119,7 @@ module.exports = function(px2ce){
 
 					if(!result || !result.result){
 						console.error('Error:', result);
-						alert(`Error: ${result.message}`);
+						alert(`${px2ce.lb.get('editor.default.error')}: ${result.message}`);
 						return;
 					}
 
@@ -183,25 +183,25 @@ module.exports = function(px2ce){
 					}
 				},function(){
 					toolbar.addButton({
-						"label": "ブラウザでプレビュー",
+						"label": px2ce.lb.get('editor.default.preview_in_browser'),
 						"click": function(){
 							px2ce.openUrlInBrowser( getPreviewUrl() );
 						}
 					});
 					toolbar.addButton({
-						"label": "リソース",
+						"label": px2ce.lb.get('editor.default.resources'),
 						"click": function(){
 							px2ce.openResourceDir();
 						}
 					});
 					toolbar.addButton({
-						"label": "画像ファイルを挿入",
+						"label": px2ce.lb.get('editor.default.insert_image'),
 						"click": function(){
 							openInsertImageDialog();
 						}
 					});
 					toolbar.addButton({
-						"label": "折返し",
+						"label": px2ce.lb.get('editor.default.word_wrap'),
 						"click": function(){
 							toggleWordWrapMode(this);
 						},
@@ -248,7 +248,7 @@ module.exports = function(px2ce){
 
 				var $fileDropField = $(`<div class="pickles2-contents-editor__file-dropper">
 					<div class="pickles2-contents-editor__file-dropper__droparea">
-						<div class="pickles2-contents-editor__file-dropper__droparea-frame">ここにドロップしてください。</div>
+						<div class="pickles2-contents-editor__file-dropper__droparea-frame">${px2ce.lb.get('editor.default.drop_here')}</div>
 					</div>
 				</div>`)
 
@@ -502,11 +502,11 @@ module.exports = function(px2ce){
 	function openInsertImageDialog( presetInsertFileInfo ){
 
 		var $body = $(`<div>
-			<p>挿入する画像を選択してください。</p>
+			<p>${px2ce.lb.get('editor.default.select_image_to_insert')}</p>
 			<div class="px2-form-input-list">
 				<ul class="px2-form-input-list__ul">
 					<li class="px2-form-input-list__li">
-						<div class="px2-form-input-list__label"><label for="insert-image-file">ファイル</label></div>
+						<div class="px2-form-input-list__label"><label for="insert-image-file">${px2ce.lb.get('editor.default.file')}</label></div>
 						<div class="px2-form-input-list__input">
 							<div class="pickles2-contents-editor__default-image-preview" tabindex="0">
 								<img class="pickles2-contents-editor__default-image-preview-image" />
@@ -516,7 +516,7 @@ module.exports = function(px2ce){
 						</div>
 					</li>
 					<li class="px2-form-input-list__li">
-						<div class="px2-form-input-list__label"><label for="insert-image-file-name">ファイル名</label></div>
+						<div class="px2-form-input-list__label"><label for="insert-image-file-name">${px2ce.lb.get('editor.default.filename')}</label></div>
 						<div class="px2-form-input-list__input">
 							<input type="text" id="insert-image-file-name" name="insert-image-file-name" value="" class="px2-input px2-input--block" required />
 						</div>
@@ -567,7 +567,7 @@ module.exports = function(px2ce){
 		}
 
 		var modalObj = px2style.modal({
-			"title": "画像を挿入",
+			"title": px2ce.lb.get('editor.default.insert_image_dialog_title'),
 			"body": $body,
 			"form": {
 				"submit": function(){
@@ -583,7 +583,7 @@ module.exports = function(px2ce){
 					}
 
 					if( !isValidFilename($inputFileName.val()) ){
-						alert('ファイル名は、半角英数字、ハイフン、アンダースコアで構成してください。');
+						alert(px2ce.lb.get('editor.default.invalid_filename'));
 						return;
 					}
 
@@ -600,7 +600,7 @@ module.exports = function(px2ce){
 				}
 			},
 			"buttons": [
-				$(`<button type="submit" class="px2-btn px2-btn--primary">挿入する</button>`),
+				$(`<button type="submit" class="px2-btn px2-btn--primary">${px2ce.lb.get('editor.default.insert_button')}</button>`),
 			],
 		}, function(){
 			var $inputFile = $body.find('input[name=insert-image-file]');
