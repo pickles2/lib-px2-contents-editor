@@ -198,19 +198,14 @@ module.exports = function(options){
 								<img class="pickles2-contents-editor__default-image-preview-image" />
 								<div class="pickles2-contents-editor__default-image-preview-no-image"></div>
 							</div>
-							<input type="file" id="insert-image-file" name="insert-image-file" value="" />
+                            <div class="px2-text-align-right"><button type="button" class="px2-btn pickles2-contents-editor__default-image-trigger-compress-image" disabled>画像を圧縮 (WebP)</button></div>
+							<div><input type="file" id="insert-image-file" name="insert-image-file" value="" /></div>
 						</div>
 					</li>
 					<li class="px2-form-input-list__li">
 						<div class="px2-form-input-list__label"><label for="insert-image-file-name">${px2ce.lb.get('editor.default.filename')}</label></div>
 						<div class="px2-form-input-list__input">
 							<input type="text" id="insert-image-file-name" name="insert-image-file-name" value="" class="px2-input px2-input--block" required />
-						</div>
-					</li>
-					<li class="px2-form-input-list__li">
-						<div class="px2-form-input-list__label"></div>
-						<div class="px2-form-input-list__input">
-							<button type="button" class="px2-btn pickles2-contents-editor__default-image-trigger-compress-image" disabled>画像を圧縮 (WebP)</button>
 						</div>
 					</li>
 				</ul>
