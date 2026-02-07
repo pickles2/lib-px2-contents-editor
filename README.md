@@ -148,6 +148,10 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-px2-contents-editor v2.3.1 (リリース日未定)
+
+- デフォルトエディタで、 webpファイルをペースト操作でアップロードできなかった不具合を修正。
+
 ### pickles2/lib-px2-contents-editor v2.3.0 (2025年7月29日)
 
 - Kaleflowerコンテンツの編集機能を追加した。
