@@ -495,9 +495,15 @@ module.exports = function(options){
 					// ファイル名を .webp に変更
 					var newFileName = fileInfo.name.replace(/\.[^.]+$/, '.webp');
 					
+					// 圧縮後のファイルサイズを計算
+					// data URI形式: data:image/webp;base64,<base64文字列>
+					var base64String = compressedDataUri.split(',')[1];
+					var compressedSize = Math.ceil(base64String.length * 3 / 4);
+					
 					var compressedFileInfo = {
 						'name': newFileName,
 						'ext': 'webp',
+						'size': compressedSize,
 						'type': 'image/webp',
 						'base64': compressedDataUri,
 					};
@@ -506,6 +512,7 @@ module.exports = function(options){
 					var previewInfo = {
 						'src': compressedDataUri,
 						'ext': 'webp',
+						'size': compressedSize,
 						'mimeType': 'image/webp',
 					};
 					setImagePreview(previewInfo);
