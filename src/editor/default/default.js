@@ -660,6 +660,10 @@ module.exports = function(px2ce){
 								'base64': row.base64
 							},
 							function(result){
+								if(result !== true){
+									console.error('Error saving file:', row.name, result);
+									alert(`${px2ce.lb.get('editor.default.error')} (${row.name}): Failed to save file`);
+								}
 								itAry1.next();
 							}
 						);
