@@ -150,7 +150,7 @@ pickles2ContentsEditor.init(
 
 ### pickles2/lib-px2-contents-editor v2.3.1 (リリース日未定)
 
-- デフォルトエディタで、 webpファイルをペースト操作でアップロードできなかった不具合を修正。
+- デフォルトエディタで、 ドラッグ・アンド・ドロップ操作でファイルをアップロードでるようになった。
 
 ### pickles2/lib-px2-contents-editor v2.3.0 (2025年7月29日)
 

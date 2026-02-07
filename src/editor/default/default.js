@@ -255,12 +255,16 @@ module.exports = function(px2ce){
 				$canvas.append($fileDropField);
 
 				$canvas
-					.on('dragover', function(){
+					.on('dragover', function(e){
+						e.stopPropagation();
+						e.preventDefault();
 						$fileDropField.css({
 							"display": "block",
 						});
 					})
-					.on('dragleave', function(){
+					.on('dragleave', function(e){
+						e.stopPropagation();
+						e.preventDefault();
 						$fileDropField.css({
 							"display": "none",
 						});
@@ -703,6 +707,67 @@ module.exports = function(px2ce){
 							$inputFileName.val( generateAutoFilename(fileInfo.name) );
 						});
 					}
+				})
+				.on('dragover', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					$(this).css({
+						'outline': '3px dashed #0066cc',
+						'outline-offset': '-3px',
+					});
+				})
+				.on('dragleave', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					$(this).css({
+						'outline': '',
+						'outline-offset': '',
+					});
+				})
+				.on('drop', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					$(this).css({
+						'outline': '',
+						'outline-offset': '',
+					});
+
+					var event = e.originalEvent;
+					var droppedFileInfo = event.dataTransfer.files[0];
+
+					$inputOriginalFileName.val(droppedFileInfo.name);
+
+					// mod.filename
+					readSelectedLocalFile(droppedFileInfo, function(_dataUri){
+						var fileInfo = {
+							'name': droppedFileInfo.name,
+							'ext': getExtension( droppedFileInfo.name ),
+							'size': droppedFileInfo.size,
+							'type': droppedFileInfo.type,
+						};
+
+						setImagePreview({
+							'src': _dataUri,
+							'ext': fileInfo.ext,
+							'size': fileInfo.size,
+							'mimeType': fileInfo.type,
+						});
+						$inputFile.attr({
+							'data-upload-file': JSON.stringify({
+								'name': fileInfo.name,
+								'ext': fileInfo.ext,
+								'size': fileInfo.size,
+								'type': fileInfo.type,
+								'base64': _dataUri,
+							})
+						});
+						$inputFileName.val((function(){
+							if( !isValidFilename(fileInfo.name) ){
+								return generateAutoFilename(fileInfo.name);
+							}
+							return fileInfo.name;
+						})());
+					});
 				});
 
 		});
