@@ -21,6 +21,18 @@
 			border-width: 0;
 		}
 	}
+	&-resizer {
+		position: relative;
+		width: 5px;
+		cursor: ew-resize;
+		background-color: #ccc;
+		flex-shrink: 0;
+		-webkit-user-select: none;
+		user-select: none;
+		&:hover {
+			background-color: #999;
+		}
+	}
 	&-editor {
 		position: relative;
 		top: 0;
@@ -44,8 +56,11 @@
 		&-canvas {
 			display: none;
 		}
+		&-resizer {
+			display: none;
+		}
 		&-editor {
-			width: 100%;
+			width: 100% !important;
 		}
 	}
 }
@@ -110,6 +125,7 @@
 		max-width: 100%;
 		min-height: 1px;
 		max-height: 200px;
+		-webkit-user-select: none;
 		user-select: none;
 		pointer-events: none;
 	}

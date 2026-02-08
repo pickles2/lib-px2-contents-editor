@@ -33,6 +33,7 @@ module.exports = function(px2ce){
 	var $iframe,
 		$elmCanvas,
 		$elmEditor,
+		$elmResizer,
 		// $elmBtns,
 		$elmTextareas,
 		$elmTabs;
@@ -233,6 +234,7 @@ module.exports = function(px2ce){
 										+'<div class="pickles2-contents-editor__default-editor-body-js"></div>'
 									+'</div>'
 								+'</div>'
+								+'<div class="pickles2-contents-editor__default-resizer"></div>'
 								+'<div class="pickles2-contents-editor__default-canvas" data-pickles2-contents-editor-preview-url="">'
 								+'</div>'
 							+'</div>'
@@ -245,7 +247,11 @@ module.exports = function(px2ce){
 
 				$elmCanvas = $canvas.find('.pickles2-contents-editor__default-canvas');
 				$elmEditor = $canvas.find('.pickles2-contents-editor__default-editor');
+				$elmResizer = $canvas.find('.pickles2-contents-editor__default-resizer');
 				$elmBtns = $canvas.find('.pickles2-contents-editor__default-btns');
+
+				// リサイザーのドラッグ機能を初期化
+				initResizer();
 
 				var $fileDropField = $(`<div class="pickles2-contents-editor__file-dropper">
 					<div class="pickles2-contents-editor__file-dropper__droparea">
@@ -676,6 +682,91 @@ module.exports = function(px2ce){
 
 			}
 		);
+	}
+
+	/**
+	 * リサイザーの初期化
+	 */
+	function initResizer(){
+		$elmResizer.on('mousedown', function(e){
+			// 600px以下のスモールスクリーンではリサイズを無効化
+			if( $(window).width() <= 600 ){
+				return;
+			}
+
+			var startX = e.pageX;
+			var startEditorWidth = $elmEditor.outerWidth();
+			var startCanvasWidth = $elmCanvas.outerWidth();
+			
+			// ドラッグ中のユーザー選択を防ぐ
+			$('body').css({
+				'user-select': 'none',
+				'-webkit-user-select': 'none',
+				'cursor': 'ew-resize'
+			});
+			
+			e.preventDefault();
+
+			// mousemove ハンドラ
+			var onMouseMove = function(e){
+				var deltaX = e.pageX - startX;
+				// flex-direction: row-reverse なので、左に動かすとエディタが広がる
+				var newEditorWidth = startEditorWidth - deltaX;
+				var newCanvasWidth = startCanvasWidth + deltaX;
+				
+				// 最小幅を設定 (各カラム最低200px)
+				var containerWidth = $canvas.find('.pickles2-contents-editor__default').width();
+				var resizerWidth = $elmResizer.outerWidth();
+				var minWidth = 200;
+				
+				if( newEditorWidth < minWidth ){
+					newEditorWidth = minWidth;
+					newCanvasWidth = containerWidth - newEditorWidth - resizerWidth;
+				}
+				if( newCanvasWidth < minWidth ){
+					newCanvasWidth = minWidth;
+					newEditorWidth = containerWidth - newCanvasWidth - resizerWidth;
+				}
+				
+				// px単位で設定
+				$elmEditor.css('width', newEditorWidth + 'px');
+				$elmCanvas.css('width', newCanvasWidth + 'px');
+				
+				e.preventDefault();
+			};
+
+			// mouseup ハンドラ
+			var onMouseUp = function(e){
+				// イベントを解除
+				$(document).off('mousemove', onMouseMove);
+				$(document).off('mouseup', onMouseUp);
+				
+				// %単位に変換して固定
+				var containerWidth = $canvas.find('.pickles2-contents-editor__default').width();
+				var resizerWidth = $elmResizer.outerWidth();
+				var currentEditorWidth = $elmEditor.outerWidth();
+				var currentCanvasWidth = $elmCanvas.outerWidth();
+				
+				var editorWidthPercent = (currentEditorWidth / containerWidth) * 100;
+				var canvasWidthPercent = (currentCanvasWidth / containerWidth) * 100;
+				
+				$elmEditor.css('width', editorWidthPercent + '%');
+				$elmCanvas.css('width', canvasWidthPercent + '%');
+				
+				// スタイルをリセット
+				$('body').css({
+					'user-select': '',
+					'-webkit-user-select': '',
+					'cursor': ''
+				});
+				
+				e.preventDefault();
+			};
+
+			// イベントをバインド
+			$(document).on('mousemove', onMouseMove);
+			$(document).on('mouseup', onMouseUp);
+		});
 	}
 
 }
