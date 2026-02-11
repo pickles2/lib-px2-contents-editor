@@ -148,7 +148,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.3.1 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.3.1 (2026年2月11日)
 
 - デフォルトエディタ:
 	- ドラッグ・アンド・ドロップ操作でファイルをアップロードでるようになった。
