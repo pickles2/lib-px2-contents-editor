@@ -221,9 +221,19 @@ class gpi{
 				return $path_resource;
 				break;
 
+			case 'checkPageResourceExists':
+				// 指定したファイル名がリソースに既に存在するかチェックする
+				$realpath_resource = $this->px2ce->px2query($data['page_path'].'?PX=api.get.realpath_files&path_resource='.urlencode($data['filename']), array("output"=>"json"));
+				return array('exists' => is_file($realpath_resource));
+				break;
+
 			case 'savePageResources':
 				// コンテンツのリソースファイルを保存する
 				$realpath_resource = $this->px2ce->px2query($data['page_path'].'?PX=api.get.realpath_files&path_resource='.urlencode($data['filename']), array("output"=>"json"));
+				if( is_file($realpath_resource) ){
+					// 同名ファイルが既に存在する場合は上書きせずエラーを返す
+					return array('success' => false, 'code' => 'file_already_exists');
+				}
 				$bin = $data['base64'];
 				$bin = preg_replace('/^data\:.*?base64\,/', '', $bin);
 				$bin = base64_decode($bin);

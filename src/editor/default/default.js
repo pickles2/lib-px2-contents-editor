@@ -668,7 +668,11 @@ module.exports = function(px2ce){
 							function(result){
 								if(result !== true){
 									console.error('Error saving file:', row.name, result);
-									alert(`${px2ce.lb.get('editor.default.error')} (${row.name}): Failed to save file`);
+									if(result && result.code === 'file_already_exists'){
+										alert(px2ce.lb.get('editor.default.file_already_exists'));
+									}else{
+										alert(`${px2ce.lb.get('editor.default.error')} (${row.name}): Failed to save file`);
+									}
 								}
 								itAry1.next();
 							}

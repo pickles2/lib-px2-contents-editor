@@ -282,8 +282,22 @@ module.exports = function(options){
 						return $inputFileName.val();
 					})();
 
-					insertUploadFile(fileInfo, $inputOriginalFileName.val());
-					modalObj.close();
+					// 同名ファイルが既に存在する場合は挿入しない
+					px2ce.gpiBridge(
+						{
+							'api': 'checkPageResourceExists',
+							'page_path': page_path,
+							'filename': fileInfo.name
+						},
+						function(result){
+							if( result && result.exists === true ){
+								alert(px2ce.lb.get('editor.default.file_already_exists'));
+								return;
+							}
+							insertUploadFile(fileInfo, $inputOriginalFileName.val());
+							modalObj.close();
+						}
+					);
 				}
 			},
 			"buttons": [
