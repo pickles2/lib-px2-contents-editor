@@ -492,8 +492,10 @@ module.exports = function(options){
 
 				// 圧縮処理
 				compressImage(fileInfo.base64, function(compressedDataUri){
-					// ファイル名を .webp に変更
-					var newFileName = fileInfo.name.replace(/\.[^.]+$/, '.webp');
+					// 拡張子のみ .webp に変更（ファイル名部分は入力欄の現在値または元の名前を維持）
+					var currentName = $inputFileName.val() || fileInfo.name;
+					var baseName = currentName.replace(/\.[^.]+$/, '') || currentName;
+					var newFileName = baseName + '.webp';
 					
 					// 圧縮後のファイルサイズを計算
 					// data URI形式: data:image/webp;base64,<base64文字列>
