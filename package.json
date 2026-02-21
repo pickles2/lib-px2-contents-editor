@@ -37,7 +37,7 @@
     "biflora": "0.0.1-alpha.1",
     "body-parser": "^1.15.0",
     "bootstrap-icons": "^1.9.1",
-    "broccoli-html-editor": "github:broccoli-html-editor/broccoli-html-editor.git#develop",
+    "broccoli-html-editor": "^1.2.5",
     "cheerio": "*",
     "config": "^1.20.1",
     "csv-loader": "^3.0.3",
