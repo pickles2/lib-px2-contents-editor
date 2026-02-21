@@ -148,7 +148,7 @@ pickles2ContentsEditor.init(
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-px2-contents-editor v2.3.2 (リリース日未定)
+### pickles2/lib-px2-contents-editor v2.3.2 (2026年2月21日)
 
 - デフォルトエディタ:
 	- 画像アップロードするときに、webp変換するとファイル名が変わってしまう問題を修正した。
