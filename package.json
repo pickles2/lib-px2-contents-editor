@@ -32,7 +32,7 @@
     "@babel/preset-react": "^7.16.7",
     "@simonwep/pickr": "^1.8.2",
     "ace-builds": "github:ajaxorg/ace-builds",
-    "axios": "^0.25",
+    "axios": "^1.15",
     "babel-loader": "^8.2.4",
     "biflora": "0.0.1-alpha.1",
     "body-parser": "^1.15.0",
